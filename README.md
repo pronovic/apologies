@@ -6,17 +6,34 @@ for use by developers and not by end users.
 
 ## Developer Notes
 
+### Version and Dependencies
+
+The current released version is tracked in [`version.py`](version.py).  Runtime
+and test dependencies are tracked in [`dependencies.py`](dependencies.py).  If
+you adjust the dependencies, re-build the virtual environment as described
+below.
+
 ### Virtual Environment
 
 To set up the Python virtual environment for development purposes, run the
-[`venv.sh`](venv.sh) script.  This installs a Python 3.7 virtual environment
-and all of the required dependecies from [`src/setup.py`](src/setup.py).  
-
-The virtual environment is installed at `.python`.  Activate it like this:
+[`venv.sh`](venv.sh) script:
 
 ```shell
-.python/bin/activate
+sh venv.sh
 ```
 
-If you change the dependencies in [`src/requirements.txt`](src/requirements.txt), 
-then re-build the environment. 
+This installs a Python 3.7 virtual environment and all of the required
+dependencies.  Activate the virtual environment like this:
+
+```shell
+source .python/bin/activate
+```
+
+If you change any of the runtime or test dependencies, then clean up the
+virtual environment:
+
+```shell
+sh venv.sh clean
+```
+
+That will remove the existing environment and rebuild it from scratch.

@@ -1,2 +1,5 @@
 /.python
+/build
+/dist
 __pycache__
+/src/apologies.egg-info
