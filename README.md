@@ -37,3 +37,17 @@ sh venv.sh clean
 ```
 
 That will remove the existing environment and rebuild it from scratch.
+
+### Visualizing the state of a game
+
+Game state is maintained in the `Game` class.  However, it's hard to look at a
+`Game` object and really understand the game.  The `render` module renders game
+state to the terminal, so you can see the state of the game board.  
+
+The main routine for the `render` module dumps out an empty board, which is
+stored for reference in [`doc/rendered.txt`](doc/rendered.txt).  Rebuild that
+rendered board like this:
+
+```shell
+python src/apologies/render.py > doc/rendered.txt
+```

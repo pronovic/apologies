@@ -12,6 +12,7 @@ INSTALL_REQUIRES = [
 
 # Unit test dependencies
 TESTS_REQUIRE = [ 
+   "pytest>=5.4.1",
    "flexmock>=0.9.4", 
 ]
 

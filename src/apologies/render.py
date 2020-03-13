@@ -1,14 +1,35 @@
 # -*- coding: utf-8 -*-
 # vim: set ft=python ts=3 sw=3 expandtab: 
+# Render a game on the terminal, for development purposes
 
-# This is kind of ugly.  It was built by hand and all of the mappings, etc. are hardcoded.
-# Since it's intended as a development and debugging tool, I don't really care too much
-# about how nice it looks or how generalizable it is.
+# This is kind of ugly.  It was built by hand and all of the mappings, etc. are
+# hardcoded.  Since it's intended as a development and debugging tool, I don't
+# really care too much about how nice it looks or how generalizable it is.
 
-from apologies.render.colors import *
-from apologies.domain import Game, RED, BLUE, YELLOW, GREEN
+# Note: indexes into the rendered board output aren't easily predictible,
+# because of the variable length of formatting characters
 
-# Note: indexes aren't easily predictible, because of the variable length of formatting characters
+from game import Game, RED, BLUE, YELLOW, GREEN
+
+# ANSI terminal escapes for colors
+# See also: http://www.lihaoyi.com/post/BuildyourownCommandLinewithANSIescapecodes.html#256-colors
+FG_BLACK = "\u001b[30;1m"
+FG_RED = "\u001b[31;1m"
+FG_GREEN = "\u001b[32;1m"
+FG_YELLOW = "\u001b[33;1m"
+FG_BLUE = "\u001b[34;1m"
+FG_MAGENTA = "\u001b[35;1m"
+FG_CYAN = "\u001b[36;1m"
+FG_WHITE = "\u001b[37;1m"
+BG_BLACK = "\u001b[40m"
+BG_RED = "\u001b[41m"
+BG_GREEN = "\u001b[42m"
+BG_YELLOW = "\u001b[43m"
+BG_BLUE = "\u001b[44m"
+BG_MAGENTA = "\u001b[45m"
+BG_CYAN = "\u001b[46m"
+BG_WHITE = "\u001b[47m"
+RESET_COLORS = "\u001b[0m"
 
 # Index into BOARD_TEXT where a piece can be placed into a specific square
 # Squares are numbered from starting from the upper left, in a clockwise direction
@@ -178,8 +199,12 @@ def _applyGameState(board, game):
          board = board[:index] + PLAYER[piece.color] + board[index+1:]
    return board
 
-# Render the board to stdout
+# Render the state of a game, returning the board for display
 def renderBoard(game):
-   board = _generateEmptyBoard()
-   board = _applyGameState(board, game)
+   return _applyGameState(_generateEmptyBoard(), game)
+
+# Render the state of an empty game to stdout, for reference
+if __name__ == "__main__":
+   game = Game(players=4)
+   board = renderBoard(game)
    print(board, end = "")

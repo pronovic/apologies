@@ -25,5 +25,5 @@ VERSION=`python version.py`
 DEPENDENCIES=`python dependencies.py`
 
 echo "Installing dependencies for $VERSION:\n$DEPENDENCIES"
-pip install --quiet "$DEPENDENCIES"
+pip install --quiet $DEPENDENCIES
 
