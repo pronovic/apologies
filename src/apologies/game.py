@@ -12,13 +12,13 @@ YELLOW = "YELLOW"
 GREEN = "GREEN"
 COLORS = [ RED, YELLOW, GREEN, BLUE, ]  # order chosen so game works better for < 4 players
 
-# There are 4 pawns per player
+# There are 4 pawns per player, numbered 0-3
 PAWNS = 4
 
-# There are 60 squares around the outside of the board
+# There are 60 squares around the outside of the board, numbered 0-59
 BOARD_SQUARES = 60
 
-# There are 5 safe squares for each color
+# There are 5 safe squares for each color, numbered 0-4
 SAFE_SQUARES = 5
 
 # A pawn on the board, belonging to a player
@@ -77,7 +77,6 @@ class Player:
 
    def __repr__(self):
       return "Player(%s, %s): %s" % (self.color, self.name, self.pawns)
-   
 
 # All of the players in the game
 class Players(dict):
