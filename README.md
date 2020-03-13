@@ -13,13 +13,16 @@ and test dependencies are tracked in [`dependencies.py`](dependencies.py).  If
 you adjust the dependencies, re-build the virtual environment as described
 below.
 
-### Virtual Environment
+### Developer Script
 
-To set up the Python virtual environment for development purposes, run the
-[`venv.sh`](venv.sh) script:
+The [`dev`](dev) script handles various different command-line tasks.
+
+#### env - Virtual Environment
+
+To set up the Python virtual environment for development purposes, run:
 
 ```shell
-sh venv.sh
+dev env
 ```
 
 This installs a Python 3.7 virtual environment and all of the required
@@ -29,25 +32,38 @@ dependencies.  Activate the virtual environment like this:
 source .python/bin/activate
 ```
 
-If you change any of the runtime or test dependencies, then clean up the
+If you change any of the runtime or test dependencies, then rebuild the
 virtual environment:
 
 ```shell
-sh venv.sh clean
+dev env rebuild
 ```
 
 That will remove the existing environment and rebuild it from scratch.
 
-### Visualizing the state of a game
+#### test - Run unit tests
+
+The unit test suite is written using PyTest.  To run the test suite,
+use:
+
+```shell
+dev test
+```
+
+Any arguments after `test` are passed to the `pytest` executable.
+
+#### render - Visualizing the state of a game
 
 Game state is maintained in the `Game` class.  However, it's hard to look at a
 `Game` object and really understand the game.  The `render` module renders game
 state to the terminal, so you can see the state of the game board.  
 
-The main routine for the `render` module dumps out an empty board, which is
-stored for reference in [`doc/rendered.txt`](doc/rendered.txt).  Rebuild that
-rendered board like this:
+The `render` script dumps out an empty board, which is stored for reference in
+[`doc/rendered.txt`](doc/rendered.txt).  Rebuild that rendered board like this:
 
 ```shell
-python src/apologies/render.py > doc/rendered.txt
+dev render
 ```
+
+If you want, you can adjust the `render` script to change the game state.  This
+script is not distributed.
