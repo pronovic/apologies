@@ -12,8 +12,8 @@ YELLOW = "YELLOW"
 GREEN = "GREEN"
 COLORS = [ RED, YELLOW, GREEN, BLUE, ]  # order chosen so game works better for < 4 players
 
-# There are 4 pieces per player
-PIECES = 4
+# There are 4 pawns per player
+PAWNS = 4
 
 # There are 60 squares around the outside of the board
 BOARD_SQUARES = 60
@@ -21,19 +21,19 @@ BOARD_SQUARES = 60
 # There are 5 safe squares for each color
 SAFE_SQUARES = 5
 
-# A piece on the board, belonging to a player
-class Piece:
+# A pawn on the board, belonging to a player
+class Pawn:
    def __init__(self, color, index):
       self.color = color
       self.index = index
       self.name = "%s-%s" % (color, index)
-      self.start = True    # whether this piece resides in the start area
-      self.home = False    # whether this piece resides in in the home area
-      self.safe = None     # zero-based index of the square in the safe area where this piece resides
-      self.square = None   # zero-based index of the square on the board where this piece resides
+      self.start = True    # whether this pawn resides in the start area
+      self.home = False    # whether this pawn resides in in the home area
+      self.safe = None     # zero-based index of the square in the safe area where this pawn resides
+      self.square = None   # zero-based index of the square on the board where this pawn resides
 
    def __repr__(self):
-      return "Piece(name=%s, start=%s, home=%s, safe=%s, square=%s)" % (self.name, self.start, self.home, self.safe, self.square)
+      return "Pawn(name=%s, start=%s, home=%s, safe=%s, square=%s)" % (self.name, self.start, self.home, self.safe, self.square)
 
    def move_to_start(self):
       self.start = True
@@ -61,22 +61,22 @@ class Piece:
       self.safe = None
       self.square = square
 
-# All of the pieces belonging to a player
-class Pieces(list):
+# All of the pawns belonging to a player
+class Pawns(list):
    def __init__(self, color):
       self.color = color
-      for index in range(0, PIECES):
-         self.append(Piece(color, index))
+      for index in range(0, PAWNS):
+         self.append(Pawn(color, index))
 
-# A player, which has a color and 4 pieces
+# A player, which has a color and 4 pawns
 class Player:
    def __init__(self, color, name=None):
       self.color = color
       self.name = name
-      self.pieces = Pieces(color)
+      self.pawns = Pawns(color)
 
    def __repr__(self):
-      return "Player(%s, %s): %s" % (self.color, self.name, self.pieces)
+      return "Player(%s, %s): %s" % (self.color, self.name, self.pawns)
    
 
 # All of the players in the game

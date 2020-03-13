@@ -31,9 +31,9 @@ BG_CYAN = "\u001b[46m"
 BG_WHITE = "\u001b[47m"
 RESET_COLORS = "\u001b[0m"
 
-# Index into BOARD_TEXT where a piece can be placed into a specific square
+# Index into BOARD_TEXT where a pawn can be placed into a specific square
 # Squares are numbered from starting from the upper left, in a clockwise direction
-# Only a single piece can occupy a square
+# Only a single pawn can occupy a square
 SQUARE = [ 160, 177, 182, 187, 192, 209, 214, 219, 224, 241, 246, 
            251, 256, 261, 278, 283, 724, 1185, 1646, 2090, 2517, 
            2910, 3303, 3696, 4089, 4482, 4926, 5370, 5831, 6309, 
@@ -49,24 +49,24 @@ PLAYER[BLUE] = "b"
 PLAYER[YELLOW] = "y"
 PLAYER[GREEN] = "g"
 
-# Indexes in BOARD_TEXT where a piece can be placed into a start location, for each player
-# There are 4 arbitrary spaces for each of the 4 available pieces
+# Indexes in BOARD_TEXT where a pawn can be placed into a start location, for each player
+# There are 4 arbitrary spaces for each of the 4 available pawns
 START = {}
 START[RED] = [ 1111, 1113, 1115, 1117, ]
 START[BLUE] = [ 2060, 2062, 2064, 2066, ]
 START[YELLOW] = [ 5921, 5923, 5925, 5927, ]
 START[GREEN] = [ 4972, 4974, 4976, 4978, ]
 
-# Indexes in BOARD_TEXT where a piece can be placed into a safe location, for each player
-# There are 5 safe squares per color; only a single piece can occupy a safe square
+# Indexes in BOARD_TEXT where a pawn can be placed into a safe location, for each player
+# There are 5 safe squares per color; only a single pawn can occupy a safe square
 SAFE = {}
 SAFE[RED] = [ 608, 1086, 1547, 1991, 2435, ]
 SAFE[BLUE] = [ 1180, 1175, 1170, 1165, 1160, ]
 SAFE[YELLOW] = [ 6282, 5804, 5343, 4899, 4455, ]
 SAFE[GREEN] = [ 5710, 5715, 5720, 5725, 5730, ]
 
-# Indexes in BOARD_TEXT where a piece can be placed into a home location, for each player
-# There are 4 arbitrary home spaces for the 4 available pieces per player
+# Indexes in BOARD_TEXT where a pawn can be placed into a home location, for each player
+# There are 4 arbitrary home spaces for the 4 available pawns per player
 HOME = {}
 HOME[RED] = [ 3086, 3088, 3090, 3092, ]
 HOME[BLUE] = [ 1148, 1150, 1152, 1154, ]
@@ -185,18 +185,18 @@ def _generateEmptyBoard():
 # Apply the game state onto the empty board
 def _applyGameState(board, game):
    for player in game.players:
-      for piece in player.pieces:
-         if piece.start:
-            index = START[piece.color][piece.index]
-         elif piece.home:
-            index = HOME[piece.color][piece.index]
-         elif piece.safe is not None:
-            index = SAFE[piece.color][piece.safe]
-         elif piece.square is not None:
-            index = SQUARE[piece.square]
+      for pawn in player.pawns:
+         if pawn.start:
+            index = START[pawn.color][pawn.index]
+         elif pawn.home:
+            index = HOME[pawn.color][pawn.index]
+         elif pawn.safe is not None:
+            index = SAFE[pawn.color][pawn.safe]
+         elif pawn.square is not None:
+            index = SQUARE[pawn.square]
          else:
-            raise ValueError("Piece is not in a valid state")
-         board = board[:index] + PLAYER[piece.color] + board[index+1:]
+            raise ValueError("Pawn is not in a valid state")
+         board = board[:index] + PLAYER[pawn.color] + board[index+1:]
    return board
 
 # Render the state of a game, returning the board for display
