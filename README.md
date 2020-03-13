@@ -52,6 +52,15 @@ dev test
 
 Any arguments after `test` are passed to the `pytest` executable.
 
+#### pylint - Run the Pylint style checker
+
+Before committing code, it must be lint-clean.  To check the code,
+use:
+
+```shell
+dev pylint
+```
+
 #### render - Visualizing the state of a game
 
 Game state is maintained in the `Game` class.  However, it's hard to look at a
