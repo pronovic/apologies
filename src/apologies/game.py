@@ -20,7 +20,7 @@ RED = "RED"
 BLUE = "BLUE"
 YELLOW = "YELLOW"
 GREEN = "GREEN"
-COLORS = [ RED, YELLOW, GREEN, BLUE, ]  # order chosen so game works better for < 4 players
+COLORS = [RED, YELLOW, GREEN, BLUE,]  # order chosen so game works better for < 4 players
 
 # There are 4 pawns per player, numbered 0-3
 PAWNS = 4
@@ -74,6 +74,7 @@ class Pawn:
 # All of the pawns belonging to a player
 class Pawns(list):
    def __init__(self, color):
+      super(Pawns, self).__init__()
       self.color = color
       for index in range(0, PAWNS):
          self.append(Pawn(color, index))
@@ -91,6 +92,7 @@ class Player:
 # All of the players in the game
 class Players(OrderedDict):
    def __init__(self, players):
+      super(Players, self).__init__()
       if players < MIN_PLAYERS or players > MAX_PLAYERS: raise ValueError("Invalid number of players")
       for color in COLORS[:players]:
          self[color] = Player(color)

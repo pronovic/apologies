@@ -32,11 +32,19 @@ run_env() {
 
 # Run the unit tests
 run_test() {
+   source .python/bin/activate
    PYTHONPATH=src/ pytest $* unittest
+}
+
+# Run the pylint checker
+run_pylint() {
+   source .python/bin/activate
+   pylint --rcfile=pylint.rc $(find src -name "*.py") $(find unittest -name "*.py")
 }
 
 # Render a board via the render script
 run_render() {
+   source .python/bin/activate
    PYTHONPATH=src/ src/scripts/render
 }
 
@@ -49,6 +57,9 @@ case $1 in
    test)
       shift 1
       run_test $*
+      ;;
+   pylint)
+      run_pylint
       ;;
    render)
       run_render

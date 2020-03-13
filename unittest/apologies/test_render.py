@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # vim: set ft=python ts=3 sw=3 expandtab: 
+# pylint: disable=wildcard-import,no-self-use,redefined-outer-name
 # Unit tests for render.py
 
 import os
@@ -86,7 +87,7 @@ class TestRenderBoard:
 # Create a game with all players in home
 def _fill_home():
    game = Game(players=4)
-   for color in [ BLUE, RED, YELLOW, GREEN, ]:
+   for color in [BLUE, RED, YELLOW, GREEN,]:
       for pawn in range(4):
          game.players[color].pawns[pawn].move_to_home()
    return game
@@ -94,7 +95,7 @@ def _fill_home():
 # Create a game with all players in the safe zone
 def _fill_safe(start):
    game = Game(players=4)
-   for color in [ BLUE, RED, YELLOW, GREEN, ]:
+   for color in [BLUE, RED, YELLOW, GREEN,]:
       for pawn in range(4):
          game.players[color].pawns[pawn].move_to_safe(pawn+start)
    return game
@@ -104,7 +105,7 @@ def _fill_squares(start, end):
    game = Game(players=4)
    square = 0
    for pawn in range(4):
-      for color in [ BLUE, RED, YELLOW, GREEN, ]:
+      for color in [BLUE, RED, YELLOW, GREEN,]:
          if square + start <= end:
             game.players[color].pawns[pawn].move_to_square(square + start)
             square += 1

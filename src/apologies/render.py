@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # vim: set ft=python ts=3 sw=3 expandtab: 
+# pylint: disable=line-too-long
 # Render a game on the terminal, for development purposes
 
 # This is kind of ugly.  It was built by hand and all of the mappings, etc. are
@@ -9,7 +10,7 @@
 # Note: indexes into the rendered board output aren't easily predictible,
 # because of the variable length of formatting characters
 
-from .game import Game, RED, BLUE, YELLOW, GREEN
+from .game import RED, BLUE, YELLOW, GREEN
 
 # ANSI terminal escapes for colors
 # See also: http://www.lihaoyi.com/post/BuildyourownCommandLinewithANSIescapecodes.html#256-colors
@@ -35,10 +36,10 @@ RESET_COLORS = "\u001b[0m"
 # Squares are numbered from starting from the upper left, in a clockwise direction
 # Only a single pawn can occupy a square
 SQUARE = [ 
-    323, 340, 345, 350, 355, 372, 377, 382, 387, 404, 409, 414, 419, 424, 441, 446, 
-    980, 1534, 2088, 2625, 3145, 3631, 4117, 4603, 5089, 5575, 6112, 6649, 7203, 7774, 8288, 8271, 
-    8266, 8261, 8256, 8239, 8234, 8229, 8224, 8207, 8202, 8197, 8192, 8187, 8170, 8165, 7631, 7077, 
-    6523, 5986, 5466, 4980, 4494, 4008, 3522, 3036, 2499, 1962, 1408, 837,
+   323, 340, 345, 350, 355, 372, 377, 382, 387, 404, 409, 414, 419, 424, 441, 446, 
+   980, 1534, 2088, 2625, 3145, 3631, 4117, 4603, 5089, 5575, 6112, 6649, 7203, 7774, 8288, 8271, 
+   8266, 8261, 8256, 8239, 8234, 8229, 8224, 8207, 8202, 8197, 8192, 8187, 8170, 8165, 7631, 7077, 
+   6523, 5986, 5466, 4980, 4494, 4008, 3522, 3036, 2499, 1962, 1408, 837,
 ]
 
 # Player names as displayed on the board
@@ -51,26 +52,26 @@ PLAYER[GREEN] = "g"
 # Indexes in BOARD_TEXT where a pawn can be placed into a start location, for each player
 # There are 4 arbitrary spaces for each of the 4 available pawns
 START = {}
-START[RED] = [ 1281, 1283, 1285, 1287, ]
-START[BLUE] = [ 2416, 2418, 2420, 2422, ]
-START[YELLOW] = [ 7145, 7147, 7149, 7151, ]
-START[GREEN] = [ 6010, 6012, 6014, 6016, ]
+START[RED] = [1281, 1283, 1285, 1287,]
+START[BLUE] = [2416, 2418, 2420, 2422,]
+START[YELLOW] = [7145, 7147, 7149, 7151,]
+START[GREEN] = [6010, 6012, 6014, 6016,]
 
 # Indexes in BOARD_TEXT where a pawn can be placed into a safe location, for each player
 # There are 5 safe squares per color; only a single pawn can occupy a safe square
 SAFE = {}
-SAFE[RED] = [ 864, 1435, 1989, 2526, 3063, ]
-SAFE[BLUE] = [ 1529, 1524, 1519, 1514, 1509, ]
-SAFE[YELLOW] = [ 7747, 7176, 6622, 6085, 5548, ]
-SAFE[GREEN] = [ 7082, 7087, 7092, 7097, 7102, ]
+SAFE[RED] = [864, 1435, 1989, 2526, 3063,]
+SAFE[BLUE] = [1529, 1524, 1519, 1514, 1509,]
+SAFE[YELLOW] = [7747, 7176, 6622, 6085, 5548,]
+SAFE[GREEN] = [7082, 7087, 7092, 7097, 7102,]
 
 # Indexes in BOARD_TEXT where a pawn can be placed into a home location, for each player
 # There are 4 arbitrary home spaces for the 4 available pawns per player
 HOME = {}
-HOME[RED] = [ 3708, 3710, 3712, 3714, ]
-HOME[BLUE] = [ 1318, 1320, 1322, 1324, ]
-HOME[YELLOW] = [ 4735, 4737, 4739, 4741, ]
-HOME[GREEN] = [ 7108, 7110, 7112, 7114, ]
+HOME[RED] = [3708, 3710, 3712, 3714,]
+HOME[BLUE] = [1318, 1320, 1322, 1324,]
+HOME[YELLOW] = [4735, 4737, 4739, 4741,]
+HOME[GREEN] = [7108, 7110, 7112, 7114,]
 
 # Hardcoded representation of the board, with {} placeholders for color formatting (applied below)
 # The board layout was built by hand and then the formatting was placed into it by hand
