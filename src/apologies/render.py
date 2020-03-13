@@ -9,7 +9,7 @@
 # Note: indexes into the rendered board output aren't easily predictible,
 # because of the variable length of formatting characters
 
-from game import Game, RED, BLUE, YELLOW, GREEN
+from .game import Game, RED, BLUE, YELLOW, GREEN
 
 # ANSI terminal escapes for colors
 # See also: http://www.lihaoyi.com/post/BuildyourownCommandLinewithANSIescapecodes.html#256-colors
@@ -184,11 +184,11 @@ BOARD_COLORS = [
 ]
 
 # Generate the empty board
-def _generateEmptyBoard():
+def _generate_empty_board():
    return BOARD_TEXT.format(*BOARD_COLORS)
 
 # Apply the game state onto the empty board
-def _applyGameState(board, game):
+def _apply_game_state(board, game):
    for player in game.players:
       for pawn in player.pawns:
          if pawn.start:
@@ -205,11 +205,5 @@ def _applyGameState(board, game):
    return board
 
 # Render the state of a game, returning the board for display
-def renderBoard(game):
-   return _applyGameState(_generateEmptyBoard(), game)
-
-# Render the state of an empty game to stdout, for reference
-if __name__ == "__main__":
-   game = Game(players=4)
-   board = renderBoard(game)
-   print(board, end = "")
+def render_board(game):
+   return _apply_game_state(_generate_empty_board(), game)

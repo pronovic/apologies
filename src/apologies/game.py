@@ -1,5 +1,15 @@
 # -*- coding: utf-8 -*-
 # vim: set ft=python ts=3 sw=3 expandtab:
+# Classes that track game state
+
+# Note: These classes track game state, but do not implement game rules.  The 
+#       only validations are to prevent changes that literally cannot be
+#       represented in game state, such as selecting an invalid square.  All
+#       other rules (such as the restriction that only one pawn can occupy a
+#       space, or the act of sliding down a slider, etc.) must be implemented
+#       externally, using the methods available on these classes.
+
+from collections import OrderedDict 
 
 # A game consists of 2-4 players
 MIN_PLAYERS = 2
@@ -79,7 +89,7 @@ class Player:
       return "Player(%s, %s): %s" % (self.color, self.name, self.pawns)
 
 # All of the players in the game
-class Players(dict):
+class Players(OrderedDict):
    def __init__(self, players):
       if players < MIN_PLAYERS or players > MAX_PLAYERS: raise ValueError("Invalid number of players")
       for color in COLORS[:players]:
