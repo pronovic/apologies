@@ -1,0 +1,14 @@
+[tool.black]
+line-length = 120
+target-version = ['py37', 'py38']
+include = '(src\/scripts\/.*$|\.pyi?$)'
+exclude = '''
+/(
+    \.git
+  | __pycache__
+  | \.tox
+  | \.python
+  | build
+  | dist
+)/
+'''
