@@ -40,14 +40,14 @@ run_test() {
 # Run the unit tests with coverage
 run_coverage() {
    source .python/bin/activate
-   PYTHONPATH=src/ coverage run --source src/ -m pytest $* unittest
+   PYTHONPATH=src/ coverage run --rcfile=.coveragerc -m pytest $*
    coverage report -m
 }
 
 # Run the pylint checker
 run_pylint() {
    source .python/bin/activate
-   pylint --rcfile=pylint.rc $(find src -name "*.py") $(find unittest -name "*.py")
+   pylint --rcfile=.pylintrc $(find src -name "*.py") $(find unittest -name "*.py")
 }
 
 # Render a board via the render script

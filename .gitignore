@@ -4,3 +4,6 @@
 __pycache__
 /src/apologies.egg-info
 /.coverage
+/.coverage.*
+/.tox
+/htmlcov

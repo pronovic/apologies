@@ -1,0 +1,10 @@
+[paths]
+source = src
+
+[run]
+branch = true
+source = unittest
+
+[report]
+show_missing = true
+precision = 2
