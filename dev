@@ -44,6 +44,13 @@ run_coverage() {
    coverage report -m
 }
 
+# Run the Tox suite with all of the relevant Python versions
+run_tox() {
+   source .python/bin/activate
+   tox -e "clean,{py37,py38}-{coverage,nocoverage},report"
+   coverage report -m
+}
+
 # Run the pylint checker
 run_pylint() {
    source .python/bin/activate
@@ -69,6 +76,9 @@ case $1 in
    coverage)
       shift 1
       run_coverage $*
+      ;;
+   tox)
+      run_tox
       ;;
    pylint)
       run_pylint

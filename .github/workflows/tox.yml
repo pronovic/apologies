@@ -16,4 +16,4 @@ jobs:
       - name: Install dependencies
         run: pip install tox
       - name: Run Tox test suite
-        run: tox
+        run: tox -e "clean,{py}-{coverage,nocoverage},report"
