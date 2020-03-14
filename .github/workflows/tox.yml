@@ -16,4 +16,4 @@ jobs:
       - name: Install dependencies
         run: pip install tox
       - name: Run Tox test suite
-        run: tox -e py  # Run tox using the version of Python in `PATH`
+        run: tox
