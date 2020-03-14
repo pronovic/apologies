@@ -81,7 +81,7 @@ BOARD_TEXT = """{}{}{}
 {}{}    {}{}│   │{}{}| ▶ || ◼ || ◼ || ● |{}{}|   ||   ||   ||   |{}{}| ▶ || ◼ || ◼ || ◼ || ● |{}{}|   ||   |{}{}   {}
 {}{}    {}{}└───┘{}{}└───┘└───┘└───┘└───┘{}{}└───┘└───┘└───┘└───┘{}{}└───┘└───┘└───┘└───┘└───┘{}{}└───┘└───┘{}{}   {}
 {}{}    {}{}┌───┐{}     {}{}┌───┐{}                                                            {}{}┌───┐{}{}   {}
-{}{} 59 {}{}│   │{}   0 {}{}│   │{}  {}{}┌───────────┐{}       {}{}┌───────────┐{}                         {}{}| ▼ |{}{} 16{}
+{}{} 59 {}{}│   │{}   {}0 {}│   │{}  {}{}┌───────────┐{}       {}{}┌───────────┐{}                         {}{}| ▼ |{}{} 16{}
 {}{}    {}{}└───┘{}     {}{}└───┘{}  {}{}│ S T A R T │{}       {}{}│  H O M E  │{}  4    3    2    1    0  {}{}└───┘{}{}   {}
 {}{}    {}{}┌───┐{}     {}{}┌───┐{}  {}{}│           │{}       {}{}│           │┌───┐┌───┐┌───┐┌───┐┌───┐┌───┐{}{}   {}
 {}{} 58 {}{}│ ● │{}   1 {}{}│   │{}  {}{}│  - - - -  │{}       {}{}│  - - - -  │|   ||   ||   ||   ||   || ◼ |{}{} 17{}
@@ -136,7 +136,7 @@ BOARD_COLORS = [
    BG_BLACK, FG_WHITE, BG_WHITE, FG_BLACK, BG_RED, FG_WHITE, BG_WHITE, FG_BLACK, BG_RED, FG_WHITE, BG_WHITE, FG_BLACK, BG_BLACK, FG_WHITE, RESET_COLORS,
    BG_BLACK, FG_WHITE, BG_WHITE, FG_BLACK, BG_RED, FG_WHITE, BG_WHITE, FG_BLACK, BG_RED, FG_WHITE, BG_WHITE, FG_BLACK, BG_BLACK, FG_WHITE, RESET_COLORS,
    BG_BLACK, FG_WHITE, BG_WHITE, FG_BLACK, BG_CYAN, BG_RED, FG_WHITE, BG_CYAN, BG_BLUE, FG_WHITE, BG_BLACK, FG_WHITE, RESET_COLORS,
-   BG_BLACK, FG_WHITE, BG_WHITE, FG_BLACK, BG_CYAN, BG_RED, FG_WHITE, BG_CYAN, BG_RED, FG_WHITE, BG_CYAN, BG_BLUE, FG_WHITE, BG_CYAN, BG_BLUE, FG_WHITE, BG_BLACK, FG_WHITE, RESET_COLORS,
+   BG_BLACK, FG_WHITE, BG_WHITE, FG_BLACK, BG_CYAN, FG_WHITE, BG_RED, BG_CYAN, BG_RED, FG_WHITE, BG_CYAN, BG_BLUE, FG_WHITE, BG_CYAN, BG_BLUE, FG_WHITE, BG_BLACK, FG_WHITE, RESET_COLORS,
    BG_BLACK, FG_WHITE, BG_WHITE, FG_BLACK, BG_CYAN, BG_RED, FG_WHITE, BG_CYAN, BG_RED, FG_WHITE, BG_CYAN, BG_BLUE, FG_WHITE, BG_CYAN, BG_BLUE, FG_WHITE, BG_BLACK, FG_WHITE, RESET_COLORS,
    BG_BLACK, FG_WHITE, BG_GREEN, FG_WHITE, BG_CYAN, BG_RED, FG_WHITE, BG_CYAN, BG_RED, FG_WHITE, BG_CYAN, BG_BLUE, FG_WHITE, BG_BLACK, FG_WHITE, RESET_COLORS,
    BG_BLACK, FG_WHITE, BG_GREEN, FG_WHITE, BG_CYAN, BG_RED, FG_WHITE, BG_CYAN, BG_RED, FG_WHITE, BG_CYAN, BG_BLUE, FG_WHITE, BG_BLACK, FG_WHITE, RESET_COLORS,

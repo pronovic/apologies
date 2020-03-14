@@ -60,7 +60,7 @@ run_pylint() {
 # Render a board via the render script
 run_render() {
    source .python/bin/activate
-   PYTHONPATH=src/ src/scripts/render
+   PYTHONPATH=src/ python src/scripts/render
 }
 
 # Run one of the developer tools
