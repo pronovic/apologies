@@ -186,7 +186,7 @@ BOARD_COLORS = [
 
 # Generate the empty board
 def _generate_empty_board():
-   return BOARD_TEXT.format(*BOARD_COLORS)
+   return "%s\n" % BOARD_TEXT.format(*BOARD_COLORS)
 
 # Apply the game state onto the empty board
 def _apply_game_state(board, game):
