@@ -7,19 +7,20 @@
 PYTHON_REQUIRES = ">=3.7"
 
 # Runtime dependencies
-INSTALL_REQUIRES = [ 
-]
+INSTALL_REQUIRES = []
 
 # Unit test dependencies
-TESTS_REQUIRE = [ 
-   "tox>=3.14.5",
-   "pylint>=2.4.4",
-   "pytest>=5.4.1",
-   "coverage>=5.0.3",
-   "flexmock>=0.9.4", 
+TESTS_REQUIRE = [
+    "tox>=3.14.5",
+    "pylint>=2.4.4",
+    "pytest>=5.4.1",
+    "coverage>=5.0.3",
+    "flexmock>=0.9.4",
 ]
 
 # Dump requirements to stdout for use by venv.sh
 if __name__ == "__main__":
-   if INSTALL_REQUIRES: print(*INSTALL_REQUIRES, sep = "\n")
-   if TESTS_REQUIRE: print(*TESTS_REQUIRE, sep = "\n")
+    if INSTALL_REQUIRES:
+        print(*INSTALL_REQUIRES, sep="\n")
+    if TESTS_REQUIRE:
+        print(*TESTS_REQUIRE, sep="\n")

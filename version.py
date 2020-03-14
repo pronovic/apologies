@@ -11,5 +11,4 @@ VERSION = "0.1.0"
 
 # Dump vesion to stdout for use by venv.sh
 if __name__ == "__main__":
-   print("%s v%s" % (NAME, VERSION))
-
+    print("%s v%s" % (NAME, VERSION))

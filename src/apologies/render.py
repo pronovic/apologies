@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: set ft=python ts=3 sw=3 expandtab: 
+# vim: set ft=python ts=3 sw=3 expandtab:
 # pylint: disable=line-too-long
 # Render a game on the terminal, for development purposes
 
@@ -190,25 +190,27 @@ BOARD_COLORS = [
 
 # Generate the empty board
 def _generate_empty_board():
-   return "%s\n" % BOARD_TEXT.format(*BOARD_COLORS)
+    return "%s\n" % BOARD_TEXT.format(*BOARD_COLORS)
+
 
 # Apply the game state onto the empty board
 def _apply_game_state(board, game):
-   for player in game.players:
-      for pawn in player.pawns:
-         if pawn.start:
-            index = START[pawn.color][pawn.index]
-         elif pawn.home:
-            index = HOME[pawn.color][pawn.index]
-         elif pawn.safe is not None:
-            index = SAFE[pawn.color][pawn.safe]
-         elif pawn.square is not None:
-            index = SQUARE[pawn.square]
-         else:
-            raise ValueError("Pawn is not in a valid state")
-         board = board[:index] + PLAYER[pawn.color] + board[index+1:]
-   return board
+    for player in game.players:
+        for pawn in player.pawns:
+            if pawn.start:
+                index = START[pawn.color][pawn.index]
+            elif pawn.home:
+                index = HOME[pawn.color][pawn.index]
+            elif pawn.safe is not None:
+                index = SAFE[pawn.color][pawn.safe]
+            elif pawn.square is not None:
+                index = SQUARE[pawn.square]
+            else:
+                raise ValueError("Pawn is not in a valid state")
+            board = board[:index] + PLAYER[pawn.color] + board[index + 1 :]
+    return board
+
 
 # Render the state of a game, returning the board for display
 def render_board(game):
-   return _apply_game_state(_generate_empty_board(), game)
+    return _apply_game_state(_generate_empty_board(), game)
