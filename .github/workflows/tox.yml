@@ -1,4 +1,4 @@
-name: Run Tox test suite
+name: Test Suite
 on: [push]
 jobs:
   build:
