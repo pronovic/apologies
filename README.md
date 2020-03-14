@@ -1,5 +1,7 @@
 # Apologies Python Library
 
+![](https://github.com/pronovic/apologies/workflows/Test%20Suite/badge.svg)
+
 This is a Python library that implements a game similar to the Sorry
 board game.  It includes a rudimentary way to play the game, intended
 for use by developers and not by end users.
