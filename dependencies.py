@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# vim: set ft=python ts=3 sw=3 expandtab:
+# vim: set ft=python ts=4 sw=4 expandtab:
 # Defines runtime and production dependencies for the project
 
 # Required Python version

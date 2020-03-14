@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: set ft=python ts=3 sw=3 expandtab:
+# vim: set ft=python ts=4 sw=4 expandtab:
 # pylint: disable=wildcard-import,no-self-use
 # Unit tests for game.py
 

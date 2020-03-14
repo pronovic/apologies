@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: set ft=python ts=3 sw=3 expandtab:
+# vim: set ft=python ts=4 sw=4 expandtab:
 # Classes that track game state
 
 # Note: These classes track game state, but do not implement game rules.  The
