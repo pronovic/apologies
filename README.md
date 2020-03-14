@@ -6,6 +6,10 @@ This is a Python library that implements a game similar to the Sorry
 board game.  It includes a rudimentary way to play the game, intended
 for use by developers and not by end users.
 
+It also serves as a complete example of how to manage a modern (circa 2020)
+Python project, including style checks, code formatting, integration with
+IntelliJ, continuous integration at GitHub, etc.
+
 ## Developer Notes
 
 ### Development Environment
