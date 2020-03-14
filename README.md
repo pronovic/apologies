@@ -8,6 +8,12 @@ for use by developers and not by end users.
 
 ## Developer Notes
 
+### Development Environment
+
+I develop this code on MacOS.  I have both Python 3.7 and Python 3.8
+installed via [Homebrew](https://docs.brew.sh/Homebrew-and-Python), 
+and both versions are on the `$PATH`.
+
 ### Version and Dependencies
 
 The current released version is tracked in [`version.py`](version.py).  Runtime
