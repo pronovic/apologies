@@ -26,7 +26,8 @@ run_env() {
    VERSION=`python version.py`
    DEPENDENCIES=`python dependencies.py`
 
-   echo "Installing dependencies for $VERSION:\n$DEPENDENCIES"
+   echo "Installing dependencies for $VERSION:"
+   echo "$DEPENDENCIES"
    pip install --quiet $DEPENDENCIES
 }
 
@@ -34,6 +35,13 @@ run_env() {
 run_test() {
    source .python/bin/activate
    PYTHONPATH=src/ pytest $* unittest
+}
+
+# Run the unit tests with coverage
+run_coverage() {
+   source .python/bin/activate
+   PYTHONPATH=src/ coverage run --source src/ -m pytest $* unittest
+   coverage report -m
 }
 
 # Run the pylint checker
@@ -57,6 +65,10 @@ case $1 in
    test)
       shift 1
       run_test $*
+      ;;
+   coverage)
+      shift 1
+      run_coverage $*
       ;;
    pylint)
       run_pylint
