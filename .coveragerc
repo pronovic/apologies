@@ -3,7 +3,7 @@ source = src
 
 [run]
 branch = true
-source = unittest
+source = src
 
 [report]
 show_missing = true
