@@ -60,13 +60,13 @@ class TestPawn:
          assert pawn.square is None
 
    def test_move_to_safe_invalid(self):
-      for square in [-1000, -2 -1, 5, 6, 1000,]:
+      for square in [-1000, -2 -1, 5, 6, 1000]:
          with pytest.raises(ValueError):
             pawn = Pawn("color", 0)
             pawn.move_to_safe(square)
 
    def test_move_to_square_invalid(self):
-      for square in [-1000, -2 -1, 60, 61, 1000,]:
+      for square in [-1000, -2 -1, 60, 61, 1000]:
          with pytest.raises(ValueError):
             pawn = Pawn("color", 0)
             pawn.move_to_square(square)
@@ -126,7 +126,7 @@ class TestPlayers:
       assert players[BLUE].color == BLUE
 
    def test_constructor_invalid_players(self):
-      for p in [-2, -1, 0, 1, 5, 6,]:
+      for p in [-2, -1, 0, 1, 5, 6]:
          with pytest.raises(ValueError):
             Players(p)
 
@@ -149,15 +149,15 @@ class TestPlayers:
 class TestGame:
 
    def test_constructor_valid_players(self):
-      for p in [2, 3, 4,]:
+      for p in [2, 3, 4]:
          game = Game(p)
          assert len(game.players) == p
 
    def test_constructor_invalid_players(self):
-      for p in [-2, -1, 0, 1, 5, 6,]:
+      for p in [-2, -1, 0, 1, 5, 6]:
          with pytest.raises(ValueError):
             Game(p)
 
    def test_repr(self):
-      for p in [2, 3, 4,]:
+      for p in [2, 3, 4]:
          Game(p).__repr__() # just make sure it doesn't blow up

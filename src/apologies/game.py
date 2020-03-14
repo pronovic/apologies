@@ -20,7 +20,7 @@ RED = "RED"
 BLUE = "BLUE"
 YELLOW = "YELLOW"
 GREEN = "GREEN"
-COLORS = [RED, YELLOW, GREEN, BLUE,]  # order chosen so game works better for < 4 players
+COLORS = [RED, YELLOW, GREEN, BLUE]  # order chosen so game works better for < 4 players
 
 # There are 4 pawns per player, numbered 0-3
 PAWNS = 4
