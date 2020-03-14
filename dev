@@ -42,13 +42,13 @@ run_coverage() {
    source .python/bin/activate
    PYTHONPATH=src/ coverage run --rcfile=.coveragerc -m pytest $*
    coverage report -m
+   coverage html
 }
 
 # Run the Tox suite with all of the relevant Python versions
 run_tox() {
    source .python/bin/activate
    tox -e "clean,{py37,py38}-{coverage,nocoverage},report"
-   coverage report -m
 }
 
 # Run the pylint checker

@@ -54,6 +54,28 @@ dev test
 
 Any arguments after `test` are passed to the `pytest` executable.
 
+#### coverage - Run unit tests with coverage
+
+The unit test suite is written using PyTest.  To run the test suite
+with coverage, use:
+
+```shell
+dev coverage
+```
+
+The full HTML coverage report is written to `htmlcov/index.html`.
+
+#### tox - Run the broader Tox test suite
+
+The Tox test suite is used for the GitHub continuous integration
+process.  To run it locally, use:
+
+```shell
+dev tox
+```
+
+This assumes that you have both python 3.7 and 3.8 on your `$PATH`.
+
 #### pylint - Run the Pylint style checker
 
 Before committing code, it must be lint-clean.  To check the code,
