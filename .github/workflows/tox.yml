@@ -1,8 +1,13 @@
 name: Test Suite
 on:
   push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
   schedule:
-    - cron: '0 0 17 15 1/1 ? *'  # 15th of the month at 5:00pm UTC
+    - cron: '0 0 17 15 1/1 ?'  # 15th of the month at 5:00pm UTC
 jobs:
   build:
     runs-on: ubuntu-latest
