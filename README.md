@@ -14,7 +14,9 @@ IntelliJ, continuous integration at GitHub, etc.
 
 ### Development Environment
 
-My primary development environment is IntelliJ (or just Vim) on MacOS.
+My primary development environment is IntelliJ (or just Vim) on MacOS.  Notes
+below assume that environment, although most of this should work the same on
+Windows or Linux.
 
 ### Packaging and Dependencies
 
@@ -23,9 +25,10 @@ packaging and dependencies.  Most day-to-day tasks (such as running unit
 tests from the command line) are orchestrated through Poetry.  A coding
 standard is enforced using [Black](https://github.com/psf/black) and [PyLint](https://www.pylint.org/).
 
-### System Prequisites
+### Developer Prequisites
 
-Before starting, install the following tools using [Homebrew](https://brew.sh/):
+Before starting, install the following tools using [Homebrew](https://brew.sh/)
+or the package manager for your platform:
 
 ```
 brew install python3
@@ -34,11 +37,42 @@ brew install black
 brew install pylint
 ```
 
-If you're not on MacOS, install the similar packages for your platform.
+You need to install all of these tools before you can do local development or
+commit code using the standard process, due to the pre-commit hooks (see
+below).
+
+Optionally, you may also install the following:
+
+```
+brew install pre-commit
+```
+
+That should not be necessary unless you need to adjust pre-commit hooks.
+
+### Pre-Commit Hooks
+
+There are local pre-commit hooks that depend on Black and Pylint, so the code
+is properly-formatted and lint-clean when it's checked in.  If you don't
+install Black and Pylint as described above, then you won't be able to commit
+your changes.
+
+If necessary, you can temporarily [disable a hook](https://pre-commit.com/#temporarily-disabling-hooks)
+or even remove the hook with `pre-commit uninstall`.
 
 ### Common Developer Actions
 
-#### Run unit tests
+#### Setup the virtual environment
+
+Set up the virutal environment using Poetry:
+
+```
+poetry install -v
+```
+
+This sets up the virtualenv, installs all of the depenendecies, and also
+installs the latest version of the code into the virtualenv.
+
+#### Run the unit tests
 
 Run the unit tests via Poetry:
 
@@ -48,7 +82,7 @@ poetry run pytest tests
 
 Before you commit, make sure the unit tests pass.
 
-#### Run unit tests with coverage
+#### Run the unit tests with coverage
 
 Run the coverage tool via Poetry:
 
@@ -62,7 +96,7 @@ If you want to see a detailed report, generate the HTML:
 poetry run coverage html -d .htmlcov && open .htmlcov/index.html
 ```
 
-#### Run style checker
+#### Run the style checker
 
 Run the Pylint style checker via Poetry:
 
@@ -70,7 +104,8 @@ Run the Pylint style checker via Poetry:
 poetry run pylint --rcfile=.pylintrc src/apologies tests
 ```
 
-Before you commit, make sure the code is clean, with no reported warnings.
+Before you commit, make sure the code is clean, with no reported warnings.  The
+code formatter is run as a pre-commit hook, so this is enforced.
 
 #### Run the code formatter
 
