@@ -1,5 +1,8 @@
 name: Test Suite
-on: [push]
+on:
+  push:
+  schedule:
+    - cron: '0 0 17 ? 1/1 SUN#3 *'  # run 3rd Sunday of the month @ 5pm UTC
 jobs:
   build:
     runs-on: ubuntu-latest
