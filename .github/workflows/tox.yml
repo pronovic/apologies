@@ -32,4 +32,4 @@ jobs:
         run: poetry install -v
         if: steps.cache.outputs.cache-hit != 'true'
       - name: Run Tox test suite
-        run: tox -e "clean,{py}-{coverage,nocoverage},report"
+        run: poetry run tox -c .toxrc -e "lint,{py}-{coverage,nocoverage}"
