@@ -60,6 +60,16 @@ your changes.
 If necessary, you can temporarily [disable a hook](https://pre-commit.com/#temporarily-disabling-hooks)
 or even remove the hook with `pre-commit uninstall`.
 
+### Activating the Virtual Environment
+
+Poetry manages the virtual environment used for testing.  Theoretically, the
+Poetry `shell` command gives you a shell using that virutalenv.  However, it
+doesn't work that well.  Instead, it's simpler to just activate the virtual
+environment directly.  The [`run`](run) script has an entry that dumps out the
+correct `source` command. Otherwise, see [`doc/venv.sh`](doc/venv.sh) for a way
+to set up a global alias that activates any virtualenv found in the current
+directory.
+
 ### Developer Tasks
 
 The [`run`](run) script provides shortcuts for common developer tasks:
