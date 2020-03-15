@@ -69,7 +69,7 @@ Set up the virutal environment using Poetry:
 poetry install -v
 ```
 
-This sets up the virtualenv, installs all of the depenendecies, and also
+This sets up the virtualenv, installs all of the dependencies, and also
 installs the latest version of the code into the virtualenv.
 
 #### Run the unit tests
