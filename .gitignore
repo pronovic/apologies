@@ -4,3 +4,4 @@ __pycache__
 /.coverage.*
 /.tox
 /src/apologies.egg-info
+/docs/_build
