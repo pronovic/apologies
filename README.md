@@ -14,99 +14,71 @@ IntelliJ, continuous integration at GitHub, etc.
 
 ### Development Environment
 
-I develop this code on MacOS.  I have both Python 3.7 and Python 3.8
-installed via [Homebrew](https://docs.brew.sh/Homebrew-and-Python), 
-and both versions are on the `$PATH`.
+My primary development environment is IntelliJ (or just Vim) on MacOS.
 
-### Version and Dependencies
+### Packaging and Dependencies
 
-The current released version is tracked in [`version.py`](version.py).  Runtime
-and test dependencies are tracked in [`dependencies.py`](dependencies.py).  If
-you adjust the dependencies, re-build the virtual environment as described
-below.
+This project uses [Poetry](https://python-poetry.org/) to manage Python
+packaging and dependencies.  Most day-to-day tasks (such as running unit 
+tests from the command line) are orchestrated through Poetry.  A coding
+standard is enforced using [Black](https://github.com/psf/black) and [PyLint](https://www.pylint.org/).
 
-### Developer Script
+### System Prequisites
 
-The [`dev`](dev) script handles various different command-line tasks.
+Before starting, install the following tools using [Homebrew](https://brew.sh/):
 
-#### env - Virtual Environment
-
-To set up the Python virtual environment for development purposes, run:
-
-```shell
-dev env
+```
+brew install python3
+brew install poetry
+brew install black
+brew install pylint
 ```
 
-This installs a Python 3.7 virtual environment and all of the required
-dependencies.  Activate the virtual environment like this:
+If you're not on MacOS, install the similar packages for your platform.
 
-```shell
-source .python/bin/activate
+### Common Developer Actions
+
+#### Run unit tests
+
+Run the unit tests via Poetry:
+
+```
+poetry run pytest tests
 ```
 
-If you change any of the runtime or test dependencies, then rebuild the
-virtual environment:
+Before you commit, make sure the unit tests pass.
 
-```shell
-dev env rebuild
+#### Run unit tests with coverage
+
+Run the coverage tool via Poetry:
+
+```
+poetry run coverage run --rcfile=.coveragerc -m pytest tests && poetry run coverage report -m
 ```
 
-That will remove the existing environment and rebuild it from scratch.
+If you want to see a detailed report, generate the HTML:
 
-#### test - Run unit tests
-
-The unit test suite is written using PyTest.  To run the test suite,
-use:
-
-```shell
-dev test
+```
+poetry run coverage html -d .htmlcov && open .htmlcov/index.html
 ```
 
-Any arguments after `test` are passed to the `pytest` executable.
+#### Run style checker
 
-#### coverage - Run unit tests with coverage
+Run the Pylint style checker via Poetry:
 
-The unit test suite is written using PyTest.  To run the test suite
-with coverage, use:
-
-```shell
-dev coverage
+```
+poetry run pylint --rcfile=.pylintrc src/apologies tests
 ```
 
-The full HTML coverage report is written to `htmlcov/index.html`.
+Before you commit, make sure the code is clean, with no reported warnings.
 
-#### tox - Run the broader Tox test suite
+#### Run the code formatter
 
-The Tox test suite is used for the GitHub continuous integration
-process.  To run it locally, use:
+Run the Black code formatter:
 
-```shell
-dev tox
+```
+black .
 ```
 
-This assumes that you have both python 3.7 and 3.8 on your `$PATH`.
-
-#### pylint - Run the Pylint style checker
-
-Before committing code, it must be lint-clean.  To check the code,
-use:
-
-```shell
-dev pylint
-```
-
-#### render - Visualizing the state of a game
-
-Game state is maintained in the `Game` class.  However, it's hard to look at a
-`Game` object and really understand the game.  The `render` module renders game
-state to the terminal, so you can see the state of the game board.  
-
-The `render` script dumps out an empty board, which is stored for reference in
-[`doc/rendered.txt`](doc/rendered.txt).  Rebuild that rendered board like this:
-
-```shell
-dev render
-```
-
-If you want, you can adjust the `render` script to change the game state.  This
-script is not distributed.
+Before you commit, make sure the code is properly-formatted.  The code
+formatter is run as a pre-commit hook, so this is enforced.

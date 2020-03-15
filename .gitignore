@@ -1,9 +1,7 @@
-/.python
-/build
-/dist
 __pycache__
-/src/apologies.egg-info
+/poetry.lock
+/.htmlcov
 /.coverage
 /.coverage.*
 /.tox
-/htmlcov
+/src/apologies.egg-info

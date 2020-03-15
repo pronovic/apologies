@@ -1,0 +1,21 @@
+[tox]
+isolated_build = true
+envlist = 
+   lint
+   {py,py37,py38}-{coverage,nocoverage}
+ignore_basepython_conflict = true
+
+[testenv]
+whitelist_externals = poetry
+commands =
+   poetry install -v
+   nocoverage: poetry run pytest tests
+   coverage: poetry run coverage erase
+   coverage: poetry run coverage run --rcfile=.coveragerc -m pytest tests
+   coverage: poetry run coverage report -m
+
+[testenv:lint]
+whitelist_externals = poetry
+commands =
+   poetry install -v
+   poetry run pylint --rcfile=.pylintrc src/apologies tests

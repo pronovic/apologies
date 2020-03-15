@@ -3,7 +3,7 @@ source = src
 
 [run]
 branch = true
-source = src
+source = src/apologies
 
 [report]
 show_missing = true

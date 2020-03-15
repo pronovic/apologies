@@ -1,3 +1,33 @@
+[tool.poetry]
+name = "apologies"
+version = "0.1.0"
+description = "Python code to play a game similar to Sorry"
+authors = ["Kenneth J. Pronovici <pronovic@ieee.org>"]
+license = "Apache-2.0"
+readme = "README.md"
+repository = "https://github.com/pronovic/apologies"
+include = ["LICENSE"]
+classifiers=[
+   "Programming Language :: Python :: 3",
+   "License :: OSI Approved :: Apache Software License",
+   "Operating System :: OS Independent",
+   "Environment :: Console",
+   "Intended Audience :: Developers",
+   "Natural Language :: English",
+   "Topic :: Games/Entertainment :: Board Games",
+   "Topic :: Software Development :: Libraries",
+]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+coverage = "^5.0.3"
+flexmock = "^0.10.4"
+tox = "^3.14.5"
+pylint = "^2.4.4"
+
 [tool.black]
 line-length = 120
 target-version = ['py37', 'py38']
@@ -7,8 +37,11 @@ exclude = '''
     \.git
   | __pycache__
   | \.tox
-  | \.python
   | build
   | dist
 )/
 '''
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
