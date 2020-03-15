@@ -7,17 +7,29 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
         python: [3.7, 3.8]
-    steps:
-      - uses: actions/checkout@master
+    steps: 
+      - name: Check out code
+        uses: actions/checkout@v2
       - name: Setup Python
-        uses: abatilo/actions-poetry@v1.5.0
+        uses: actions/setup-python@v1
         with:
-          python_version: ${{ matrix.python }}
-          poetry_version: 1.0.5
-          args: install -v
+          python-version: ${{ matrix.python }}
+      - name: Install Poetry
+        uses: dschep/install-poetry-action@v1.2
+      - name: Cache Poetry virtualenv
+        uses: actions/cache@v1
+        id: cache
+        with:
+          path: ~/.virtualenvs
+          key: poetry-${{ hashFiles('**/poetry.lock') }}
+          restore-keys: |
+            poetry-${{ hashFiles('**/poetry.lock') }}
+      - name: Set Poetry config
+        run: |
+          poetry config settings.virtualenvs.in-project false
+          poetry config settings.virtualenvs.path ~/.virtualenvs
+      - name: Install Dependencies
+        run: poetry install -v
+        if: steps.cache.outputs.cache-hit != 'true'
       - name: Run Tox test suite
-        uses: abatilo/actions-poetry@v1.5.0
-        with:
-          python_version: ${{ matrix.python }}
-          poetry_version: 1.0.5
-          args: tox -c .toxrc -e "lint,{py37,py38}-{coverage,nocoverage}"
+        run: tox -e "clean,{py}-{coverage,nocoverage},report"
