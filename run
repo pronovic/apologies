@@ -1,0 +1,111 @@
+#!/bin/bash
+# Shortcuts for common developer tasks
+
+# Setup the virtual environment via Poetry
+run_install() {
+   poetry install -v
+}
+
+# Activate the current Poetry virtual environment
+run_activate() {
+   echo "source "$(dirname $(poetry run which python) 2>/dev/null)/activate""
+}
+
+# Run the Pylint code checker
+run_pylint() {
+   poetry install -q
+   poetry run pylint --rcfile=.pylintrc src/apologies tests
+}
+
+# Run the black code formatter
+run_black() {
+   black .
+}
+
+# Run the unit tests, optionally with coverage
+run_pytest() {
+   coverage="no"
+   html="no"
+
+   while getopts ":ch" option; do
+     case $option in
+       c) 
+         coverage="yes"
+         ;;
+       h) 
+         html="yes"
+         ;;
+       ?) 
+         echo "invalid option -$OPTARG"
+         exit 1
+         ;;
+     esac
+   done
+
+   poetry install -q
+
+   if [ $coverage == "yes" ]; then
+      poetry run coverage run --rcfile=.coveragerc -m pytest tests
+      poetry run coverage report -m
+      if [ $html == "yes" ]; then
+         poetry run coverage html -d .htmlcov
+         open .htmlcov/index.html
+      fi
+   else
+      poetry run pytest tests
+   fi
+}
+
+# Run the broader Tox test suite used by the GitHub CI action
+run_tox() {
+   poetry run tox -c .toxrc -e "lint,{py37,py38}-{coverage,nocoverage}"
+}
+
+# Render a board via the render script
+run_render() {
+   poetry run python src/scripts/render
+}
+
+# Execute one of the developer tasks
+case $1 in
+   install|setup)
+      run_install
+      ;;
+   activate)
+      run_activate
+      ;;
+   *lint)
+      run_pylint
+      ;;
+   black|format)
+      run_black
+      ;;
+   pytest|test*)
+      shift 1
+      run_pytest $*
+      ;;
+   tox)
+      run_tox
+      ;;
+   render)
+      run_render
+      ;;
+   *)
+      echo ""
+      echo "------------------------------------"
+      echo "Shortcuts for common developer tasks"
+      echo "------------------------------------"
+      echo ""
+      echo "Usage: run <command>"  
+      echo ""
+      echo "- run install: Setup the virtualenv via Poetry"
+      echo "- run activate: Print command needed to activate the Poetry virtualenv"
+      echo "- run lint: Run the Pylint code checker"
+      echo "- run format: Run the Black code formatter"
+      echo "- run test: Run the unit tests"
+      echo "- run test -c: Run the unit tests with coverage"
+      echo "- run test -ch: Run the unit tests with coverage and open the HTML report"
+      echo "- run tox: Run the broader Tox test suite used by the GitHub CI action"
+      echo ""
+      exit 1
+esac

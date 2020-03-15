@@ -47,7 +47,8 @@ Optionally, you may also install the following:
 brew install pre-commit
 ```
 
-That should not be necessary unless you need to adjust pre-commit hooks.
+That should not be necessary unless you need to adjust pre-commit hooks (see
+below).
 
 ### Pre-Commit Hooks
 
@@ -59,61 +60,25 @@ your changes.
 If necessary, you can temporarily [disable a hook](https://pre-commit.com/#temporarily-disabling-hooks)
 or even remove the hook with `pre-commit uninstall`.
 
-### Common Developer Actions
+### Developer Tasks
 
-#### Setup the virtual environment
-
-Set up the virutal environment using Poetry:
+The [`run`](run) script provides shortcuts for common developer tasks:
 
 ```
-poetry install -v
+localhost:~/projects/repos/apologies> run --help
+
+------------------------------------
+Shortcuts for common developer tasks
+------------------------------------
+
+Usage: run command
+
+- run install: Setup the virtualenv via Poetry
+- run activate: Print command needed to activate the Poetry virtualenv
+- run lint: Run the Pylint code checker
+- run format: Run the Black code formatter
+- run test: Run the unit tests
+- run test -c: Run the unit tests with coverage
+- run test -ch: Run the unit tests with coverage and open the HTML report
 ```
 
-This sets up the virtualenv, installs all of the dependencies, and also
-installs the latest version of the code into the virtualenv.
-
-#### Run the unit tests
-
-Run the unit tests via Poetry:
-
-```
-poetry run pytest tests
-```
-
-Before you commit, make sure the unit tests pass.
-
-#### Run the unit tests with coverage
-
-Run the coverage tool via Poetry:
-
-```
-poetry run coverage run --rcfile=.coveragerc -m pytest tests && poetry run coverage report -m
-```
-
-If you want to see a detailed report, generate the HTML:
-
-```
-poetry run coverage html -d .htmlcov && open .htmlcov/index.html
-```
-
-#### Run the style checker
-
-Run the Pylint style checker via Poetry:
-
-```
-poetry run pylint --rcfile=.pylintrc src/apologies tests
-```
-
-Before you commit, make sure the code is clean, with no reported warnings.  The
-code formatter is run as a pre-commit hook, so this is enforced.
-
-#### Run the code formatter
-
-Run the Black code formatter:
-
-```
-black .
-```
-
-Before you commit, make sure the code is properly-formatted.  The code
-formatter is run as a pre-commit hook, so this is enforced.
