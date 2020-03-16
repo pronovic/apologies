@@ -5,6 +5,7 @@ description = "Python code to play a game similar to Sorry"
 authors = ["Kenneth J. Pronovici <pronovic@ieee.org>"]
 license = "Apache-2.0"
 readme = "README.md"
+homepage = "https://apologies.readthedocs.io"
 repository = "https://github.com/pronovic/apologies"
 include = ["LICENSE"]
 classifiers=[
