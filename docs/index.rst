@@ -12,6 +12,9 @@ Release v\ |version|.
 .. image:: https://img.shields.io/pypi/pyversions/apologies.svg
     :target: https://pypi.org/project/apologies/
 
+.. image:: https://github.com/pronovic/apologies/workflows/Test%20Suite/badge.svg
+    :target: https://github.com/pronovic/apologies
+
 `Apologies <https://pypi.org/project/apologies/>`_ is a Python library that
 implements a game similar to the Sorry board game.  It includes a rudimentary
 way to play the game, intended for use by developers and not by end users.
