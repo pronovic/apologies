@@ -72,7 +72,7 @@ run_publish() {
    SHORT_VERSION=$(echo "$VERSION" | sed 's/^.* //g')
 
    git tag -a "v$SHORT_VERSION" -m "Release $VERSION to PyPI"
-   if [ $? != 0 ];
+   if [ $? != 0 ]; then
       echo "*** Tag step failed.  Does this version already exist?"
       exit 1
    fi
