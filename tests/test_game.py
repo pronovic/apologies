@@ -6,6 +6,76 @@
 import pytest
 from apologies.game import *
 
+# Unit tests for Card
+class TestCard:
+    def test_constructor(self):
+        card = Card(0, "name")
+        assert card.id == 0
+        assert card.name == "name"
+
+    def test_repr(self):
+        Card(0, "name").__repr__()  # just make sure it doesn't blow up
+
+
+# Unit tests for Hand
+class TestHand:
+    def test_constructor_nocards(self):
+        hand = Hand()
+        assert len(hand) == 0
+
+    def test_constructor_cards(self):
+        cards = [Card(0, "1"), Card(1, "12")]
+        hand = Hand(cards)
+        assert len(cards) == len(hand)
+        assert cards[0] == hand[0]
+        assert cards[1] == hand[1]
+
+    def test_repr_nocards(self):
+        Hand().__repr__()  # just make sure it doesn't blow up
+
+    def test_repr_cards(self):
+        cards = [Card(0, "1"), Card(1, "12")]
+        Hand(cards).__repr__()  # just make sure it doesn't blow up
+
+
+# Unit tests for Deck
+class TestDeck:
+    def test_constructor(self):
+        deck = Deck()
+        assert len(deck) == DECK_SIZE
+
+    def test_repr(self):
+        Deck().__repr__()  # just make sure it doesn't blow up
+
+    def test_iterator(self):
+        i = Deck().__iter__()
+        for card in range(DECK_SIZE):
+            assert isinstance(i.__next__(), Card)
+        with pytest.raises(StopIteration):
+            i.__next__()
+
+    def test_draw_all(self):
+        deck = Deck()
+        expected = DECK_SIZE
+        for _ in range(DECK_SIZE):
+            deck.draw()
+            expected -= 1
+            assert len(deck) == expected
+            assert len(deck) == deck.remaining()
+        with pytest.raises(ValueError):
+            deck.draw()
+
+    def test_draw_discard(self):
+        deck = Deck()
+        card = deck.draw()
+        assert len(deck) == DECK_SIZE - 1
+        deck.discard(card)
+        assert len(deck) == DECK_SIZE
+        assert deck[card.id] is card
+        with pytest.raises(ValueError):
+            deck.discard(card)  # can't add it a 2nd time
+
+
 # Unit tests for Pawn
 class TestPawn:
     def test_constructor(self):
@@ -88,11 +158,20 @@ class TestPawns:
 
 # Unit tests for Player
 class TestPlayer:
-    def test_constructor(self):
+    def test_constructor_no_hand(self):
         player = Player("color")
         assert player.color == "color"
         assert player.name is None
         assert player.pawns is not None
+        assert len(player.hand) == 0
+
+    def test_constructor_with_hand(self):
+        cards = [Card(0, "1"), Card(1, "12")]
+        player = Player("color", cards=cards)
+        assert player.color == "color"
+        assert player.name is None
+        assert player.pawns is not None
+        assert len(player.hand) == len(cards)
 
     def test_repr(self):
         Player("color").__repr__()  # just make sure it doesn't blow up
@@ -147,6 +226,7 @@ class TestGame:
         for p in [2, 3, 4]:
             game = Game(p)
             assert len(game.players) == p
+            assert len(game.deck) == DECK_SIZE
 
     def test_constructor_invalid_players(self):
         for p in [-2, -1, 0, 1, 5, 6]:
