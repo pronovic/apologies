@@ -30,7 +30,7 @@ standard is enforced using [Black](https://github.com/psf/black) and [PyLint](ht
 Before starting, install the following tools using [Homebrew](https://brew.sh/)
 or the package manager for your platform:
 
-```
+```shell
 brew install python3
 brew install poetry
 brew install black
@@ -43,12 +43,10 @@ below).
 
 Optionally, you may also install the following:
 
+```shell
+brew install pre-commit   # to adjust pre-commit hooks
+brew install make         # if you want to build Sphinx documentation
 ```
-brew install pre-commit
-```
-
-That should not be necessary unless you need to adjust pre-commit hooks (see
-below).
 
 ### Pre-Commit Hooks
 
@@ -75,13 +73,13 @@ directory.
 The [`run`](run) script provides shortcuts for common developer tasks:
 
 ```
-localhost:~/projects/repos/apologies> run --help
+$ run --help
 
 ------------------------------------
 Shortcuts for common developer tasks
 ------------------------------------
 
-Usage: run command
+Usage: run <command>
 
 - run install: Setup the virtualenv via Poetry
 - run activate: Print command needed to activate the Poetry virtualenv
@@ -90,5 +88,6 @@ Usage: run command
 - run test: Run the unit tests
 - run test -c: Run the unit tests with coverage
 - run test -ch: Run the unit tests with coverage and open the HTML report
+- run tox: Run the broader Tox test suite used by the GitHub CI action
+- run docs: Build the Spinx documentation for apologies.readthedocs.io
 ```
-

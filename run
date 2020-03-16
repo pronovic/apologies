@@ -61,6 +61,11 @@ run_tox() {
    poetry run tox -c .toxrc -e "lint,{py37,py38}-{coverage,nocoverage}"
 }
 
+# Build the Sphinx documentation for apologies.readthedocs.io
+run_docs() {
+   cd docs && poetry run gmake html
+}
+
 # Render a board via the render script
 run_render() {
    poetry run python src/scripts/render
@@ -87,6 +92,9 @@ case $1 in
    tox)
       run_tox
       ;;
+   doc*)
+      run_docs
+      ;;
    render)
       run_render
       ;;
@@ -106,6 +114,7 @@ case $1 in
       echo "- run test -c: Run the unit tests with coverage"
       echo "- run test -ch: Run the unit tests with coverage and open the HTML report"
       echo "- run tox: Run the broader Tox test suite used by the GitHub CI action"
+      echo "- run docs: Build the Spinx documentation for apologies.readthedocs.io"
       echo ""
       exit 1
 esac
