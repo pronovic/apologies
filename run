@@ -66,6 +66,16 @@ run_docs() {
    cd docs && poetry run gmake html
 }
 
+# Tag the current code and publish to PyPI
+run_publish() {
+   VERSION=$(poetry version)
+   SHORT_VERSION=$(echo "$VERSION" | sed 's/^.* //g')
+   git tag -a "v$SHORT_VERSION" -m "Release $VERSION to PyPI"
+   poetry build
+   poetry publish
+   git push origin "$SHORT_VERSION"
+}
+
 # Render a board via the render script
 run_render() {
    poetry run python src/scripts/render
@@ -95,6 +105,9 @@ case $1 in
    doc*)
       run_docs
       ;;
+   publish)
+      run_publish
+      ;;
    render)
       run_render
       ;;
@@ -115,6 +128,7 @@ case $1 in
       echo "- run test -ch: Run the unit tests with coverage and open the HTML report"
       echo "- run tox: Run the broader Tox test suite used by the GitHub CI action"
       echo "- run docs: Build the Spinx documentation for apologies.readthedocs.io"
+      echo "- run publish: Tag the current code and publish to PyPI"
       echo ""
       exit 1
 esac

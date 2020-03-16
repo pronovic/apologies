@@ -90,4 +90,5 @@ Usage: run <command>
 - run test -ch: Run the unit tests with coverage and open the HTML report
 - run tox: Run the broader Tox test suite used by the GitHub CI action
 - run docs: Build the Spinx documentation for apologies.readthedocs.io
+- run publish: Tag the current code and publish to PyPI
 ```
