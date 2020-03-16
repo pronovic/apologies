@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="FacetManager">
+    <facet type="Python" name="Python">
+      <configuration sdkName="Python 3.7" />
+    </facet>
+  </component>
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <excludePattern pattern=".coverage" />
+      <excludePattern pattern=".coveragerc" />
+      <excludePattern pattern=".idea" />
+      <excludePattern pattern=".github" />
+      <excludePattern pattern=".pre-commit-config.yaml" />
+      <excludePattern pattern=".pylintrc" />
+      <excludePattern pattern=".pytest_cache" />
+      <excludePattern pattern=".readthedocs.yml" />
+      <excludePattern pattern=".toxrc" />
+      <excludePattern pattern="poetry.lock" />
+      <excludePattern pattern="run" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Python 3.7 interpreter library" level="application" />
+  </component>
+</module>
