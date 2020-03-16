@@ -36,3 +36,4 @@ __pycache__
 .idea/modules.xml
 .idea/modules
 .idea/misc.xml
+.idea/*.iml
