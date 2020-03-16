@@ -37,10 +37,10 @@ Before starting, install the following tools using [Homebrew](https://brew.sh/)
 or the package manager for your platform:
 
 ```shell
-brew install python3
-brew install poetry
-brew install black
-brew install pylint
+$ brew install python3
+$ brew install poetry
+$ brew install black
+$ brew install pylint
 ```
 
 You need to install all of these tools before you can do local development or
@@ -101,11 +101,33 @@ Usage: run <command>
 
 ### Integration with IntelliJ or PyCharm
 
-For my day-to-day IDE, I use IntelliJ Ultimate with Python plugin installed,
-which is basically equivalent to PyCharm.  IntelliJ configuration is checked
-in, so if you simply open the `apologies.iml` in IntelliJ, you should get
-mostly the same environment that I use.  There are a few manual steps required
-to get everything working.
+For my day-to-day IDE, I use IntelliJ Ultimate with the Python plugin
+installed, which is basically equivalent to PyCharm. By integrating Black and
+Pylint, most everything important that can be done from a shell environment can
+also be done right in IntelliJ.
+
+Unfortunately, it is somewhat difficult to provide a working IntelliJ
+configuration that other developers can simply import. There are still some
+manual steps required.  I have checked in a minimal `.idea` directory, so at
+least all developers can share a single inspection profile, etc.
+
+#### Prerequisites
+
+Before going any further, make sure sure that you installed all of the system
+prerequisites discussed above.  Then, make sure your environment is in working
+order.  In particular, if you do not run the setup step, there will be no
+virtualenv for IntelliJ to use:
+
+```shell
+$ run setup
+$ run test
+$ run lint
+```
+
+Once you have a working shell development environment, **Open** (do not
+**Import**) the `apologies` directory in IntelliJ and follow the remaining
+instructions below.  By using **Open**, the existing `.idea` directory will be
+retained.
 
 #### Plugins
 
@@ -114,30 +136,40 @@ Install the following plugins:
 |Plugin|Description|
 |------|-----------|
 |[Python](https://plugins.jetbrains.com/plugin/631-python)|Smart editing for Python code|
-|[File Watchers](https://plugins.jetbrains.com/plugin/7177-file-watchers)|Allows executing tasks triggered by file modifications|
 |[Pylint](https://plugins.jetbrains.com/plugin/11084-pylint)|Integrates IntelliJ with [Pylint](https://www.pylint.org/)|
 
-#### Python SDK
+#### Module Setup
 
 Run the following to find the location of the Python virtualenv managed by
 Poetry:
 
 ```shell
 $ poetry run which python
-/Users/kpronovici/Library/Caches/pypoetry/virtualenvs/apologies--ae9laZV-py3.7/bin/python
 ```
 
 Right click on the `apologies` project in IntelliJ's project explorer and
-choose **Open Module Settings**.  Click on **Project**.  In the **Project
-SDK**, select the Python interpreter virtualenv from above, and click **OK**.
+choose **Open Module Settings**.  
 
-#### Non-Project Preferences
+Click on **Project**.  In the **Project SDK**, select the Python interpreter
+virtualenv from above.  Then, under **Project compiler output**, enter `out`.  Then
+click **Apply**.
 
-There are a few IntelliJ preferences that are not tracked at the global
-level.  Unit tests are written using [Pytest](https://docs.pytest.org/en/latest/), 
+Click on **Modules**.  On the **Sources** tab, find the **Exclude files** box.
+Enter the following, and click **Apply**:
+
+```
+.coverage;.coveragerc;.github;.htmlcov;.idea;.pre-commit-config.yaml;.pylintrc;.pytest_cache;.readthedocs.yml;.tox;.toxrc;build;dist;docs/_build;out;poetry.lock;run
+```
+
+On the **Dependencies** tab, select the Python SDK you configured above, and
+click **OK**.
+
+#### Preferences
+
+Unit tests are written using [Pytest](https://docs.pytest.org/en/latest/), 
 and API documentation is written 
 using [Google Style Python Docstring](https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html).  
-However, neither of these is the default.
+However, neither of these is the default in IntelliJ.
 
 Go to IntelliJ preferences, then select **Tools > Integrated Python Tools**.
 Under **Testing > Default test runner**, select _pytest_.  Under 
@@ -146,7 +178,7 @@ Under **Testing > Default test runner**, select _pytest_.  Under
 #### Running Unit Tests
 
 Right click on the `tests` folder in IntelliJ's projet explorer and choose
-**Run 'pytest in tests'**.  All of the tests should pass.
+**Run 'pytest in tests'**.  Make sure that all of the tests pass.
 
 #### Running Pylint Inspections
 
@@ -157,8 +189,7 @@ should say `Pylint found no problems`.
 
 #### External Tools
 
-Optionally, you can set up [Black](https://github.com/psf/black) as an external
+Finally, set up [Black](https://github.com/psf/black) as an external
 tool.  See the [instructions](https://black.readthedocs.io/en/stable/editor_integration.html#pycharm-intellij-idea).
-You probably won't use this often, because there is File Watcher configuration
-that automatically runs `/usr/local/bin/black` against any project file when it
-is saved.  
+Once this is done, you can reformat an individual file or the entire project
+using the same rules that will be applied by the commit hook.
