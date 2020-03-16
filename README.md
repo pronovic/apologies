@@ -180,13 +180,13 @@ However, neither of these is the default in IntelliJ.
 
 Go to IntelliJ preferences, then select **Tools > Python Integrated Tools**.
 Under **Testing > Default test runner**, select _pytest_.  Under 
-**Docstrings > Docstring format**, select _Google_. Click *OK**.
+**Docstrings > Docstring format**, select _Google_. Click **OK**.
 
 #### Running Unit Tests
 
 Use **Build > Rebuild Project**, just to be sure that everything is up-to-date.
-Then, right click on the `tests` folder in IntelliJ's projet explorer and choose
-**Run 'pytest in tests'**.  Make sure that all of the tests pass.
+Then, right click on the `tests` folder in IntelliJ's project explorer and
+choose **Run 'pytest in tests'**.  Make sure that all of the tests pass.
 
 #### Running Pylint Inspections
 
