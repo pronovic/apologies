@@ -73,7 +73,8 @@ run_publish() {
 
    git tag -a "v$SHORT_VERSION" -m "Release $VERSION to PyPI"
    if [ $? != 0 ];
-      then exit 1
+      echo "*** Tag step failed.  Does this version already exist?"
+      exit 1
    fi
 
    poetry build
