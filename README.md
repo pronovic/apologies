@@ -98,3 +98,67 @@ Usage: run <command>
 - run docs: Build the Spinx documentation for apologies.readthedocs.io
 - run publish: Tag the current code and publish to PyPI
 ```
+
+### Integration with IntelliJ or PyCharm
+
+For my day-to-day IDE, I use IntelliJ Ultimate with Python plugin installed,
+which is basically equivalent to PyCharm.  IntelliJ configuration is checked
+in, so if you simply open the `apologies.iml` in IntelliJ, you should get
+mostly the same environment that I use.  There are a few manual steps required
+to get everything working.
+
+#### Plugins
+
+Install the following plugins:
+
+|Plugin|Description|
+|------|-----------|
+|[Python](https://plugins.jetbrains.com/plugin/631-python)|Smart editing for Python code|
+|[File Watchers](https://plugins.jetbrains.com/plugin/7177-file-watchers)|Allows executing tasks triggered by file modifications|
+|[Pylint](https://plugins.jetbrains.com/plugin/11084-pylint)|Integrates IntelliJ with [Pylint](https://www.pylint.org/)|
+
+#### Python SDK
+
+Run the following to find the location of the Python virtualenv managed by
+Poetry:
+
+```shell
+$ poetry run which python
+/Users/kpronovici/Library/Caches/pypoetry/virtualenvs/apologies--ae9laZV-py3.7/bin/python
+```
+
+Right click on the `apologies` project in IntelliJ's project explorer and
+choose **Open Module Settings**.  Click on **Project**.  In the **Project
+SDK**, select the Python interpreter virtualenv from above, and click **OK**.
+
+#### Non-Project Preferences
+
+There are a few IntelliJ preferences that are not tracked at the global
+level.  Unit tests are written using [Pytest](https://docs.pytest.org/en/latest/), 
+and API documentation is written 
+using [Google Style Python Docstring](https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html).  
+However, neither of these is the default.
+
+Go to IntelliJ preferences, then select **Tools > Integrated Python Tools**.
+Under **Testing > Default test runner**, select _pytest_.  Under 
+**Docstrings > Docstring format**, select _Google_. Click *OK**.
+
+#### Running Unit Tests
+
+Right click on the `tests` folder in IntelliJ's projet explorer and choose
+**Run 'pytest in tests'**.  All of the tests should pass.
+
+#### Running Pylint Inspections
+
+Find **Pylint** in the toolbar, which is usually on the bottom of the screen
+alongside things like **TODO** and **Terminal**.  Click the button with the
+tooltip that says **Check Project**.  When the scan completes, the **Scan** tab
+should say `Pylint found no problems`.
+
+#### External Tools
+
+Optionally, you can set up [Black](https://github.com/psf/black) as an external
+tool.  See the [instructions](https://black.readthedocs.io/en/stable/editor_integration.html#pycharm-intellij-idea).
+You probably won't use this often, because there is File Watcher configuration
+that automatically runs `/usr/local/bin/black` against any project file when it
+is saved.  

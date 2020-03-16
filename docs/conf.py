@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# pylint: skip-file
 #
 # Apologies documentation build configuration file, based on existing
 # documentation for Requests (https://github.com/psf/requests).
@@ -42,7 +43,7 @@ extensions = [
     "sphinx.ext.intersphinx",
     "sphinx.ext.todo",
     "sphinx.ext.viewcode",
-    "sphinx.ext.napoleon"
+    "sphinx.ext.napoleon",
 ]
 
 # Napoleon settings for docstrings
@@ -57,7 +58,7 @@ napoleon_use_admonition_for_references = False
 napoleon_use_ivar = False
 napoleon_use_param = True
 napoleon_use_rtype = True
-autodoc_member_order = 'bysource'
+autodoc_member_order = "bysource"
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
@@ -74,9 +75,9 @@ source_suffix = ".rst"
 master_doc = "index"
 
 # General information about the project.
-project = u"Apologies"
-copyright = u"2020 Kenneth J. Pronovici"
-author = u"Kenneth J. Pronovici"
+project = "Apologies"
+copyright = "2020 Kenneth J. Pronovici"
+author = "Kenneth J. Pronovici"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -188,7 +189,7 @@ html_static_path = ["_static"]
 html_use_smartypants = False
 
 # Custom sidebar templates, maps document names to template names.
-#html_sidebars = { "index": [ "hacks.html"], }
+# html_sidebars = { "index": [ "hacks.html"], }
 
 # Additional templates that should be rendered to pages, maps page names to
 # template names.
@@ -253,9 +254,7 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
-latex_documents = [
-    (master_doc, "Apologies.tex", u"Apologies Documentation", u"Kenneth J. Pronovici", "manual")
-]
+latex_documents = [(master_doc, "Apologies.tex", "Apologies Documentation", "Kenneth J. Pronovici", "manual")]
 
 # The name of an image file (relative to this directory) to place at the top of
 # the title page.
@@ -282,7 +281,7 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [(master_doc, "apologies", u"Apologies Documentation", [author], 1)]
+man_pages = [(master_doc, "apologies", "Apologies Documentation", [author], 1)]
 
 # If true, show URL addresses after external links.
 # man_show_urls = False
@@ -297,7 +296,7 @@ texinfo_documents = [
     (
         master_doc,
         "Apologies",
-        u"Apologies Documentation",
+        "Apologies Documentation",
         author,
         "Apologies",
         "Python library that implements a game similar to the Sorry board game",
