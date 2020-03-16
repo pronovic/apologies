@@ -73,7 +73,7 @@ run_publish() {
    git tag -a "v$SHORT_VERSION" -m "Release $VERSION to PyPI"
    poetry build
    poetry publish
-   git push origin "$SHORT_VERSION"
+   git push origin "v$SHORT_VERSION"
 }
 
 # Render a board via the render script
