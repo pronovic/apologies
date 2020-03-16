@@ -36,7 +36,7 @@ standard is enforced using [Black](https://github.com/psf/black) and [PyLint](ht
 Before starting, install the following tools using [Homebrew](https://brew.sh/)
 or the package manager for your platform:
 
-```shell
+```
 $ brew install python3
 $ brew install poetry
 $ brew install black
@@ -49,9 +49,9 @@ below).
 
 Optionally, you may also install the following:
 
-```shell
-brew install pre-commit   # to adjust pre-commit hooks
-brew install make         # if you want to build Sphinx documentation
+```
+$ brew install pre-commit   # to adjust pre-commit hooks
+$ brew install make         # if you want to build Sphinx documentation
 ```
 
 ### Pre-Commit Hooks
@@ -118,7 +118,7 @@ prerequisites discussed above.  Then, make sure your environment is in working
 order.  In particular, if you do not run the setup step, there will be no
 virtualenv for IntelliJ to use:
 
-```shell
+```
 $ run setup
 $ run test
 $ run lint
@@ -126,8 +126,12 @@ $ run lint
 
 Once you have a working shell development environment, **Open** (do not
 **Import**) the `apologies` directory in IntelliJ and follow the remaining
-instructions below.  By using **Open**, the existing `.idea` directory will be
-retained.
+instructions below.  (By using **Open**, the existing `.idea` directory will be
+retained.)  
+
+_Note:_ If you get a **Frameworks Detected** message, ignore it for now,
+because IntelliJ might be trying to import some things which aren't really part
+of the project.
 
 #### Plugins
 
@@ -138,12 +142,12 @@ Install the following plugins:
 |[Python](https://plugins.jetbrains.com/plugin/631-python)|Smart editing for Python code|
 |[Pylint](https://plugins.jetbrains.com/plugin/11084-pylint)|Integrates IntelliJ with [Pylint](https://www.pylint.org/)|
 
-#### Module Setup
+#### Project and Module Setup
 
 Run the following to find the location of the Python virtualenv managed by
 Poetry:
 
-```shell
+```
 $ poetry run which python
 ```
 
@@ -161,8 +165,11 @@ Enter the following, and click **Apply**:
 .coverage;.coveragerc;.github;.htmlcov;.idea;.pre-commit-config.yaml;.pylintrc;.pytest_cache;.readthedocs.yml;.tox;.toxrc;build;dist;docs/_build;out;poetry.lock;run
 ```
 
-On the **Dependencies** tab, select the Python SDK you configured above, and
-click **OK**.
+On the **Dependencies** tab, select the Python SDK you configured above as the
+**Module SDK**, and click **OK**.
+
+You should get a **Frameworks Detected** message again at this point.  If so,
+click the **Configure** link and accept the defaults.
 
 #### Preferences
 
@@ -171,13 +178,14 @@ and API documentation is written
 using [Google Style Python Docstring](https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html).  
 However, neither of these is the default in IntelliJ.
 
-Go to IntelliJ preferences, then select **Tools > Integrated Python Tools**.
+Go to IntelliJ preferences, then select **Tools > Python Integrated Tools**.
 Under **Testing > Default test runner**, select _pytest_.  Under 
 **Docstrings > Docstring format**, select _Google_. Click *OK**.
 
 #### Running Unit Tests
 
-Right click on the `tests` folder in IntelliJ's projet explorer and choose
+Use **Build > Rebuild Project**, just to be sure that everything is up-to-date.
+Then, right click on the `tests` folder in IntelliJ's projet explorer and choose
 **Run 'pytest in tests'**.  Make sure that all of the tests pass.
 
 #### Running Pylint Inspections
