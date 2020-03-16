@@ -70,9 +70,15 @@ run_docs() {
 run_publish() {
    VERSION=$(poetry version)
    SHORT_VERSION=$(echo "$VERSION" | sed 's/^.* //g')
+
    git tag -a "v$SHORT_VERSION" -m "Release $VERSION to PyPI"
+   if [ $? != 0 ];
+      then exit 1
+   fi
+
    poetry build
    poetry publish
+
    git push origin "v$SHORT_VERSION"
 }
 
