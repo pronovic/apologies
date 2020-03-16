@@ -5,3 +5,4 @@ __pycache__
 /.tox
 /src/apologies.egg-info
 /docs/_build
+/dist
