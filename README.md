@@ -20,9 +20,9 @@ Interfaces may change without warning until the design stabilizes.
 
 ### Development Environment
 
-My primary development environment is IntelliJ (or just Vim) on MacOS, but it
-should be portable. I've tested the process below on Windows 10 and on Debian
-buster.
+My primary development environment is IntelliJ (or just Vim) on MacOS, but the
+code and the development process should be portable. I've tested on Windows 10
+and on Debian buster.
 
 ### Packaging and Dependencies
 
