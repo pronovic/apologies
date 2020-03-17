@@ -20,9 +20,9 @@ Interfaces may change without warning until the design stabilizes.
 
 ### Development Environment
 
-My primary development environment is IntelliJ (or just Vim) on MacOS.  Notes
-below assume that environment, although most of this should work the same on
-Windows or Linux.
+My primary development environment is IntelliJ (or just Vim) on MacOS, but it
+should be portable. I've tested the process below on Windows 10 and on Debian
+buster.
 
 ### Packaging and Dependencies
 
@@ -49,10 +49,43 @@ $ brew install pylint
 $ brew install pre-commit
 ```
 
+When you're done, make sure that the `python` on your `$PATH` is Python 3 from
+Homebrew (in `/usr/local`).  By default, you'll get the standard Python 2 that
+comes with MacOS.
+
+#### Linux
+
+_Note: I've tested this on Debian; you will need to adjust the steps on other platforms._
+
+First, install Python 3 and related tools:
+
+```
+$ sudo apt-get install python3 python3-venv python3-pip
+```
+
+Once that's done, make sure Python 3 is the default on your system.  There are
+a couple of ways to do this, but using `update-alternatives` as discussed 
+on [StackOverflow](https://unix.stackexchange.com/a/410851) is probably 
+the best.
+
+Next, install Poetry:
+
+```
+$ curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
+```
+
+Finally, install the other prerequisites using `pip`:
+
+```
+$ pip install black
+$ pip install pylint
+$ pip install pre-commit
+```
+
 #### Windows
 
 On Windows, use a combination of install steps.  First, manually install Python
-3.7 or later.
+3.7 or later. Make sure that the `python` on your `$PATH` is Python 3.
 
 Then, start a Powershell prompt and install Poetry:
 
@@ -109,7 +142,7 @@ Usage: run <command>
 - run test -c: Run the unit tests with coverage
 - run test -ch: Run the unit tests with coverage and open the HTML report
 - run tox: Run the broader Tox test suite used by the GitHub CI action
-- run docs: Build the Spinx documentation for apologies.readthedocs.io
+- run docs: Build the Sphinx documentation for apologies.readthedocs.io
 - run publish: Tag the current code and publish to PyPI
 ```
 
