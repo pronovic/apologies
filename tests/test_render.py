@@ -18,7 +18,7 @@ def data():
     for f in os.listdir(FIXTURE_DIR):
         p = os.path.join(FIXTURE_DIR, f)
         if os.path.isfile(p):
-            with open(p) as r:
+            with open(p, encoding="utf-8") as r:
                 data[f] = r.read()
     return data
 

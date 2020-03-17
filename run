@@ -49,7 +49,7 @@ run_pytest() {
       poetry run coverage report -m
       if [ $html == "yes" ]; then
          poetry run coverage html -d .htmlcov
-         open .htmlcov/index.html
+         $(which start || which open) .htmlcov/index.html 2>/dev/null  # start on Windows, open on MacOS
       fi
    else
       poetry run pytest tests
@@ -58,15 +58,20 @@ run_pytest() {
 
 # Run the broader Tox test suite used by the GitHub CI action
 run_tox() {
-   poetry run tox -c .toxrc -e "lint,{py37,py38}-{coverage,nocoverage}"
+   poetry run tox -c .toxrc -e "lint,{py}-{coverage,nocoverage}"
 }
 
 # Build the Sphinx documentation for apologies.readthedocs.io
 run_docs() {
-   cd docs && poetry run gmake html
+   cd docs 
+   poetry run sphinx-build -b html -d _build/doctrees . _build/html
+   $(which start || which open) _build/html/index.html 2>/dev/null  # start on Windows, open on MacOS
 }
 
 # Tag the current code and publish to PyPI
+# Before doing this, you must retrieve and configure a local API token
+# For instance: poetry config pypi-token.pypi token --local
+# See: https://python-poetry.org/docs/repositories/#configuring-credentials
 run_publish() {
    VERSION=$(poetry version)
    SHORT_VERSION=$(echo "$VERSION" | sed 's/^.* //g')

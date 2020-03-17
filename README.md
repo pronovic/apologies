@@ -33,25 +33,39 @@ standard is enforced using [Black](https://github.com/psf/black) and [PyLint](ht
 
 ### Developer Prequisites
 
-Before starting, install the following tools using [Homebrew](https://brew.sh/)
-or the package manager for your platform:
+Before starting, install the following prerequisites.  You need to install all
+of these tools before you can do local development or commit code using the
+standard process, due to the pre-commit hooks (see below).
+
+#### MacOS
+
+On MacOS, it's easiest to use [Homebrew](https://brew.sh/):
 
 ```
 $ brew install python3
 $ brew install poetry
 $ brew install black
 $ brew install pylint
+$ brew install pre-commit
 ```
 
-You need to install all of these tools before you can do local development or
-commit code using the standard process, due to the pre-commit hooks (see
-below).
+#### Windows
 
-Optionally, you may also install the following:
+On Windows, use a combination of install steps.  First, manually install Python
+3.7 or later.
+
+Then, start a Powershell prompt and install Poetry:
+
+```powershell
+(Invoke-WebRequest -Uri https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py -UseBasicParsing).Content | python
+```
+
+Finally, install the other prerequisites using `pip`:
 
 ```
-$ brew install pre-commit   # to adjust pre-commit hooks
-$ brew install make         # if you want to build Sphinx documentation
+$ pip install black
+$ pip install pylint
+$ pip install pre-commit
 ```
 
 ### Pre-Commit Hooks
@@ -115,11 +129,11 @@ least all developers can share a single inspection profile, etc.
 
 Before going any further, make sure sure that you installed all of the system
 prerequisites discussed above.  Then, make sure your environment is in working
-order.  In particular, if you do not run the setup step, there will be no
+order.  In particular, if you do not run the install step, there will be no
 virtualenv for IntelliJ to use:
 
 ```
-$ run setup
+$ run install
 $ run test
 $ run lint
 ```
