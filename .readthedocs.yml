@@ -1,6 +1,5 @@
 build:
   image: latest
-version: 2
 python:
   version: 3.7
   pip_install: true
