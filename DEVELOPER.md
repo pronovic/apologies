@@ -23,7 +23,7 @@ why Attrs is worthwhile.)
 We rely on pre-commit hooks to ensure that the code is properly-formatted,
 clean, and type-safe when it's checked in.  The `run install` step described
 below installs the project pre-commit hooks into your repository.  These hooks
-are configured in [`.pre-commit-config.yaml`](.pre-commit-config.yaml)).
+are configured in [`.pre-commit-config.yaml`](.pre-commit-config.yaml).
 
 If necessary, you can temporarily [disable a hook](https://pre-commit.com/#temporarily-disabling-hooks)
 or even remove the hooks with `poetry run pre-commit uninstall`.  However, keep
