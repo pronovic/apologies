@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # vim: set ft=python ts=4 sw=4 expandtab:
-# pylint: disable=no-self-use,redefined-outer-name
+# pylint: disable=redefined-outer-name
 # Unit tests for render.py
 
 import os
@@ -26,19 +26,19 @@ def data():
 # Unit tests for render_board()
 class TestRenderBoard:
     def test_empty_2_player_empty(self, data):
-        game = Game(players=2)
+        game = Game(playercount=2)
         expected = data["empty2"]
         actual = render_board(game)
         assert expected == actual
 
     def test_empty_3_player_empty(self, data):
-        game = Game(players=3)
+        game = Game(playercount=3)
         expected = data["empty3"]
         actual = render_board(game)
         assert expected == actual
 
     def test_empty_4_player_empty(self, data):
-        game = Game(players=4)
+        game = Game(playercount=4)
         expected = data["empty4"]
         actual = render_board(game)
         assert expected == actual
@@ -88,7 +88,7 @@ class TestRenderBoard:
 
 # Create a game with all players in home
 def _fill_home():
-    game = Game(players=4)
+    game = Game(playercount=4)
     for color in [BLUE, RED, YELLOW, GREEN]:
         for pawn in range(4):
             game.players[color].pawns[pawn].move_to_home()
@@ -97,7 +97,7 @@ def _fill_home():
 
 # Create a game with all players in the safe zone
 def _fill_safe(start):
-    game = Game(players=4)
+    game = Game(playercount=4)
     for color in [BLUE, RED, YELLOW, GREEN]:
         for pawn in range(4):
             game.players[color].pawns[pawn].move_to_safe(pawn + start)
@@ -106,7 +106,7 @@ def _fill_safe(start):
 
 # Fill a range of squares on the board with pieces from various players
 def _fill_squares(start, end):
-    game = Game(players=4)
+    game = Game(playercount=4)
     square = 0
     for pawn in range(4):
         for color in [BLUE, RED, YELLOW, GREEN]:

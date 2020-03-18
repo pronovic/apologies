@@ -24,7 +24,7 @@ Attributes:
     BOARD_SQUARES(int): Number of squares around the outside of the board
 """
 
-from collections import OrderedDict
+import attr
 
 # A game consists of 2-4 players
 MIN_PLAYERS = 2
@@ -47,6 +47,7 @@ SAFE_SQUARES = 5
 BOARD_SQUARES = 60
 
 
+@attr.s
 class Pawn:
     """
     A pawn on the board, belonging to a player.
@@ -61,30 +62,17 @@ class Pawn:
         square(int): Zero-based index of the square on the board where this pawn resides
     """
 
-    def __init__(self, color, index):
-        """
-        Create a pawn.
+    color = attr.ib()
+    index = attr.ib()
+    name = attr.ib()
+    start = attr.ib(init=False, default=True)
+    home = attr.ib(init=False, default=False)
+    safe = attr.ib(init=False, default=None)
+    square = attr.ib(init=False, default=None)
 
-        Args:
-            color(str): The color of this pawn
-            index(int): Zero-based index of this pawn for a given user
-        """
-        self.color = color
-        self.index = index
-        self.name = "%s-%s" % (color, index)
-        self.start = True
-        self.home = False
-        self.safe = None
-        self.square = None
-
-    def __repr__(self):
-        return "Pawn(name=%s, start=%s, home=%s, safe=%s, square=%s)" % (
-            self.name,
-            self.start,
-            self.home,
-            self.safe,
-            self.square,
-        )
+    @name.default
+    def _default_name(self):
+        return "%s-%s" % (self.color, self.index)
 
     def move_to_start(self):
         """
@@ -143,27 +131,7 @@ class Pawn:
         self.square = square
 
 
-class Pawns(list):
-    """
-    A list of all pawns belonging to a player.
-
-    Attributes:
-        color(str): The color of the pawns
-    """
-
-    def __init__(self, color):
-        """
-        Create a complete set of pawns.
-
-        Args:
-            color(str): The color of the pawns
-        """
-        super(Pawns, self).__init__()
-        self.color = color
-        for index in range(0, PAWNS):
-            self.append(Pawn(color, index))
-
-
+@attr.s
 class Player:
     """
     A player, which has a color and a set of pawns.
@@ -174,60 +142,31 @@ class Player:
         pawns(Pawns): List of all pawns belonging to the player
     """
 
-    def __init__(self, color, name=None):
-        """
-        Create a player.
+    color = attr.ib()
+    name = attr.ib(default=None)
+    pawns = attr.ib(init=False)
 
-        Args:
-            color(str): The color of the player
-            name(str, optional): The name of the player
-        """
-        self.color = color
-        self.name = name
-        self.pawns = Pawns(color)
-
-    def __repr__(self):
-        return "Player(%s, %s): %s" % (self.color, self.name, self.pawns)
+    def __attrs_post_init__(self):
+        self.pawns = [Pawn(self.color, index) for index in range(0, PAWNS)]
 
 
-class Players(OrderedDict):
-    """
-    A dict containing all players in the game.
-    """
-
-    def __init__(self, players):
-        """
-        Create players, allocated out of COLORS in order.
-
-        Args:
-            players(int): The number of players in the game
-        """
-        super(Players, self).__init__()
-        if players < MIN_PLAYERS or players > MAX_PLAYERS:
-            raise ValueError("Invalid number of players")
-        for color in COLORS[:players]:
-            self[color] = Player(color)
-
-    def __iter__(self):
-        return (player for player in self.values())
-
-
+@attr.s
 class Game:
     """
     The game, consisting of state for a set of players.
 
     Attributes:
-        players(Players): A dict containing all players in the game.
+        playercount(int): Number of players in the game
+        players(:obj:`dict` of :obj:`Player`): A dict containing all players in the game.
     """
 
-    def __init__(self, players=MAX_PLAYERS):
-        """
-        Create a new game.
+    playercount = attr.ib()
+    players = attr.ib(init=False)
 
-        Args:
-            players(int, optional): The number of players in the game
-        """
-        self.players = Players(players)
+    @playercount.validator
+    def _check_playercount(self, attribute, value):
+        if value < MIN_PLAYERS or value > MAX_PLAYERS:
+            raise ValueError("Invalid number of players")
 
-    def __str__(self):
-        return "Game(players=%s)" % self.players
+    def __attrs_post_init__(self):
+        self.players = {color: Player(color) for color in COLORS[: self.playercount]}

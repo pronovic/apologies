@@ -18,8 +18,15 @@ class TestPawn:
         assert pawn.safe is None
         assert pawn.square is None
 
-    def test_repr(self):
-        Pawn("color", 0).__repr__()  # just make sure it doesn't blow up
+    def test_constructor_with_name(self):
+        pawn = Pawn("color", 0, name="whatever")
+        assert pawn.color == "color"
+        assert pawn.index == 0
+        assert pawn.name == "whatever"
+        assert pawn.start is True
+        assert pawn.home is False
+        assert pawn.safe is None
+        assert pawn.square is None
 
     def test_move_to_start(self):
         pawn = Pawn("color", 0)
@@ -71,88 +78,41 @@ class TestPawn:
                 pawn.move_to_square(square)
 
 
-# Unit tests for Pawns
-class TestPawns:
-    def test_constructor(self):
-        pawns = Pawns("color")
-        assert pawns.color == "color"
-        assert len(pawns) == 4
-        assert pawns[0].name == "color-0"
-        assert pawns[1].name == "color-1"
-        assert pawns[2].name == "color-2"
-        assert pawns[3].name == "color-3"
-
-    def test_repr(self):
-        Pawns("color").__repr__()  # just make sure it doesn't blow up
-
-
 # Unit tests for Player
 class TestPlayer:
     def test_constructor(self):
         player = Player("color")
         assert player.color == "color"
         assert player.name is None
-        assert player.pawns is not None
-
-    def test_repr(self):
-        Player("color").__repr__()  # just make sure it doesn't blow up
-
-
-# Unit tests for Players
-class TestPlayers:
-    def test_constructor_2_players(self):
-        players = Players(2)
-        assert len(players) == 2
-        assert players[RED].color == RED
-        assert players[YELLOW].color == YELLOW
-
-    def test_constructor_3_players(self):
-        players = Players(3)
-        assert len(players) == 3
-        assert players[RED].color == RED
-        assert players[YELLOW].color == YELLOW
-        assert players[GREEN].color == GREEN
-
-    def test_constructor_4_players(self):
-        players = Players(4)
-        assert len(players) == 4
-        assert players[RED].color == RED
-        assert players[YELLOW].color == YELLOW
-        assert players[GREEN].color == GREEN
-        assert players[BLUE].color == BLUE
-
-    def test_constructor_invalid_players(self):
-        for p in [-2, -1, 0, 1, 5, 6]:
-            with pytest.raises(ValueError):
-                Players(p)
-
-    def test_repr(self):
-        Players(2).__repr__()  # just make sure it doesn't blow up
-        Players(3).__repr__()  # just make sure it doesn't blow up
-        Players(4).__repr__()  # just make sure it doesn't blow up
-
-    def test_iterator(self):
-        i = Players(4).__iter__()
-        assert i.__next__().color == RED
-        assert i.__next__().color == YELLOW
-        assert i.__next__().color == GREEN
-        assert i.__next__().color == BLUE
-        with pytest.raises(StopIteration):
-            i.__next__()
+        assert len(player.pawns) == PAWNS
+        for pawn in player.pawns:
+            assert isinstance(pawn, Pawn)
 
 
 # Unit tests for Game
 class TestGame:
-    def test_constructor_valid_players(self):
-        for p in [2, 3, 4]:
-            game = Game(p)
-            assert len(game.players) == p
+    def test_constructor_2_players(self):
+        game = Game(2)
+        assert len(game.players) == 2
+        assert game.players[RED].color == RED
+        assert game.players[YELLOW].color == YELLOW
+
+    def test_constructor_3_players(self):
+        game = Game(3)
+        assert len(game.players) == 3
+        assert game.players[RED].color == RED
+        assert game.players[YELLOW].color == YELLOW
+        assert game.players[GREEN].color == GREEN
+
+    def test_constructor_4_players(self):
+        game = Game(4)
+        assert len(game.players) == 4
+        assert game.players[RED].color == RED
+        assert game.players[YELLOW].color == YELLOW
+        assert game.players[GREEN].color == GREEN
+        assert game.players[BLUE].color == BLUE
 
     def test_constructor_invalid_players(self):
-        for p in [-2, -1, 0, 1, 5, 6]:
+        for playercount in [-2, -1, 0, 1, 5, 6]:
             with pytest.raises(ValueError):
-                Game(p)
-
-    def test_repr(self):
-        for p in [2, 3, 4]:
-            Game(p).__repr__()  # just make sure it doesn't blow up
+                Game(playercount)

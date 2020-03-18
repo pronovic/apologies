@@ -14,7 +14,9 @@ tests from the command line) are orchestrated through Poetry.
 
 A coding standard is enforced using [Black](https://github.com/psf/black) and
 [Pylint](https://www.pylint.org/).  Static type checking is implemented using
-[MyPy](https://pypi.org/project/mypy/).
+[MyPy](https://pypi.org/project/mypy/).  To reduce boilerplate, classes are
+defined using [Attrs](https://www.attrs.org/) (see this [rationale](https://glyph.twistedmatrix.com/2016/08/attrs.html) for
+why Attrs is worthwhile.)
 
 ## Pre-Commit Hooks
 
@@ -152,8 +154,6 @@ Install the following plugins:
 |Plugin|Description|
 |------|-----------|
 |[Python](https://plugins.jetbrains.com/plugin/631-python)|Smart editing for Python code|
-|[Pylint](https://plugins.jetbrains.com/plugin/11084-pylint)|Integrates IntelliJ with [Pylint](https://www.pylint.org/)|
-|[MyPy](https://plugins.jetbrains.com/plugin/13348-mypy-official-)|Integrates IntelliJ with [MyPy](https://pypi.org/project/mypy/)|
 
 ### Project and Module Setup
 
@@ -201,46 +201,59 @@ Use **Build > Rebuild Project**, just to be sure that everything is up-to-date.
 Then, right click on the `tests` folder in IntelliJ's project explorer and
 choose **Run 'pytest in tests'**.  Make sure that all of the tests pass.
 
-### Running Pylint Inspections
-
-Find **Pylint** in the toolbar, which is usually on the bottom of the screen
-alongside things like **TODO** and **Terminal**.  Click the button with the
-tooltip that says **Check Project**.  When the scan completes, the **Scan** tab
-should say `Pylint found no problems`.
-
-> _Note:_ If you get an error `Argument list too long` when executing Pylint
-> for the entire project, this means that IntelliJ is passing along a huge list
-> of in-scope files, even though they're not needed.  Make sure you excluded
-> the correct list of directories when configuring the module above (especially
-> the large `.tox` directory).
-
-### Running MyPy Inspections
-
-Find **MyPy Terminal** in the toolbar, which is usually on the bottom of the
-screen alongside things like **TODO** and **Terminal**.  Right-click in the
-window and select **Configure Plugin**.  In the **Mypy command** box, fill in
-something like this:
-
-```
-/usr/local/bin/poetry run mypy --config-file=.mypyrc src/apologies tests
-```
-
-You will have to adjust the path to `poetry` to match your system.  Click
-**OK**.  Then, click the **Run** button.  The status on the bottom of the
-window should say `PASSED`.
-
 ### External Tools
 
-Optionally, you might want to set up [Black](https://github.com/psf/black) as
-an external tool.  Once this is done, you can reformat an individual file or
-the entire project using the same rules that will be applied by the commit hook
-or by `run format`.  
+Optionally, you might want to set up external tools in IntelliJ for some of
+common developer tasks: code reformatting and the PyLint and MyPy checks.  One
+nice advantage of doing this is that you can configure an output filter, which
+makes the Pylint and MyPy errors clickable in IntelliJ.  To set up external
+tools, go to IntelliJ preferences and find **Tools > External Tools**.  Add the
+tools as described below.
 
-If you want to do this, first install Black on your system, for instance:
+#### Format Code
 
-```
-$ brew install black
-```
+|Field|Value|
+|-----|-----|
+|Name|`Format Code`|
+|Description|`Run the Black code formatter`|
+|Group|`Apologies Tools`|
+|Program|`$ProjectFileDir$/run`|
+|Arguments|`format`|
+|Working directory|`$ProjectFileDir$`|
+|Synchronize files after execution|_Unchecked_|
+|Open console for tool outout|_Checked_|
+|Make console active on message in stdout|_Unchecked_|
+|Make console active on message in stderr|_Unchecked_|
+|Output filters|_Empty_|
 
-Then, follow the official [instructions](https://black.readthedocs.io/en/stable/editor_integration.html#pycharm-intellij-idea) to 
-point IntelliJ at the location of `black` on your system.
+#### Run MyPy Checks
+
+|Field|Value|
+|-----|-----|
+|Name|`Run MyPy Checks`|
+|Description|`Run the MyPy code checks`|
+|Group|`Apologies Tools`|
+|Program|`$ProjectFileDir$/run`|
+|Arguments|`mypy`|
+|Working directory|`$ProjectFileDir$`|
+|Synchronize files after execution|_Unchecked_|
+|Open console for tool outout|_Checked_|
+|Make console active on message in stdout|_Checked_|
+|Make console active on message in stderr|_Checked_|
+|Output filters|`$FILE_PATH$:$LINE$:$COLUMN$:.*`|
+
+#### Run Pylint Checks
+
+|Field|Value|
+|-----|-----|
+|Name|`Run Pylint Checks`|
+|Description|`Run the Pylint code checks`|
+|Group|`Apologies Tools`|
+|Program|`$ProjectFileDir$/run`|
+|Arguments|`pylint`|
+|Working directory|`$ProjectFileDir$`|
+|Synchronize files after execution|_Unchecked_|
+|Open console for tool outout|_Checked_|
+|Make console active on message in stdout|_Checked_|
+|Make console active on message in stderr|_Checked_|
+|Output filters|`$FILE_PATH$:$LINE$:$COLUMN.*`|

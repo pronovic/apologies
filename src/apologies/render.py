@@ -48,6 +48,7 @@ _SQUARE = [
 # fmt: on
 
 # Player names as displayed on the board
+# noinspection PyDictCreation
 _PLAYER = {}
 _PLAYER[RED] = "r"
 _PLAYER[BLUE] = "b"
@@ -56,6 +57,7 @@ _PLAYER[GREEN] = "g"
 
 # Indexes in _BOARD_TEXT where a pawn can be placed into a start location, for each player
 # There are 4 arbitrary spaces for each of the 4 available pawns
+# noinspection PyDictCreation
 _START = {}
 _START[RED] = [1281, 1283, 1285, 1287]
 _START[BLUE] = [2416, 2418, 2420, 2422]
@@ -64,6 +66,7 @@ _START[GREEN] = [6010, 6012, 6014, 6016]
 
 # Indexes in _BOARD_TEXT where a pawn can be placed into a safe location, for each player
 # There are 5 safe squares per color; only a single pawn can occupy a safe square
+# noinspection PyDictCreation
 _SAFE = {}
 _SAFE[RED] = [864, 1435, 1989, 2526, 3063]
 _SAFE[BLUE] = [1529, 1524, 1519, 1514, 1509]
@@ -72,6 +75,7 @@ _SAFE[GREEN] = [7082, 7087, 7092, 7097, 7102]
 
 # Indexes in _BOARD_TEXT where a pawn can be placed into a home location, for each player
 # There are 4 arbitrary home spaces for the 4 available pawns per player
+# noinspection PyDictCreation
 _HOME = {}
 _HOME[RED] = [3708, 3710, 3712, 3714]
 _HOME[BLUE] = [1318, 1320, 1322, 1324]
@@ -203,7 +207,7 @@ def _apply_game_state(board, game):
     """
     Apply game state to a board.
     """
-    for player in game.players:
+    for player in game.players.values():
         for pawn in player.pawns:
             if pawn.start:
                 index = _START[pawn.color][pawn.index]

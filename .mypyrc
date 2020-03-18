@@ -1,4 +1,7 @@
 [mypy]
+pretty = True
+show_absolute_path = True
+show_column_numbers = True
 
 [mypy-pytest]
 ignore_missing_imports = True

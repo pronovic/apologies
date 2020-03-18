@@ -134,7 +134,13 @@ case $1 in
    activate)
       run_activate
       ;;
-   checks)
+   *lint)
+      run_pylint
+      ;;
+   mypy)
+      run_mypy
+      ;;
+   check*)
       run_pylint
       run_mypy
       ;;
