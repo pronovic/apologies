@@ -1,7 +1,7 @@
 [tox]
 isolated_build = true
 envlist = 
-   lint
+   precommit,
    {py,py37,py38}-{coverage,nocoverage}
 ignore_basepython_conflict = true
 
@@ -13,7 +13,7 @@ commands =
    coverage: poetry run coverage run --rcfile=.coveragerc -m pytest tests
    coverage: poetry run coverage report -m
 
-[testenv:lint]
+[testenv:precommit]
 whitelist_externals = poetry
 commands =
-   poetry run pylint --rcfile=.pylintrc src/apologies tests
+   poetry run pre-commit run --all-files

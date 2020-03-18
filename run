@@ -71,7 +71,7 @@ run_tox() {
       run_install
    fi
 
-   poetry run tox -c .toxrc -e "lint,{py}-{coverage,nocoverage}"
+   poetry run tox -c .toxrc -e "precommit,{py}-{coverage,nocoverage}"
 }
 
 # Build the Sphinx documentation for apologies.readthedocs.io
