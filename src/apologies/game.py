@@ -24,6 +24,7 @@ Attributes:
     BOARD_SQUARES(int): Number of squares around the outside of the board
 """
 
+from typing import Optional, List, Dict
 import attr
 
 # A game consists of 2-4 players
@@ -62,19 +63,19 @@ class Pawn:
         square(int): Zero-based index of the square on the board where this pawn resides
     """
 
-    color = attr.ib()
-    index = attr.ib()
-    name = attr.ib()
+    color = attr.ib(type=str)
+    index = attr.ib(type=int)
+    name = attr.ib(type=str)
     start = attr.ib(init=False, default=True)
     home = attr.ib(init=False, default=False)
-    safe = attr.ib(init=False, default=None)
-    square = attr.ib(init=False, default=None)
+    safe = attr.ib(init=False, default=None, type=Optional[int])
+    square = attr.ib(init=False, default=None, type=Optional[int])
 
     @name.default
-    def _default_name(self):
+    def _default_name(self) -> str:
         return "%s-%s" % (self.color, self.index)
 
-    def move_to_start(self):
+    def move_to_start(self) -> None:
         """
         Move to the pawn to its start area.
         """
@@ -84,7 +85,7 @@ class Pawn:
         self.safe = None
         self.square = None
 
-    def move_to_home(self):
+    def move_to_home(self) -> None:
         """
         Move to the pawn to its home area.
         """
@@ -94,7 +95,7 @@ class Pawn:
         self.safe = None
         self.square = None
 
-    def move_to_safe(self, square):
+    def move_to_safe(self, square: int) -> None:
         """
         Move to the pawn to a square in its safe area.
 
@@ -112,7 +113,7 @@ class Pawn:
         self.safe = square
         self.square = None
 
-    def move_to_square(self, square):
+    def move_to_square(self, square: int) -> None:
         """
         Move to the pawn to a square on the board.
 
@@ -142,11 +143,11 @@ class Player:
         pawns(Pawns): List of all pawns belonging to the player
     """
 
-    color = attr.ib()
-    name = attr.ib(default=None)
-    pawns = attr.ib(init=False)
+    color = attr.ib(type=str)
+    name = attr.ib(default=None, type=str)
+    pawns = attr.ib(init=False, type=List[Pawn])
 
-    def __attrs_post_init__(self):
+    def __attrs_post_init__(self) -> None:
         self.pawns = [Pawn(self.color, index) for index in range(0, PAWNS)]
 
 
@@ -160,13 +161,14 @@ class Game:
         players(:obj:`dict` of :obj:`Player`): A dict containing all players in the game.
     """
 
-    playercount = attr.ib()
-    players = attr.ib(init=False)
+    playercount = attr.ib(type=int)
+    players = attr.ib(init=False, type=Dict[str, Player])
 
+    # noinspection PyUnusedLocal
     @playercount.validator
-    def _check_playercount(self, attribute, value):
+    def _check_playercount(self, attribute: int, value: int) -> None:
         if value < MIN_PLAYERS or value > MAX_PLAYERS:
             raise ValueError("Invalid number of players")
 
-    def __attrs_post_init__(self):
+    def __attrs_post_init__(self) -> None:
         self.players = {color: Player(color) for color in COLORS[: self.playercount]}

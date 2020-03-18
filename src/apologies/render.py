@@ -13,7 +13,7 @@ Render a game on the terminal, for development purposes.
 # Note: indexes into the rendered board output aren't easily predictible,
 # because of the variable length of terminal formatting characters
 
-from .game import RED, BLUE, YELLOW, GREEN
+from .game import Game, RED, BLUE, YELLOW, GREEN
 
 # ANSI terminal escapes for colors
 # See also: http://www.lihaoyi.com/post/BuildyourownCommandLinewithANSIescapecodes.html#256-colors
@@ -196,14 +196,14 @@ _BOARD_COLORS = [
 # fmt: on
 
 
-def _generate_empty_board():
+def _generate_empty_board() -> str:
     """
     Generate an empty board.
     """
     return "%s\n" % _BOARD_TEXT.format(*_BOARD_COLORS)
 
 
-def _apply_game_state(board, game):
+def _apply_game_state(board: str, game: Game) -> str:
     """
     Apply game state to a board.
     """
@@ -223,7 +223,7 @@ def _apply_game_state(board, game):
     return board
 
 
-def render_board(game):
+def render_board(game: Game) -> str:
     """
     Render the state of a game, returning the board for display.
 

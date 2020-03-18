@@ -13,7 +13,7 @@ packaging and dependencies.  Most day-to-day tasks (such as running unit
 tests from the command line) are orchestrated through Poetry.  
 
 A coding standard is enforced using [Black](https://github.com/psf/black) and
-[Pylint](https://www.pylint.org/).  Static type checking is implemented using
+[Pylint](https://www.pylint.org/).  Python 3 type hinting is validated using
 [MyPy](https://pypi.org/project/mypy/).  To reduce boilerplate, classes are
 defined using [Attrs](https://www.attrs.org/) (see this [rationale](https://glyph.twistedmatrix.com/2016/08/attrs.html) for
 why Attrs is worthwhile.)

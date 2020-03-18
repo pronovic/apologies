@@ -1,1 +1,1 @@
-__all__ = []  # type: list
+__all__ = []  # type: ignore
