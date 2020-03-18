@@ -175,7 +175,7 @@ Click on **Modules**.  On the **Sources** tab, find the **Exclude files** box.
 Enter the following, and click **Apply**:
 
 ```
-.coverage;.coveragerc;.github;.htmlcov;.idea;.mypyrc;.pre-commit-config.yaml;.pylintrc;.pytest_cache;.readthedocs.yml;.tox;.toxrc;build;dist;docs/_build;out;poetry.lock;run
+.coverage;.coveragerc;.github;.htmlcov;.idea;.mypyrc;.mypy_cache;.pre-commit-config.yaml;.pylintrc;.pytest_cache;.readthedocs.yml;.tox;.toxrc;build;dist;docs/_build;out;poetry.lock;run
 ```
 
 On the **Dependencies** tab, select the Python SDK you configured above as the
@@ -220,7 +220,7 @@ tools as described below.
 |Program|`$ProjectFileDir$/run`|
 |Arguments|`format`|
 |Working directory|`$ProjectFileDir$`|
-|Synchronize files after execution|_Unchecked_|
+|Synchronize files after execution|_Checked_|
 |Open console for tool outout|_Checked_|
 |Make console active on message in stdout|_Unchecked_|
 |Make console active on message in stderr|_Unchecked_|
