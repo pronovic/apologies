@@ -117,7 +117,7 @@ class Pawn:
             ValueError: If the square is not valid
         """
 
-        if not square in range(SAFE_SQUARES):
+        if square not in range(SAFE_SQUARES):
             raise ValueError("Invalid square")
         self.start = False
         self.home = False
@@ -135,7 +135,7 @@ class Pawn:
             ValueError: If the square is not valid
         """
 
-        if not square in range(BOARD_SQUARES):
+        if square not in range(BOARD_SQUARES):
             raise ValueError("Invalid square")
         self.start = False
         self.home = False
