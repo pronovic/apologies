@@ -22,6 +22,16 @@ run_pylint() {
    poetry run pylint --rcfile=.pylintrc src/apologies tests
 }
 
+# Run the MyPy code checker
+run_mypy() {
+   poetry run which mypy > /dev/null
+   if [ $? != 0 ]; then
+      run_install
+   fi
+
+   poetry run mypy --config-file=.mypyrc src/apologies tests
+}
+
 # Run the black code formatter
 run_black() {
    poetry run which black > /dev/null
@@ -124,8 +134,9 @@ case $1 in
    activate)
       run_activate
       ;;
-   *lint)
+   checks)
       run_pylint
+      run_mypy
       ;;
    black|format)
       run_black
@@ -156,7 +167,7 @@ case $1 in
       echo ""
       echo "- run install: Setup the virtualenv via Poetry and install pre-commit hooks"
       echo "- run activate: Print command needed to activate the Poetry virtualenv"
-      echo "- run lint: Run the Pylint code checker"
+      echo "- run checks: Run the PyLint and MyPy code checkers"
       echo "- run format: Run the Black code formatter"
       echo "- run test: Run the unit tests"
       echo "- run test -c: Run the unit tests with coverage"

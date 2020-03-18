@@ -9,6 +9,10 @@ __pycache__
 # Tox test suite
 /.tox
 
+# MyPy
+/.mypy_cache
+/.idea/MypyConfig.xml 
+
 # Generated docs and code distribution
 /src/*.egg-info
 /docs/_build

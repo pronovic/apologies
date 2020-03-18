@@ -30,19 +30,20 @@ and on Debian buster.
 This project uses [Poetry](https://python-poetry.org/) to manage Python
 packaging and dependencies.  Most day-to-day tasks (such as running unit 
 tests from the command line) are orchestrated through Poetry.  A coding
-standard is enforced using [Black](https://github.com/psf/black) and [PyLint](https://www.pylint.org/).
+standard is enforced using [Black](https://github.com/psf/black) 
+and [Pylint](https://www.pylint.org/).  Static type checking is implemented
+using [MyPy](https://pypi.org/project/mypy/).
 
 ### Pre-Commit Hooks
 
-We rely on pre-commit hooks to ensure that the code is properly-formatted and
-clean when it's checked in.  The `run install` step described below installs
-the project pre-commit hooks into your repository.  These hooks are configured
-in [`.pre-commit-config.yaml`](.pre-commit-config.yaml)).
+We rely on pre-commit hooks to ensure that the code is properly-formatted,
+clean, and type-safe when it's checked in.  The `run install` step described
+below installs the project pre-commit hooks into your repository.  These hooks
+are configured in [`.pre-commit-config.yaml`](.pre-commit-config.yaml)).
 
 If necessary, you can temporarily [disable a hook](https://pre-commit.com/#temporarily-disabling-hooks)
 or even remove the hooks with `poetry run pre-commit uninstall`.  However, keep
-in mind that the CI build on GitHub enforces these checks, so the build will
-fail.
+in mind that the CI build on GitHub enforces these checks, so the build will fail.
 
 ### Prequisites
 
@@ -118,7 +119,7 @@ Usage: run <command>
 
 - run install: Setup the virtualenv via Poetry and install pre-commit hooks
 - run activate: Print command needed to activate the Poetry virtualenv
-- run lint: Run the Pylint code checker
+- run checks: Run the Pylint and MyPy code checkers
 - run format: Run the Black code formatter
 - run test: Run the unit tests
 - run test -c: Run the unit tests with coverage
@@ -150,7 +151,7 @@ virtualenv for IntelliJ to use:
 ```
 $ run install
 $ run test
-$ run lint
+$ run checks
 ```
 
 Once you have a working shell development environment, **Open** (do not
@@ -158,7 +159,7 @@ Once you have a working shell development environment, **Open** (do not
 instructions below.  (By using **Open**, the existing `.idea` directory will be
 retained.)  
 
-_> Note:_ If you get a **Frameworks Detected** message, ignore it for now,
+> _Note:_ If you get a **Frameworks Detected** message, ignore it for now,
 > because IntelliJ might be trying to import some things which aren't really part
 > of the project.
 
@@ -170,6 +171,7 @@ Install the following plugins:
 |------|-----------|
 |[Python](https://plugins.jetbrains.com/plugin/631-python)|Smart editing for Python code|
 |[Pylint](https://plugins.jetbrains.com/plugin/11084-pylint)|Integrates IntelliJ with [Pylint](https://www.pylint.org/)|
+|[MyPy](https://plugins.jetbrains.com/plugin/13348-mypy-official-)|Integrates IntelliJ with [MyPy](https://pypi.org/project/mypy/)|
 
 #### Project and Module Setup
 
@@ -191,7 +193,7 @@ Click on **Modules**.  On the **Sources** tab, find the **Exclude files** box.
 Enter the following, and click **Apply**:
 
 ```
-.coverage;.coveragerc;.github;.htmlcov;.idea;.pre-commit-config.yaml;.pylintrc;.pytest_cache;.readthedocs.yml;.tox;.toxrc;build;dist;docs/_build;out;poetry.lock;run
+.coverage;.coveragerc;.github;.htmlcov;.idea;.mypyrc;.pre-commit-config.yaml;.pylintrc;.pytest_cache;.readthedocs.yml;.tox;.toxrc;build;dist;docs/_build;out;poetry.lock;run
 ```
 
 On the **Dependencies** tab, select the Python SDK you configured above as the
@@ -223,6 +225,27 @@ Find **Pylint** in the toolbar, which is usually on the bottom of the screen
 alongside things like **TODO** and **Terminal**.  Click the button with the
 tooltip that says **Check Project**.  When the scan completes, the **Scan** tab
 should say `Pylint found no problems`.
+
+> _Note:_ If you get an error `Argument list too long` when executing Pylint
+> for the entire project, this means that IntelliJ is passing along a huge list
+> of in-scope files, even though they're not needed.  Make sure you excluded
+> the correct list of directories when configuring the module above (especially
+> the large `.tox` directory).
+
+#### Running MyPy Inspections
+
+Find **MyPy Terminal** in the toolbar, which is usually on the bottom of the
+screen alongside things like **TODO** and **Terminal**.  Right-click in the
+window and select **Configure Plugin**.  In the **Mypy command** box, fill in
+something like this:
+
+```
+/usr/local/bin/poetry run mypy --config-file=.mypyrc src/apologies tests
+```
+
+You will have to adjust the path to `poetry` to match your system.  Click
+**OK**.  Then, click the **Run** button.  The status on the bottom of the
+window should say `PASSED`.
 
 #### External Tools
 
