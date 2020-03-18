@@ -13,8 +13,8 @@ It also serves as a complete example of how to manage a modern (circa 2020)
 Python project, including style checks, code formatting, integration with
 IntelliJ, CI builds at GitHub, and integration with PyPI and Read the Docs.
 
-*Note:* This is alpha-quality code that is still under active development.
-Interfaces may change without warning until the design stabilizes. 
+> *Note:* This is alpha-quality code that is still under active development.
+> Interfaces may change without warning until the design stabilizes. 
 
 
 ## Developer Notes
@@ -37,7 +37,7 @@ standard is enforced using [Black](https://github.com/psf/black) and [PyLint](ht
 We rely on pre-commit hooks to ensure that the code is properly-formatted and
 clean when it's checked in.  The `run install` step described below installs
 the project pre-commit hooks into your repository.  These hooks are configured
-in [`.pre-commit-config.yaml`)(.pre-commit-config.yaml)).
+in [`.pre-commit-config.yaml`](.pre-commit-config.yaml)).
 
 If necessary, you can temporarily [disable a hook](https://pre-commit.com/#temporarily-disabling-hooks)
 or even remove the hooks with `poetry run pre-commit uninstall`.  However, keep
@@ -158,9 +158,9 @@ Once you have a working shell development environment, **Open** (do not
 instructions below.  (By using **Open**, the existing `.idea` directory will be
 retained.)  
 
-_Note:_ If you get a **Frameworks Detected** message, ignore it for now,
-because IntelliJ might be trying to import some things which aren't really part
-of the project.
+_> Note:_ If you get a **Frameworks Detected** message, ignore it for now,
+> because IntelliJ might be trying to import some things which aren't really part
+> of the project.
 
 #### Plugins
 
