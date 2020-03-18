@@ -136,7 +136,7 @@ Shortcuts for common developer tasks
 
 Usage: run <command>
 
-- run install: Setup the virtualenv via Poetry
+- run install: Setup the virtualenv via Poetry and install pre-commit hooks
 - run activate: Print command needed to activate the Poetry virtualenv
 - run lint: Run the Pylint code checker
 - run format: Run the Black code formatter
