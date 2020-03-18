@@ -106,10 +106,12 @@ $ pip install pre-commit
 There are local pre-commit hooks that depend on Black and Pylint, so the code
 is properly-formatted and lint-clean when it's checked in.  If you don't
 install Black and Pylint as described above, then you won't be able to commit
-your changes.
+your changes.  The `run install` step described below installs the pre-commit
+hooks in your repository.
 
 If necessary, you can temporarily [disable a hook](https://pre-commit.com/#temporarily-disabling-hooks)
-or even remove the hook with `pre-commit uninstall`.
+or even remove the hooks with `pre-commit uninstall`.  However, keep in mind
+that the CI build on GitHub enforces these checks, so the build will fail.
 
 ### Activating the Virtual Environment
 

@@ -1,9 +1,10 @@
 #!/bin/bash
 # Shortcuts for common developer tasks
 
-# Setup the virtual environment via Poetry
+# Setup the virtual environment via Poetry and install pre-commit hooks
 run_install() {
    poetry install -v
+   pre-commit install 
 }
 
 # Activate the current Poetry virtual environment
@@ -13,7 +14,11 @@ run_activate() {
 
 # Run the Pylint code checker
 run_pylint() {
-   poetry install -q
+   poetry run which pylint
+   if [ $? != 0 ]; then
+      run_install
+   fi
+
    poetry run pylint --rcfile=.pylintrc src/apologies tests
 }
 
@@ -42,7 +47,10 @@ run_pytest() {
      esac
    done
 
-   poetry install -q
+   poetry run which pytest
+   if [ $? != 0 ]; then
+      run_install
+   fi
 
    if [ $coverage == "yes" ]; then
       poetry run coverage run --rcfile=.coveragerc -m pytest tests
@@ -58,11 +66,21 @@ run_pytest() {
 
 # Run the broader Tox test suite used by the GitHub CI action
 run_tox() {
+   poetry run which tox
+   if [ $? != 0 ]; then
+      run_install
+   fi
+
    poetry run tox -c .toxrc -e "lint,{py}-{coverage,nocoverage}"
 }
 
 # Build the Sphinx documentation for apologies.readthedocs.io
 run_docs() {
+   poetry run which sphinx-build
+   if [ $? != 0 ]; then
+      run_install
+   fi
+
    cd docs 
    poetry run sphinx-build -b html -d _build/doctrees . _build/html
    $(which start || which open) _build/html/index.html 2>/dev/null  # start on Windows, open on MacOS
@@ -131,7 +149,7 @@ case $1 in
       echo ""
       echo "Usage: run <command>"  
       echo ""
-      echo "- run install: Setup the virtualenv via Poetry"
+      echo "- run install: Setup the virtualenv via Poetry and install pre-commit hooks"
       echo "- run activate: Print command needed to activate the Poetry virtualenv"
       echo "- run lint: Run the Pylint code checker"
       echo "- run format: Run the Black code formatter"
