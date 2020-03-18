@@ -4,7 +4,7 @@
 # Setup the virtual environment via Poetry and install pre-commit hooks
 run_install() {
    poetry install -v
-   pre-commit install 
+   poetry run pre-commit install 
 }
 
 # Activate the current Poetry virtual environment
@@ -14,7 +14,7 @@ run_activate() {
 
 # Run the Pylint code checker
 run_pylint() {
-   poetry run which pylint
+   poetry run which pylint > /dev/null
    if [ $? != 0 ]; then
       run_install
    fi
@@ -24,7 +24,12 @@ run_pylint() {
 
 # Run the black code formatter
 run_black() {
-   black .
+   poetry run which black > /dev/null
+   if [ $? != 0 ]; then
+      run_install
+   fi
+
+   poetry run black .
 }
 
 # Run the unit tests, optionally with coverage
@@ -47,7 +52,7 @@ run_pytest() {
      esac
    done
 
-   poetry run which pytest
+   poetry run which pytest > /dev/null
    if [ $? != 0 ]; then
       run_install
    fi
@@ -66,7 +71,7 @@ run_pytest() {
 
 # Run the broader Tox test suite used by the GitHub CI action
 run_tox() {
-   poetry run which tox
+   poetry run which tox > /dev/null
    if [ $? != 0 ]; then
       run_install
    fi
@@ -76,7 +81,7 @@ run_tox() {
 
 # Build the Sphinx documentation for apologies.readthedocs.io
 run_docs() {
-   poetry run which sphinx-build
+   poetry run which sphinx-build > /dev/null
    if [ $? != 0 ]; then
       run_install
    fi

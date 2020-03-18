@@ -3,7 +3,7 @@ repos:
     hooks:
       - id: system
         name: Black
-        entry: black .
+        entry: poetry run black .
         pass_filenames: false
         language: system
   - repo: local

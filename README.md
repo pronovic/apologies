@@ -16,6 +16,7 @@ IntelliJ, CI builds at GitHub, and integration with PyPI and Read the Docs.
 *Note:* This is alpha-quality code that is still under active development.
 Interfaces may change without warning until the design stabilizes. 
 
+
 ## Developer Notes
 
 ### Development Environment
@@ -31,11 +32,22 @@ packaging and dependencies.  Most day-to-day tasks (such as running unit
 tests from the command line) are orchestrated through Poetry.  A coding
 standard is enforced using [Black](https://github.com/psf/black) and [PyLint](https://www.pylint.org/).
 
-### Developer Prequisites
+### Pre-Commit Hooks
 
-Before starting, install the following prerequisites.  You need to install all
-of these tools before you can do local development or commit code using the
-standard process, due to the pre-commit hooks (see below).
+We rely on pre-commit hooks to ensure that the code is properly-formatted and
+clean when it's checked in.  The `run install` step described below installs
+the project pre-commit hooks into your repository.  These hooks are configured
+in [`.pre-commit-config.yaml`)(.pre-commit-config.yaml)).
+
+If necessary, you can temporarily [disable a hook](https://pre-commit.com/#temporarily-disabling-hooks)
+or even remove the hooks with `poetry run pre-commit uninstall`.  However, keep
+in mind that the CI build on GitHub enforces these checks, so the build will
+fail.
+
+### Prequisites
+
+Nearly all prerequisites are managed by Poetry.  All you need to do is make
+sure that you have a working Python 3 enviroment and install Poetry itself.  
 
 #### MacOS
 
@@ -44,18 +56,13 @@ On MacOS, it's easiest to use [Homebrew](https://brew.sh/):
 ```
 $ brew install python3
 $ brew install poetry
-$ brew install black
-$ brew install pylint
-$ brew install pre-commit
 ```
 
 When you're done, make sure that the `python` on your `$PATH` is Python 3 from
 Homebrew (in `/usr/local`).  By default, you'll get the standard Python 2 that
 comes with MacOS.
 
-#### Linux
-
-_Note: I've tested this on Debian; you will need to adjust the steps on other platforms._
+#### Debian
 
 First, install Python 3 and related tools:
 
@@ -68,50 +75,23 @@ a couple of ways to do this, but using `update-alternatives` as discussed
 on [StackOverflow](https://unix.stackexchange.com/a/410851) is probably 
 the best.
 
-Next, install Poetry:
+Then, install Poetry in your home directory:
 
 ```
 $ curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
 ```
 
-Finally, install the other prerequisites using `pip`:
-
-```
-$ pip install black
-$ pip install pylint
-$ pip install pre-commit
-```
-
 #### Windows
 
-On Windows, use a combination of install steps.  First, manually install Python
-3.7 or later. Make sure that the `python` on your `$PATH` is Python 3.
+First, download the [Windows installer](https://www.python.org/downloads/windows/) for 
+Python 3.7 or later, and install Python on your system.  Make sure that the
+`python` on your `$PATH` is Python 3.
 
-Then, start a Powershell prompt and install Poetry:
+Then, start a Powershell prompt and install Poetry in your home directory:
 
 ```powershell
 (Invoke-WebRequest -Uri https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py -UseBasicParsing).Content | python
 ```
-
-Finally, install the other prerequisites using `pip`:
-
-```
-$ pip install black
-$ pip install pylint
-$ pip install pre-commit
-```
-
-### Pre-Commit Hooks
-
-There are local pre-commit hooks that depend on Black and Pylint, so the code
-is properly-formatted and lint-clean when it's checked in.  If you don't
-install Black and Pylint as described above, then you won't be able to commit
-your changes.  The `run install` step described below installs the pre-commit
-hooks in your repository.
-
-If necessary, you can temporarily [disable a hook](https://pre-commit.com/#temporarily-disabling-hooks)
-or even remove the hooks with `pre-commit uninstall`.  However, keep in mind
-that the CI build on GitHub enforces these checks, so the build will fail.
 
 ### Activating the Virtual Environment
 
@@ -246,7 +226,16 @@ should say `Pylint found no problems`.
 
 #### External Tools
 
-Finally, set up [Black](https://github.com/psf/black) as an external
-tool.  See the [instructions](https://black.readthedocs.io/en/stable/editor_integration.html#pycharm-intellij-idea).
-Once this is done, you can reformat an individual file or the entire project
-using the same rules that will be applied by the commit hook.
+Optionally, you might want to set up [Black](https://github.com/psf/black) as
+an external tool.  Once this is done, you can reformat an individual file or
+the entire project using the same rules that will be applied by the commit hook
+or by `run format`.  
+
+If you want to do this, first install Black on your system, for instance:
+
+```
+$ brew install black
+```
+
+Then, follow the official [instructions](https://black.readthedocs.io/en/stable/editor_integration.html#pycharm-intellij-idea) to 
+point IntelliJ at the location of `black` on your system.
