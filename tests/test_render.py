@@ -9,7 +9,7 @@ import pytest
 from apologies.render import render_board
 from apologies.game import Game, RED, BLUE, YELLOW, GREEN
 
-FIXTURE_DIR = os.path.join(os.path.dirname(__file__), "test_render")
+FIXTURE_DIR = os.path.join(os.path.dirname(__file__), "fixtures/test_render")
 
 
 @pytest.fixture
