@@ -8,7 +8,7 @@ from typing import Dict
 import pytest
 
 from apologies.render import render_board
-from apologies.game import Game, RED, BLUE, YELLOW, GREEN
+from apologies.game import Game, PLAYER_RED, PLAYER_BLUE, PLAYER_YELLOW, PLAYER_GREEN
 
 FIXTURE_DIR = os.path.join(os.path.dirname(__file__), "fixtures/test_render")
 
@@ -90,7 +90,7 @@ class TestRenderBoard:
 # Create a game with all players in home
 def _fill_home() -> Game:
     game = Game(playercount=4)
-    for color in [BLUE, RED, YELLOW, GREEN]:
+    for color in [PLAYER_BLUE, PLAYER_RED, PLAYER_YELLOW, PLAYER_GREEN]:
         for pawn in range(4):
             game.players[color].pawns[pawn].move_to_home()
     return game
@@ -99,7 +99,7 @@ def _fill_home() -> Game:
 # Create a game with all players in the safe zone
 def _fill_safe(start: int) -> Game:
     game = Game(playercount=4)
-    for color in [BLUE, RED, YELLOW, GREEN]:
+    for color in [PLAYER_BLUE, PLAYER_RED, PLAYER_YELLOW, PLAYER_GREEN]:
         for pawn in range(4):
             game.players[color].pawns[pawn].move_to_safe(pawn + start)
     return game
@@ -110,7 +110,7 @@ def _fill_squares(start: int, end: int) -> Game:
     game = Game(playercount=4)
     square = 0
     for pawn in range(4):
-        for color in [BLUE, RED, YELLOW, GREEN]:
+        for color in [PLAYER_BLUE, PLAYER_RED, PLAYER_YELLOW, PLAYER_GREEN]:
             if square + start <= end:
                 game.players[color].pawns[pawn].move_to_square(square + start)
                 square += 1

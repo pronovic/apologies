@@ -156,7 +156,7 @@ class TestGame:
         assert game.started is False
         assert game.adult_mode is False
         assert len(game.players) == 2
-        for color in [RED, YELLOW]:
+        for color in [PLAYER_RED, PLAYER_YELLOW]:
             assert game.players[color].color == color
             assert len(game.players[color].hand) == 0
         assert game.deck is not None
@@ -166,7 +166,7 @@ class TestGame:
         assert game.started is False
         assert game.adult_mode is False
         assert len(game.players) == 3
-        for color in [RED, YELLOW, GREEN]:
+        for color in [PLAYER_RED, PLAYER_YELLOW, PLAYER_GREEN]:
             assert game.players[color].color == color
             assert len(game.players[color].hand) == 0
         assert game.deck is not None
@@ -176,7 +176,7 @@ class TestGame:
         assert game.started is False
         assert game.adult_mode is False
         assert len(game.players) == 4
-        for color in [RED, YELLOW, BLUE]:
+        for color in [PLAYER_RED, PLAYER_YELLOW, PLAYER_BLUE]:
             assert game.players[color].color == color
             assert len(game.players[color].hand) == 0
         assert game.deck is not None
@@ -195,7 +195,7 @@ class TestGame:
     def test_set_adult_mode_notstarted(self) -> None:
         game = Game(4)
         game.set_adult_mode()
-        for color in [RED, YELLOW, BLUE]:
+        for color in [PLAYER_RED, PLAYER_YELLOW, PLAYER_BLUE]:
             assert game.players[color].color == color
             assert game.players[color].pawns[0].start is True
             assert len(game.players[color].hand) == ADULT_HAND

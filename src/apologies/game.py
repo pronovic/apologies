@@ -15,11 +15,11 @@ Attributes:
     ADULT_HAND: The size of a hand of cards for an adult-mode game
     MIN_PLAYERS(int): Minimum number of players in a game
     MAX_PLAYERS(int): Maximum number of players in a game
-    RED(str): The red player color
-    BLUE(str): The blue player color
-    YELLOW(str): The yellow player color
-    GREEN(str): The green player color
-    COLORS(list): All available player colors, listed in order of use
+    PLAYER_RED(str): The red player color
+    PLAYER_BLUE(str): The blue player color
+    PLAYER_YELLOW(str): The yellow player color
+    PLAYER_GREEN(str): The green player color
+    PLAYER_COLORS(list): All available player colors, listed in order of use
     PAWNS(int): Number of pawns per player
     SAFE_SQUARES(int): Number of safe squares for each color
     BOARD_SQUARES(int): Number of squares around the outside of the board
@@ -47,11 +47,16 @@ MIN_PLAYERS = 2
 MAX_PLAYERS = 4
 
 # Each player gets one color
-RED = "RED"
-BLUE = "BLUE"
-YELLOW = "YELLOW"
-GREEN = "GREEN"
-COLORS = [RED, YELLOW, GREEN, BLUE]  # order chosen so game works better for < 4 players
+PLAYER_RED = "RED"
+PLAYER_BLUE = "BLUE"
+PLAYER_YELLOW = "YELLOW"
+PLAYER_GREEN = "GREEN"
+PLAYER_COLORS = [
+    PLAYER_RED,
+    PLAYER_YELLOW,
+    PLAYER_GREEN,
+    PLAYER_BLUE,
+]  # order chosen so game works better for < 4 players
 
 # There are 4 pawns per player, numbered 0-3
 PAWNS = 4
@@ -270,7 +275,7 @@ class Game:
             raise ValueError("Invalid number of players")
 
     def __attrs_post_init__(self) -> None:
-        self.players = {color: Player(color) for color in COLORS[: self.playercount]}
+        self.players = {color: Player(color) for color in PLAYER_COLORS[: self.playercount]}
         self.deck = Deck()
 
     @property

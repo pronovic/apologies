@@ -13,7 +13,7 @@ Render a game on the terminal, for development purposes.
 # Note: indexes into the rendered board output aren't easily predictible,
 # because of the variable length of terminal formatting characters
 
-from .game import Game, RED, BLUE, YELLOW, GREEN
+from .game import Game, PLAYER_RED, PLAYER_BLUE, PLAYER_YELLOW, PLAYER_GREEN
 
 # ANSI terminal escapes for colors
 # See also: http://www.lihaoyi.com/post/BuildyourownCommandLinewithANSIescapecodes.html#256-colors
@@ -50,37 +50,37 @@ _SQUARE = [
 # Player names as displayed on the board
 # noinspection PyDictCreation
 _PLAYER = {}
-_PLAYER[RED] = "r"
-_PLAYER[BLUE] = "b"
-_PLAYER[YELLOW] = "y"
-_PLAYER[GREEN] = "g"
+_PLAYER[PLAYER_RED] = "r"
+_PLAYER[PLAYER_BLUE] = "b"
+_PLAYER[PLAYER_YELLOW] = "y"
+_PLAYER[PLAYER_GREEN] = "g"
 
 # Indexes in _BOARD_TEXT where a pawn can be placed into a start location, for each player
 # There are 4 arbitrary spaces for each of the 4 available pawns
 # noinspection PyDictCreation
 _START = {}
-_START[RED] = [1281, 1283, 1285, 1287]
-_START[BLUE] = [2416, 2418, 2420, 2422]
-_START[YELLOW] = [7145, 7147, 7149, 7151]
-_START[GREEN] = [6010, 6012, 6014, 6016]
+_START[PLAYER_RED] = [1281, 1283, 1285, 1287]
+_START[PLAYER_BLUE] = [2416, 2418, 2420, 2422]
+_START[PLAYER_YELLOW] = [7145, 7147, 7149, 7151]
+_START[PLAYER_GREEN] = [6010, 6012, 6014, 6016]
 
 # Indexes in _BOARD_TEXT where a pawn can be placed into a safe location, for each player
 # There are 5 safe squares per color; only a single pawn can occupy a safe square
 # noinspection PyDictCreation
 _SAFE = {}
-_SAFE[RED] = [864, 1435, 1989, 2526, 3063]
-_SAFE[BLUE] = [1529, 1524, 1519, 1514, 1509]
-_SAFE[YELLOW] = [7747, 7176, 6622, 6085, 5548]
-_SAFE[GREEN] = [7082, 7087, 7092, 7097, 7102]
+_SAFE[PLAYER_RED] = [864, 1435, 1989, 2526, 3063]
+_SAFE[PLAYER_BLUE] = [1529, 1524, 1519, 1514, 1509]
+_SAFE[PLAYER_YELLOW] = [7747, 7176, 6622, 6085, 5548]
+_SAFE[PLAYER_GREEN] = [7082, 7087, 7092, 7097, 7102]
 
 # Indexes in _BOARD_TEXT where a pawn can be placed into a home location, for each player
 # There are 4 arbitrary home spaces for the 4 available pawns per player
 # noinspection PyDictCreation
 _HOME = {}
-_HOME[RED] = [3708, 3710, 3712, 3714]
-_HOME[BLUE] = [1318, 1320, 1322, 1324]
-_HOME[YELLOW] = [4735, 4737, 4739, 4741]
-_HOME[GREEN] = [7108, 7110, 7112, 7114]
+_HOME[PLAYER_RED] = [3708, 3710, 3712, 3714]
+_HOME[PLAYER_BLUE] = [1318, 1320, 1322, 1324]
+_HOME[PLAYER_YELLOW] = [4735, 4737, 4739, 4741]
+_HOME[PLAYER_GREEN] = [7108, 7110, 7112, 7114]
 
 # Hardcoded representation of the board, with {} placeholders for color formatting (applied below)
 # The board layout was built by hand and then the formatting was placed into it by hand
