@@ -32,6 +32,8 @@ from enum import Enum
 from typing import Optional, List, Dict
 
 import attr
+import arrow
+from arrow import Arrow
 
 # A game consists of 2-4 players
 MIN_PLAYERS = 2
@@ -46,8 +48,10 @@ SAFE_SQUARES = 5
 # There are 60 squares around the outside of the board, numbered 0-59
 BOARD_SQUARES = 60
 
-# For an adult game, we deal out 5 cards
-ADULT_HAND = 5
+
+class GameMode(Enum):
+    STANDARD = "Standard"
+    ADULT = "Adult"
 
 
 class PlayerColor(Enum):
@@ -173,14 +177,14 @@ class Pawn:
         return "%s-%s" % (self.color.value, self.index)
 
     def move_to_start(self) -> None:
-        """Move to the pawn to its start area."""
+        """Move the pawn back to its start area."""
         self.start = True
         self.home = False
         self.safe = None
         self.square = None
 
     def move_to_home(self) -> None:
-        """Move to the pawn to its home area."""
+        """Move the pawn to its home area."""
         self.start = False
         self.home = True
         self.safe = None
@@ -188,7 +192,7 @@ class Pawn:
 
     def move_to_safe(self, square: int) -> None:
         """
-        Move to the pawn to a square in its safe area.
+        Move the pawn to a square in its safe area.
 
         Args:
             square(int): Zero-based index of the square in the safe area
@@ -206,7 +210,7 @@ class Pawn:
 
     def move_to_square(self, square: int) -> None:
         """
-        Move to the pawn to a square on the board.
+        Move the pawn to a square on the board.
 
         Args:
             square(int): Zero-based index of the square on the board where this pawn resides
@@ -242,6 +246,29 @@ class Player:
         self.hand = []
         self.pawns = [Pawn(self.color, index) for index in range(0, PAWNS)]
 
+    def find_first_pawn_in_start(self) -> Optional[Pawn]:
+        """Find the first pawn in the start area, if any."""
+        for pawn in self.pawns:
+            if pawn.start:
+                return pawn
+        return None
+
+    def all_pawns_in_home(self) -> bool:
+        """Whether all of this user's pawns are in home."""
+        for pawn in self.pawns:
+            if not pawn.home:
+                return False
+        return True
+
+
+@attr.s
+class History:
+    """Tracks a move made by a player."""
+
+    player = attr.ib(type=Player)
+    action = attr.ib(type=str)
+    timestamp = attr.ib(init=False, type=Arrow, default=arrow.utcnow())
+
 
 @attr.s
 class Game:
@@ -257,8 +284,7 @@ class Game:
     playercount = attr.ib(type=int)
     players = attr.ib(init=False, type=Dict[PlayerColor, Player])
     deck = attr.ib(init=False, type=Deck)
-    _started = attr.ib(init=False, default=False, type=bool)
-    _adult_mode = attr.ib(init=False, default=False, type=bool)
+    history = attr.ib(init=False, type=List[History], default=[])
 
     @playercount.validator
     def _check_playercount(self, attribute: str, value: int) -> None:
@@ -268,22 +294,16 @@ class Game:
     def __attrs_post_init__(self) -> None:
         self.players = {color: Player(color) for color in list(PlayerColor)[: self.playercount]}
         self.deck = Deck()
+        self.history = []
 
-    @property
-    def started(self) -> bool:
-        return self._started
+    def track(self, player: Player, action: str) -> None:
+        """Tracks a move made by a player."""
+        self.history.append(History(player, action))
 
-    @property
-    def adult_mode(self) -> bool:
-        return self._adult_mode
-
-    def set_adult_mode(self) -> None:
-        """Set adult mode for the game."""
-        if self._started:
-            raise ValueError("Game is already started; mode cannot be changed")
-        self._adult_mode = True
+    def find_pawn_on_square(self, square: int) -> Optional[Pawn]:
+        """Return the pawn on the indicated square, or None."""
         for player in self.players.values():
-            player.pawns[0].move_to_start()
-        for _ in range(ADULT_HAND):
-            for player in self.players.values():
-                player.hand.append(self.deck.draw())
+            for pawn in player.pawns:
+                if pawn.square == square:
+                    return pawn
+        return None

@@ -3,8 +3,11 @@
 # pylint: disable=wildcard-import,no-self-use,protected-access
 # Unit tests for game.py
 
+
+from flexmock import flexmock
 import pytest
 from apologies.game import *
+import arrow
 
 
 class TestCard:
@@ -148,13 +151,35 @@ class TestPlayer:
         for pawn in player.pawns:
             assert isinstance(pawn, Pawn)
 
+    def test_find_first_pawn_in_start(self) -> None:
+        player = Player(PlayerColor.RED)
+        for i in range(PAWNS):
+            assert player.find_first_pawn_in_start() is player.pawns[i]
+            player.pawns[i].move_to_home()
+        assert player.find_first_pawn_in_start() is None
+
+    def test_all_pawns_in_home(self) -> None:
+        player = Player(PlayerColor.RED)
+        for i in range(PAWNS):
+            assert player.all_pawns_in_home() is False
+            player.pawns[i].move_to_home()
+        assert player.all_pawns_in_home() is True
+
+
+class TestHistory:
+    def test_constructor(self) -> None:
+        player = flexmock()
+        history = History(player, "action")
+        assert history.player is player
+        assert history.action == "action"
+        assert history.timestamp <= arrow.utcnow()
+
 
 class TestGame:
     def test_constructor_2_players_standard(self) -> None:
         game = Game(2)
-        assert game.started is False
-        assert game.adult_mode is False
         assert len(game.players) == 2
+        assert len(game.history) == 0
         for color in [PlayerColor.RED, PlayerColor.YELLOW]:
             assert game.players[color].color == color
             assert len(game.players[color].hand) == 0
@@ -162,9 +187,8 @@ class TestGame:
 
     def test_constructor_3_players_standard(self) -> None:
         game = Game(3)
-        assert game.started is False
-        assert game.adult_mode is False
         assert len(game.players) == 3
+        assert len(game.history) == 0
         for color in [PlayerColor.RED, PlayerColor.YELLOW, PlayerColor.GREEN]:
             assert game.players[color].color == color
             assert len(game.players[color].hand) == 0
@@ -172,9 +196,8 @@ class TestGame:
 
     def test_constructor_4_players_standard(self) -> None:
         game = Game(4)
-        assert game.started is False
-        assert game.adult_mode is False
         assert len(game.players) == 4
+        assert len(game.history) == 0
         for color in [PlayerColor.RED, PlayerColor.YELLOW, PlayerColor.GREEN, PlayerColor.BLUE]:
             assert game.players[color].color == color
             assert len(game.players[color].hand) == 0
@@ -185,16 +208,16 @@ class TestGame:
             with pytest.raises(ValueError):
                 Game(playercount)
 
-    def test_set_adult_mode_started(self) -> None:
+    def test_track(self) -> None:
         game = Game(4)
-        game._started = True
-        with pytest.raises(ValueError):
-            game.set_adult_mode()
+        player = flexmock()
+        game.track(player, "action")
+        assert game.history == [History(player, "action")]
 
-    def test_set_adult_mode_notstarted(self) -> None:
+    def test_find_pawn_on_square(self) -> None:
         game = Game(4)
-        game.set_adult_mode()
-        for color in PlayerColor:
-            assert game.players[color].color == color
-            assert game.players[color].pawns[0].start is True
-            assert len(game.players[color].hand) == ADULT_HAND
+        assert game.find_pawn_on_square(32) is None
+        game.players[PlayerColor.RED].pawns[0].move_to_square(32)
+        assert game.find_pawn_on_square(32) is game.players[PlayerColor.RED].pawns[0]
+        game.players[PlayerColor.GREEN].pawns[0].move_to_square(32)
+        assert game.find_pawn_on_square(32) is game.players[PlayerColor.RED].pawns[0]  # returns the first found
