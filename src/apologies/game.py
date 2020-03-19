@@ -104,7 +104,7 @@ DECK_SIZE = sum(DECK_COUNTS.values())
 class Card:
     """
     A card in a deck or in a player's hand.
-    
+
     Attributes:
         id(int): Unique identifier for this card
         name(str): The name of the card
@@ -281,7 +281,6 @@ class Game:
     players = attr.ib(init=False, type=Dict[str, Player])
     deck = attr.ib(init=False, type=Deck)
 
-    # noinspection PyUnusedLocal
     @playercount.validator
     def _check_playercount(self, attribute: str, value: int) -> None:
         if value < MIN_PLAYERS or value > MAX_PLAYERS:

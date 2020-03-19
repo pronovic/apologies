@@ -22,3 +22,6 @@ warn_unused_ignores = True
 
 [mypy-pytest]
 ignore_missing_imports = True
+
+[mypy-flexmock]
+ignore_missing_imports = True

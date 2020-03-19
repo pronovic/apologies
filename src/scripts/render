@@ -3,9 +3,6 @@
 # vim: set ft=python ts=4 sw=4 expandtab:
 # Render a game on the terminal, for development purposes
 
-from apologies.render import render_board
-from apologies.game import Game
+from apologies.cli import cli
 
-game = Game(4)
-board = render_board(game)
-print(board, end="")
+cli("render")
