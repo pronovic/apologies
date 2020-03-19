@@ -4,6 +4,7 @@
 # Unit tests for cli.py
 
 import pytest
+
 from apologies.util import CircularQueue
 
 

@@ -42,6 +42,16 @@ run_black() {
    poetry run black .
 }
 
+# Run the isort import formatter
+run_isort() {
+   poetry run which isort > /dev/null
+   if [ $? != 0 ]; then
+      run_install
+   fi
+
+   poetry run isort **/*.py
+}
+
 # Run the unit tests, optionally with coverage
 run_pytest() {
    coverage="no"
@@ -144,8 +154,15 @@ case $1 in
       run_pylint
       run_mypy
       ;;
-   black|format)
+   black)
       run_black
+      ;;
+   isort)
+      run_isort
+      ;;
+   format)
+      run_black
+      run_isort
       ;;
    pytest|test*)
       shift 1

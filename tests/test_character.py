@@ -4,8 +4,9 @@
 # Unit tests for game.py
 
 from flexmock import flexmock
-from apologies.game import Pawn, Card, CardType, PlayerColor
+
 from apologies.character import *
+from apologies.game import Card, CardType, Pawn, PlayerColor
 
 
 class TestAction:

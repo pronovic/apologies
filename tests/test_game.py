@@ -4,10 +4,11 @@
 # Unit tests for game.py
 
 
-from flexmock import flexmock
-import pytest
-from apologies.game import *
 import arrow
+import pytest
+from flexmock import flexmock
+
+from apologies.game import *
 
 
 class TestCard:

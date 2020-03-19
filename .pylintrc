@@ -70,7 +70,6 @@ disable=missing-class-docstring,
         trailing-whitespace,
         bad-continuation,
         too-few-public-methods,
-        wrong-import-order,
         no-self-use,
         duplicate-code
 

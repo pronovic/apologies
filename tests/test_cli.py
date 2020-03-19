@@ -5,9 +5,11 @@
 
 import os
 from typing import Dict
+
 import pytest
 from flexmock import flexmock
-from apologies.cli import _lookup_method, _example, _render, cli
+
+from apologies.cli import _example, _lookup_method, _render, cli
 
 FIXTURE_DIR = os.path.join(os.path.dirname(__file__), "fixtures/test_cli")
 
