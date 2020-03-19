@@ -8,10 +8,6 @@ from apologies.game import *
 
 
 class TestCard:
-    """
-    Unit tests for Card.
-    """
-
     def test_constructor(self) -> None:
         card = Card(0, "name")
         assert card.id == 0
@@ -19,10 +15,6 @@ class TestCard:
 
 
 class TestDeck:
-    """
-    Unit tests for Deck
-    """
-
     def test_constructor(self) -> None:
         deck = Deck()
 
@@ -78,10 +70,6 @@ class TestDeck:
 
 # noinspection PyTypeHints
 class TestPawn:
-    """
-    Unit tests for Pawn.
-    """
-
     def test_constructor(self) -> None:
         pawn = Pawn("color", 0)
         assert pawn.color == "color"
@@ -153,10 +141,6 @@ class TestPawn:
 
 
 class TestPlayer:
-    """
-    Unit tests for Player.
-    """
-
     def test_constructor(self) -> None:
         player = Player("color")
         assert player.color == "color"
@@ -167,12 +151,10 @@ class TestPlayer:
 
 
 class TestGame:
-    """
-    Unit tests for Game.
-    """
-
     def test_constructor_2_players_standard(self) -> None:
         game = Game(2)
+        assert game.started is False
+        assert game.adult_mode is False
         assert len(game.players) == 2
         for color in [RED, YELLOW]:
             assert game.players[color].color == color
@@ -181,6 +163,8 @@ class TestGame:
 
     def test_constructor_3_players_standard(self) -> None:
         game = Game(3)
+        assert game.started is False
+        assert game.adult_mode is False
         assert len(game.players) == 3
         for color in [RED, YELLOW, GREEN]:
             assert game.players[color].color == color
@@ -189,22 +173,29 @@ class TestGame:
 
     def test_constructor_4_players_standard(self) -> None:
         game = Game(4)
+        assert game.started is False
+        assert game.adult_mode is False
         assert len(game.players) == 4
         for color in [RED, YELLOW, BLUE]:
             assert game.players[color].color == color
             assert len(game.players[color].hand) == 0
         assert game.deck is not None
 
-    def test_constructor_4_players_adult(self) -> None:
-        game = Game(4, mode=MODE_ADULT)
-        assert len(game.players) == 4
-        for color in [RED, YELLOW, BLUE]:
-            assert game.players[color].color == color
-            assert game.players[color].pawns[0].start is True
-            assert len(game.players[color].hand) == ADULT_HAND
-        assert game.deck is not None
-
     def test_constructor_invalid_players(self) -> None:
         for playercount in [-2, -1, 0, 1, 5, 6]:
             with pytest.raises(ValueError):
                 Game(playercount)
+
+    def test_set_adult_mode_started(self) -> None:
+        game = Game(4)
+        game._started = True
+        with pytest.raises(ValueError):
+            game.set_adult_mode()
+
+    def test_set_adult_mode_notstarted(self) -> None:
+        game = Game(4)
+        game.set_adult_mode()
+        for color in [RED, YELLOW, BLUE]:
+            assert game.players[color].color == color
+            assert game.players[color].pawns[0].start is True
+            assert len(game.players[color].hand) == ADULT_HAND

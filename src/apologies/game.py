@@ -12,8 +12,6 @@ slider, etc.) are implemented elsewhere, using the methods available on these
 classes.
 
 Attributes:
-    MODE_STANDARD: The name of the standard game mode
-    MODE_ADULT: The name of the adult game mode
     ADULT_HAND: The size of a hand of cards for an adult-mode game
     MIN_PLAYERS(int): Minimum number of players in a game
     MAX_PLAYERS(int): Maximum number of players in a game
@@ -43,11 +41,6 @@ Attributes:
 import random
 from typing import Optional, List, Dict
 import attr
-
-# Game mode
-MODE_STANDARD = "standard"
-MODE_ADULT = "adult"
-ADULT_HAND = 5
 
 # A game consists of 2-4 players
 MIN_PLAYERS = 2
@@ -98,6 +91,7 @@ DECK_COUNTS = {
     CARD_APOLOGIES: 4,
 }
 DECK_SIZE = sum(DECK_COUNTS.values())
+ADULT_HAND = 5
 
 
 @attr.s(frozen=True)
@@ -116,9 +110,7 @@ class Card:
 
 @attr.s
 class Deck:
-    """
-    The deck of cards associated with a game.
-    """
+    """The deck of cards associated with a game."""
 
     _draw_pile = attr.ib(init=False, type=Dict[int, Card])
     _discard_pile = attr.ib(init=False, type=Dict[int, Card])
@@ -138,9 +130,7 @@ class Deck:
         return pile
 
     def draw(self) -> Card:
-        """
-        Draw a random card from the draw pile.
-        """
+        """Draw a random card from the draw pile."""
         if len(self._draw_pile) < 1:
             # this is equivalent to shuffling the discard pile into the draw pile
             for card in list(self._discard_pile.values()):
@@ -151,9 +141,7 @@ class Deck:
         return self._draw_pile.pop(random.choice(list(self._draw_pile.keys())))
 
     def discard(self, card: Card) -> None:
-        """
-        Discard back to the discard pile.
-        """
+        """Discard back to the discard pile."""
         if card.id in self._draw_pile or card.id in self._discard_pile:
             raise ValueError("Card already exists in deck")
         self._discard_pile[card.id] = card
@@ -187,20 +175,14 @@ class Pawn:
         return "%s-%s" % (self.color, self.index)
 
     def move_to_start(self) -> None:
-        """
-        Move to the pawn to its start area.
-        """
-
+        """Move to the pawn to its start area."""
         self.start = True
         self.home = False
         self.safe = None
         self.square = None
 
     def move_to_home(self) -> None:
-        """
-        Move to the pawn to its home area.
-        """
-
+        """Move to the pawn to its home area."""
         self.start = False
         self.home = True
         self.safe = None
@@ -277,9 +259,10 @@ class Game:
     """
 
     playercount = attr.ib(type=int)
-    mode = attr.ib(default=MODE_STANDARD, type=str)
     players = attr.ib(init=False, type=Dict[str, Player])
     deck = attr.ib(init=False, type=Deck)
+    _started = attr.ib(init=False, default=False, type=bool)
+    _adult_mode = attr.ib(init=False, default=False, type=bool)
 
     @playercount.validator
     def _check_playercount(self, attribute: str, value: int) -> None:
@@ -289,10 +272,20 @@ class Game:
     def __attrs_post_init__(self) -> None:
         self.players = {color: Player(color) for color in COLORS[: self.playercount]}
         self.deck = Deck()
-        if self.mode == MODE_ADULT:
-            self._setup_adult_mode()
 
-    def _setup_adult_mode(self) -> None:
+    @property
+    def started(self) -> bool:
+        return self._started
+
+    @property
+    def adult_mode(self) -> bool:
+        return self._adult_mode
+
+    def set_adult_mode(self) -> None:
+        """Set adult mode for the game."""
+        if self._started:
+            raise ValueError("Game is already started; mode cannot be changed")
+        self._adult_mode = True
         for player in self.players.values():
             player.pawns[0].move_to_start()
         for _ in range(ADULT_HAND):
