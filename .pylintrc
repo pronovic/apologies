@@ -68,6 +68,7 @@ disable=missing-class-docstring,
         missing-function-docstring,
         unused-wildcard-import,
         trailing-whitespace,
+        bad-continuation,
         too-few-public-methods,
         no-self-use,
         duplicate-code
