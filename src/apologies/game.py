@@ -104,6 +104,7 @@ DECK_SIZE = sum(DECK_COUNTS.values())
 class Card:
     """
     A card in a deck or in a player's hand.
+    
     Attributes:
         id(int): Unique identifier for this card
         name(str): The name of the card
