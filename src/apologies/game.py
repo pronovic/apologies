@@ -8,7 +8,7 @@ Note that these classes track game state, but do not implement game rules.  The
 only validations are to prevent changes that literally cannot be represented in
 game state, such as selecting an invalid square.  All other rules (such as the
 restriction that only one pawn can occupy a space, or the act of sliding down a
-slider, etc.) are implemented elsewhere, using the methods available on these
+slider, etc.) are implemented in the play module, using the methods available on these
 classes.
 
 Attributes:
@@ -237,13 +237,11 @@ class Player:
 
     Attributes:
         color(str): The color of the player
-        name(str): The name of the player
         hand(:obj:`list` of :obj:`Card`): List of cards in the player's hand
         pawns(:obj:`list` of :obj:`Pawn`): List of all pawns belonging to the player
     """
 
     color = attr.ib(type=str)
-    name = attr.ib(default=None, type=str)
     hand = attr.ib(init=False, type=List[Card])
     pawns = attr.ib(init=False, type=List[Pawn])
 

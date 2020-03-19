@@ -144,7 +144,6 @@ class TestPlayer:
     def test_constructor(self) -> None:
         player = Player("color")
         assert player.color == "color"
-        assert player.name is None
         assert len(player.pawns) == PAWNS
         for pawn in player.pawns:
             assert isinstance(pawn, Pawn)
