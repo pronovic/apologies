@@ -11,6 +11,11 @@ restriction that only one pawn can occupy a space, or the act of sliding down a
 slider, etc.) are implemented in the play module, using the methods available on these
 classes.
 
+In many cases, private attributes are accessible in the constructor to support
+serialization and deserialization.  In general, callers should not pass in optional
+constructor arguments and should not modify public attributes if an alternate method
+is available for use.
+
 Attributes:
     ADULT_HAND: The size of a hand of cards for an adult-mode game
     MIN_PLAYERS(int): Minimum number of players in a game
@@ -27,11 +32,15 @@ Attributes:
     DECK_SIZE: The total expected size of a complete deck
 """
 
+from __future__ import annotations  # see: https://stackoverflow.com/a/33533514/2907667
+
 import random
+import json
 from enum import Enum
 from typing import Optional, List, Dict
 
 import attr
+import cattr
 import arrow
 from arrow import Arrow
 
@@ -112,17 +121,18 @@ class Card:
 
 @attr.s
 class Deck:
-    """The deck of cards associated with a game."""
+    """
+    The deck of cards associated with a game.
 
-    _draw_pile = attr.ib(init=False, type=Dict[int, Card])
-    _discard_pile = attr.ib(init=False, type=Dict[int, Card])
+    Callers should not pass in constructor arguments. These are accessible to
+    support serialization and deserialization.
+    """
 
-    def __attrs_post_init__(self) -> None:
-        self._draw_pile = Deck._init_draw_pile()
-        self._discard_pile = {}
+    _draw_pile = attr.ib(type=Dict[int, Card])
+    _discard_pile = attr.ib(type=Dict[int, Card])
 
-    @staticmethod
-    def _init_draw_pile() -> Dict[int, Card]:
+    @_draw_pile.default
+    def _init_draw_pile(self) -> Dict[int, Card]:
         pile = {}
         cardid = 0
         for card in CardType:
@@ -130,6 +140,10 @@ class Deck:
                 pile[cardid] = Card(cardid, card)
                 cardid += 1
         return pile
+
+    @_discard_pile.default
+    def _init_discard_pile(self) -> Dict[int, Card]:
+        return {}
 
     def draw(self) -> Card:
         """Draw a random card from the draw pile."""
@@ -154,6 +168,10 @@ class Pawn:
     """
     A pawn on the board, belonging to a player.
 
+    Callers should not pass in optional constructor arguments or modify attributes
+    directly.  These are accessible to support serialization and deserialization.
+    Instead, use the provided methods to safely modify the object in-place.
+
     Attributes:
         color(str): The color of this pawn
         index(int): Zero-based index of this pawn for a given user
@@ -167,10 +185,10 @@ class Pawn:
     color = attr.ib(type=PlayerColor)
     index = attr.ib(type=int)
     name = attr.ib(type=str)
-    start = attr.ib(init=False, default=True)
-    home = attr.ib(init=False, default=False)
-    safe = attr.ib(init=False, default=None, type=Optional[int])
-    square = attr.ib(init=False, default=None, type=Optional[int])
+    start = attr.ib(default=True, type=bool)
+    home = attr.ib(default=False, type=bool)
+    safe = attr.ib(default=None, type=Optional[int])
+    square = attr.ib(default=None, type=Optional[int])
 
     @name.default
     def _default_name(self) -> str:
@@ -232,6 +250,9 @@ class Player:
     """
     A player, which has a color and a set of pawns.
 
+    Callers should not pass in optional constructor arguments.  These are accessible
+    to support serialization and deserialization.
+
     Attributes:
         color(str): The color of the player
         hand(:obj:`list` of :obj:`Card`): List of cards in the player's hand
@@ -239,12 +260,16 @@ class Player:
     """
 
     color = attr.ib(type=PlayerColor)
-    hand = attr.ib(init=False, type=List[Card])
-    pawns = attr.ib(init=False, type=List[Pawn])
+    hand = attr.ib(type=List[Card])
+    pawns = attr.ib(type=List[Pawn])
 
-    def __attrs_post_init__(self) -> None:
-        self.hand = []
-        self.pawns = [Pawn(self.color, index) for index in range(0, PAWNS)]
+    @hand.default
+    def _init_hand(self) -> List[Card]:
+        return []
+
+    @pawns.default
+    def _init_pawns(self) -> List[Pawn]:
+        return [Pawn(self.color, index) for index in range(0, PAWNS)]
 
     def find_first_pawn_in_start(self) -> Optional[Pawn]:
         """Find the first pawn in the start area, if any."""
@@ -267,13 +292,16 @@ class History:
 
     player = attr.ib(type=Player)
     action = attr.ib(type=str)
-    timestamp = attr.ib(init=False, type=Arrow, default=arrow.utcnow())
+    timestamp = attr.ib(type=Arrow, default=arrow.utcnow())
 
 
 @attr.s
 class Game:
     """
     The game, consisting of state for a set of players.
+
+    Callers should not pass in optional constructor arguments.  These are accessible
+    to support serialization and deserialization.
 
     Attributes:
         playercount(int): Number of players in the game
@@ -282,19 +310,39 @@ class Game:
     """
 
     playercount = attr.ib(type=int)
-    players = attr.ib(init=False, type=Dict[PlayerColor, Player])
-    deck = attr.ib(init=False, type=Deck)
-    history = attr.ib(init=False, type=List[History], default=[])
+    players = attr.ib(type=Dict[PlayerColor, Player])
+    deck = attr.ib(type=Deck)
+    history = attr.ib(type=List[History])
 
     @playercount.validator
     def _check_playercount(self, attribute: str, value: int) -> None:
         if value < MIN_PLAYERS or value > MAX_PLAYERS:
             raise ValueError("Invalid number of players")
 
-    def __attrs_post_init__(self) -> None:
-        self.players = {color: Player(color) for color in list(PlayerColor)[: self.playercount]}
-        self.deck = Deck()
-        self.history = []
+    @players.default
+    def _init_players(self) -> Dict[PlayerColor, Player]:
+        return {color: Player(color) for color in list(PlayerColor)[: self.playercount]}
+
+    @deck.default
+    def _init_deck(self) -> Deck:
+        return Deck()
+
+    @history.default
+    def _init_history(self) -> List[History]:
+        return []
+
+    def copy(self) -> Game:
+        """Return a fully-independent copy of the game."""
+        return cattr.structure(cattr.unstructure(self), Game)  # type: ignore
+
+    def to_json(self) -> str:
+        """Serialize the game state to JSON."""
+        return json.dumps(cattr.unstructure(self), indent=2)
+
+    @staticmethod
+    def from_json(data: str) -> Game:
+        """Deserialize the game state from JSON."""
+        return cattr.structure(json.loads(data), Game)  # type: ignore
 
     def track(self, player: Player, action: str) -> None:
         """Tracks a move made by a player."""

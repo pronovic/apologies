@@ -209,6 +209,25 @@ class TestGame:
             with pytest.raises(ValueError):
                 Game(playercount)
 
+    def test_copy(self) -> None:
+        game = Game(4)
+        game.players[PlayerColor.RED].pawns[0].move_to_square(32)
+        game.players[PlayerColor.BLUE].pawns[2].move_to_home()
+        game.players[PlayerColor.YELLOW].pawns[3].move_to_safe(1)
+        game.players[PlayerColor.GREEN].pawns[1].move_to_square(19)
+        copy = game.copy()
+        assert copy == game
+
+    def test_json_roundtrip(self) -> None:
+        game = Game(4)
+        game.players[PlayerColor.RED].pawns[0].move_to_square(32)
+        game.players[PlayerColor.BLUE].pawns[2].move_to_home()
+        game.players[PlayerColor.YELLOW].pawns[3].move_to_safe(1)
+        game.players[PlayerColor.GREEN].pawns[1].move_to_square(19)
+        data = game.to_json()
+        copy = Game.from_json(data)
+        assert copy == game
+
     def test_track(self) -> None:
         game = Game(4)
         player = flexmock()
