@@ -37,18 +37,6 @@ import attr
 MIN_PLAYERS = 2
 MAX_PLAYERS = 4
 
-# Each player gets one color
-PLAYER_RED = "RED"
-PLAYER_BLUE = "BLUE"
-PLAYER_YELLOW = "YELLOW"
-PLAYER_GREEN = "GREEN"
-PLAYER_COLORS = [
-    PLAYER_RED,
-    PLAYER_YELLOW,
-    PLAYER_GREEN,
-    PLAYER_BLUE,
-]  # order chosen so game works better for < 4 players
-
 # There are 4 pawns per player, numbered 0-3
 PAWNS = 4
 
@@ -60,6 +48,15 @@ BOARD_SQUARES = 60
 
 # For an adult game, we deal out 5 cards
 ADULT_HAND = 5
+
+
+class PlayerColor(Enum):
+    """Enumeration of all player colors, listed in order of use."""
+
+    RED = "Red"
+    YELLOW = "Yellow"
+    GREEN = "Green"
+    BLUE = "Blue"
 
 
 class CardType(Enum):
@@ -163,7 +160,7 @@ class Pawn:
         square(int): Zero-based index of the square on the board where this pawn resides
     """
 
-    color = attr.ib(type=str)
+    color = attr.ib(type=PlayerColor)
     index = attr.ib(type=int)
     name = attr.ib(type=str)
     start = attr.ib(init=False, default=True)
@@ -173,7 +170,7 @@ class Pawn:
 
     @name.default
     def _default_name(self) -> str:
-        return "%s-%s" % (self.color, self.index)
+        return "%s-%s" % (self.color.value, self.index)
 
     def move_to_start(self) -> None:
         """Move to the pawn to its start area."""
@@ -237,7 +234,7 @@ class Player:
         pawns(:obj:`list` of :obj:`Pawn`): List of all pawns belonging to the player
     """
 
-    color = attr.ib(type=str)
+    color = attr.ib(type=PlayerColor)
     hand = attr.ib(init=False, type=List[Card])
     pawns = attr.ib(init=False, type=List[Pawn])
 
@@ -258,7 +255,7 @@ class Game:
     """
 
     playercount = attr.ib(type=int)
-    players = attr.ib(init=False, type=Dict[str, Player])
+    players = attr.ib(init=False, type=Dict[PlayerColor, Player])
     deck = attr.ib(init=False, type=Deck)
     _started = attr.ib(init=False, default=False, type=bool)
     _adult_mode = attr.ib(init=False, default=False, type=bool)
@@ -269,7 +266,7 @@ class Game:
             raise ValueError("Invalid number of players")
 
     def __attrs_post_init__(self) -> None:
-        self.players = {color: Player(color) for color in PLAYER_COLORS[: self.playercount]}
+        self.players = {color: Player(color) for color in list(PlayerColor)[: self.playercount]}
         self.deck = Deck()
 
     @property

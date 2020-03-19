@@ -4,7 +4,7 @@
 # Unit tests for game.py
 
 from flexmock import flexmock
-from apologies.game import Pawn, Card, CardType
+from apologies.game import Pawn, Card, CardType, PlayerColor
 from apologies.character import *
 
 
@@ -15,7 +15,7 @@ class TestMoveFromStartAction:
 
 class TestMoveForwardAction:
     def test_constructor(self) -> None:
-        pawn = Pawn("color", 1, "whatever")
+        pawn = Pawn(PlayerColor.BLUE, 1, "whatever")
         action = MoveForwardAction(pawn, 5)
         assert action.pawn is pawn
         assert action.spaces == 5
@@ -23,7 +23,7 @@ class TestMoveForwardAction:
 
 class TestMoveBackwardAction:
     def test_constructor(self) -> None:
-        pawn = Pawn("color", 1, "whatever")
+        pawn = Pawn(PlayerColor.BLUE, 1, "whatever")
         action = MoveBackwardAction(pawn, 5)
         assert action.pawn is pawn
         assert action.spaces == 5
@@ -31,8 +31,8 @@ class TestMoveBackwardAction:
 
 class TestChangePlacesAction:
     def test_constructor(self) -> None:
-        mine = Pawn("color", 1, "whatever")
-        theirs = Pawn("color", 2, "theirs")
+        mine = Pawn(PlayerColor.BLUE, 1, "whatever")
+        theirs = Pawn(PlayerColor.BLUE, 2, "theirs")
         action = ChangePlacesAction(mine, theirs)
         assert action.mine is mine
         assert action.theirs is theirs
@@ -40,7 +40,7 @@ class TestChangePlacesAction:
 
 class TestBumpToStartAction:
     def test_constructor(self) -> None:
-        bumped = Pawn("color", 1, "whatever")
+        bumped = Pawn(PlayerColor.BLUE, 1, "whatever")
         action = BumpToStartAction(bumped)
         assert action.bumped is bumped
 
