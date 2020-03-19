@@ -9,6 +9,13 @@ repos:
   - repo: local
     hooks:
       - id: system
+        name: 'Doc Requirements'
+        entry: poetry export --format=requirements.txt --without-hashes --dev --output=docs/requirements.txt
+        pass_filenames: false
+        language: system
+  - repo: local
+    hooks:
+      - id: system
         name: Pylint
         entry: poetry run pylint --rcfile=.pylintrc src/apologies tests
         pass_filenames: false
