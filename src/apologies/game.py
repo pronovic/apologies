@@ -23,23 +23,14 @@ Attributes:
     PAWNS(int): Number of pawns per player
     SAFE_SQUARES(int): Number of safe squares for each color
     BOARD_SQUARES(int): Number of squares around the outside of the board
-    CARD_1: Name of the 1 card
-    CARD_2: Name of the 2 card
-    CARD_3: Name of the 3 card
-    CARD_4: Name of the 4 card
-    CARD_5: Name of the 5 card
-    CARD_7: Name of the 7 card
-    CARD_8: Name of the 8 card
-    CARD_10: Name of the 10 card
-    CARD_11: Name of the 11 card
-    CARD_12: Name of the 12 card
-    CARD_APOLOGIES: Name of the Apologies card
-    LEGAL_CARDS: List of all legal cards in the systems
     DECK_COUNTS: Dictionary from card name to number of cards in a standard deck
+    DECK_SIZE: The total expected size of a complete deck
 """
 
 import random
+from enum import Enum
 from typing import Optional, List, Dict
+
 import attr
 
 # A game consists of 2-4 players
@@ -67,36 +58,41 @@ SAFE_SQUARES = 5
 # There are 60 squares around the outside of the board, numbered 0-59
 BOARD_SQUARES = 60
 
-# Card definitions
-CARD_1 = "1"
-CARD_2 = "2"
-CARD_3 = "3"
-CARD_4 = "4"
-CARD_5 = "5"
-CARD_7 = "7"
-CARD_8 = "8"
-CARD_10 = "10"
-CARD_11 = "11"
-CARD_12 = "12"
-CARD_APOLOGIES = "Apologies"
-LEGAL_CARDS = [CARD_1, CARD_2, CARD_3, CARD_4, CARD_5, CARD_7, CARD_8, CARD_10, CARD_11, CARD_12, CARD_APOLOGIES]
+# For an adult game, we deal out 5 cards
+ADULT_HAND = 5
+
+
+class CardType(Enum):
+    """All legal types of cards."""
+
+    CARD_1 = "1"
+    CARD_2 = "2"
+    CARD_3 = "3"
+    CARD_4 = "4"
+    CARD_5 = "5"
+    CARD_7 = "7"
+    CARD_8 = "8"
+    CARD_10 = "10"
+    CARD_11 = "11"
+    CARD_12 = "12"
+    CARD_APOLOGIES = "Apologies"
+
 
 # Deck definitions
 DECK_COUNTS = {
-    CARD_1: 5,
-    CARD_2: 4,
-    CARD_3: 4,
-    CARD_4: 4,
-    CARD_5: 4,
-    CARD_7: 4,
-    CARD_8: 4,
-    CARD_10: 4,
-    CARD_11: 4,
-    CARD_12: 4,
-    CARD_APOLOGIES: 4,
+    CardType.CARD_1: 5,
+    CardType.CARD_2: 4,
+    CardType.CARD_3: 4,
+    CardType.CARD_4: 4,
+    CardType.CARD_5: 4,
+    CardType.CARD_7: 4,
+    CardType.CARD_8: 4,
+    CardType.CARD_10: 4,
+    CardType.CARD_11: 4,
+    CardType.CARD_12: 4,
+    CardType.CARD_APOLOGIES: 4,
 }
 DECK_SIZE = sum(DECK_COUNTS.values())
-ADULT_HAND = 5
 
 
 @attr.s(frozen=True)
@@ -110,7 +106,7 @@ class Card:
     """
 
     id = attr.ib(type=int)
-    name = attr.ib(type=str)
+    cardtype = attr.ib(type=CardType)
 
 
 @attr.s
@@ -128,7 +124,7 @@ class Deck:
     def _init_draw_pile() -> Dict[int, Card]:
         pile = {}
         cardid = 0
-        for card in LEGAL_CARDS:
+        for card in CardType:
             for _ in range(DECK_COUNTS[card]):
                 pile[cardid] = Card(cardid, card)
                 cardid += 1

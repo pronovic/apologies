@@ -4,7 +4,7 @@
 # Unit tests for game.py
 
 from flexmock import flexmock
-from apologies.game import Pawn, Card
+from apologies.game import Pawn, Card, CardType
 from apologies.character import *
 
 
@@ -47,7 +47,7 @@ class TestBumpToStartAction:
 
 class TestMove:
     def test_constructor(self) -> None:
-        card = Card(3, "name")
+        card = Card(3, CardType.CARD_12)
         actions = [MoveFromStartAction()]
         move = Move(card, actions)
         assert move.card is card

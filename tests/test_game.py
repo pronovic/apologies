@@ -9,9 +9,9 @@ from apologies.game import *
 
 class TestCard:
     def test_constructor(self) -> None:
-        card = Card(0, "name")
+        card = Card(0, CardType.CARD_12)
         assert card.id == 0
-        assert card.name == "name"
+        assert card.cardtype == CardType.CARD_12
 
 
 class TestDeck:
@@ -21,11 +21,11 @@ class TestDeck:
         assert len(deck._draw_pile.keys()) == DECK_SIZE
         assert len(deck._discard_pile.keys()) == 0
 
-        cardcounts = {card: 0 for card in LEGAL_CARDS}
+        cardcounts = {cardtype: 0 for cardtype in CardType}
         for card in deck._draw_pile.values():
-            cardcounts[card.name] += 1
-        for name in LEGAL_CARDS:
-            assert cardcounts[name] == DECK_COUNTS[name]
+            cardcounts[card.cardtype] += 1
+        for cardtype in CardType:
+            assert cardcounts[cardtype] == DECK_COUNTS[cardtype]
 
     def test_draw_and_discard(self) -> None:
         deck = Deck()
