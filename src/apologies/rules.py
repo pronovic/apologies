@@ -117,6 +117,7 @@ class Rules:
         Raises:
             ValidationError: If the move is not valid
         """
+        # TODO: implement Rules.execute_move()
 
     @staticmethod
     def _setup_adult_mode(game: Game) -> None:

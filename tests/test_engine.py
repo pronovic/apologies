@@ -249,25 +249,7 @@ class TestEngine:
             )
 
     def test_play_next_adult_forfeit(self):
-        pass
-        # engine = TestEngine._create_engine(mode=GameMode.ADULT)
-        #
-        # card = Card(0, "whatever")
-        # player = engine._game.players[PlayerColor.RED]
-        # move = Move(card, [])
-        #
-        # engine._game.track = MagicMock()
-        # engine._game.deck.draw = MagicMock(return_value=card)
-        # engine._game.deck.discard = MagicMock()
-        # engine.characters[0].construct_move = MagicMock(return_value=move)
-        #
-        # engine.play_next()
-        #
-        # engine.characters[0].construct_move.assert_called_once_with(
-        #     engine._game, engine.mode, player, card=card, invalid=False
-        # )
-        # engine._game.track.assert_called_once_with("Turn forfeited", player)
-        # engine._game.deck.discard.assert_called_once_with(card)
+        pytest.fail("Not implemented")
 
     def test_play_next_adult_invalid(self):
         pytest.fail("Not implemented")
