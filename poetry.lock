@@ -177,14 +177,6 @@ version = "3.0.12"
 
 [[package]]
 category = "dev"
-description = "flexmock is a testing library for Python that makes it easy to create mocks,stubs and fakes."
-name = "flexmock"
-optional = false
-python-versions = "*"
-version = "0.10.4"
-
-[[package]]
-category = "dev"
 description = "File identification library for Python"
 name = "identify"
 optional = false
@@ -765,7 +757,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools", "func-timeout"]
 
 [metadata]
-content-hash = "ed698fda1b3f644ff0f633e0a8bdb6bc6cf39d96e1ca4673d9256dce5f9792b0"
+content-hash = "9070ad75fbd49b43ec0a5620f770925b3add28af922f62d1bc7179ae275ae972"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -864,9 +856,6 @@ docutils = [
 filelock = [
     {file = "filelock-3.0.12-py3-none-any.whl", hash = "sha256:929b7d63ec5b7d6b71b0fa5ac14e030b3f70b75747cef1b10da9b879fef15836"},
     {file = "filelock-3.0.12.tar.gz", hash = "sha256:18d82244ee114f543149c66a6e0c14e9c4f8a1044b5cdaadd0f82159d6a6ff59"},
-]
-flexmock = [
-    {file = "flexmock-0.10.4.tar.gz", hash = "sha256:5033ceb974d6452cf8716c2ff5059074b77e546df5c849fb44a53f98dfe0d82c"},
 ]
 identify = [
     {file = "identify-1.4.11-py2.py3-none-any.whl", hash = "sha256:1222b648251bdcb8deb240b294f450fbf704c7984e08baa92507e4ea10b436d5"},

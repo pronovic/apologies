@@ -15,7 +15,6 @@ coverage==5.0.4
 distlib==0.3.0
 docutils==0.16
 filelock==3.0.12
-flexmock==0.10.4
 identify==1.4.11
 idna==2.9
 imagesize==1.2.0

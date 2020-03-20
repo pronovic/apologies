@@ -5,7 +5,7 @@
 import os
 
 import pytest
-from flexmock import flexmock
+from mock import MagicMock
 
 from apologies.cli import _example, _lookup_method, _render, cli
 
@@ -38,14 +38,14 @@ class TestCli:
 
     def test_example(self):
         argv = ["1", "a", "b"]
-        stdout = flexmock(write=lambda x: None)
-        stderr = flexmock(write=lambda x: None)
-        flexmock(stdout).should_receive("write").with_args("Hello, stdout: 1\n").once()
-        flexmock(stderr).should_receive("write").with_args("Hello, stderr: 1\n").once()
+        stdout = MagicMock()
+        stderr = MagicMock()
         _example(argv, stdout, stderr)
+        stdout.write.assert_called_once_with("Hello, stdout: 1\n")
+        stderr.write.assert_called_once_with("Hello, stderr: 1\n")
 
     def test_main(self):
-        cli("example")  # Just make sure it doesn't blow up
+        cli("example")  # just make sure it doesn't blow up
 
 
 class TestRender:
@@ -54,6 +54,6 @@ class TestRender:
     """
 
     def test_render(self, data):
-        stdout = flexmock(write=lambda x: None)
-        flexmock(stdout).should_receive("write").with_args(data["render"]).once()
-        _render(flexmock(), stdout, flexmock())
+        stdout = MagicMock()
+        _render(MagicMock(), stdout, MagicMock())
+        stdout.write.assert_called_once_with(data["render"])

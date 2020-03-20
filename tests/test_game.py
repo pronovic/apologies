@@ -3,7 +3,7 @@
 # pylint: disable=no-self-use,protected-access
 
 import pytest
-from flexmock import flexmock
+from mock import MagicMock
 from pendulum.datetime import DateTime
 
 from apologies.game import (
@@ -257,7 +257,7 @@ class TestGame:
 
     def test_track_with_player(self):
         game = Game(4)
-        player = flexmock(color=PlayerColor.RED)
+        player = MagicMock(color=PlayerColor.RED)
         game.track("action", player)
         assert game.history == [History("action", PlayerColor.RED)]
 

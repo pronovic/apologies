@@ -3,7 +3,7 @@
 # pylint: disable=no-self-use,protected-access
 
 import pytest
-from flexmock import flexmock
+from mock import MagicMock
 
 from apologies.game import ADULT_HAND, DECK_SIZE, Card, CardType, Game, GameMode, Pawn, PlayerColor
 from apologies.rules import Action, ActionType, Move, Rules
@@ -76,7 +76,7 @@ class TestRules:
                 assert rules.draw_again(Card(0, cardtype)) is False
 
     def test_start_game_started(self):
-        game = flexmock(started=True)
+        game = MagicMock(started=True)
         rules = Rules(GameMode.STANDARD)
         with pytest.raises(ValueError):
             rules.start_game(game)
@@ -116,7 +116,3 @@ class TestRules:
         assert game.players[PlayerColor.BLUE].color == PlayerColor.BLUE
         assert game.players[PlayerColor.BLUE].pawns[0].square == 19
         assert len(game.players[PlayerColor.BLUE].hand) == ADULT_HAND
-
-    def test_execute_move(self):
-        # TODO: there will be a zillion of these methods for various kinds of moves
-        pytest.fail("Not implemented")
