@@ -8,11 +8,11 @@ from apologies.util import CircularQueue
 
 
 class TestCircularQueue:
-    def test_constructor_empty(self) -> None:
+    def test_constructor_empty(self):
         with pytest.raises(ValueError):
             CircularQueue([])
 
-    def test_constructor_single(self) -> None:
+    def test_constructor_single(self):
         queue = CircularQueue(["a"])
         assert queue.entries == ["a"]
         assert queue.next() == "a"
@@ -22,7 +22,7 @@ class TestCircularQueue:
         assert queue.next() == "a"
         assert queue.next() == "a"
 
-    def test_constructor_multiple(self) -> None:
+    def test_constructor_multiple(self):
         queue = CircularQueue(["a", "b", "c"])
         assert queue.entries == ["a", "b", "c"]
         assert queue.next() == "a"

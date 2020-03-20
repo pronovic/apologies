@@ -3,7 +3,6 @@
 # pylint: disable=redefined-outer-name
 
 import os
-from typing import Dict
 
 import pytest
 
@@ -14,7 +13,7 @@ FIXTURE_DIR = os.path.join(os.path.dirname(__file__), "fixtures/test_render")
 
 
 @pytest.fixture
-def data() -> Dict[str, str]:
+def data():
     data = {}
     for f in os.listdir(FIXTURE_DIR):
         p = os.path.join(FIXTURE_DIR, f)
@@ -26,61 +25,61 @@ def data() -> Dict[str, str]:
 
 # Unit tests for render_board()
 class TestRenderBoard:
-    def test_empty_2_player_empty(self, data: Dict[str, str]) -> None:
+    def test_empty_2_player_empty(self, data):
         game = Game(playercount=2)
         expected = data["empty2"]
         actual = render_board(game)
         assert expected == actual
 
-    def test_empty_3_player_empty(self, data: Dict[str, str]) -> None:
+    def test_empty_3_player_empty(self, data):
         game = Game(playercount=3)
         expected = data["empty3"]
         actual = render_board(game)
         assert expected == actual
 
-    def test_empty_4_player_empty(self, data: Dict[str, str]) -> None:
+    def test_empty_4_player_empty(self, data):
         game = Game(playercount=4)
         expected = data["empty4"]
         actual = render_board(game)
         assert expected == actual
 
-    def test_home(self, data: Dict[str, str]) -> None:
+    def test_home(self, data):
         game = _fill_home()
         expected = data["home"]
         actual = render_board(game)
         assert expected == actual
 
-    def test_safe_03(self, data: Dict[str, str]) -> None:
+    def test_safe_03(self, data):
         game = _fill_safe(0)
         expected = data["safe_03"]
         actual = render_board(game)
         assert expected == actual
 
-    def test_safe_14(self, data: Dict[str, str]) -> None:
+    def test_safe_14(self, data):
         game = _fill_safe(1)
         expected = data["safe_14"]
         actual = render_board(game)
         assert expected == actual
 
-    def test_top(self, data: Dict[str, str]) -> None:
+    def test_top(self, data):
         game = _fill_squares(0, 15)
         expected = data["top"]
         actual = render_board(game)
         assert expected == actual
 
-    def test_right(self, data: Dict[str, str]) -> None:
+    def test_right(self, data):
         game = _fill_squares(16, 29)
         expected = data["right"]
         actual = render_board(game)
         assert expected == actual
 
-    def test_bottom(self, data: Dict[str, str]) -> None:
+    def test_bottom(self, data):
         game = _fill_squares(30, 45)
         expected = data["bottom"]
         actual = render_board(game)
         assert expected == actual
 
-    def test_left(self, data: Dict[str, str]) -> None:
+    def test_left(self, data):
         game = _fill_squares(46, 59)
         expected = data["left"]
         actual = render_board(game)

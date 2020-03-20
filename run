@@ -49,7 +49,7 @@ run_isort() {
       run_install
    fi
 
-   poetry run isort **/*.py
+   poetry run isort src/**/*.py tests/*.py
 }
 
 # Run the unit tests, optionally with coverage

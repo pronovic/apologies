@@ -6,7 +6,7 @@ Implementations for command-line (CLI) tools.
 """
 
 import sys
-from typing import List, IO, Any
+from typing import IO, Any, List
 
 from apologies.game import Game
 from apologies.render import render_board

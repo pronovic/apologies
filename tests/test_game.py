@@ -23,14 +23,14 @@ from apologies.game import (
 
 
 class TestCard:
-    def test_constructor(self) -> None:
+    def test_constructor(self):
         card = Card(0, CardType.CARD_12)
         assert card.id == 0
         assert card.cardtype == CardType.CARD_12
 
 
 class TestDeck:
-    def test_constructor(self) -> None:
+    def test_constructor(self):
         deck = Deck()
 
         assert len(deck._draw_pile.keys()) == DECK_SIZE
@@ -42,7 +42,7 @@ class TestDeck:
         for cardtype in CardType:
             assert cardcounts[cardtype] == DECK_COUNTS[cardtype]
 
-    def test_draw_and_discard(self) -> None:
+    def test_draw_and_discard(self):
         deck = Deck()
 
         # Check that we can draw the entire dec
@@ -85,7 +85,7 @@ class TestDeck:
 
 # noinspection PyTypeHints
 class TestPawn:
-    def test_constructor(self) -> None:
+    def test_constructor(self):
         pawn = Pawn(PlayerColor.RED, 0)
         assert pawn.color == PlayerColor.RED
         assert pawn.index == 0
@@ -95,7 +95,7 @@ class TestPawn:
         assert pawn.safe is None
         assert pawn.square is None
 
-    def test_constructor_with_name(self) -> None:
+    def test_constructor_with_name(self):
         pawn = Pawn(PlayerColor.RED, 0, name="whatever")
         assert pawn.color == PlayerColor.RED
         assert pawn.index == 0
@@ -105,50 +105,50 @@ class TestPawn:
         assert pawn.safe is None
         assert pawn.square is None
 
-    def test_move_to_start(self) -> None:
+    def test_move_to_start(self):
         pawn = Pawn(PlayerColor.RED, 0)
-        pawn.start = "x"  # type: ignore[assignment]
-        pawn.home = "x"  # type: ignore[assignment]
-        pawn.safe = "x"  # type: ignore[assignment]
-        pawn.square = "x"  # type: ignore[assignment]
+        pawn.start = "x"
+        pawn.home = "x"
+        pawn.safe = "x"
+        pawn.square = "x"
         pawn.move_to_start()
         assert pawn.start is True
         assert pawn.home is False
         assert pawn.safe is None
         assert pawn.square is None
 
-    def test_move_to_home(self) -> None:
+    def test_move_to_home(self):
         pawn = Pawn(PlayerColor.RED, 0)
-        pawn.start = "x"  # type: ignore[assignment]
-        pawn.home = "x"  # type: ignore[assignment]
-        pawn.safe = "x"  # type: ignore[assignment]
-        pawn.square = "x"  # type: ignore[assignment]
+        pawn.start = "x"
+        pawn.home = "x"
+        pawn.safe = "x"
+        pawn.square = "x"
         pawn.move_to_home()
         assert pawn.start is False
         assert pawn.home is True
         assert pawn.safe is None
         assert pawn.square is None
 
-    def test_move_to_safe_valid(self) -> None:
+    def test_move_to_safe_valid(self):
         for square in range(SAFE_SQUARES):
             pawn = Pawn(PlayerColor.RED, 0)
-            pawn.start = "x"  # type: ignore[assignment]
-            pawn.home = "x"  # type: ignore[assignment]
-            pawn.safe = "x"  # type: ignore[assignment]
-            pawn.square = "x"  # type: ignore[assignment]
+            pawn.start = "x"
+            pawn.home = "x"
+            pawn.safe = "x"
+            pawn.square = "x"
             pawn.move_to_safe(square)
             assert pawn.start is False
             assert pawn.home is False
             assert pawn.safe == square
             assert pawn.square is None
 
-    def test_move_to_safe_invalid(self) -> None:
+    def test_move_to_safe_invalid(self):
         for square in [-1000, -2 - 1, 5, 6, 1000]:
             with pytest.raises(ValueError):
                 pawn = Pawn(PlayerColor.RED, 0)
                 pawn.move_to_safe(square)
 
-    def test_move_to_square_invalid(self) -> None:
+    def test_move_to_square_invalid(self):
         for square in [-1000, -2 - 1, 60, 61, 1000]:
             with pytest.raises(ValueError):
                 pawn = Pawn(PlayerColor.RED, 0)
@@ -156,21 +156,21 @@ class TestPawn:
 
 
 class TestPlayer:
-    def test_constructor(self) -> None:
+    def test_constructor(self):
         player = Player(PlayerColor.RED)
         assert player.color == PlayerColor.RED
         assert len(player.pawns) == PAWNS
         for pawn in player.pawns:
             assert isinstance(pawn, Pawn)
 
-    def test_find_first_pawn_in_start(self) -> None:
+    def test_find_first_pawn_in_start(self):
         player = Player(PlayerColor.RED)
         for i in range(PAWNS):
             assert player.find_first_pawn_in_start() is player.pawns[i]
             player.pawns[i].move_to_home()
         assert player.find_first_pawn_in_start() is None
 
-    def test_all_pawns_in_home(self) -> None:
+    def test_all_pawns_in_home(self):
         player = Player(PlayerColor.RED)
         for i in range(PAWNS):
             assert player.all_pawns_in_home() is False
@@ -179,16 +179,16 @@ class TestPlayer:
 
 
 class TestHistory:
-    def test_constructor(self) -> None:
+    def test_constructor(self):
         player = flexmock()
-        history = History(player, "action")
+        history = History("action", player)
         assert history.player is player
         assert history.action == "action"
         assert history.timestamp <= arrow.utcnow()
 
 
 class TestGame:
-    def test_constructor_2_players_standard(self) -> None:
+    def test_constructor_2_players_standard(self):
         game = Game(2)
         assert len(game.players) == 2
         assert len(game.history) == 0
@@ -197,7 +197,7 @@ class TestGame:
             assert len(game.players[color].hand) == 0
         assert game.deck is not None
 
-    def test_constructor_3_players_standard(self) -> None:
+    def test_constructor_3_players_standard(self):
         game = Game(3)
         assert len(game.players) == 3
         assert len(game.history) == 0
@@ -206,7 +206,7 @@ class TestGame:
             assert len(game.players[color].hand) == 0
         assert game.deck is not None
 
-    def test_constructor_4_players_standard(self) -> None:
+    def test_constructor_4_players_standard(self):
         game = Game(4)
         assert len(game.players) == 4
         assert len(game.history) == 0
@@ -215,12 +215,12 @@ class TestGame:
             assert len(game.players[color].hand) == 0
         assert game.deck is not None
 
-    def test_constructor_invalid_players(self) -> None:
+    def test_constructor_invalid_players(self):
         for playercount in [-2, -1, 0, 1, 5, 6]:
             with pytest.raises(ValueError):
                 Game(playercount)
 
-    def test_copy(self) -> None:
+    def test_copy(self):
         game = Game(4)
         game.players[PlayerColor.RED].pawns[0].move_to_square(32)
         game.players[PlayerColor.BLUE].pawns[2].move_to_home()
@@ -229,7 +229,7 @@ class TestGame:
         copy = game.copy()
         assert copy == game
 
-    def test_json_roundtrip(self) -> None:
+    def test_json_roundtrip(self):
         game = Game(4)
         game.players[PlayerColor.RED].pawns[0].move_to_square(32)
         game.players[PlayerColor.BLUE].pawns[2].move_to_home()
@@ -239,16 +239,35 @@ class TestGame:
         copy = Game.from_json(data)
         assert copy == game
 
-    def test_track(self) -> None:
+    def test_track(self):
         game = Game(4)
         player = flexmock()
-        game.track(player, "action")
-        assert game.history == [History(player, "action")]
+        game.track("action", player)
+        assert game.history == [History("action", player)]
 
-    def test_find_pawn_on_square(self) -> None:
+    def test_find_pawn_on_square(self):
         game = Game(4)
         assert game.find_pawn_on_square(32) is None
         game.players[PlayerColor.RED].pawns[0].move_to_square(32)
         assert game.find_pawn_on_square(32) is game.players[PlayerColor.RED].pawns[0]
         game.players[PlayerColor.GREEN].pawns[0].move_to_square(32)
         assert game.find_pawn_on_square(32) is game.players[PlayerColor.RED].pawns[0]  # returns the first found
+
+    def test_started(self):
+        game = Game(4)
+        assert game.started is False
+        game.track("whatever")
+        assert game.started is True
+
+    def test_completed(self):
+        game = Game(4)
+
+        # move all but last pawn into home for all of the players; the game is not complete
+        for player in game.players.values():
+            for i in range(PAWNS - 1):
+                assert game.completed is False
+                player.pawns[i].move_to_home()
+
+        # move the final pawn to home for one player; now the game is complete
+        game.players[PlayerColor.RED].pawns[PAWNS - 1].move_to_home()
+        assert game.completed is True

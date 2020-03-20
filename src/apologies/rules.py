@@ -2,18 +2,15 @@
 # vim: set ft=python ts=4 sw=4 expandtab:
 
 """
-Implements all rules related to game play.
+Implements rules related to game play.
 """
 
 from enum import Enum
-from typing import Sequence, Optional
+from typing import Optional, Sequence
 
 import attr
 
-from .game import Game, GameMode, PlayerColor, Card, Pawn
-
-# For an adult-mode game, we deal out 5 cards
-_ADULT_HAND = 5
+from .game import ADULT_HAND, Card, CardType, Game, GameMode, Pawn, PlayerColor
 
 # The start squares for each color
 _START_SQUARE = {
@@ -21,6 +18,21 @@ _START_SQUARE = {
     PlayerColor.BLUE: 19,
     PlayerColor.YELLOW: 34,
     PlayerColor.GREEN: 49,
+}
+
+# Whether a card draws again
+_DRAW_AGAIN = {
+    CardType.CARD_1: False,
+    CardType.CARD_2: True,
+    CardType.CARD_3: False,
+    CardType.CARD_4: False,
+    CardType.CARD_5: False,
+    CardType.CARD_7: False,
+    CardType.CARD_8: False,
+    CardType.CARD_10: False,
+    CardType.CARD_11: False,
+    CardType.CARD_12: False,
+    CardType.CARD_APOLOGIES: False,
 }
 
 
@@ -59,11 +71,15 @@ class Move:
     actions = attr.ib(type=Sequence[Action])
 
 
+class ValidationError(ValueError):
+    """Indicates that a move is invalid."""
+
+
 @attr.s
 class Rules:
 
     """
-    Implements all rules related to game play.
+    Implements rules related to game play.
 
     Attributes:
         mode(GameMode): The game mode
@@ -71,17 +87,42 @@ class Rules:
 
     mode = attr.ib(type=GameMode)
 
-    def start_game(self, game: Game) -> Game:
-        """Start the game, returning a copy of game state."""
+    # noinspection PyMethodMayBeStatic
+    def draw_again(self, card: Card) -> bool:
+        """Whether the player gets to draw again based on the passed-in card."""
+        return _DRAW_AGAIN[card.cardtype]
+
+    def start_game(self, game: Game) -> None:
+        """
+        Start the game.
+
+        Args:
+            game(Game): Game to operate on
+        """
+        if game.started:
+            raise ValueError("Game is already started")
+        game.track("Game started with mode: %s" % self.mode)
         if self.mode == GameMode.ADULT:
             Rules._setup_adult_mode(game)
-        return game.copy()
+
+    def execute_move(self, game: Game, color: PlayerColor, move: Move) -> None:
+        """
+        Execute a player's move, updating game state.
+
+        Args:
+            game(Game): Game to operate on
+            color(PlayerColor): Color of the player associated with the move
+            move(Move): Move to validate
+
+        Raises:
+            ValidationError: If the move is not valid
+        """
 
     @staticmethod
     def _setup_adult_mode(game: Game) -> None:
         """Setup adult mode at the start of the game, which moves some pieces and deals some cards."""
         for player in game.players.values():
             player.pawns[0].move_to_square(_START_SQUARE[player.color])
-        for _ in range(_ADULT_HAND):
+        for _ in range(ADULT_HAND):
             for player in game.players.values():
                 player.hand.append(game.deck.draw())

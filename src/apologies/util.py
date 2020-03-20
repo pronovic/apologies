@@ -5,13 +5,14 @@
 Utility functionality.
 """
 
-from typing import List, Generic, TypeVar
+from typing import Generic, List, TypeVar
+
 import attr
 
 Type = TypeVar("Type")
 
 
-@attr.s(frozen=True)
+@attr.s
 class CircularQueue(Generic[Type]):
     """A circular queue, that keeps returning the original entries repeatedly, in order."""
 

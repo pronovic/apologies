@@ -17,31 +17,26 @@ constructor arguments and should not modify public attributes if an alternate me
 is available for use.
 
 Attributes:
-    ADULT_HAND: The size of a hand of cards for an adult-mode game
     MIN_PLAYERS(int): Minimum number of players in a game
     MAX_PLAYERS(int): Maximum number of players in a game
-    PLAYER_RED(str): The red player color
-    PLAYER_BLUE(str): The blue player color
-    PLAYER_YELLOW(str): The yellow player color
-    PLAYER_GREEN(str): The green player color
-    PLAYER_COLORS(list): All available player colors, listed in order of use
     PAWNS(int): Number of pawns per player
     SAFE_SQUARES(int): Number of safe squares for each color
     BOARD_SQUARES(int): Number of squares around the outside of the board
+    ADULT_HAND(int): Number of cards in a player's hand for an adult mode game
     DECK_COUNTS: Dictionary from card name to number of cards in a standard deck
     DECK_SIZE: The total expected size of a complete deck
 """
 
 from __future__ import annotations  # see: https://stackoverflow.com/a/33533514/2907667
 
-import random
 import json
+import random
 from enum import Enum
-from typing import Optional, List, Dict
+from typing import Dict, List, Optional
 
+import arrow
 import attr
 import cattr
-import arrow
 from arrow import Arrow
 
 # A game consists of 2-4 players
@@ -87,6 +82,9 @@ class CardType(Enum):
     CARD_12 = "12"
     CARD_APOLOGIES = "Apologies"
 
+
+# For an adult-mode game, we deal out 5 cards
+ADULT_HAND = 5
 
 # Deck definitions
 DECK_COUNTS = {
@@ -290,8 +288,8 @@ class Player:
 class History:
     """Tracks a move made by a player."""
 
-    player = attr.ib(type=Player)
     action = attr.ib(type=str)
+    player = attr.ib(default=None, type=Optional[Player])
     timestamp = attr.ib(type=Arrow, default=arrow.utcnow())
 
 
@@ -331,6 +329,20 @@ class Game:
     def _init_history(self) -> List[History]:
         return []
 
+    @property
+    def started(self) -> bool:
+        """Whether the game has been started."""
+        print("*********** HISTORY: %d" % len(self.history))
+        return len(self.history) > 0  # if there is any history the game has been started
+
+    @property
+    def completed(self) -> bool:
+        """Whether the game is completed."""
+        for player in self.players.values():
+            if player.all_pawns_in_home():
+                return True
+        return False
+
     def copy(self) -> Game:
         """Return a fully-independent copy of the game."""
         return cattr.structure(cattr.unstructure(self), Game)  # type: ignore
@@ -344,9 +356,9 @@ class Game:
         """Deserialize the game state from JSON."""
         return cattr.structure(json.loads(data), Game)  # type: ignore
 
-    def track(self, player: Player, action: str) -> None:
+    def track(self, action: str, player: Optional[Player] = None) -> None:
         """Tracks a move made by a player."""
-        self.history.append(History(player, action))
+        self.history.append(History(action, player))
 
     def find_pawn_on_square(self, square: int) -> Optional[Pawn]:
         """Return the pawn on the indicated square, or None."""

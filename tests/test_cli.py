@@ -3,7 +3,6 @@
 # pylint: disable=redefined-outer-name
 
 import os
-from typing import Dict
 
 import pytest
 from flexmock import flexmock
@@ -14,7 +13,7 @@ FIXTURE_DIR = os.path.join(os.path.dirname(__file__), "fixtures/test_cli")
 
 
 @pytest.fixture
-def data() -> Dict[str, str]:
+def data():
     data = {}
     for f in os.listdir(FIXTURE_DIR):
         p = os.path.join(FIXTURE_DIR, f)
@@ -29,7 +28,7 @@ class TestCli:
     General unit tests for the CLI interface.
     """
 
-    def test_lookup_method(self) -> None:
+    def test_lookup_method(self):
         assert _lookup_method("example") is _example
         assert _lookup_method("render") is _render
         with pytest.raises(AttributeError):
@@ -37,7 +36,7 @@ class TestCli:
         with pytest.raises(AttributeError):
             assert _lookup_method("bogus")
 
-    def test_example(self) -> None:
+    def test_example(self):
         argv = ["1", "a", "b"]
         stdout = flexmock(write=lambda x: None)
         stderr = flexmock(write=lambda x: None)
@@ -45,7 +44,7 @@ class TestCli:
         flexmock(stderr).should_receive("write").with_args("Hello, stderr: 1\n").once()
         _example(argv, stdout, stderr)
 
-    def test_main(self) -> None:
+    def test_main(self):
         cli("example")  # Just make sure it doesn't blow up
 
 
@@ -54,7 +53,7 @@ class TestRender:
     Unit tests for the render script.
     """
 
-    def test_render(self, data: Dict[str, str]) -> None:
+    def test_render(self, data):
         stdout = flexmock(write=lambda x: None)
         flexmock(stdout).should_receive("write").with_args(data["render"]).once()
         _render(flexmock(), stdout, flexmock())
