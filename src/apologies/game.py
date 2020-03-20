@@ -8,7 +8,7 @@ Note that these classes track game state, but do not implement game rules.  The
 only validations are to prevent changes that literally cannot be represented in
 game state, such as selecting an invalid square.  All other rules (such as the
 restriction that only one pawn can occupy a space, or the act of sliding down a
-slider, etc.) are implemented in the play module, using the methods available on these
+slider, etc.) are implemented in the rules module, using the methods available on these
 classes.
 
 In many cases, private attributes are accessible in the constructor to support
