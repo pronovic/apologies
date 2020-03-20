@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # vim: set ft=python ts=4 sw=4 expandtab:
 # pylint: disable=redefined-outer-name
-# Unit tests for render.py
 
 import os
 from typing import Dict

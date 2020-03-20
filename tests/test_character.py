@@ -1,65 +1,10 @@
 # -*- coding: utf-8 -*-
 # vim: set ft=python ts=4 sw=4 expandtab:
 # pylint: disable=no-self-use,protected-access
-# Unit tests for game.py
 
 from flexmock import flexmock
 
-from apologies.character import Action, ActionType, Character, Move
-from apologies.game import Card, CardType, Pawn, PlayerColor
-
-
-class TestAction:
-    def test_move_from_start(self) -> None:
-        mine = Pawn(PlayerColor.BLUE, 1, "whatever")
-        action = Action(ActionType.MOVE_FROM_START, mine=mine)
-        assert action.actiontype == ActionType.MOVE_FROM_START
-        assert action.mine is mine
-        assert action.theirs is None
-        assert action.squares is None
-
-    def test_move_forward(self) -> None:
-        mine = Pawn(PlayerColor.BLUE, 1, "whatever")
-        action = Action(actiontype=ActionType.MOVE_FORWARD, mine=mine, squares=5)
-        assert action.actiontype == ActionType.MOVE_FORWARD
-        assert action.mine is mine
-        assert action.theirs is None
-        assert action.squares == 5
-
-    def test_move_backward(self) -> None:
-        mine = Pawn(PlayerColor.BLUE, 1, "whatever")
-        action = Action(actiontype=ActionType.MOVE_BACKARD, mine=mine, squares=5)
-        assert action.actiontype == ActionType.MOVE_BACKARD
-        assert action.mine is mine
-        assert action.theirs is None
-        assert action.squares == 5
-
-    def test_change_places(self) -> None:
-        mine = Pawn(PlayerColor.BLUE, 1, "whatever")
-        theirs = Pawn(PlayerColor.BLUE, 2, "theirs")
-        action = Action(actiontype=ActionType.CHANGE_PLACES, mine=mine, theirs=theirs, squares=5)
-        assert action.actiontype == ActionType.CHANGE_PLACES
-        assert action.mine is mine
-        assert action.theirs is theirs
-        assert action.squares == 5
-
-    def test_bump_to_start(self) -> None:
-        mine = Pawn(PlayerColor.BLUE, 1, "whatever")
-        theirs = Pawn(PlayerColor.BLUE, 1, "whatever")
-        action = Action(actiontype=ActionType.BUMP_TO_START, mine=mine, theirs=theirs)
-        assert action.actiontype == ActionType.BUMP_TO_START
-        assert action.mine is mine
-        assert action.theirs is theirs
-        assert action.squares is None
-
-
-class TestMove:
-    def test_constructor(self) -> None:
-        card = Card(3, CardType.CARD_12)
-        actions = [Action(ActionType.MOVE_FROM_START, mine=Pawn(PlayerColor.BLUE, 1, "whatever"))]
-        move = Move(card, actions)
-        assert move.card is card
-        assert move.actions == actions
+from apologies.character import Character
 
 
 class TestCharacter:

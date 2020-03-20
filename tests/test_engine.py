@@ -6,56 +6,33 @@
 from flexmock import flexmock
 
 from apologies.character import Character
-from apologies.engine import ADULT_HAND, Engine, _Player
-from apologies.game import DECK_SIZE, GameMode, Player, PlayerColor
-
-
-class TestPlayer:
-    def test_constructor(self) -> None:
-        gameplayer = Player(PlayerColor.BLUE)
-        character = Character("one", flexmock())
-        player = _Player(gameplayer, character)
-        assert player.player is gameplayer
-        assert player.character is character
-        assert player.winner is False
+from apologies.engine import Engine
+from apologies.game import GameMode, PlayerColor
 
 
 class TestEngine:
     def test_constructor(self) -> None:
         character1 = Character("one", flexmock())
         character2 = Character("two", flexmock())
-        engine = Engine([character1, character2], GameMode.STANDARD)
+        engine = Engine(GameMode.STANDARD, [character1, character2])
         assert engine.characters == [character1, character2]
         assert engine.mode == GameMode.STANDARD
         assert engine.started is False
         assert engine.completed is False
         assert len(engine._game.players) == 2
         assert engine._queue.entries == [PlayerColor.RED, PlayerColor.YELLOW]
-        assert engine._players == {
-            PlayerColor.RED: _Player(engine._game.players[PlayerColor.RED], character1),
-            PlayerColor.YELLOW: _Player(engine._game.players[PlayerColor.YELLOW], character2),
-        }
+        assert engine._rules.mode == GameMode.STANDARD
 
-    def test_start_game_standard(self) -> None:
+    def test_start_game(self) -> None:
+        engine = TestEngine._create_engine()
+        expected = flexmock()
+        flexmock(engine._rules).should_receive("start_game").once().and_return(expected)
+        assert engine.start_game() == expected
+
+    @staticmethod
+    def _create_engine() -> Engine:
         character1 = Character("one", flexmock())
         character2 = Character("two", flexmock())
-        engine = Engine([character1, character2], GameMode.STANDARD)
-        engine.start_game()
-        assert engine.started is True
-        for color in [PlayerColor.RED, PlayerColor.YELLOW]:
-            assert engine._game.players[color].color == color
-            assert len(engine._game.players[color].hand) == 0
-
-    def test_start_game_adult(self) -> None:
-        character1 = Character("one", flexmock())
-        character2 = Character("two", flexmock())
-        engine = Engine([character1, character2], GameMode.ADULT)
-        engine.start_game()
-        assert engine.started is True
-        assert len(engine._game.deck._draw_pile) == DECK_SIZE - (2 * ADULT_HAND)
-        assert engine._game.players[PlayerColor.RED].color == PlayerColor.RED
-        assert engine._game.players[PlayerColor.RED].pawns[0].square == 4
-        assert len(engine._game.players[PlayerColor.RED].hand) == ADULT_HAND
-        assert engine._game.players[PlayerColor.YELLOW].color == PlayerColor.YELLOW
-        assert engine._game.players[PlayerColor.YELLOW].pawns[0].square == 34
-        assert len(engine._game.players[PlayerColor.YELLOW].hand) == ADULT_HAND
+        engine = Engine(GameMode.STANDARD, [character1, character2])
+        engine._rules = flexmock()
+        return engine
