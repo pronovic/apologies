@@ -45,7 +45,6 @@ class _Player:
     player = attr.ib(type=Player)
     character = attr.ib(type=Character)
     winner = attr.ib(init=False, default=False)
-    score = attr.ib(init=False, default=0)
 
 
 @attr.s
@@ -64,10 +63,42 @@ class Engine:
         _queue(CircularQueue): Queue that controls the order in which characters play
     """
 
-    mode = attr.ib(init=False, default=GameMode.STANDARD, type=GameMode)
     characters = attr.ib(type=List[Character])
+    mode = attr.ib(default=GameMode.STANDARD, type=GameMode)
     started = attr.ib(init=False, default=False, type=bool)
     completed = attr.ib(init=False, default=False, type=bool)
-    game = attr.ib(init=False, type=Game)
+    _game = attr.ib(init=False, type=Game)
     _players = attr.ib(init=False, type=Dict[PlayerColor, _Player])
-    _queue = attr.ib(init=False, type=CircularQueue)
+    _queue = attr.ib(init=False, type=CircularQueue[PlayerColor])
+
+    @_game.default
+    def _init_game(self) -> Game:
+        return Game(playercount=len(self.characters))
+
+    @_players.default
+    def _init_players(self) -> Dict[PlayerColor, _Player]:
+        index = 0
+        players = {}
+        for player in self._game.players.values():
+            players[player.color] = _Player(player, self.characters[index])
+            index += 1
+        return players
+
+    @_queue.default
+    def _init_queue(self) -> CircularQueue[PlayerColor]:
+        return CircularQueue(list(self._game.players.keys()))
+
+    def start_game(self) -> Game:
+        """Start the game, returning a copy of the current game state."""
+        self.started = True
+        if self.mode == GameMode.ADULT:
+            self._setup_adult_mode()
+        return self._game.copy()
+
+    def _setup_adult_mode(self) -> None:
+        """Setup adult mode at the start of the game, which moves some pieces and deals some cards."""
+        for player in self._game.players.values():
+            player.pawns[0].move_to_square(_START_SQUARE[player.color])
+        for _ in range(ADULT_HAND):
+            for player in self._game.players.values():
+                player.hand.append(self._game.deck.draw())

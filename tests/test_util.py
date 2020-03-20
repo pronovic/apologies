@@ -15,6 +15,7 @@ class TestCircularQueue:
 
     def test_constructor_single(self) -> None:
         queue = CircularQueue(["a"])
+        assert queue.entries == ["a"]
         assert queue.next() == "a"
         assert queue.next() == "a"
         assert queue.next() == "a"
@@ -23,7 +24,8 @@ class TestCircularQueue:
         assert queue.next() == "a"
 
     def test_constructor_multiple(self) -> None:
-        queue = CircularQueue(["a", "b", "c",])
+        queue = CircularQueue(["a", "b", "c"])
+        assert queue.entries == ["a", "b", "c"]
         assert queue.next() == "a"
         assert queue.next() == "b"
         assert queue.next() == "c"
