@@ -29,15 +29,16 @@ Attributes:
 
 from __future__ import annotations  # see: https://stackoverflow.com/a/33533514/2907667
 
-import json
 import random
 from enum import Enum
 from typing import Dict, List, Optional
 
-import arrow
 import attr
-import cattr
-from arrow import Arrow
+import orjson
+import pendulum
+from pendulum.datetime import DateTime
+
+from .util import CattrConverter
 
 # A game consists of 2-4 players
 MIN_PLAYERS = 2
@@ -113,7 +114,7 @@ class Card:
         name(str): The name of the card
     """
 
-    id = attr.ib(type=int)
+    id = attr.ib(type=str)
     cardtype = attr.ib(type=CardType)
 
 
@@ -126,21 +127,21 @@ class Deck:
     support serialization and deserialization.
     """
 
-    _draw_pile = attr.ib(type=Dict[int, Card])
-    _discard_pile = attr.ib(type=Dict[int, Card])
+    _draw_pile = attr.ib(type=Dict[str, Card])
+    _discard_pile = attr.ib(type=Dict[str, Card])
 
     @_draw_pile.default
-    def _init_draw_pile(self) -> Dict[int, Card]:
+    def _init_draw_pile(self) -> Dict[str, Card]:
         pile = {}
         cardid = 0
         for card in CardType:
             for _ in range(DECK_COUNTS[card]):
-                pile[cardid] = Card(cardid, card)
+                pile["%d" % cardid] = Card("%d" % cardid, card)
                 cardid += 1
         return pile
 
     @_discard_pile.default
-    def _init_discard_pile(self) -> Dict[int, Card]:
+    def _init_discard_pile(self) -> Dict[str, Card]:
         return {}
 
     def draw(self) -> Card:
@@ -289,8 +290,8 @@ class History:
     """Tracks a move made by a player."""
 
     action = attr.ib(type=str)
-    player = attr.ib(default=None, type=Optional[Player])
-    timestamp = attr.ib(type=Arrow, default=arrow.utcnow())
+    color = attr.ib(default=None, type=Optional[PlayerColor])
+    timestamp = attr.ib(type=DateTime, default=pendulum.now(pendulum.UTC))
 
 
 @attr.s
@@ -306,6 +307,8 @@ class Game:
         players(:obj:`dict` of :obj:`Player`): All players in the game
         deck(Deck): The deck of cards for the game
     """
+
+    converter = CattrConverter()
 
     playercount = attr.ib(type=int)
     players = attr.ib(type=Dict[PlayerColor, Player])
@@ -332,7 +335,6 @@ class Game:
     @property
     def started(self) -> bool:
         """Whether the game has been started."""
-        print("*********** HISTORY: %d" % len(self.history))
         return len(self.history) > 0  # if there is any history the game has been started
 
     @property
@@ -345,20 +347,20 @@ class Game:
 
     def copy(self) -> Game:
         """Return a fully-independent copy of the game."""
-        return cattr.structure(cattr.unstructure(self), Game)  # type: ignore
+        return Game.converter.structure(Game.converter.unstructure(self), Game)  # type: ignore
 
     def to_json(self) -> str:
         """Serialize the game state to JSON."""
-        return json.dumps(cattr.unstructure(self), indent=2)
+        return orjson.dumps(Game.converter.unstructure(self), option=orjson.OPT_INDENT_2).decode("utf-8")  # type: ignore
 
     @staticmethod
     def from_json(data: str) -> Game:
         """Deserialize the game state from JSON."""
-        return cattr.structure(json.loads(data), Game)  # type: ignore
+        return Game.converter.structure(orjson.loads(data), Game)  # type: ignore
 
     def track(self, action: str, player: Optional[Player] = None) -> None:
         """Tracks a move made by a player."""
-        self.history.append(History(action, player))
+        self.history.append(History(action, player.color if player else None))
 
     def find_pawn_on_square(self, square: int) -> Optional[Pawn]:
         """Return the pawn on the indicated square, or None."""

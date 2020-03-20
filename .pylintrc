@@ -64,6 +64,7 @@ confidence=
 # no Warning level messages displayed, use "--disable=all --enable=classes
 # --disable=W".
 disable=fixme,
+        c-extension-no-member,
         missing-class-docstring,
         missing-module-docstring,   
         missing-function-docstring,
@@ -78,7 +79,7 @@ disable=fixme,
 # either give multiple identifier separated by comma (,) or put this option
 # multiple time (only on the command line, not in the configuration file where
 # it should appear only once). See also the "--disable" option for examples.
-enable=c-extension-no-member
+enable=
 
 
 [REPORTS]
@@ -258,7 +259,7 @@ indent-after-paren=4
 indent-string='    '
 
 # Maximum number of characters on a single line.
-max-line-length=120
+max-line-length=132
 
 # Maximum number of lines in a module.
 max-module-lines=1000

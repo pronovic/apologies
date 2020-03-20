@@ -8,8 +8,22 @@ Utility functionality.
 from typing import Generic, List, TypeVar
 
 import attr
+import cattr
+from pendulum.datetime import DateTime
+from pendulum.parser import parse
 
 Type = TypeVar("Type")
+
+
+class CattrConverter(cattr.Converter):  # type: ignore
+    """
+    Cattr converter that serializes/deserializes DateTime to an ISO 8601 timestamp.
+    """
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.register_unstructure_hook(DateTime, lambda datetime: datetime.isoformat() if datetime else None)
+        self.register_structure_hook(DateTime, lambda string, _: parse(string) if string else None)
 
 
 @attr.s

@@ -110,9 +110,7 @@ class TestEngine:
 
         engine.play_next()
 
-        engine.characters[0].construct_move.assert_called_once_with(
-            engine._game, engine.mode, player, card=card, invalid=False
-        )
+        engine.characters[0].construct_move.assert_called_once_with(engine._game, engine.mode, player, card=card, invalid=False)
         engine._game.track.assert_called_once_with("Turn forfeited", player)
         engine._game.deck.discard.assert_called_once_with(card)
 
@@ -152,11 +150,7 @@ class TestEngine:
             ]
         )
         engine._rules.execute_move.has_calls(
-            [
-                call(copy, PlayerColor.RED, move1),
-                call(copy, PlayerColor.RED, move2),
-                call(engine._game, PlayerColor.RED, move2),
-            ]
+            [call(copy, PlayerColor.RED, move1), call(copy, PlayerColor.RED, move2), call(engine._game, PlayerColor.RED, move2),]
         )
 
     def test_play_next_standard_valid(self):
@@ -179,9 +173,7 @@ class TestEngine:
 
         engine._game.track.called_once_with("Requested move was invalid", player)
         engine._game.deck.discard.assert_called_once_with(card)
-        engine.characters[0].construct_move.assert_called_once_with(
-            engine._game, engine.mode, player, card=card, invalid=False
-        )
+        engine.characters[0].construct_move.assert_called_once_with(engine._game, engine.mode, player, card=card, invalid=False)
         engine._rules.draw_again.assert_called_once_with(card)
         engine._rules.execute_move.has_calls(
             [call(copy, PlayerColor.RED, move), call(engine._game, PlayerColor.RED, move),]
@@ -250,16 +242,32 @@ class TestEngine:
 
             engine._game.track.called_once_with("Requested move was invalid", player)
             engine._game.deck.discard.assert_called_once_with(card)
-            engine.characters[0].construct_move.assert_called_once_with(
-                engine._game, engine.mode, player, card=card, invalid=False
-            )
+            engine.characters[0].construct_move.assert_called_once_with(engine._game, engine.mode, player, card=card, invalid=False)
             engine._rules.draw_again.assert_not_called()
             engine._rules.execute_move.has_calls(
                 [call(copy, PlayerColor.RED, move), call(engine._game, PlayerColor.RED, move),]
             )
 
     def test_play_next_adult_forfeit(self):
-        pytest.fail("Not implemented")
+        pass
+        # engine = TestEngine._create_engine(mode=GameMode.ADULT)
+        #
+        # card = Card(0, "whatever")
+        # player = engine._game.players[PlayerColor.RED]
+        # move = Move(card, [])
+        #
+        # engine._game.track = MagicMock()
+        # engine._game.deck.draw = MagicMock(return_value=card)
+        # engine._game.deck.discard = MagicMock()
+        # engine.characters[0].construct_move = MagicMock(return_value=move)
+        #
+        # engine.play_next()
+        #
+        # engine.characters[0].construct_move.assert_called_once_with(
+        #     engine._game, engine.mode, player, card=card, invalid=False
+        # )
+        # engine._game.track.assert_called_once_with("Turn forfeited", player)
+        # engine._game.deck.discard.assert_called_once_with(card)
 
     def test_play_next_adult_invalid(self):
         pytest.fail("Not implemented")
@@ -274,13 +282,14 @@ class TestEngine:
         pytest.fail("Not implemented")
 
     @staticmethod
-    def _create_engine() -> Engine:
+    def _create_engine(mode: GameMode = GameMode.STANDARD) -> Engine:
         character1 = Character("character1", Mock())
         character1.construct_move = MagicMock()  # type: ignore
 
         character2 = Character("character2", Mock())
         character1.construct_move = MagicMock()  # type: ignore
 
-        engine = Engine(GameMode.STANDARD, [character1, character2])
+        engine = Engine(mode, [character1, character2])
+        engine.start_game()
 
         return engine

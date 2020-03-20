@@ -2,9 +2,9 @@
 # vim: set ft=python ts=4 sw=4 expandtab:
 # pylint: disable=no-self-use,protected-access
 
-import arrow
 import pytest
 from flexmock import flexmock
+from pendulum.datetime import DateTime
 
 from apologies.game import (
     DECK_COUNTS,
@@ -180,11 +180,11 @@ class TestPlayer:
 
 class TestHistory:
     def test_constructor(self):
-        player = flexmock()
-        history = History("action", player)
-        assert history.player is player
+        color = PlayerColor.BLUE
+        history = History("action", color)
+        assert history.color is color
         assert history.action == "action"
-        assert history.timestamp <= arrow.utcnow()
+        assert history.timestamp <= DateTime.utcnow()
 
 
 class TestGame:
@@ -222,6 +222,7 @@ class TestGame:
 
     def test_copy(self):
         game = Game(4)
+        game.track("this happened", game.players[PlayerColor.RED])
         game.players[PlayerColor.RED].pawns[0].move_to_square(32)
         game.players[PlayerColor.BLUE].pawns[2].move_to_home()
         game.players[PlayerColor.YELLOW].pawns[3].move_to_safe(1)
@@ -231,6 +232,7 @@ class TestGame:
 
     def test_json_roundtrip(self):
         game = Game(4)
+        game.track("this happened", game.players[PlayerColor.RED])
         game.players[PlayerColor.RED].pawns[0].move_to_square(32)
         game.players[PlayerColor.BLUE].pawns[2].move_to_home()
         game.players[PlayerColor.YELLOW].pawns[3].move_to_safe(1)
@@ -239,11 +241,16 @@ class TestGame:
         copy = Game.from_json(data)
         assert copy == game
 
-    def test_track(self):
+    def test_track_no_player(self):
         game = Game(4)
-        player = flexmock()
+        game.track("action")
+        assert game.history == [History("action")]
+
+    def test_track_with_player(self):
+        game = Game(4)
+        player = flexmock(color=PlayerColor.RED)
         game.track("action", player)
-        assert game.history == [History("action", player)]
+        assert game.history == [History("action", PlayerColor.RED)]
 
     def test_find_pawn_on_square(self):
         game = Game(4)

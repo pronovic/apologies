@@ -22,8 +22,9 @@ classifiers=[
 [tool.poetry.dependencies]
 python = "^3.7"
 attrs = "^19.3.0"
-arrow = "^0.15.5"
 cattrs = "^1.0.0"
+pendulum = "^2.1.0"
+orjson = "^2.6.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
@@ -40,7 +41,7 @@ isort = "^4.3.21"
 Mock = "^4.0.2"
 
 [tool.black]
-line-length = 120
+line-length = 132
 target-version = ['py37', 'py38']
 include = '(src\/scripts\/.*$|\.pyi?$)'
 exclude = '''
