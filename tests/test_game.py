@@ -45,7 +45,7 @@ class TestDeck:
     def test_draw_and_discard(self):
         deck = Deck()
 
-        # Check that we can draw the entire dec
+        # Check that we can draw the entire deck
         drawn = []
         for _ in range(DECK_SIZE):
             drawn.append(deck.draw())
@@ -62,12 +62,21 @@ class TestDeck:
         assert len(deck._discard_pile) == 0
         assert len(deck._draw_pile) == 0
 
+        # Confirm that we're not allowed to discard the same card twice
+        card = drawn.pop()
+        deck.discard(card)
+        with pytest.raises(ValueError):
+            deck.discard(card)
+
         # Discard a few others and prove they can also be drawn
         deck.discard(drawn.pop())
         deck.discard(drawn.pop())
         deck.discard(drawn.pop())
-        assert len(deck._discard_pile) == 3
+        assert len(deck._discard_pile) == 4
         assert len(deck._draw_pile) == 0
+        deck.draw()
+        assert len(deck._discard_pile) == 0
+        assert len(deck._draw_pile) == 3
         deck.draw()
         assert len(deck._discard_pile) == 0
         assert len(deck._draw_pile) == 2

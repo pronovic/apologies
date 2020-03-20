@@ -140,7 +140,7 @@ class TestEngine:
 
         engine.play_next()
 
-        engine._game.track.called_once_with("Requested move was invalid", player)
+        engine._game.track.assert_called_once_with("Requested move was invalid", player)
         engine._game.deck.discard.assert_called_once_with(card)
         engine._rules.draw_again.assert_called_once_with(card)
         engine.characters[0].construct_move.assert_has_calls(
@@ -171,7 +171,6 @@ class TestEngine:
 
         engine.play_next()
 
-        engine._game.track.called_once_with("Requested move was invalid", player)
         engine._game.deck.discard.assert_called_once_with(card)
         engine.characters[0].construct_move.assert_called_once_with(engine._game, engine.mode, player, card=card, invalid=False)
         engine._rules.draw_again.assert_called_once_with(card)
@@ -184,8 +183,6 @@ class TestEngine:
 
         card1 = Card(0, CardType.CARD_12)
         card2 = Card(1, CardType.CARD_10)
-        move1 = Move(card1, [Mock()])
-        move2 = Move(card2, [Mock()])
         player = engine._game.players[PlayerColor.RED]
         copy = Mock()
         move1 = Move(card1, [Action(ActionType.BUMP_TO_START, Mock())])
@@ -202,13 +199,13 @@ class TestEngine:
         engine.play_next()
 
         engine._game.deck.discard.has_calls([call(card1), call(card2)])
+        engine._rules.draw_again.has_calls([call(card1), call(card2)])
         engine.characters[0].construct_move.assert_has_calls(
             [
                 call(engine._game, engine.mode, player, card=card1, invalid=False),
                 call(engine._game, engine.mode, player, card=card2, invalid=False),
             ]
         )
-        engine._rules.draw_again.has_calls([call(card1), call(card2)])
         engine._rules.execute_move.has_calls(
             [
                 call(copy, PlayerColor.RED, move1),
@@ -218,11 +215,10 @@ class TestEngine:
             ]
         )
 
-    def test_play_next_standard_draw_complete(self):
+    def test_play_next_standard_complete(self):
         engine = TestEngine._create_engine()
 
         card = Card(0, CardType.CARD_12)
-        move = Move(card, [Mock()])
         player = engine._game.players[PlayerColor.RED]
         copy = Mock()
         move = Move(card, [Action(ActionType.BUMP_TO_START, Mock())])
@@ -240,28 +236,185 @@ class TestEngine:
 
             engine.play_next()
 
-            engine._game.track.called_once_with("Requested move was invalid", player)
             engine._game.deck.discard.assert_called_once_with(card)
-            engine.characters[0].construct_move.assert_called_once_with(engine._game, engine.mode, player, card=card, invalid=False)
             engine._rules.draw_again.assert_not_called()
+            engine.characters[0].construct_move.assert_called_once_with(engine._game, engine.mode, player, card=card, invalid=False)
             engine._rules.execute_move.has_calls(
                 [call(copy, PlayerColor.RED, move), call(engine._game, PlayerColor.RED, move),]
             )
 
     def test_play_next_adult_forfeit(self):
-        pytest.fail("Not implemented")
+        engine = TestEngine._create_engine(GameMode.ADULT)
+
+        player = engine._game.players[PlayerColor.RED]
+        movecard = player.hand[0]
+        replacementcard = Card(999, CardType.CARD_APOLOGIES)
+        move = Move(movecard, [])
+
+        engine._game.track = MagicMock()
+        engine._game.deck.draw = MagicMock(return_value=replacementcard)
+        engine._game.deck.discard = MagicMock()
+        engine.characters[0].construct_move = MagicMock(return_value=move)
+
+        engine.play_next()
+
+        engine.characters[0].construct_move.assert_called_once_with(engine._game, engine.mode, player, card=None, invalid=False)
+        engine._game.track.assert_called_once_with("Turn forfeited", player)
+        engine._game.deck.discard.assert_called_once_with(movecard)
+
+        assert movecard not in player.hand
+        assert replacementcard in player.hand
 
     def test_play_next_adult_invalid(self):
-        pytest.fail("Not implemented")
+        engine = TestEngine._create_engine(GameMode.ADULT)
+
+        player = engine._game.players[PlayerColor.RED]
+        movecard1 = player.hand[0]
+        movecard2 = player.hand[1]
+        replacementcard = Card(999, CardType.CARD_APOLOGIES)
+        exception = ValidationError("Hello")
+        copy = Mock()
+        move1 = Move(movecard1, [Action(ActionType.BUMP_TO_START, Mock())])
+        move2 = Move(movecard2, [Action(ActionType.CHANGE_PLACES, Mock())])
+
+        def execute_mock_stub(*args):
+            if args[2] is move1:
+                raise exception
+            return mock.DEFAULT
+
+        # note: I wanted to return two different copies, but that broke the test for some reason; I gave up
+        engine._game.track = MagicMock()
+        engine._game.copy = MagicMock(return_value=copy)
+        engine._game.deck.draw = MagicMock(return_value=replacementcard)
+        engine._game.deck.discard = MagicMock()
+        engine.characters[0].construct_move = MagicMock(side_effect=[move1, move2])
+        engine._rules.execute_move = MagicMock(side_effect=execute_mock_stub)
+        engine._rules.draw_again = MagicMock(return_value=False)
+
+        engine.play_next()
+
+        engine._game.track.assert_called_once_with("Requested move was invalid", player)
+        engine._game.deck.discard.assert_called_once_with(movecard2)
+        engine._rules.draw_again.assert_called_once_with(movecard2)
+        engine.characters[0].construct_move.assert_has_calls(
+            [
+                call(engine._game, engine.mode, player, card=None, invalid=False),
+                call(engine._game, engine.mode, player, card=None, invalid=True),
+            ]
+        )
+        engine._rules.execute_move.has_calls(
+            [call(copy, PlayerColor.RED, move1), call(copy, PlayerColor.RED, move2), call(engine._game, PlayerColor.RED, move2),]
+        )
+
+        assert movecard1 in player.hand
+        assert movecard2 not in player.hand
+        assert replacementcard in player.hand
 
     def test_play_next_adult_valid(self):
-        pytest.fail("Not implemented")
+        engine = TestEngine._create_engine(GameMode.ADULT)
+
+        player = engine._game.players[PlayerColor.RED]
+        movecard = player.hand[0]
+        replacementcard = Card(999, CardType.CARD_APOLOGIES)
+        copy = Mock()
+        move = Move(movecard, [Action(ActionType.BUMP_TO_START, Mock())])
+
+        engine._game.track = MagicMock()
+        engine._game.copy = MagicMock(return_value=copy)
+        engine._game.deck.draw = MagicMock(return_value=replacementcard)
+        engine._game.deck.discard = MagicMock()
+        engine.characters[0].construct_move = MagicMock(return_value=move)
+        engine._rules.execute_move = MagicMock()
+        engine._rules.draw_again = MagicMock(return_value=False)
+
+        engine.play_next()
+
+        engine._game.deck.discard.assert_called_once_with(movecard)
+        engine._rules.draw_again.assert_called_once_with(movecard)
+        engine.characters[0].construct_move.assert_called_once_with(engine._game, engine.mode, player, card=None, invalid=False)
+        engine._rules.execute_move.has_calls(
+            [call(copy, PlayerColor.RED, move), call(engine._game, PlayerColor.RED, move),]
+        )
+
+        assert movecard not in player.hand
+        assert replacementcard in player.hand
 
     def test_play_next_adult_draw_again(self):
-        pytest.fail("Not implemented")
+        engine = TestEngine._create_engine(GameMode.ADULT)
+
+        player = engine._game.players[PlayerColor.RED]
+        movecard1 = player.hand[0]
+        movecard2 = player.hand[1]
+        replacementcard1 = Card(998, CardType.CARD_APOLOGIES)
+        replacementcard2 = Card(999, CardType.CARD_APOLOGIES)
+        player = engine._game.players[PlayerColor.RED]
+        copy = Mock()
+        move1 = Move(movecard1, [Action(ActionType.BUMP_TO_START, Mock())])
+        move2 = Move(movecard2, [Action(ActionType.CHANGE_PLACES, Mock())])
+
+        engine._game.track = MagicMock()
+        engine._game.copy = MagicMock(return_value=copy)
+        engine._game.deck.draw = MagicMock(side_effect=[replacementcard1, replacementcard2])
+        engine._game.deck.discard = MagicMock()
+        engine.characters[0].construct_move = MagicMock(side_effect=[move1, move2])
+        engine._rules.execute_move = MagicMock()
+        engine._rules.draw_again = MagicMock(side_effect=[True, False])
+
+        engine.play_next()
+
+        engine._game.deck.discard.has_calls([call(movecard1), call(movecard2)])
+        engine._rules.draw_again.has_calls([call(movecard1), call(movecard2)])
+        engine.characters[0].construct_move.assert_has_calls(
+            [
+                call(engine._game, engine.mode, player, card=None, invalid=False),
+                call(engine._game, engine.mode, player, card=None, invalid=False),
+            ]
+        )
+        engine._rules.execute_move.has_calls(
+            [
+                call(copy, PlayerColor.RED, move1),
+                call(engine._game, PlayerColor.RED, move1),
+                call(copy, PlayerColor.RED, move2),
+                call(engine._game, PlayerColor.RED, move2),
+            ]
+        )
+
+        assert movecard1 not in player.hand
+        assert movecard2 not in player.hand
+        assert replacementcard1 in player.hand
+        assert replacementcard2 in player.hand
 
     def test_play_next_adult_draw_again_complete(self):
-        pytest.fail("Not implemented")
+        engine = TestEngine._create_engine(GameMode.ADULT)
+
+        player = engine._game.players[PlayerColor.RED]
+        movecard = player.hand[0]
+        replacementcard = Card(999, CardType.CARD_APOLOGIES)
+        copy = Mock()
+        move = Move(movecard, [Action(ActionType.BUMP_TO_START, Mock())])
+
+        with mock.patch("apologies.game.Game.completed", new_callable=mock.PropertyMock) as completed:
+            completed.side_effect = [False, True]
+
+            engine._game.track = MagicMock()
+            engine._game.copy = MagicMock(return_value=copy)
+            engine._game.deck.draw = MagicMock(return_value=replacementcard)
+            engine._game.deck.discard = MagicMock()
+            engine.characters[0].construct_move = MagicMock(return_value=move)
+            engine._rules.execute_move = MagicMock()
+            engine._rules.draw_again = MagicMock()
+
+            engine.play_next()
+
+            engine._game.deck.discard.assert_called_once_with(movecard)
+            engine._rules.draw_again.assert_not_called()
+            engine.characters[0].construct_move.assert_called_once_with(engine._game, engine.mode, player, card=None, invalid=False)
+            engine._rules.execute_move.has_calls(
+                [call(copy, PlayerColor.RED, move), call(engine._game, PlayerColor.RED, move),]
+            )
+
+            assert movecard not in player.hand
+            assert replacementcard in player.hand
 
     @staticmethod
     def _create_engine(mode: GameMode = GameMode.STANDARD) -> Engine:
