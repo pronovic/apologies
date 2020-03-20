@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # vim: set ft=python ts=4 sw=4 expandtab:
-# pylint: disable=wildcard-import,no-self-use,protected-access
+# pylint: disable=no-self-use,protected-access
 # Unit tests for game.py
 
 
@@ -8,7 +8,20 @@ import arrow
 import pytest
 from flexmock import flexmock
 
-from apologies.game import *
+from apologies.game import (
+    DECK_COUNTS,
+    DECK_SIZE,
+    PAWNS,
+    SAFE_SQUARES,
+    Card,
+    CardType,
+    Deck,
+    Game,
+    History,
+    Pawn,
+    Player,
+    PlayerColor,
+)
 
 
 class TestCard:

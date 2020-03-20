@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 # vim: set ft=python ts=4 sw=4 expandtab:
-# pylint: disable=wildcard-import,no-self-use,protected-access
+# pylint: disable=no-self-use,protected-access
 # Unit tests for game.py
 
 from flexmock import flexmock
 
-from apologies.character import *
+from apologies.character import Action, ActionType, Character, Move
 from apologies.game import Card, CardType, Pawn, PlayerColor
 
 
