@@ -68,12 +68,16 @@ class Engine:
     started = attr.ib(init=False, default=False, type=bool)
     completed = attr.ib(init=False, default=False, type=bool)
     _game = attr.ib(init=False, type=Game)
-    _players = attr.ib(init=False, type=Dict[PlayerColor, _Player])
     _queue = attr.ib(init=False, type=CircularQueue[PlayerColor])
+    _players = attr.ib(init=False, type=Dict[PlayerColor, _Player])
 
     @_game.default
     def _init_game(self) -> Game:
         return Game(playercount=len(self.characters))
+
+    @_queue.default
+    def _init_queue(self) -> CircularQueue[PlayerColor]:
+        return CircularQueue(list(PlayerColor)[: len(self.characters)])
 
     @_players.default
     def _init_players(self) -> Dict[PlayerColor, _Player]:
@@ -83,10 +87,6 @@ class Engine:
             players[player.color] = _Player(player, self.characters[index])
             index += 1
         return players
-
-    @_queue.default
-    def _init_queue(self) -> CircularQueue[PlayerColor]:
-        return CircularQueue(list(self._game.players.keys()))
 
     def start_game(self) -> Game:
         """Start the game, returning a copy of the current game state."""

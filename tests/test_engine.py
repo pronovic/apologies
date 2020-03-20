@@ -30,11 +30,11 @@ class TestEngine:
         assert engine.started is False
         assert engine.completed is False
         assert len(engine._game.players) == 2
+        assert engine._queue.entries == [PlayerColor.RED, PlayerColor.YELLOW]
         assert engine._players == {
             PlayerColor.RED: _Player(engine._game.players[PlayerColor.RED], character1),
             PlayerColor.YELLOW: _Player(engine._game.players[PlayerColor.YELLOW], character2),
         }
-        assert engine._queue.entries == [PlayerColor.RED, PlayerColor.YELLOW]
 
     def test_start_game_standard(self) -> None:
         character1 = Character("one", flexmock())
