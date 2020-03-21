@@ -63,11 +63,14 @@ confidence=
 # --enable=similarities". If you want to run only the classes checker, but have
 # no Warning level messages displayed, use "--disable=all --enable=classes
 # --disable=W".
-disable=missing-class-docstring,
+disable=fixme,
+        c-extension-no-member,
+        missing-class-docstring,
         missing-module-docstring,   
         missing-function-docstring,
         unused-wildcard-import,
         trailing-whitespace,
+        bad-continuation,
         too-few-public-methods,
         no-self-use,
         duplicate-code
@@ -76,7 +79,7 @@ disable=missing-class-docstring,
 # either give multiple identifier separated by comma (,) or put this option
 # multiple time (only on the command line, not in the configuration file where
 # it should appear only once). See also the "--disable" option for examples.
-enable=c-extension-no-member
+enable=
 
 
 [REPORTS]
@@ -256,7 +259,7 @@ indent-after-paren=4
 indent-string='    '
 
 # Maximum number of characters on a single line.
-max-line-length=120
+max-line-length=132
 
 # Maximum number of lines in a module.
 max-module-lines=1000
@@ -349,7 +352,8 @@ function-naming-style=snake_case
 #function-rgx=
 
 # Good variable names which should always be accepted, separated by a comma.
-good-names=f,
+good-names=e, 
+           f,
            i,
            j,
            k,
@@ -479,10 +483,10 @@ valid-metaclass-classmethod-first-arg=cls
 [DESIGN]
 
 # Maximum number of arguments for function / method.
-max-args=5
+max-args=10
 
 # Maximum number of attributes for a class (see R0902).
-max-attributes=7
+max-attributes=10
 
 # Maximum number of boolean expressions in an if statement (see R0916).
 max-bool-expr=5
@@ -500,7 +504,7 @@ max-parents=7
 max-public-methods=20
 
 # Maximum number of return / yield for function / method body.
-max-returns=6
+max-returns=10
 
 # Maximum number of statements in function / method body.
 max-statements=50

@@ -1,44 +1,51 @@
 # -*- coding: utf-8 -*-
 # vim: set ft=python ts=4 sw=4 expandtab:
-# pylint: disable=wildcard-import,no-self-use,protected-access
-# Unit tests for game.py
+# pylint: disable=no-self-use,protected-access
 
 import pytest
-from apologies.game import *
+from mock import MagicMock
+from pendulum.datetime import DateTime
+
+from apologies.game import (
+    DECK_COUNTS,
+    DECK_SIZE,
+    PAWNS,
+    SAFE_SQUARES,
+    Card,
+    CardType,
+    Deck,
+    Game,
+    History,
+    Pawn,
+    Player,
+    PlayerColor,
+)
 
 
 class TestCard:
-    """
-    Unit tests for Card.
-    """
-
-    def test_constructor(self) -> None:
-        card = Card(0, "name")
+    def test_constructor(self):
+        card = Card(0, CardType.CARD_12)
         assert card.id == 0
-        assert card.name == "name"
+        assert card.cardtype == CardType.CARD_12
 
 
 class TestDeck:
-    """
-    Unit tests for Deck
-    """
-
-    def test_constructor(self) -> None:
+    def test_constructor(self):
         deck = Deck()
 
         assert len(deck._draw_pile.keys()) == DECK_SIZE
         assert len(deck._discard_pile.keys()) == 0
 
-        cardcounts = {card: 0 for card in LEGAL_CARDS}
+        cardcounts = {cardtype: 0 for cardtype in CardType}
         for card in deck._draw_pile.values():
-            cardcounts[card.name] += 1
-        for name in LEGAL_CARDS:
-            assert cardcounts[name] == DECK_COUNTS[name]
+            cardcounts[card.cardtype] += 1
+        for cardtype in CardType:
+            assert cardcounts[cardtype] == DECK_COUNTS[cardtype]
 
-    def test_draw_and_discard(self) -> None:
+    def test_draw_and_discard(self):
         deck = Deck()
 
-        # Check that we can draw the entire dec
+        # Check that we can draw the entire deck
         drawn = []
         for _ in range(DECK_SIZE):
             drawn.append(deck.draw())
@@ -55,12 +62,21 @@ class TestDeck:
         assert len(deck._discard_pile) == 0
         assert len(deck._draw_pile) == 0
 
+        # Confirm that we're not allowed to discard the same card twice
+        card = drawn.pop()
+        deck.discard(card)
+        with pytest.raises(ValueError):
+            deck.discard(card)
+
         # Discard a few others and prove they can also be drawn
         deck.discard(drawn.pop())
         deck.discard(drawn.pop())
         deck.discard(drawn.pop())
-        assert len(deck._discard_pile) == 3
+        assert len(deck._discard_pile) == 4
         assert len(deck._draw_pile) == 0
+        deck.draw()
+        assert len(deck._discard_pile) == 0
+        assert len(deck._draw_pile) == 3
         deck.draw()
         assert len(deck._discard_pile) == 0
         assert len(deck._draw_pile) == 2
@@ -78,23 +94,19 @@ class TestDeck:
 
 # noinspection PyTypeHints
 class TestPawn:
-    """
-    Unit tests for Pawn.
-    """
-
-    def test_constructor(self) -> None:
-        pawn = Pawn("color", 0)
-        assert pawn.color == "color"
+    def test_constructor(self):
+        pawn = Pawn(PlayerColor.RED, 0)
+        assert pawn.color == PlayerColor.RED
         assert pawn.index == 0
-        assert pawn.name == "color-0"
+        assert pawn.name == "Red-0"
         assert pawn.start is True
         assert pawn.home is False
         assert pawn.safe is None
         assert pawn.square is None
 
-    def test_constructor_with_name(self) -> None:
-        pawn = Pawn("color", 0, name="whatever")
-        assert pawn.color == "color"
+    def test_constructor_with_name(self):
+        pawn = Pawn(PlayerColor.RED, 0, name="whatever")
+        assert pawn.color == PlayerColor.RED
         assert pawn.index == 0
         assert pawn.name == "whatever"
         assert pawn.start is True
@@ -102,109 +114,180 @@ class TestPawn:
         assert pawn.safe is None
         assert pawn.square is None
 
-    def test_move_to_start(self) -> None:
-        pawn = Pawn("color", 0)
-        pawn.start = "x"  # type: ignore[assignment]
-        pawn.home = "x"  # type: ignore[assignment]
-        pawn.safe = "x"  # type: ignore[assignment]
-        pawn.square = "x"  # type: ignore[assignment]
+    def test_move_to_start(self):
+        pawn = Pawn(PlayerColor.RED, 0)
+        pawn.start = "x"
+        pawn.home = "x"
+        pawn.safe = "x"
+        pawn.square = "x"
         pawn.move_to_start()
         assert pawn.start is True
         assert pawn.home is False
         assert pawn.safe is None
         assert pawn.square is None
 
-    def test_move_to_home(self) -> None:
-        pawn = Pawn("color", 0)
-        pawn.start = "x"  # type: ignore[assignment]
-        pawn.home = "x"  # type: ignore[assignment]
-        pawn.safe = "x"  # type: ignore[assignment]
-        pawn.square = "x"  # type: ignore[assignment]
+    def test_move_to_home(self):
+        pawn = Pawn(PlayerColor.RED, 0)
+        pawn.start = "x"
+        pawn.home = "x"
+        pawn.safe = "x"
+        pawn.square = "x"
         pawn.move_to_home()
         assert pawn.start is False
         assert pawn.home is True
         assert pawn.safe is None
         assert pawn.square is None
 
-    def test_move_to_safe_valid(self) -> None:
+    def test_move_to_safe_valid(self):
         for square in range(SAFE_SQUARES):
-            pawn = Pawn("color", 0)
-            pawn.start = "x"  # type: ignore[assignment]
-            pawn.home = "x"  # type: ignore[assignment]
-            pawn.safe = "x"  # type: ignore[assignment]
-            pawn.square = "x"  # type: ignore[assignment]
+            pawn = Pawn(PlayerColor.RED, 0)
+            pawn.start = "x"
+            pawn.home = "x"
+            pawn.safe = "x"
+            pawn.square = "x"
             pawn.move_to_safe(square)
             assert pawn.start is False
             assert pawn.home is False
             assert pawn.safe == square
             assert pawn.square is None
 
-    def test_move_to_safe_invalid(self) -> None:
+    def test_move_to_safe_invalid(self):
         for square in [-1000, -2 - 1, 5, 6, 1000]:
             with pytest.raises(ValueError):
-                pawn = Pawn("color", 0)
+                pawn = Pawn(PlayerColor.RED, 0)
                 pawn.move_to_safe(square)
 
-    def test_move_to_square_invalid(self) -> None:
+    def test_move_to_square_invalid(self):
         for square in [-1000, -2 - 1, 60, 61, 1000]:
             with pytest.raises(ValueError):
-                pawn = Pawn("color", 0)
+                pawn = Pawn(PlayerColor.RED, 0)
                 pawn.move_to_square(square)
 
 
 class TestPlayer:
-    """
-    Unit tests for Player.
-    """
-
-    def test_constructor(self) -> None:
-        player = Player("color")
-        assert player.color == "color"
-        assert player.name is None
+    def test_constructor(self):
+        player = Player(PlayerColor.RED)
+        assert player.color == PlayerColor.RED
         assert len(player.pawns) == PAWNS
         for pawn in player.pawns:
             assert isinstance(pawn, Pawn)
 
+    def test_find_first_pawn_in_start(self):
+        player = Player(PlayerColor.RED)
+        for i in range(PAWNS):
+            assert player.find_first_pawn_in_start() is player.pawns[i]
+            player.pawns[i].move_to_home()
+        assert player.find_first_pawn_in_start() is None
+
+    def test_all_pawns_in_home(self):
+        player = Player(PlayerColor.RED)
+        for i in range(PAWNS):
+            assert player.all_pawns_in_home() is False
+            player.pawns[i].move_to_home()
+        assert player.all_pawns_in_home() is True
+
+
+class TestHistory:
+    def test_constructor(self):
+        color = PlayerColor.BLUE
+        history = History("action", color)
+        assert history.action == "action"
+        assert history.color is color
+        assert history.timestamp <= DateTime.utcnow()
+
 
 class TestGame:
-    """
-    Unit tests for Game.
-    """
-
-    def test_constructor_2_players_standard(self) -> None:
+    def test_constructor_2_players_standard(self):
         game = Game(2)
         assert len(game.players) == 2
-        for color in [RED, YELLOW]:
+        assert len(game.history) == 0
+        for color in [PlayerColor.RED, PlayerColor.YELLOW]:
             assert game.players[color].color == color
             assert len(game.players[color].hand) == 0
         assert game.deck is not None
 
-    def test_constructor_3_players_standard(self) -> None:
+    def test_constructor_3_players_standard(self):
         game = Game(3)
         assert len(game.players) == 3
-        for color in [RED, YELLOW, GREEN]:
+        assert len(game.history) == 0
+        for color in [PlayerColor.RED, PlayerColor.YELLOW, PlayerColor.GREEN]:
             assert game.players[color].color == color
             assert len(game.players[color].hand) == 0
         assert game.deck is not None
 
-    def test_constructor_4_players_standard(self) -> None:
+    def test_constructor_4_players_standard(self):
         game = Game(4)
         assert len(game.players) == 4
-        for color in [RED, YELLOW, BLUE]:
+        assert len(game.history) == 0
+        for color in [PlayerColor.RED, PlayerColor.YELLOW, PlayerColor.GREEN, PlayerColor.BLUE]:
             assert game.players[color].color == color
             assert len(game.players[color].hand) == 0
         assert game.deck is not None
 
-    def test_constructor_4_players_adult(self) -> None:
-        game = Game(4, mode=MODE_ADULT)
-        assert len(game.players) == 4
-        for color in [RED, YELLOW, BLUE]:
-            assert game.players[color].color == color
-            assert game.players[color].pawns[0].start is True
-            assert len(game.players[color].hand) == ADULT_HAND
-        assert game.deck is not None
-
-    def test_constructor_invalid_players(self) -> None:
+    def test_constructor_invalid_players(self):
         for playercount in [-2, -1, 0, 1, 5, 6]:
             with pytest.raises(ValueError):
                 Game(playercount)
+
+    def test_copy(self):
+        game = Game(4)
+        game.track("this happened", game.players[PlayerColor.RED])
+        game.players[PlayerColor.RED].pawns[0].move_to_square(32)
+        game.players[PlayerColor.BLUE].pawns[2].move_to_home()
+        game.players[PlayerColor.YELLOW].pawns[3].move_to_safe(1)
+        game.players[PlayerColor.GREEN].pawns[1].move_to_square(19)
+        copy = game.copy()
+        assert copy == game
+
+    def test_json_roundtrip(self):
+        game = Game(4)
+        game.track("this happened", game.players[PlayerColor.RED])
+        game.players[PlayerColor.RED].pawns[0].move_to_square(32)
+        game.players[PlayerColor.BLUE].pawns[2].move_to_home()
+        game.players[PlayerColor.YELLOW].pawns[3].move_to_safe(1)
+        game.players[PlayerColor.GREEN].pawns[1].move_to_square(19)
+        data = game.to_json()
+        copy = Game.from_json(data)
+        assert copy == game
+
+    def test_track_no_player(self):
+        game = Game(4)
+        game.track("action")
+        assert game.history[0].action == "action"
+        assert game.history[0].color is None
+        assert game.history[0].timestamp <= DateTime.utcnow()
+
+    def test_track_with_color(self):
+        game = Game(4)
+        color = MagicMock(color=PlayerColor.RED)
+        game.track("action", color)
+        assert game.history[0].action == "action"
+        assert game.history[0].color is PlayerColor.RED
+        assert game.history[0].timestamp <= DateTime.utcnow()
+
+    def test_find_pawn_on_square(self):
+        game = Game(4)
+        assert game.find_pawn_on_square(32) is None
+        game.players[PlayerColor.RED].pawns[0].move_to_square(32)
+        assert game.find_pawn_on_square(32) is game.players[PlayerColor.RED].pawns[0]
+        game.players[PlayerColor.GREEN].pawns[0].move_to_square(32)
+        assert game.find_pawn_on_square(32) is game.players[PlayerColor.RED].pawns[0]  # returns the first found
+
+    def test_started(self):
+        game = Game(4)
+        assert game.started is False
+        game.track("whatever")
+        assert game.started is True
+
+    def test_completed(self):
+        game = Game(4)
+
+        # move all but last pawn into home for all of the players; the game is not complete
+        for player in game.players.values():
+            for i in range(PAWNS - 1):
+                assert game.completed is False
+                player.pawns[i].move_to_home()
+
+        # move the final pawn to home for one player; now the game is complete
+        game.players[PlayerColor.RED].pawns[PAWNS - 1].move_to_home()
+        assert game.completed is True

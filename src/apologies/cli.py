@@ -6,10 +6,10 @@ Implementations for command-line (CLI) tools.
 """
 
 import sys
-from typing import List, IO, Any
+from typing import IO, Any, List
 
-from apologies.render import render_board
 from apologies.game import Game
+from apologies.render import render_board
 
 
 def _render(unused_argv: List[str], stdout: IO[str], unused_stderr: IO[str]) -> None:
