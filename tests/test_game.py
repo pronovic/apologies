@@ -191,8 +191,8 @@ class TestHistory:
     def test_constructor(self):
         color = PlayerColor.BLUE
         history = History("action", color)
-        assert history.color is color
         assert history.action == "action"
+        assert history.color is color
         assert history.timestamp <= DateTime.utcnow()
 
 
@@ -253,13 +253,17 @@ class TestGame:
     def test_track_no_player(self):
         game = Game(4)
         game.track("action")
-        assert game.history == [History("action")]
+        assert game.history[0].action == "action"
+        assert game.history[0].color is None
+        assert game.history[0].timestamp <= DateTime.utcnow()
 
-    def test_track_with_player(self):
+    def test_track_with_color(self):
         game = Game(4)
-        player = MagicMock(color=PlayerColor.RED)
-        game.track("action", player)
-        assert game.history == [History("action", PlayerColor.RED)]
+        color = MagicMock(color=PlayerColor.RED)
+        game.track("action", color)
+        assert game.history[0].action == "action"
+        assert game.history[0].color is PlayerColor.RED
+        assert game.history[0].timestamp <= DateTime.utcnow()
 
     def test_find_pawn_on_square(self):
         game = Game(4)

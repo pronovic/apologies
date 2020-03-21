@@ -23,8 +23,8 @@ Attributes:
     SAFE_SQUARES(int): Number of safe squares for each color
     BOARD_SQUARES(int): Number of squares around the outside of the board
     ADULT_HAND(int): Number of cards in a player's hand for an adult mode game
-    DECK_COUNTS: Dictionary from card name to number of cards in a standard deck
-    DECK_SIZE: The total expected size of a complete deck
+    DECK_COUNTS(dict): Dictionary from card name to number of cards in a standard deck
+    DECK_SIZE(int): The total expected size of a complete deck
 """
 
 from __future__ import annotations  # see: https://stackoverflow.com/a/33533514/2907667
@@ -55,6 +55,8 @@ BOARD_SQUARES = 60
 
 
 class GameMode(Enum):
+    """Available game play modes."""
+
     STANDARD = "Standard"
     ADULT = "Adult"
 
@@ -110,8 +112,8 @@ class Card:
     A card in a deck or in a player's hand.
 
     Attributes:
-        id(int): Unique identifier for this card
-        name(str): The name of the card
+        id(str): Unique identifier for this card
+        cardtype(CardType): The type of the card
     """
 
     id = attr.ib(type=str)
@@ -167,8 +169,8 @@ class Pawn:
     """
     A pawn on the board, belonging to a player.
 
-    Callers should not pass in optional constructor arguments or modify attributes
-    directly.  These are accessible to support serialization and deserialization.
+    Callers should not pass in or directly modify the start, home, safe, or square
+    attributes.  These are accessible to support serialization and deserialization.
     Instead, use the provided methods to safely modify the object in-place.
 
     Attributes:
@@ -249,8 +251,8 @@ class Player:
     """
     A player, which has a color and a set of pawns.
 
-    Callers should not pass in optional constructor arguments.  These are accessible
-    to support serialization and deserialization.
+    Callers should not pass in the hand and pawns constructor arguments.  These
+    are accessible to support serialization and deserialization.
 
     Attributes:
         color(str): The color of the player
@@ -291,7 +293,11 @@ class History:
 
     action = attr.ib(type=str)
     color = attr.ib(default=None, type=Optional[PlayerColor])
-    timestamp = attr.ib(type=DateTime, default=pendulum.now(pendulum.UTC))
+    timestamp = attr.ib(type=DateTime)
+
+    @timestamp.default
+    def _init_timestamp(self) -> DateTime:
+        return pendulum.now(pendulum.UTC)
 
 
 @attr.s
