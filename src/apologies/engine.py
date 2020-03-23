@@ -11,7 +11,7 @@ from typing import Dict, List, Optional
 
 import attr
 
-from .game import Card, Game, GameMode, Player, PlayerColor
+from .game import Card, Game, GameMode, PlayerColor, PlayerView
 from .rules import Move, Rules, ValidationError
 from .util import CircularQueue
 
@@ -22,7 +22,7 @@ class CharacterInputSource(ABC):
 
     @abstractmethod
     def construct_move(
-        self, game: Game, mode: GameMode, player: Player, card: Optional[Card] = None, invalid: Optional[bool] = False
+        self, mode: GameMode, view: PlayerView, card: Optional[Card] = None, invalid: Optional[bool] = False
     ) -> Move:
         """
         Construct the next move for a character.
@@ -34,9 +34,8 @@ class CharacterInputSource(ABC):
         card is always discarded back to the deck.
 
         Args:
-            game(Game): Current state of the game
             mode(GameMode): Game mode
-            player(Player): Current state of the player within the game
+            view(PlayerView): Player-specific view of the game
             card(Card, optional): The card to play, or None if move should come from player's hand
             invalid(bool, optional): Whether this call is because a previous move was invalid
 
@@ -60,14 +59,14 @@ class Character:
     source = attr.ib(type=CharacterInputSource)
 
     def construct_move(
-        self, game: Game, mode: GameMode, player: Player, card: Optional[Card] = None, invalid: Optional[bool] = False
+        self, mode: GameMode, view: PlayerView, card: Optional[Card] = None, invalid: Optional[bool] = False
     ) -> Move:
         """
         Construct the next move for a character via the user input source.
 
         Args:
-            game(Game): Current state of the game
             mode(GameMode): Game mode
+            view(PlayerView): Player-specific view of the game
             player(Player): Current state of the player within the game
             card(Card, optional): The card to play, or None if move should come from player's hand
             invalid(bool, optional): Whether this call is because a previous move was invalid
@@ -75,7 +74,7 @@ class Character:
         Returns:
             Move: the character's next move, an empty list if no move is possible and the turn is forfeit
         """
-        return self.source.construct_move(game, mode, player, card, invalid)
+        return self.source.construct_move(mode, view, card, invalid)
 
 
 @attr.s
@@ -168,7 +167,8 @@ class Engine:
         """Play the next move under the rules for standard mode."""
         player = self._game.players[color]
         character = self._map[color]
-        move = character.construct_move(self._game, self.mode, player, card=card, invalid=invalid)
+        view = self._game.create_player_view(color)
+        move = character.construct_move(self.mode, view, card=card, invalid=invalid)
         if not move.actions:
             self._game.track("Turn forfeited", player)
             self._game.deck.discard(card)
@@ -187,7 +187,8 @@ class Engine:
         """Play the next move under the rules for adult mode."""
         player = self._game.players[color]
         character = self._map[color]
-        move = character.construct_move(self._game, self.mode, player, card=None, invalid=invalid)
+        view = self._game.create_player_view(color)
+        move = character.construct_move(self.mode, view, card=None, invalid=invalid)
         if not move.actions:
             self._game.track("Turn forfeited", player)
             player.hand.remove(move.card)

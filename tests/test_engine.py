@@ -22,21 +22,19 @@ class TestCharacter:
     def test_construct_move_minimal(self):
         source = Mock()
         character = Character("c", source)
-        game = Mock()
         mode = Mock()
-        player = Mock()
-        character.construct_move(game, mode, player)
-        source.construct_move.assert_called_once_with(game, mode, player, None, False)
+        view = Mock()
+        character.construct_move(mode, view)
+        source.construct_move.assert_called_once_with(mode, view, None, False)
 
     def test_construct_move_all_args(self):
         source = Mock()
         character = Character("c", source)
-        game = Mock()
         mode = Mock()
-        player = Mock()
+        view = Mock()
         card = Mock()
-        character.construct_move(game, mode, player, card, True)
-        source.construct_move.assert_called_once_with(game, mode, player, card, True)
+        character.construct_move(mode, view, card, True)
+        source.construct_move.assert_called_once_with(mode, view, card, True)
 
 
 class TestEngine:
@@ -101,8 +99,10 @@ class TestEngine:
 
         card = Card(0, "whatever")
         player = engine._game.players[PlayerColor.RED]
+        view = Mock()
         move = Move(card, [])
 
+        engine._game.create_player_view = MagicMock(return_value=view)
         engine._game.track = MagicMock()
         engine._game.deck.draw = MagicMock(return_value=card)
         engine._game.deck.discard = MagicMock()
@@ -110,7 +110,8 @@ class TestEngine:
 
         engine.play_next()
 
-        engine.characters[0].construct_move.assert_called_once_with(engine._game, engine.mode, player, card=card, invalid=False)
+        engine._game.create_player_view.assert_called_once_with(PlayerColor.RED)
+        engine.characters[0].construct_move.assert_called_once_with(engine.mode, view, card=card, invalid=False)
         engine._game.track.assert_called_once_with("Turn forfeited", player)
         engine._game.deck.discard.assert_called_once_with(card)
 
@@ -119,6 +120,7 @@ class TestEngine:
 
         card = Card(0, CardType.CARD_12)
         player = engine._game.players[PlayerColor.RED]
+        view = Mock()
         exception = ValidationError("Hello")
         copy = Mock()
         move1 = Move(card, [Action(ActionType.BUMP_TO_START, Mock())])
@@ -130,6 +132,7 @@ class TestEngine:
             return mock.DEFAULT
 
         # note: I wanted to return two different copies, but that broke the test for some reason; I gave up
+        engine._game.create_player_view = MagicMock(return_value=view)
         engine._game.track = MagicMock()
         engine._game.copy = MagicMock(return_value=copy)
         engine._game.deck.draw = MagicMock(return_value=card)
@@ -143,11 +146,11 @@ class TestEngine:
         engine._game.track.assert_called_once_with("Requested move was invalid", player)
         engine._game.deck.discard.assert_called_once_with(card)
         engine._rules.draw_again.assert_called_once_with(card)
+        engine._game.create_player_view.assert_has_calls(
+            [call(PlayerColor.RED), call(PlayerColor.RED),]
+        )
         engine.characters[0].construct_move.assert_has_calls(
-            [
-                call(engine._game, engine.mode, player, card=card, invalid=False),
-                call(engine._game, engine.mode, player, card=card, invalid=True),
-            ]
+            [call(engine.mode, view, card=card, invalid=False), call(engine.mode, view, card=card, invalid=True),]
         )
         engine._rules.execute_move.has_calls(
             [call(copy, PlayerColor.RED, move1), call(copy, PlayerColor.RED, move2), call(engine._game, PlayerColor.RED, move2),]
@@ -157,10 +160,11 @@ class TestEngine:
         engine = TestEngine._create_engine()
 
         card = Card(0, CardType.CARD_12)
-        player = engine._game.players[PlayerColor.RED]
+        view = Mock()
         copy = Mock()
         move = Move(card, [Action(ActionType.BUMP_TO_START, Mock())])
 
+        engine._game.create_player_view = MagicMock(return_value=view)
         engine._game.track = MagicMock()
         engine._game.copy = MagicMock(return_value=copy)
         engine._game.deck.draw = MagicMock(return_value=card)
@@ -172,7 +176,8 @@ class TestEngine:
         engine.play_next()
 
         engine._game.deck.discard.assert_called_once_with(card)
-        engine.characters[0].construct_move.assert_called_once_with(engine._game, engine.mode, player, card=card, invalid=False)
+        engine._game.create_player_view.assert_called_once_with(PlayerColor.RED)
+        engine.characters[0].construct_move.assert_called_once_with(engine.mode, view, card=card, invalid=False)
         engine._rules.draw_again.assert_called_once_with(card)
         engine._rules.execute_move.has_calls(
             [call(copy, PlayerColor.RED, move), call(engine._game, PlayerColor.RED, move),]
@@ -183,11 +188,12 @@ class TestEngine:
 
         card1 = Card(0, CardType.CARD_12)
         card2 = Card(1, CardType.CARD_10)
-        player = engine._game.players[PlayerColor.RED]
+        view = Mock()
         copy = Mock()
         move1 = Move(card1, [Action(ActionType.BUMP_TO_START, Mock())])
         move2 = Move(card2, [Action(ActionType.CHANGE_PLACES, Mock())])
 
+        engine._game.create_player_view = MagicMock(return_value=view)
         engine._game.track = MagicMock()
         engine._game.copy = MagicMock(return_value=copy)
         engine._game.deck.draw = MagicMock(side_effect=[card1, card2])
@@ -200,11 +206,11 @@ class TestEngine:
 
         engine._game.deck.discard.has_calls([call(card1), call(card2)])
         engine._rules.draw_again.has_calls([call(card1), call(card2)])
+        engine._game.create_player_view.assert_has_calls(
+            [call(PlayerColor.RED), call(PlayerColor.RED),]
+        )
         engine.characters[0].construct_move.assert_has_calls(
-            [
-                call(engine._game, engine.mode, player, card=card1, invalid=False),
-                call(engine._game, engine.mode, player, card=card2, invalid=False),
-            ]
+            [call(engine.mode, view, card=card1, invalid=False), call(engine.mode, view, card=card2, invalid=False),]
         )
         engine._rules.execute_move.has_calls(
             [
@@ -219,13 +225,14 @@ class TestEngine:
         engine = TestEngine._create_engine()
 
         card = Card(0, CardType.CARD_12)
-        player = engine._game.players[PlayerColor.RED]
+        view = Mock()
         copy = Mock()
         move = Move(card, [Action(ActionType.BUMP_TO_START, Mock())])
 
         with mock.patch("apologies.game.Game.completed", new_callable=mock.PropertyMock) as completed:
             completed.side_effect = [False, True]
 
+            engine._game.create_player_view = MagicMock(return_value=view)
             engine._game.track = MagicMock()
             engine._game.copy = MagicMock(return_value=copy)
             engine._game.deck.draw = MagicMock(return_value=card)
@@ -238,7 +245,8 @@ class TestEngine:
 
             engine._game.deck.discard.assert_called_once_with(card)
             engine._rules.draw_again.assert_not_called()
-            engine.characters[0].construct_move.assert_called_once_with(engine._game, engine.mode, player, card=card, invalid=False)
+            engine._game.create_player_view.assert_called_once_with(PlayerColor.RED)
+            engine.characters[0].construct_move.assert_called_once_with(engine.mode, view, card=card, invalid=False)
             engine._rules.execute_move.has_calls(
                 [call(copy, PlayerColor.RED, move), call(engine._game, PlayerColor.RED, move),]
             )
@@ -247,10 +255,12 @@ class TestEngine:
         engine = TestEngine._create_engine(GameMode.ADULT)
 
         player = engine._game.players[PlayerColor.RED]
+        view = Mock()
         movecard = player.hand[0]
         replacementcard = Card(999, CardType.CARD_APOLOGIES)
         move = Move(movecard, [])
 
+        engine._game.create_player_view = MagicMock(return_value=view)
         engine._game.track = MagicMock()
         engine._game.deck.draw = MagicMock(return_value=replacementcard)
         engine._game.deck.discard = MagicMock()
@@ -258,7 +268,8 @@ class TestEngine:
 
         engine.play_next()
 
-        engine.characters[0].construct_move.assert_called_once_with(engine._game, engine.mode, player, card=None, invalid=False)
+        engine._game.create_player_view.assert_called_once_with(PlayerColor.RED)
+        engine.characters[0].construct_move.assert_called_once_with(engine.mode, view, card=None, invalid=False)
         engine._game.track.assert_called_once_with("Turn forfeited", player)
         engine._game.deck.discard.assert_called_once_with(movecard)
 
@@ -269,6 +280,7 @@ class TestEngine:
         engine = TestEngine._create_engine(GameMode.ADULT)
 
         player = engine._game.players[PlayerColor.RED]
+        view = Mock()
         movecard1 = player.hand[0]
         movecard2 = player.hand[1]
         replacementcard = Card(999, CardType.CARD_APOLOGIES)
@@ -283,6 +295,7 @@ class TestEngine:
             return mock.DEFAULT
 
         # note: I wanted to return two different copies, but that broke the test for some reason; I gave up
+        engine._game.create_player_view = MagicMock(return_value=view)
         engine._game.track = MagicMock()
         engine._game.copy = MagicMock(return_value=copy)
         engine._game.deck.draw = MagicMock(return_value=replacementcard)
@@ -296,11 +309,11 @@ class TestEngine:
         engine._game.track.assert_called_once_with("Requested move was invalid", player)
         engine._game.deck.discard.assert_called_once_with(movecard2)
         engine._rules.draw_again.assert_called_once_with(movecard2)
+        engine._game.create_player_view.assert_has_calls(
+            [call(PlayerColor.RED), call(PlayerColor.RED),]
+        )
         engine.characters[0].construct_move.assert_has_calls(
-            [
-                call(engine._game, engine.mode, player, card=None, invalid=False),
-                call(engine._game, engine.mode, player, card=None, invalid=True),
-            ]
+            [call(engine.mode, view, card=None, invalid=False), call(engine.mode, view, card=None, invalid=True),]
         )
         engine._rules.execute_move.has_calls(
             [call(copy, PlayerColor.RED, move1), call(copy, PlayerColor.RED, move2), call(engine._game, PlayerColor.RED, move2),]
@@ -314,11 +327,13 @@ class TestEngine:
         engine = TestEngine._create_engine(GameMode.ADULT)
 
         player = engine._game.players[PlayerColor.RED]
+        view = Mock()
         movecard = player.hand[0]
         replacementcard = Card(999, CardType.CARD_APOLOGIES)
         copy = Mock()
         move = Move(movecard, [Action(ActionType.BUMP_TO_START, Mock())])
 
+        engine._game.create_player_view = MagicMock(return_value=view)
         engine._game.track = MagicMock()
         engine._game.copy = MagicMock(return_value=copy)
         engine._game.deck.draw = MagicMock(return_value=replacementcard)
@@ -331,7 +346,8 @@ class TestEngine:
 
         engine._game.deck.discard.assert_called_once_with(movecard)
         engine._rules.draw_again.assert_called_once_with(movecard)
-        engine.characters[0].construct_move.assert_called_once_with(engine._game, engine.mode, player, card=None, invalid=False)
+        engine._game.create_player_view.assert_called_once_with(PlayerColor.RED)
+        engine.characters[0].construct_move.assert_called_once_with(engine.mode, view, card=None, invalid=False)
         engine._rules.execute_move.has_calls(
             [call(copy, PlayerColor.RED, move), call(engine._game, PlayerColor.RED, move),]
         )
@@ -343,6 +359,7 @@ class TestEngine:
         engine = TestEngine._create_engine(GameMode.ADULT)
 
         player = engine._game.players[PlayerColor.RED]
+        view = Mock()
         movecard1 = player.hand[0]
         movecard2 = player.hand[1]
         replacementcard1 = Card(998, CardType.CARD_APOLOGIES)
@@ -352,6 +369,7 @@ class TestEngine:
         move1 = Move(movecard1, [Action(ActionType.BUMP_TO_START, Mock())])
         move2 = Move(movecard2, [Action(ActionType.CHANGE_PLACES, Mock())])
 
+        engine._game.create_player_view = MagicMock(return_value=view)
         engine._game.track = MagicMock()
         engine._game.copy = MagicMock(return_value=copy)
         engine._game.deck.draw = MagicMock(side_effect=[replacementcard1, replacementcard2])
@@ -364,11 +382,11 @@ class TestEngine:
 
         engine._game.deck.discard.has_calls([call(movecard1), call(movecard2)])
         engine._rules.draw_again.has_calls([call(movecard1), call(movecard2)])
+        engine._game.create_player_view.assert_has_calls(
+            [call(PlayerColor.RED), call(PlayerColor.RED),]
+        )
         engine.characters[0].construct_move.assert_has_calls(
-            [
-                call(engine._game, engine.mode, player, card=None, invalid=False),
-                call(engine._game, engine.mode, player, card=None, invalid=False),
-            ]
+            [call(engine.mode, view, card=None, invalid=False), call(engine.mode, view, card=None, invalid=False),]
         )
         engine._rules.execute_move.has_calls(
             [
@@ -388,6 +406,7 @@ class TestEngine:
         engine = TestEngine._create_engine(GameMode.ADULT)
 
         player = engine._game.players[PlayerColor.RED]
+        view = Mock()
         movecard = player.hand[0]
         replacementcard = Card(999, CardType.CARD_APOLOGIES)
         copy = Mock()
@@ -396,6 +415,7 @@ class TestEngine:
         with mock.patch("apologies.game.Game.completed", new_callable=mock.PropertyMock) as completed:
             completed.side_effect = [False, True]
 
+            engine._game.create_player_view = MagicMock(return_value=view)
             engine._game.track = MagicMock()
             engine._game.copy = MagicMock(return_value=copy)
             engine._game.deck.draw = MagicMock(return_value=replacementcard)
@@ -408,7 +428,8 @@ class TestEngine:
 
             engine._game.deck.discard.assert_called_once_with(movecard)
             engine._rules.draw_again.assert_not_called()
-            engine.characters[0].construct_move.assert_called_once_with(engine._game, engine.mode, player, card=None, invalid=False)
+            engine._game.create_player_view.assert_called_once_with(PlayerColor.RED)
+            engine.characters[0].construct_move.assert_called_once_with(engine.mode, view, card=None, invalid=False)
             engine._rules.execute_move.has_calls(
                 [call(copy, PlayerColor.RED, move), call(engine._game, PlayerColor.RED, move),]
             )

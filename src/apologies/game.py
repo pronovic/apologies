@@ -40,6 +40,9 @@ from pendulum.datetime import DateTime
 
 from .util import CattrConverter
 
+# Cattr converter that serializes/deserializes DateTime to an ISO 8601 timestamp.
+_CONVERTER = CattrConverter()
+
 # A game consists of 2-4 players
 MIN_PLAYERS = 2
 MAX_PLAYERS = 4
@@ -272,6 +275,16 @@ class Player:
     def _init_pawns(self) -> List[Pawn]:
         return [Pawn(self.color, index) for index in range(0, PAWNS)]
 
+    def copy(self) -> Player:
+        """Return a fully-independent copy of the player."""
+        return _CONVERTER.structure(_CONVERTER.unstructure(self), Player)  # type: ignore
+
+    def public_data(self) -> Player:
+        """Return a fully-independent copy of the player with only public data visible."""
+        player = self.copy()
+        del player.hand[:]
+        return player
+
     def find_first_pawn_in_start(self) -> Optional[Pawn]:
         """Find the first pawn in the start area, if any."""
         for pawn in self.pawns:
@@ -301,6 +314,20 @@ class History:
 
 
 @attr.s
+class PlayerView:
+    """
+    A player-specific view of the game, showing only the information a player would have available on their turn.
+      
+    Attributes:
+        player(Player): The player associated with the view.
+        opponents(:obj:`dict` of :obj:`Player`): The player's opponents, with private information stripped
+    """
+
+    player = attr.ib(type=Player)
+    opponents = attr.ib(type=Dict[PlayerColor, Player])
+
+
+@attr.s
 class Game:
     """
     The game, consisting of state for a set of players.
@@ -313,8 +340,6 @@ class Game:
         players(:obj:`dict` of :obj:`Player`): All players in the game
         deck(Deck): The deck of cards for the game
     """
-
-    converter = CattrConverter()
 
     playercount = attr.ib(type=int)
     players = attr.ib(type=Dict[PlayerColor, Player])
@@ -353,16 +378,16 @@ class Game:
 
     def copy(self) -> Game:
         """Return a fully-independent copy of the game."""
-        return Game.converter.structure(Game.converter.unstructure(self), Game)  # type: ignore
+        return _CONVERTER.structure(_CONVERTER.unstructure(self), Game)  # type: ignore
 
     def to_json(self) -> str:
         """Serialize the game state to JSON."""
-        return orjson.dumps(Game.converter.unstructure(self), option=orjson.OPT_INDENT_2).decode("utf-8")  # type: ignore
+        return orjson.dumps(_CONVERTER.unstructure(self), option=orjson.OPT_INDENT_2).decode("utf-8")  # type: ignore
 
     @staticmethod
     def from_json(data: str) -> Game:
         """Deserialize the game state from JSON."""
-        return Game.converter.structure(orjson.loads(data), Game)  # type: ignore
+        return _CONVERTER.structure(orjson.loads(data), Game)  # type: ignore
 
     def track(self, action: str, player: Optional[Player] = None) -> None:
         """Tracks a move made by a player."""
@@ -375,3 +400,9 @@ class Game:
                 if pawn.square == square:
                     return pawn
         return None
+
+    def create_player_view(self, color: PlayerColor) -> PlayerView:
+        """Return a player-specific view of the game, showing only the information a player would have available on their turn."""
+        player = self.players[color].copy()
+        opponents = {player.color: player.public_data() for player in self.players.values() if player.color != color}
+        return PlayerView(player, opponents)

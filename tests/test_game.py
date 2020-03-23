@@ -172,6 +172,14 @@ class TestPlayer:
         for pawn in player.pawns:
             assert isinstance(pawn, Pawn)
 
+    def test_copy(self):
+        player = Player(PlayerColor.RED)
+        player.pawns[0].move_to_home()
+        player.pawns[1].move_to_safe(2)
+        player.pawns[2].move_to_square(32)
+        copy = player.copy()
+        assert copy is not player and copy == player
+
     def test_find_first_pawn_in_start(self):
         player = Player(PlayerColor.RED)
         for i in range(PAWNS):
@@ -229,6 +237,26 @@ class TestGame:
             with pytest.raises(ValueError):
                 Game(playercount)
 
+    def test_started(self):
+        game = Game(4)
+        assert game.started is False
+        game.track("whatever")
+        assert game.started is True
+
+    def test_completed(self):
+        game = Game(4)
+
+        # move all but last pawn into home for all of the players; the game is not complete
+        for player in game.players.values():
+            for i in range(PAWNS - 1):
+                assert game.completed is False
+                player.pawns[i].move_to_home()
+
+        # move the final pawn to home for one player; now the game is complete
+        game.players[PlayerColor.RED].pawns[PAWNS - 1].move_to_home()
+
+        assert game.completed is True
+
     def test_copy(self):
         game = Game(4)
         game.track("this happened", game.players[PlayerColor.RED])
@@ -273,21 +301,27 @@ class TestGame:
         game.players[PlayerColor.GREEN].pawns[0].move_to_square(32)
         assert game.find_pawn_on_square(32) is game.players[PlayerColor.RED].pawns[0]  # returns the first found
 
-    def test_started(self):
+    def test_create_player_view_invalid(self):
+        game = Game(2)
+        with pytest.raises(KeyError):
+            game.create_player_view(PlayerColor.BLUE)  # no blue player in 2-player game
+
+    def test_create_player_view(self):
         game = Game(4)
-        assert game.started is False
-        game.track("whatever")
-        assert game.started is True
 
-    def test_completed(self):
-        game = Game(4)
+        game.players[PlayerColor.RED].hand.append(game.deck.draw())
+        game.players[PlayerColor.YELLOW].hand.append(game.deck.draw())
+        game.players[PlayerColor.GREEN].hand.append(game.deck.draw())
+        game.players[PlayerColor.BLUE].hand.append(game.deck.draw())
 
-        # move all but last pawn into home for all of the players; the game is not complete
-        for player in game.players.values():
-            for i in range(PAWNS - 1):
-                assert game.completed is False
-                player.pawns[i].move_to_home()
+        view = game.create_player_view(PlayerColor.RED)
 
-        # move the final pawn to home for one player; now the game is complete
-        game.players[PlayerColor.RED].pawns[PAWNS - 1].move_to_home()
-        assert game.completed is True
+        assert game.players[PlayerColor.RED] is not view.player
+        assert game.players[PlayerColor.YELLOW] is not view.opponents[PlayerColor.YELLOW]
+
+        assert game.players[PlayerColor.RED] == view.player
+
+        for color in [PlayerColor.YELLOW, PlayerColor.GREEN, PlayerColor.BLUE]:
+            assert view.opponents[color].color == color
+            assert len(view.opponents[color].hand) == 0
+            assert view.opponents[color].pawns == game.players[color].pawns
