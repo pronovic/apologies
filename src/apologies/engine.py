@@ -67,7 +67,6 @@ class Character:
         Args:
             mode(GameMode): Game mode
             view(PlayerView): Player-specific view of the game
-            player(Player): Current state of the player within the game
             card(Card, optional): The card to play, or None if move should come from player's hand
             invalid(bool, optional): Whether this call is because a previous move was invalid
 

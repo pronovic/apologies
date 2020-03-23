@@ -91,7 +91,7 @@ def _fill_home() -> Game:
     game = Game(playercount=4)
     for color in [PlayerColor.BLUE, PlayerColor.RED, PlayerColor.YELLOW, PlayerColor.GREEN]:
         for pawn in range(4):
-            game.players[color].pawns[pawn].move_to_home()
+            game.players[color].pawns[pawn].position.move_to_home()
     return game
 
 
@@ -100,7 +100,7 @@ def _fill_safe(start: int) -> Game:
     game = Game(playercount=4)
     for color in [PlayerColor.BLUE, PlayerColor.RED, PlayerColor.YELLOW, PlayerColor.GREEN]:
         for pawn in range(4):
-            game.players[color].pawns[pawn].move_to_safe(pawn + start)
+            game.players[color].pawns[pawn].position.move_to_safe(pawn + start)
     return game
 
 
@@ -111,6 +111,6 @@ def _fill_squares(start: int, end: int) -> Game:
     for pawn in range(4):
         for color in [PlayerColor.BLUE, PlayerColor.RED, PlayerColor.YELLOW, PlayerColor.GREEN]:
             if square + start <= end:
-                game.players[color].pawns[pawn].move_to_square(square + start)
+                game.players[color].pawns[pawn].position.move_to_square(square + start)
                 square += 1
     return game

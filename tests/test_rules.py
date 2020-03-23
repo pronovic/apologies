@@ -102,17 +102,17 @@ class TestRules:
         assert len(game.deck._draw_pile) == DECK_SIZE - (4 * ADULT_HAND)
 
         assert game.players[PlayerColor.RED].color == PlayerColor.RED
-        assert game.players[PlayerColor.RED].pawns[0].square == 4
+        assert game.players[PlayerColor.RED].pawns[0].position.square == 4
         assert len(game.players[PlayerColor.RED].hand) == ADULT_HAND
 
         assert game.players[PlayerColor.YELLOW].color == PlayerColor.YELLOW
-        assert game.players[PlayerColor.YELLOW].pawns[0].square == 34
+        assert game.players[PlayerColor.YELLOW].pawns[0].position.square == 34
         assert len(game.players[PlayerColor.YELLOW].hand) == ADULT_HAND
 
         assert game.players[PlayerColor.GREEN].color == PlayerColor.GREEN
-        assert game.players[PlayerColor.GREEN].pawns[0].square == 49
+        assert game.players[PlayerColor.GREEN].pawns[0].position.square == 49
         assert len(game.players[PlayerColor.GREEN].hand) == ADULT_HAND
 
         assert game.players[PlayerColor.BLUE].color == PlayerColor.BLUE
-        assert game.players[PlayerColor.BLUE].pawns[0].square == 19
+        assert game.players[PlayerColor.BLUE].pawns[0].position.square == 19
         assert len(game.players[PlayerColor.BLUE].hand) == ADULT_HAND

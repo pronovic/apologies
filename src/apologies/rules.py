@@ -75,6 +75,7 @@ class ValidationError(ValueError):
     """Indicates that a move is invalid."""
 
 
+# noinspection PyProtectedMember
 @attr.s
 class Rules:
 
@@ -123,7 +124,7 @@ class Rules:
     def _setup_adult_mode(game: Game) -> None:
         """Setup adult mode at the start of the game, which moves some pieces and deals some cards."""
         for player in game.players.values():
-            player.pawns[0].move_to_square(_START_SQUARE[player.color])
+            player.pawns[0].position.move_to_square(_START_SQUARE[player.color])
         for _ in range(ADULT_HAND):
             for player in game.players.values():
                 player.hand.append(game.deck.draw())

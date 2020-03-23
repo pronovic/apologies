@@ -168,35 +168,29 @@ class Deck:
 
 
 @attr.s
-class Pawn:
+class Position:
     """
-    A pawn on the board, belonging to a player.
+    The position of a pawn on the board.
 
     Callers should not pass in or directly modify the start, home, safe, or square
     attributes.  These are accessible to support serialization and deserialization.
     Instead, use the provided methods to safely modify the object in-place.
 
     Attributes:
-        color(str): The color of this pawn
-        index(int): Zero-based index of this pawn for a given user
-        name(str): The full name of this pawn as "color-index"
         start(boolean): Whether this pawn resides in its start area
         home(boolean): Whether this pawn resides in its home area
         safe(int): Zero-based index of the square in the safe area where this pawn resides
         square(int): Zero-based index of the square on the board where this pawn resides
     """
 
-    color = attr.ib(type=PlayerColor)
-    index = attr.ib(type=int)
-    name = attr.ib(type=str)
     start = attr.ib(default=True, type=bool)
     home = attr.ib(default=False, type=bool)
     safe = attr.ib(default=None, type=Optional[int])
     square = attr.ib(default=None, type=Optional[int])
 
-    @name.default
-    def _default_name(self) -> str:
-        return "%s-%s" % (self.color.value, self.index)
+    def copy(self) -> Position:
+        """Return a fully-independent copy of the position."""
+        return _CONVERTER.structure(_CONVERTER.unstructure(self), Position)  # type: ignore
 
     def move_to_start(self) -> None:
         """Move the pawn back to its start area."""
@@ -250,6 +244,36 @@ class Pawn:
 
 
 @attr.s
+class Pawn:
+    """
+    A pawn on the board, belonging to a player.
+
+    Callers should not pass in the position attribute.  This is accessible
+    to support serialization and deserialization. Instead, use the provided
+    methods to safely modify the position in-place.
+
+    Attributes:
+        color(str): The color of this pawn
+        index(int): Zero-based index of this pawn for a given user
+        name(str): The full name of this pawn as "color-index"
+        position(Position): The position of this pawn on the board
+    """
+
+    color = attr.ib(type=PlayerColor)
+    index = attr.ib(type=int)
+    name = attr.ib(type=str)
+    position = attr.ib(type=Position)
+
+    @name.default
+    def _default_name(self) -> str:
+        return "%s-%s" % (self.color.value, self.index)
+
+    @position.default
+    def _default_position(self) -> Position:
+        return Position()
+
+
+@attr.s
 class Player:
     """
     A player, which has a color and a set of pawns.
@@ -288,14 +312,14 @@ class Player:
     def find_first_pawn_in_start(self) -> Optional[Pawn]:
         """Find the first pawn in the start area, if any."""
         for pawn in self.pawns:
-            if pawn.start:
+            if pawn.position.start:
                 return pawn
         return None
 
     def all_pawns_in_home(self) -> bool:
         """Whether all of this user's pawns are in home."""
         for pawn in self.pawns:
-            if not pawn.home:
+            if not pawn.position.home:
                 return False
         return True
 
@@ -325,6 +349,14 @@ class PlayerView:
 
     player = attr.ib(type=Player)
     opponents = attr.ib(type=Dict[PlayerColor, Player])
+
+    def all_pawns(self) -> List[Pawn]:
+        """Return a list of all pawns on the board."""
+        pawns = []
+        pawns.extend(self.player.pawns)
+        for opponent in self.opponents.values():
+            pawns.extend(opponent.pawns)
+        return pawns
 
 
 @attr.s
@@ -397,7 +429,7 @@ class Game:
         """Return the pawn on the indicated square, or None."""
         for player in self.players.values():
             for pawn in player.pawns:
-                if pawn.square == square:
+                if pawn.position.square == square:
                     return pawn
         return None
 
