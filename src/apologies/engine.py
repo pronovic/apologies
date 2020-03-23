@@ -31,9 +31,11 @@ class CharacterInputSource(ABC):
         choice (since there is only one card in play), but in adult mode the character can choose
         which to discard.
 
-        The source _must_ return a move from among the passed-in set of legal moves.  Any other move
-        forfeits the current turn.  In an adult-mode game, the discarded card will be chosen at random
-        from the player's hand, so there is no advantage given to a source that misbehaves.
+        The source _must_ return a move from among the passed-in set of legal moves.  If a source
+        returns an illegal move, then a legal move will be chosen at random and executed.  This way,
+        a misbehaving source (or a source attempting to cheat) does not get an advantage.  The game
+        rules require a player to make a legal move if one is available, even if that move is
+        disadvantageous.
 
         Args:
             mode(GameMode): Game mode
@@ -68,9 +70,11 @@ class Character:
         choice (since there is only one card in play), but in adult mode the character can choose
         which to discard.
 
-        The source _must_ return a move from among the passed-in set of legal moves.  Any other move
-        forfeits the current turn.  In an adult-mode game, the discarded card will be chosen at random
-        from the player's hand, so there is no advantage given to a source that misbehaves.
+        The source _must_ return a move from among the passed-in set of legal moves.  If a source
+        returns an illegal move, then a legal move will be chosen at random and executed.  This way,
+        a misbehaving source (or a source attempting to cheat) does not get an advantage.  The game
+        rules require a player to make a legal move if one is available, even if that move is
+        disadvantageous.
 
         Args:
             mode(GameMode): Game mode
@@ -176,18 +180,17 @@ class Engine:
         view = self._game.create_player_view(color)
         legal_moves = self._rules.construct_legal_moves(view, card=card)
         move = character.choose_move(self.mode, view, legal_moves[:])  # provide a copy of legal moves so character can't modify
-        if move not in legal_moves:
-            self._game.deck.discard(card)
-            self._game.track("Illegal move: turn is forfeit as a penalty", player)
+        if move not in legal_moves:  # an illegal move is ignored and we choose randomly for the character
+            self._game.track("Illegal move: a random legal move will be chosen", player)
+            move = random.choice(legal_moves)
+        if not move.actions:  # a move with no actions is a forfeit
+            self._game.deck.discard(move.card)
+            self._game.track("Turn is forfeit", player)
         else:
-            if not move.actions:  # a move with no actions is a forfeit
-                self._game.deck.discard(move.card)
-                self._game.track("Turn is forfeit", player)
-            else:
-                self._rules.execute_move(self._game, color, move)  # tracks history, potentially completes game
-                self._game.deck.discard(move.card)
-                if not self.completed and self._rules.draw_again(move.card):
-                    self._play_next_standard(color)  # recursive call for next move
+            self._rules.execute_move(self._game, color, move)  # tracks history, potentially completes game
+            self._game.deck.discard(move.card)
+            if not self.completed and self._rules.draw_again(move.card):
+                self._play_next_standard(color)  # recursive call for next move
 
     def _play_next_adult(self, color: PlayerColor) -> None:
         """Play the next move under the rules for adult mode."""
@@ -196,22 +199,18 @@ class Engine:
         view = self._game.create_player_view(color)
         legal_moves = self._rules.construct_legal_moves(view, card=None)
         move = character.choose_move(self.mode, view, legal_moves[:])  # provide a copy of legal moves so character can't modify
-        if move not in legal_moves:
-            discard = random.choice(player.hand)
-            player.hand.remove(discard)
-            self._game.deck.discard(discard)
+        if move not in legal_moves:  # an illegal move is ignored and we choose randomly for the character
+            self._game.track("Illegal move: a random legal move will be chosen", player)
+            move = random.choice(legal_moves)
+        if not move.actions:  # a move with no actions is a forfeit
+            player.hand.remove(move.card)
+            self._game.deck.discard(move.card)
             player.hand.append(self._game.deck.draw())
-            self._game.track("Illegal move: turn is forfeit as a penalty", player)
+            self._game.track("Turn is forfeit; discarded card %s" % move.card.cardtype.value, player)
         else:
-            if not move.actions:  # a move with no actions is a forfeit
-                player.hand.remove(move.card)
-                self._game.deck.discard(move.card)
-                player.hand.append(self._game.deck.draw())
-                self._game.track("Turn is forfeit; discarded card %s" % move.card.cardtype.value, player)
-            else:
-                self._rules.execute_move(self._game, color, move)  # tracks history, potentially completes game
-                player.hand.remove(move.card)
-                self._game.deck.discard(move.card)
-                player.hand.append(self._game.deck.draw())
-                if not self.completed and self._rules.draw_again(move.card):
-                    self._play_next_adult(color)  # recursive call for next move
+            self._rules.execute_move(self._game, color, move)  # tracks history, potentially completes game
+            player.hand.remove(move.card)
+            self._game.deck.discard(move.card)
+            player.hand.append(self._game.deck.draw())
+            if not self.completed and self._rules.draw_again(move.card):
+                self._play_next_adult(color)  # recursive call for next move

@@ -8,7 +8,7 @@ import pytest
 from mock import MagicMock, Mock, call
 
 from apologies.engine import Character, Engine
-from apologies.game import ADULT_HAND, Card, CardType, GameMode, PlayerColor
+from apologies.game import Card, CardType, GameMode, PlayerColor
 from apologies.rules import Action, ActionType, Move
 
 
@@ -124,9 +124,10 @@ class TestEngine:
 
         card = Card(0, CardType.CARD_12)
         player = engine._game.players[PlayerColor.RED]
+        pawn = player.pawns[0]
         view = Mock()
-        move = Move(card, [Action(ActionType.BUMP_TO_START, Mock())])  # not found in legal_moves
-        legal_moves = [Move(card, [])]
+        move = Move(card, [Action(ActionType.MOVE_BACKARD, Mock())])  # not found in legal_moves
+        legal_moves = [Move(card, [Action(ActionType.BUMP_TO_START, pawn)])]
 
         engine._game.create_player_view = MagicMock(return_value=view)
         engine._rules.construct_legal_moves = MagicMock(return_value=legal_moves)
@@ -134,14 +135,17 @@ class TestEngine:
         engine._game.deck.draw = MagicMock(return_value=card)
         engine._game.deck.discard = MagicMock()
         engine.characters[0].choose_move = MagicMock(return_value=move)
+        engine._rules.execute_move = MagicMock()
+        engine._rules.draw_again = MagicMock(return_value=False)
 
         engine.play_next()
 
         engine._game.create_player_view.assert_called_once_with(PlayerColor.RED)
         engine._rules.construct_legal_moves.assert_called_once_with(view, card=card)
         engine.characters[0].choose_move.assert_called_once_with(engine.mode, view, legal_moves)
-        engine._game.track.assert_called_once_with("Illegal move: turn is forfeit as a penalty", player)
+        engine._rules.execute_move.assert_called_once_with(engine._game, PlayerColor.RED, legal_moves[0])  # we choose random move
         engine._game.deck.discard.assert_called_once_with(card)
+        engine._rules.draw_again.assert_called_once_with(card)
 
     def test_play_next_standard_legal(self):
         engine = TestEngine._create_engine()
@@ -269,11 +273,12 @@ class TestEngine:
         engine = TestEngine._create_engine(GameMode.ADULT)
 
         player = engine._game.players[PlayerColor.RED]
+        pawn = player.pawns[0]
         view = Mock()
         movecard = player.hand[0]
         replacementcard = Card(999, CardType.CARD_APOLOGIES)
-        move = Move(movecard, [Action(ActionType.BUMP_TO_START, Mock())])  # not found in legal_moves
-        legal_moves = [Move(movecard, [])]
+        move = Move(movecard, [Action(ActionType.MOVE_BACKARD, Mock())])  # not found in legal_moves
+        legal_moves = [Move(movecard, [Action(ActionType.BUMP_TO_START, pawn)])]
 
         engine._game.create_player_view = MagicMock(return_value=view)
         engine._rules.construct_legal_moves = MagicMock(return_value=legal_moves)
@@ -281,16 +286,19 @@ class TestEngine:
         engine._game.deck.draw = MagicMock(return_value=replacementcard)
         engine._game.deck.discard = MagicMock()
         engine.characters[0].choose_move = MagicMock(return_value=move)
+        engine._rules.execute_move = MagicMock()
+        engine._rules.draw_again = MagicMock(return_value=False)
 
         engine.play_next()
 
         engine._game.create_player_view.assert_called_once_with(PlayerColor.RED)
         engine._rules.construct_legal_moves.assert_called_once_with(view, card=None)
         engine.characters[0].choose_move.assert_called_once_with(engine.mode, view, legal_moves)
-        engine._game.track.assert_called_once_with("Illegal move: turn is forfeit as a penalty", player)
-        engine._game.deck.discard.assert_called_once()  # it's called with some random card from the hand
+        engine._rules.execute_move.assert_called_once_with(engine._game, PlayerColor.RED, legal_moves[0])  # we choose random move
+        engine._game.deck.discard.assert_called_once_with(movecard)
+        engine._rules.draw_again.assert_called_once_with(movecard)
 
-        assert len(player.hand) == ADULT_HAND
+        assert movecard not in player.hand
         assert replacementcard in player.hand
 
     def test_play_next_adult_legal(self):
