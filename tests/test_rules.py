@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 # vim: set ft=python ts=4 sw=4 expandtab:
-# pylint: disable=no-self-use,protected-access
+# pylint: disable=no-self-use,protected-access,too-many-locals
 
 import pytest
-from mock import MagicMock
+from mock import MagicMock, Mock, call
 
 from apologies.game import ADULT_HAND, DECK_SIZE, Card, CardType, Game, GameMode, Pawn, PlayerColor
-from apologies.rules import Action, ActionType, Move, Rules
+from apologies.rules import Action, ActionType, BoardRules, Move, Rules
 
 
 class TestAction:
@@ -60,6 +60,15 @@ class TestMove:
         move = Move(card, actions)
         assert move.card is card
         assert move.actions == actions
+
+
+class TestBoardRules:
+    def test_construct_legal_moves(self):
+        # TODO: test real implementation
+        card = Mock()
+        pawn = Mock()
+        all_pawns = []
+        assert BoardRules.construct_legal_moves(card, pawn, all_pawns) == []
 
 
 class TestRules:
@@ -116,3 +125,163 @@ class TestRules:
         assert game.players[PlayerColor.BLUE].color == PlayerColor.BLUE
         assert game.players[PlayerColor.BLUE].pawns[0].position.square == 19
         assert len(game.players[PlayerColor.BLUE].hand) == ADULT_HAND
+
+    def test_construct_legal_moves_no_moves_with_card(self):
+        card = MagicMock()
+
+        hand1 = MagicMock()
+        hand2 = MagicMock()
+        hand = [hand1, hand2]
+
+        pawn1 = MagicMock()
+        pawn1.position.home = False
+        pawn2 = MagicMock()
+        pawn2.position.home = True  # will be filtered out because there are no legal moves for a pawn in home
+        pawn3 = MagicMock()
+        pawn3.position.home = False
+        player_pawns = [pawn1, pawn2, pawn3]
+
+        all_pawns = [MagicMock(), MagicMock()]
+
+        card_pawn1_moves = []
+        card_pawn3_moves = []
+        legal_moves = [card_pawn1_moves, card_pawn3_moves]
+        expected_moves = [Move(card, [])]  # result is a forfeit for the only card
+
+        view = MagicMock()
+        view.player = MagicMock(hand=hand, pawns=player_pawns)
+        view.all_pawns = MagicMock(return_value=all_pawns)
+
+        rules = Rules(GameMode.STANDARD)
+        rules._board_rules.construct_legal_moves = MagicMock(side_effect=legal_moves)
+        assert rules.construct_legal_moves(view, card=card) == expected_moves
+
+        rules._board_rules.construct_legal_moves.assert_has_calls([call(card, pawn1, all_pawns), call(card, pawn3, all_pawns)])
+
+    def test_construct_legal_moves_no_moves_no_card(self):
+        card = None
+
+        hand1 = MagicMock()
+        hand2 = MagicMock()
+        hand = [hand1, hand2]
+
+        pawn1 = MagicMock()
+        pawn1.position.home = False
+        pawn2 = MagicMock()
+        pawn2.position.home = True  # will be filtered out because there are no legal moves for a pawn in home
+        pawn3 = MagicMock()
+        pawn3.position.home = False
+        player_pawns = [pawn1, pawn2, pawn3]
+
+        all_pawns = [MagicMock(), MagicMock()]
+
+        hand1_pawn1_moves = []
+        hand1_pawn3_moves = []
+        hand2_pawn1_moves = []
+        hand2_pawn3_moves = []
+        legal_moves = [hand1_pawn1_moves, hand1_pawn3_moves, hand2_pawn1_moves, hand2_pawn3_moves]
+        expected_moves = [Move(hand1, []), Move(hand2, [])]  # result is a forfeit for all cards in the hand
+
+        view = MagicMock()
+        view.player = MagicMock(hand=hand, pawns=player_pawns)
+        view.all_pawns = MagicMock(return_value=all_pawns)
+
+        rules = Rules(GameMode.STANDARD)
+        rules._board_rules.construct_legal_moves = MagicMock(side_effect=legal_moves)
+        assert rules.construct_legal_moves(view, card=card) == expected_moves
+
+        rules._board_rules.construct_legal_moves.assert_has_calls(
+            [
+                call(hand1, pawn1, all_pawns),
+                call(hand1, pawn3, all_pawns),
+                call(hand2, pawn1, all_pawns),
+                call(hand2, pawn3, all_pawns),
+            ]
+        )
+
+    def test_construct_legal_moves_with_moves_with_card(self):
+        card = MagicMock()
+
+        hand1 = MagicMock()
+        hand2 = MagicMock()
+        hand = [hand1, hand2]
+
+        pawn1 = MagicMock()
+        pawn1.position.home = False
+        pawn2 = MagicMock()
+        pawn2.position.home = True  # will be filtered out because there are no legal moves for a pawn in home
+        pawn3 = MagicMock()
+        pawn3.position.home = False
+        player_pawns = [pawn1, pawn2, pawn3]
+
+        all_pawns = [MagicMock(), MagicMock()]
+
+        card_pawn1_moves = [
+            Move(card, [Action(ActionType.MOVE_FROM_START, pawn1)]),
+            Move(card, [Action(ActionType.MOVE_FROM_START, pawn1)]),
+        ]
+        card_pawn3_moves = [Move(card, [Action(ActionType.MOVE_FORWARD, pawn3), Action(ActionType.BUMP_TO_START, pawn3)])]
+        legal_moves = [card_pawn1_moves, card_pawn3_moves]
+        expected_moves = [
+            Move(card, [Action(ActionType.MOVE_FROM_START, pawn1)]),
+            Move(card, [Action(ActionType.MOVE_FORWARD, pawn3), Action(ActionType.BUMP_TO_START, pawn3)]),
+        ]  # result is a list of all returned moves, with duplicates are removed
+
+        view = MagicMock()
+        view.player = MagicMock(hand=hand, pawns=player_pawns)
+        view.all_pawns = MagicMock(return_value=all_pawns)
+
+        rules = Rules(GameMode.STANDARD)
+        rules._board_rules.construct_legal_moves = MagicMock(side_effect=legal_moves)
+        assert rules.construct_legal_moves(view, card=card) == expected_moves
+
+        rules._board_rules.construct_legal_moves.assert_has_calls([call(card, pawn1, all_pawns), call(card, pawn3, all_pawns)])
+
+    def test_construct_legal_moves_with_moves_no_card(self):
+        card = None
+
+        hand1 = MagicMock()
+        hand2 = MagicMock()
+        hand = [hand1, hand2]
+
+        pawn1 = MagicMock()
+        pawn1.position.home = False
+        pawn2 = MagicMock()
+        pawn2.position.home = True  # will be filtered out because there are no legal moves for a pawn in home
+        pawn3 = MagicMock()
+        pawn3.position.home = False
+        player_pawns = [pawn1, pawn2, pawn3]
+
+        all_pawns = [MagicMock(), MagicMock()]
+
+        hand1_pawn1_moves = [
+            Move(hand1, [Action(ActionType.MOVE_FROM_START, pawn1)]),
+            Move(hand1, [Action(ActionType.MOVE_FROM_START, pawn1)]),
+        ]
+        hand1_pawn3_moves = [Move(hand1, [Action(ActionType.MOVE_FORWARD, pawn3), Action(ActionType.BUMP_TO_START, pawn3)])]
+        hand2_pawn1_moves = [Move(hand2, [Action(ActionType.CHANGE_PLACES, pawn1)])]
+        hand2_pawn3_moves = [Move(hand2, [Action(ActionType.MOVE_BACKARD, pawn3)])]
+        legal_moves = [hand1_pawn1_moves, hand1_pawn3_moves, hand2_pawn1_moves, hand2_pawn3_moves]
+        expected_moves = [
+            Move(hand1, [Action(ActionType.MOVE_FROM_START, pawn1)]),
+            Move(hand1, [Action(ActionType.MOVE_FORWARD, pawn3), Action(ActionType.BUMP_TO_START, pawn3)]),
+            Move(hand2, [Action(ActionType.CHANGE_PLACES, pawn1)]),
+            Move(hand2, [Action(ActionType.MOVE_BACKARD, pawn3)]),
+        ]  # result is a list of all returned moves, with duplicates are removed
+
+        view = MagicMock()
+        view.player = MagicMock(hand=hand, pawns=player_pawns)
+        view.all_pawns = MagicMock(return_value=all_pawns)
+
+        rules = Rules(GameMode.STANDARD)
+        rules._board_rules.construct_legal_moves = MagicMock(side_effect=legal_moves)
+        assert rules.construct_legal_moves(view, card=card) == expected_moves
+
+        rules._board_rules.construct_legal_moves.assert_has_calls(
+            [
+                call(hand1, pawn1, all_pawns),
+                call(hand1, pawn3, all_pawns),
+                call(hand2, pawn1, all_pawns),
+                call(hand2, pawn3, all_pawns),
+            ]
+        )

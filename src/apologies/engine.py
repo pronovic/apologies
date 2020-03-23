@@ -6,13 +6,14 @@ Game engine that coordinates character actions to play a game.
 """
 
 
+import random
 from abc import ABC, abstractmethod
-from typing import Dict, List, Optional
+from typing import Dict, List
 
 import attr
 
-from .game import Card, Game, GameMode, PlayerColor, PlayerView
-from .rules import Move, Rules, ValidationError
+from .game import Game, GameMode, PlayerColor, PlayerView
+from .rules import Move, Rules
 from .util import CircularQueue
 
 
@@ -21,26 +22,26 @@ class CharacterInputSource(ABC):
     """A generic source of input for a character, which could be a person or could be computer-driven."""
 
     @abstractmethod
-    def construct_move(
-        self, mode: GameMode, view: PlayerView, card: Optional[Card] = None, invalid: Optional[bool] = False
-    ) -> Move:
+    def choose_move(self, mode: GameMode, view: PlayerView, legal_moves: List[Move]) -> Move:
         """
-        Construct the next move for a character.
+        Choose the next move for a character.
 
-        The passed-in game, player, and card must not be modified.
+        If a move has an empty list of actions, then this is a forfeit; nothing else is legal, so
+        the character must choose to discard one card.  In standard mode, there is effectively no
+        choice (since there is only one card in play), but in adult mode the character can choose
+        which to discard.
 
-        If no move is possible, then return an empty list of actions.  If a card was passed-in, always
-        attach it to the returned Move.  Otherwise, attach the card that is being played.  The attached
-        card is always discarded back to the deck.
+        The source _must_ return a move from among the passed-in set of legal moves.  Any other move
+        forfeits the current turn.  In an adult-mode game, the discarded card will be chosen at random
+        from the player's hand, so there is no advantage given to a source that misbehaves.
 
         Args:
             mode(GameMode): Game mode
             view(PlayerView): Player-specific view of the game
-            card(Card, optional): The card to play, or None if move should come from player's hand
-            invalid(bool, optional): Whether this call is because a previous move was invalid
+            legal_moves(:obj: Set of :obj: Move): The set of legal moves, possibly empty
 
         Returns:
-            Move: the character's next move, an empty list if no move is possible and the turn is forfeit
+            Move: the character's next move as described above
         """
 
 
@@ -58,22 +59,28 @@ class Character:
     name = attr.ib(type=str)
     source = attr.ib(type=CharacterInputSource)
 
-    def construct_move(
-        self, mode: GameMode, view: PlayerView, card: Optional[Card] = None, invalid: Optional[bool] = False
-    ) -> Move:
+    def choose_move(self, mode: GameMode, view: PlayerView, legal_moves: List[Move]) -> Move:
         """
-        Construct the next move for a character via the user input source.
+        Choose the next move for a character via the user input source.
+
+        If a move has an empty list of actions, then this is a forfeit; nothing else is legal, so
+        the character must choose to discard one card.  In standard mode, there is effectively no
+        choice (since there is only one card in play), but in adult mode the character can choose
+        which to discard.
+
+        The source _must_ return a move from among the passed-in set of legal moves.  Any other move
+        forfeits the current turn.  In an adult-mode game, the discarded card will be chosen at random
+        from the player's hand, so there is no advantage given to a source that misbehaves.
 
         Args:
             mode(GameMode): Game mode
             view(PlayerView): Player-specific view of the game
-            card(Card, optional): The card to play, or None if move should come from player's hand
-            invalid(bool, optional): Whether this call is because a previous move was invalid
+            legal_moves(:obj: Set of :obj: Move): The set of legal moves, possibly empty
 
         Returns:
-            Move: the character's next move, an empty list if no move is possible and the turn is forfeit
+            Move: the character's next move as described above
         """
-        return self.source.construct_move(mode, view, card, invalid)
+        return self.source.choose_move(mode, view, legal_moves)
 
 
 @attr.s
@@ -142,7 +149,7 @@ class Engine:
 
     def play_next(self) -> Game:
         """
-        Play the next move of the game, returning initial game state.
+        Play the next turn of the game, returning initial game state.
 
         Returns:
             Current state of the game.
@@ -155,64 +162,56 @@ class Engine:
             if self.mode == GameMode.ADULT:
                 self._play_next_adult(color)
             else:
-                card = self._game.deck.draw()
-                self._play_next_standard(color, card)
+                self._play_next_standard(color)
             return self._game
         except Exception as e:
             self._game = saved  # put back original so a failed call is idempotent
             raise e
 
-    def _play_next_standard(self, color: PlayerColor, card: Card, invalid: Optional[bool] = False) -> None:
-        """Play the next move under the rules for standard mode."""
+    def _play_next_standard(self, color: PlayerColor) -> None:
+        """Play the next turn under the rules for standard mode."""
+        card = self._game.deck.draw()
         player = self._game.players[color]
         character = self._map[color]
         view = self._game.create_player_view(color)
-        move = character.construct_move(self.mode, view, card=card, invalid=invalid)
-        if not move.actions:
-            self._game.track("Turn forfeited", player)
+        legal_moves = self._rules.construct_legal_moves(view, card=card)
+        move = character.choose_move(self.mode, view, legal_moves[:])  # provide a copy of legal moves so character can't modify
+        if move not in legal_moves:
             self._game.deck.discard(card)
+            self._game.track("Illegal move: turn is forfeit as a penalty", player)
         else:
-            if not self._validate_move(color, move):
-                self._game.track("Requested move was invalid", player)
-                self._play_next_standard(color, card, invalid=True)  # recursive call; try again with no change in state
+            if not move.actions:  # a move with no actions is a forfeit
+                self._game.deck.discard(move.card)
+                self._game.track("Turn is forfeit", player)
             else:
                 self._rules.execute_move(self._game, color, move)  # tracks history, potentially completes game
-                self._game.deck.discard(card)
-                if not self.completed and self._rules.draw_again(card):
-                    card = self._game.deck.draw()
-                    self._play_next_standard(color, card, invalid=False)  # recursive call for next move
+                self._game.deck.discard(move.card)
+                if not self.completed and self._rules.draw_again(move.card):
+                    self._play_next_standard(color)  # recursive call for next move
 
-    def _play_next_adult(self, color: PlayerColor, invalid: Optional[bool] = False) -> None:
+    def _play_next_adult(self, color: PlayerColor) -> None:
         """Play the next move under the rules for adult mode."""
         player = self._game.players[color]
         character = self._map[color]
         view = self._game.create_player_view(color)
-        move = character.construct_move(self.mode, view, card=None, invalid=invalid)
-        if not move.actions:
-            self._game.track("Turn forfeited", player)
-            player.hand.remove(move.card)
-            self._game.deck.discard(move.card)
+        legal_moves = self._rules.construct_legal_moves(view, card=None)
+        move = character.choose_move(self.mode, view, legal_moves[:])  # provide a copy of legal moves so character can't modify
+        if move not in legal_moves:
+            discard = random.choice(player.hand)
+            player.hand.remove(discard)
+            self._game.deck.discard(discard)
             player.hand.append(self._game.deck.draw())
+            self._game.track("Illegal move: turn is forfeit as a penalty", player)
         else:
-            if not self._validate_move(color, move):
-                self._game.track("Requested move was invalid", player)
-                self._play_next_adult(color, invalid=True)  # recursive call; try again with no change in state
+            if not move.actions:  # a move with no actions is a forfeit
+                player.hand.remove(move.card)
+                self._game.deck.discard(move.card)
+                player.hand.append(self._game.deck.draw())
+                self._game.track("Turn is forfeit; discarded card %s" % move.card.cardtype.value, player)
             else:
                 self._rules.execute_move(self._game, color, move)  # tracks history, potentially completes game
                 player.hand.remove(move.card)
                 self._game.deck.discard(move.card)
                 player.hand.append(self._game.deck.draw())
                 if not self.completed and self._rules.draw_again(move.card):
-                    self._play_next_adult(color, invalid=False)  # recursive call for next move
-
-    def _validate_move(self, color: PlayerColor, move: Move) -> bool:
-        """Validate a player's move."""
-        copy = self._game.copy()
-        try:
-            # We simply execute the move against a copy of the game.  If the
-            # move is invalid, then an exception is thrown, but the state of
-            # the original game is unchanged, so the caller is not impacted.
-            self._rules.execute_move(copy, color, move)
-            return True
-        except ValidationError:
-            return False
+                    self._play_next_adult(color)  # recursive call for next move
