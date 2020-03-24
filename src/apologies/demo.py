@@ -149,6 +149,7 @@ def _force_resize(cols: int, rows: int) -> None:
     See: https://apple.stackexchange.com/a/47841/249172
     """
     print("\u001b[8;%d;%dt" % (rows, cols))
+    sleep(0.5)  # wait for the window to finish resizing, otherwise it doesn't always work right
 
 
 def run_demo(players: int, mode: GameMode, source: CharacterInputSource, delay_sec: float) -> None:
