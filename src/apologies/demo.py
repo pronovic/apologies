@@ -2,7 +2,7 @@
 # vim: set ft=python ts=4 sw=4 expandtab:
 
 """
-Implements a game-playing demo using curses.
+Implements a quick'n'dirty game-playing demo using curses.
 """
 
 import curses
@@ -21,7 +21,7 @@ MIN_ROWS = 70
 
 
 def _render_history(entry):
-    """Return a history entry."""
+    """Return a history entry for display on the screen."""
     timestamp = entry.timestamp.to_time_string()
     color = "General" if not entry.color else "%s" % entry.color.value
     action = entry.action
@@ -56,9 +56,9 @@ def _draw(stdscr, board, state, history):
 def _refresh(source, engine, game, delay_sec, stdscr, board, state, history):
     """Refresh the dynamic portions of the screen."""
     _refresh_screen(source, engine, delay_sec, game, stdscr)
-    _refresh_board(source, engine, delay_sec, game, board)
+    _refresh_board(game, board)
     _refresh_state(source, engine, delay_sec, game, state)
-    _refresh_history(source, engine, delay_sec, game, history)
+    _refresh_history(game, history)
 
 
 def _refresh_screen(unused_source, unused_engine, unused_game, unused_delay_sec, stdscr):
@@ -69,8 +69,8 @@ def _refresh_screen(unused_source, unused_engine, unused_game, unused_delay_sec,
     stdscr.refresh()
 
 
-def _refresh_board(unused_source, unused_engine, unused_delay_sec, game, board):
-    """Refresh the game board display."""
+def _refresh_board(game, board):
+    """Refresh the game board display section of the screen."""
     board.clear()
     board.border()
 
@@ -83,7 +83,7 @@ def _refresh_board(unused_source, unused_engine, unused_delay_sec, game, board):
 
 
 def _refresh_state(source, engine, delay_sec, game, state):
-    """Refresh the game state."""
+    """Refresh the game state section of the screen."""
     state.clear()
     state.border()
 
@@ -108,8 +108,8 @@ def _refresh_state(source, engine, delay_sec, game, state):
     state.refresh()
 
 
-def _refresh_history(unused_source, unused_engine, unused_delay_sec, game, history):
-    """Refresh the game history."""
+def _refresh_history(game, history):
+    """Refresh the game history section of the screen."""
     history.clear()
     history.border()
 
@@ -128,14 +128,15 @@ def _main(stdscr, source: CharacterInputSource, engine: Engine, delay_sec: float
     state = curses.newwin(55, 59, 3, 94)
     history = curses.newwin(11, 150, 58, 3)
 
+    # See https://stackoverflow.com/a/57205676/2907667
     def resize(unused_signum=None, unused_frame=None):
-        endwin()  # this could lead to crashes, per https://stackoverflow.com/a/57205676/2907667
+        endwin()
         _draw(stdscr, board, state, history)
 
     signal(SIGWINCH, resize)
     resize()
 
-    while True:
+    while True:  # loop until the user CTRL-C's the application
         if not engine.completed:
             game = engine.play_next()
             _refresh(source, engine, game, delay_sec, stdscr, board, state, history)
@@ -149,10 +150,19 @@ def _force_resize(cols: int, rows: int) -> None:
     See: https://apple.stackexchange.com/a/47841/249172
     """
     print("\u001b[8;%d;%dt" % (rows, cols))
-    sleep(0.5)  # wait for the window to finish resizing, otherwise it doesn't always work right
+    sleep(0.5)  # wait for the window to finish resizing; if we try to render before it's done, the window gets hosed up
 
 
 def run_demo(players: int, mode: GameMode, source: CharacterInputSource, delay_sec: float) -> None:
+    """
+    Run the quick'n'dirty demo in a terminal window.
+
+    Args:
+        players: Number of players in the game
+        mode: The game mode
+        source: The source to use for choosing player moves
+        delay_sec: The delay between turns when executing the game
+    """
     characters = [Character(name="Player %d" % player, source=source) for player in range(players)]
     engine = Engine(mode=mode, characters=characters)
     engine.start_game()
