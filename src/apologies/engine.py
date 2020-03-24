@@ -169,9 +169,9 @@ class Engine:
             move = random.choice(legal_moves)
         if not move.actions:  # a move with no actions is a forfeit
             self._game.deck.discard(move.card)
-            self._game.track("Turn is forfeit", player)
+            self._game.track("Turn is forfeit; discarded card %s" % move.card.cardtype.value, player)
         else:
-            self._rules.execute_move(self._game, move)  # tracks history, potentially completes game
+            self._rules.execute_move(self._game, player, move)  # tracks history, potentially completes game
             self._game.deck.discard(move.card)
             if not self.completed and self._rules.draw_again(move.card):
                 self._play_next_standard(color)  # recursive call for next move
@@ -192,7 +192,7 @@ class Engine:
             player.hand.append(self._game.deck.draw())
             self._game.track("Turn is forfeit; discarded card %s" % move.card.cardtype.value, player)
         else:
-            self._rules.execute_move(self._game, move)  # tracks history, potentially completes game
+            self._rules.execute_move(self._game, player, move)  # tracks history, potentially completes game
             player.hand.remove(move.card)
             self._game.deck.discard(move.card)
             player.hand.append(self._game.deck.draw())

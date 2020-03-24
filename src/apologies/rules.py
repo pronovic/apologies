@@ -10,7 +10,20 @@ from typing import List, Optional
 
 import attr
 
-from .game import ADULT_HAND, BOARD_SQUARES, SAFE_SQUARES, Card, CardType, Game, GameMode, Pawn, PlayerColor, PlayerView, Position
+from .game import (
+    ADULT_HAND,
+    BOARD_SQUARES,
+    SAFE_SQUARES,
+    Card,
+    CardType,
+    Game,
+    GameMode,
+    Pawn,
+    Player,
+    PlayerColor,
+    PlayerView,
+    Position,
+)
 
 # The start circles for each color
 _CIRCLE = {
@@ -453,7 +466,7 @@ class Rules:
         return moves
 
     # noinspection PyMethodMayBeStatic
-    def execute_move(self, game: Game, move: Move) -> None:
+    def execute_move(self, game: Game, player: Player, move: Move) -> None:
         """
         Execute a player's move, updating game state.
 
@@ -462,13 +475,20 @@ class Rules:
             color(PlayerColor): Color of the player associated with the move
             move(Move): Move to validate
         """
+        log = "Played card %s: [ " % move.card.cardtype.value
         for action in move.actions + move.side_effects:  # execute actions, then side-effects, in order
             # Keep in mind that the pawn on the action is a different object than the pawn in the game.
             pawn = game.players[action.pawn.color].pawns[action.pawn.index]
             if action.actiontype == ActionType.MOVE_TO_START:
                 pawn.position.move_to_start()
+                log += "%s->start, " % pawn.name
             elif action.actiontype == ActionType.MOVE_TO_POSITION:
                 pawn.position.move_to_position(action.position)
+                log += "%s, " % pawn.log
+        log += "]"
+        game.track(log, player)
+        if game.completed:
+            game.track("Game is completed: winner is %s" % game.winner.color.value)  # type: ignore
 
     @staticmethod
     def _setup_adult_mode(game: Game) -> None:

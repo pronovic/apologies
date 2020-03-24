@@ -18,6 +18,7 @@ DEFAULT_PLAYERS = MAX_PLAYERS
 DEFAULT_MODE = GameMode.STANDARD.name
 MODE_CHOICES = [GameMode.STANDARD.name, GameMode.ADULT.name]
 DEFAULT_SOURCE = "apologies.source.RandomInputSource"
+DEFAULT_DELAY_SEC = 5
 
 
 def _demo(argv: List[str], unused_stdout: IO[str], unused_stderr: IO[str]) -> None:
@@ -31,8 +32,9 @@ def _demo(argv: List[str], unused_stdout: IO[str], unused_stderr: IO[str]) -> No
         "--mode", type=str, default=DEFAULT_MODE, choices=[GameMode.STANDARD.name, GameMode.ADULT.name], help="Choose the game mode"
     )
     parser.add_argument("--source", type=str, default=DEFAULT_SOURCE, help="Fully-qualified name of the character source")
+    parser.add_argument("--delay", type=float, default=DEFAULT_DELAY_SEC, help="Delay between computer-generated moves (seconds)")
     args = parser.parse_args(args=argv[2:])
-    run_demo(players=args.players, mode=GameMode[args.mode], source=source(args.source))
+    run_demo(players=args.players, mode=GameMode[args.mode], source=source(args.source), delay_sec=args.delay)
 
 
 def _render(unused_argv: List[str], stdout: IO[str], unused_stderr: IO[str]) -> None:
