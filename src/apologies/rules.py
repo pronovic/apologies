@@ -6,7 +6,7 @@ Implements rules related to game play.
 """
 
 from enum import Enum
-from typing import List, Optional, Sequence
+from typing import List, Optional
 
 import attr
 
@@ -26,6 +26,14 @@ _TURN = {
     PlayerColor.BLUE: Position().move_to_square(17),
     PlayerColor.YELLOW: Position().move_to_square(32),
     PlayerColor.GREEN: Position().move_to_square(47),
+}
+
+# The slide start/end positions for each color
+_SLIDE = {
+    PlayerColor.RED: ((1, 4), (9, 13)),
+    PlayerColor.BLUE: ((16, 19), (24, 28)),
+    PlayerColor.YELLOW: ((31, 34), (39, 43)),
+    PlayerColor.GREEN: ((46, 49), (54, 58)),
 }
 
 # Whether a card draws again
@@ -64,7 +72,13 @@ class Action:
 class Move:
 
     """
-    A player's move on the board, which consists of one or more actions
+    A player's move on the board, which consists of one or more actions.
+
+    Note that the actions associated with a move include both the immediate actions that the player
+    chose (such as moving a pawn from start or swapping places with a different pawn), but also
+    any side-effects (such as pawns that are bumped back to start because of a slide).  As a result,
+    executing a move becomes very easy and no validation is required.  All of the work is done
+    up-front.
 
     Attributes:
         card(Card): the card that is being played by this move
@@ -72,7 +86,7 @@ class Move:
     """
 
     card = attr.ib(type=Card)
-    actions = attr.ib(type=Sequence[Action])
+    actions = attr.ib(type=List[Action])
 
 
 # noinspection PyMethodMayBeStatic
@@ -142,30 +156,50 @@ class BoardRules:
         Return:
             Set of legal moves for the pawn using the card.
         """
+        moves: List[Move] = []
         if not pawn.position.home:  # there are no legal moves for a pawn in home
             if card.cardtype == CardType.CARD_1:
-                return BoardRules._construct_legal_moves_1(color, card, pawn, all_pawns)
+                moves += BoardRules._construct_legal_moves_1(color, card, pawn, all_pawns)
             elif card.cardtype == CardType.CARD_2:
-                return BoardRules._construct_legal_moves_2(color, card, pawn, all_pawns)
+                moves += BoardRules._construct_legal_moves_2(color, card, pawn, all_pawns)
             elif card.cardtype == CardType.CARD_3:
-                return BoardRules._construct_legal_moves_3(color, card, pawn, all_pawns)
+                moves += BoardRules._construct_legal_moves_3(color, card, pawn, all_pawns)
             elif card.cardtype == CardType.CARD_4:
-                return BoardRules._construct_legal_moves_4(color, card, pawn, all_pawns)
+                moves += BoardRules._construct_legal_moves_4(color, card, pawn, all_pawns)
             elif card.cardtype == CardType.CARD_5:
-                return BoardRules._construct_legal_moves_5(color, card, pawn, all_pawns)
+                moves += BoardRules._construct_legal_moves_5(color, card, pawn, all_pawns)
             elif card.cardtype == CardType.CARD_7:
-                return BoardRules._construct_legal_moves_7(color, card, pawn, all_pawns)
+                moves += BoardRules._construct_legal_moves_7(color, card, pawn, all_pawns)
             elif card.cardtype == CardType.CARD_8:
-                return BoardRules._construct_legal_moves_8(color, card, pawn, all_pawns)
+                moves += BoardRules._construct_legal_moves_8(color, card, pawn, all_pawns)
             elif card.cardtype == CardType.CARD_10:
-                return BoardRules._construct_legal_moves_10(color, card, pawn, all_pawns)
+                moves += BoardRules._construct_legal_moves_10(color, card, pawn, all_pawns)
             elif card.cardtype == CardType.CARD_11:
-                return BoardRules._construct_legal_moves_11(color, card, pawn, all_pawns)
+                moves += BoardRules._construct_legal_moves_11(color, card, pawn, all_pawns)
             elif card.cardtype == CardType.CARD_12:
-                return BoardRules._construct_legal_moves_12(color, card, pawn, all_pawns)
+                moves += BoardRules._construct_legal_moves_12(color, card, pawn, all_pawns)
             elif card.cardtype == CardType.CARD_APOLOGIES:
-                return BoardRules._construct_legal_moves_apologies(color, card, pawn, all_pawns)
-        return []
+                moves += BoardRules._construct_legal_moves_apologies(color, card, pawn, all_pawns)
+        BoardRules._augment_with_slides(all_pawns, moves)
+        return moves
+
+    # pylint: disable=too-many-nested-blocks
+    @staticmethod
+    def _augment_with_slides(all_pawns: List[Pawn], moves: List[Move]) -> None:
+        """Augument any legal moves with additional side-effects that occur as a result of sliding."""
+        for move in moves:
+            for action in move.actions[:]:  # operate on a copy so we can modify move.actions if necessary
+                if action.actiontype == ActionType.MOVE_TO_POSITION:  # look at any move to a position on the board
+                    for color in [color for color in PlayerColor if color != action.pawn.color]:  # any color other than the pawn's
+                        for (start, end) in _SLIDE[color]:  # look at all slides with this color
+                            if action.pawn.position.square == start:  # if the pawn landed on the start of the slide
+                                action.pawn.position.move_to_square(end)  # move the pawn to the end of the slide
+                                for square in range(start + 1, end + 1):  # and then bump any pawns that were already on the slide
+                                    pawn = BoardRules._find_pawn(all_pawns, Position().move_to_square(square))
+                                    if pawn:
+                                        bump = Action(ActionType.MOVE_TO_START, pawn)
+                                        if bump not in move.actions:
+                                            move.actions.append(bump)
 
     @staticmethod
     def _construct_legal_moves_1(color: PlayerColor, card: Card, pawn: Pawn, all_pawns: List[Pawn]) -> List[Move]:
@@ -371,6 +405,7 @@ class Rules:
             raise ValueError("Internal error: could not construct any legal moves")
         return moves
 
+    # noinspection PyMethodMayBeStatic
     def execute_move(self, game: Game, color: PlayerColor, move: Move) -> None:
         """
         Execute a player's move, updating game state.
@@ -379,11 +414,13 @@ class Rules:
             game(Game): Game to operate on
             color(PlayerColor): Color of the player associated with the move
             move(Move): Move to validate
-
-        Raises:
-            ValidationError: If the move is not valid
         """
-        # TODO: implement Rules.execute_move()
+        for action in move.actions:
+            pawn = game.players[color].pawns[action.pawn.index]
+            if action.actiontype == ActionType.MOVE_TO_START:
+                pawn.position.move_to_start()
+            elif action.actiontype == ActionType.MOVE_TO_POSITION:
+                pawn.position.move_to_position(action.position)
 
     @staticmethod
     def _setup_adult_mode(game: Game) -> None:

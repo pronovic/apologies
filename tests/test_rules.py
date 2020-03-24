@@ -231,6 +231,22 @@ class TestRules:
             ]
         )
 
+    def test_execute_move_start(self):
+        rules = Rules(GameMode.STANDARD)
+        game = Game(4)
+        game.players[PlayerColor.RED].pawns[1].position.move_to_start = MagicMock()
+        move = Move(MagicMock(), [Action(ActionType.MOVE_TO_START, MagicMock(index=1))])
+        rules.execute_move(game, PlayerColor.RED, move)
+        game.players[PlayerColor.RED].pawns[1].position.move_to_start.assert_called_once()
+
+    def test_execute_move_position(self):
+        rules = Rules(GameMode.STANDARD)
+        game = Game(4)
+        game.players[PlayerColor.RED].pawns[1].position.move_to_position = MagicMock()
+        move = Move(MagicMock(), [Action(ActionType.MOVE_TO_POSITION, MagicMock(index=1), Position().move_to_square(32))])
+        rules.execute_move(game, PlayerColor.RED, move)
+        game.players[PlayerColor.RED].pawns[1].position.move_to_position.assert_called_once_with(Position().move_to_square(32))
+
 
 class TestBoardRules:
     def test_constructor(self):
