@@ -12,20 +12,20 @@ import attr
 
 from .game import ADULT_HAND, BOARD_SQUARES, SAFE_SQUARES, Card, CardType, Game, GameMode, Pawn, PlayerColor, PlayerView, Position
 
-# The start squares for each color
-_START_SQUARE = {
-    PlayerColor.RED: 4,
-    PlayerColor.BLUE: 19,
-    PlayerColor.YELLOW: 34,
-    PlayerColor.GREEN: 49,
+# The start circles for each color
+_CIRCLE = {
+    PlayerColor.RED: Position().move_to_square(4),
+    PlayerColor.BLUE: Position().move_to_square(19),
+    PlayerColor.YELLOW: Position().move_to_square(34),
+    PlayerColor.GREEN: Position().move_to_square(49),
 }
 
 # The turn squares for each color, where forward movement turns into the safe zone
-_TURN_SQUARE = {
-    PlayerColor.RED: 2,
-    PlayerColor.BLUE: 17,
-    PlayerColor.YELLOW: 32,
-    PlayerColor.GREEN: 47,
+_TURN = {
+    PlayerColor.RED: Position().move_to_square(2),
+    PlayerColor.BLUE: Position().move_to_square(17),
+    PlayerColor.YELLOW: Position().move_to_square(32),
+    PlayerColor.GREEN: Position().move_to_square(47),
 }
 
 # Whether a card draws again
@@ -47,11 +47,8 @@ _DRAW_AGAIN = {
 class ActionType(Enum):
     """Enumeration of all actions that a character can take."""
 
-    MOVE_FROM_START = "Move from start"  # Move a pawn from start
-    MOVE_FORWARD = "Move forward"  # Move a pawn forward a certain number of spaces
-    MOVE_BACKARD = "Move backward"  # Move a pawn backward a certain number of spaces
-    CHANGE_PLACES = "Change places"  # Change places, swapping two pawns on the board
-    BUMP_TO_START = "Bump to start"  # Move a pawn from start, bumping another pawn off the board
+    MOVE_TO_START = "Move to start"  # Move a pawn back to its start area
+    MOVE_TO_POSITION = "Move to position"  # Move a pawn to a specific square on the board
 
 
 @attr.s
@@ -59,9 +56,8 @@ class Action:
     """An action that can be taken as part of a move."""
 
     actiontype = attr.ib(type=ActionType)
-    mine = attr.ib(type=Pawn)
-    theirs = attr.ib(default=None, type=Optional[Pawn])
-    squares = attr.ib(default=None, type=Optional[int])
+    pawn = attr.ib(type=Pawn)
+    position = attr.ib(default=None, type=Position)
 
 
 @attr.s
@@ -85,6 +81,53 @@ class BoardRules:
     """
     Rules related to the way the board works.
     """
+
+    # noinspection PyChainedComparisons
+    # pylint: disable=no-else-raise,no-else-return,too-many-branches,too-many-return-statements,line-too-long
+    @staticmethod
+    def position(color: PlayerColor, position: Position, squares: int) -> Position:
+        """
+        Calculate the new position for a forward or backwards move, taking into account safe zone turns but disregarding slides.
+        """
+        if position.home or position.start:
+            raise ValueError("Pawn in home or start may not move.")
+        elif position.safe is not None:
+            if squares == 0:
+                return position.copy()
+            elif squares > 0:
+                if position.safe + squares < SAFE_SQUARES:
+                    return position.copy().move_to_safe(position.safe + squares)
+                elif position.safe + squares == SAFE_SQUARES:
+                    return position.copy().move_to_home()
+                else:
+                    raise ValueError("Pawn cannot move past home.")
+            else:  # squares < 0
+                if position.safe + squares >= 0:
+                    return position.copy().move_to_safe(position.safe + squares)
+                else:  # handle moving back out of the safe area
+                    return BoardRules.position(color, position.copy().move_to_square(_TURN[color].square), squares + position.safe + 1)  # type: ignore
+        elif position.square is not None:
+            if squares == 0:
+                return position.copy()
+            elif squares > 0:
+                if position.square + squares < BOARD_SQUARES:
+                    if position.square <= _TURN[color].square and position.square + squares > _TURN[color].square:  # type: ignore
+                        return BoardRules.position(color, position.copy().move_to_safe(0), squares - (_TURN[color].square - position.square) - 1)  # type: ignore
+                    else:
+                        return position.copy().move_to_square(position.square + squares)
+                else:  # handle turning the corner
+                    return BoardRules.position(
+                        color, position.copy().move_to_square(0), squares - (BOARD_SQUARES - position.square)
+                    )
+            else:  # squares < 0
+                if position.square + squares >= 0:
+                    return position.copy().move_to_square(position.square + squares)
+                else:  # handle turning the corner
+                    return BoardRules.position(
+                        color, position.copy().move_to_square(BOARD_SQUARES - 1), squares + position.square + 1
+                    )
+        else:
+            raise ValueError("Position is in an illegal state")
 
     # pylint: disable=no-else-return,too-many-return-statements
     def construct_legal_moves(self, color: PlayerColor, card: Card, pawn: Pawn, all_pawns: List[Pawn]) -> List[Move]:
@@ -124,186 +167,147 @@ class BoardRules:
                 return BoardRules._construct_legal_moves_apologies(color, card, pawn, all_pawns)
         return []
 
-    # pylint: disable=no-else-raise,too-many-branches
-    def position(self, color: PlayerColor, position: Position, squares: int) -> Position:
-        """
-        Calculate the new position for a forward or backwards move, taking into account safe zone turns but disregarding slides.
-        """
-        if position.home or position.start:
-            raise ValueError("Pawn in home or start may not move.")
-        elif position.safe is not None:
-            if squares == 0:
-                return position.copy()
-            elif squares > 0:
-                if position.safe + squares < SAFE_SQUARES:
-                    return position.copy().move_to_safe(position.safe + squares)
-                elif position.safe + squares == SAFE_SQUARES:
-                    return position.copy().move_to_home()
-                else:
-                    raise ValueError("Pawn cannot move past home.")
-            else:  # squares < 0
-                if position.safe + squares >= 0:
-                    return position.copy().move_to_safe(position.safe + squares)
-                else:  # handle moving back out of the safe area
-                    return self.position(color, position.copy().move_to_square(_TURN_SQUARE[color]), squares + position.safe + 1)
-        elif position.square is not None:
-            if squares == 0:
-                return position.copy()
-            elif squares > 0:
-                if position.square + squares < BOARD_SQUARES:
-                    if position.square <= _TURN_SQUARE[color] and position.square + squares > _TURN_SQUARE[color]:
-                        return self.position(
-                            color, position.copy().move_to_safe(0), squares - (_TURN_SQUARE[color] - position.square) - 1
-                        )
-                    else:
-                        return position.copy().move_to_square(position.square + squares)
-                else:  # handle turning the corner
-                    return self.position(color, position.copy().move_to_square(0), squares - (BOARD_SQUARES - position.square))
-            else:  # squares < 0
-                if position.square + squares >= 0:
-                    return position.copy().move_to_square(position.square + squares)
-                else:  # handle turning the corner
-                    return self.position(color, position.copy().move_to_square(BOARD_SQUARES - 1), squares + position.square + 1)
-        else:
-            raise ValueError("Position is in an illegal state")
-
-    # pylint: disable=unused-argument   # TODO: remove this
     @staticmethod
     def _construct_legal_moves_1(color: PlayerColor, card: Card, pawn: Pawn, all_pawns: List[Pawn]) -> List[Move]:
         """Return the set of legal moves for a pawn using CARD_1, possibly empty."""
         moves: List[Move] = []
         if pawn.position.start:
-            # A pawn can move out from start if that position is not occupied by another
-            # pawn of the same color.
-            pass
-        else:
-            # A pawn can move forward 1 space if that position is not occupied by another
-            # pawn of the same color and does not move it past home.
-            pass
+            moves += BoardRules.move_start(color, card, pawn, all_pawns)
+        moves += BoardRules.move_simple(color, card, pawn, all_pawns, 1)
         return moves
 
-    # pylint: disable=unused-argument   # TODO: remove this
     @staticmethod
     def _construct_legal_moves_2(color: PlayerColor, card: Card, pawn: Pawn, all_pawns: List[Pawn]) -> List[Move]:
         """Return the set of legal moves for a pawn using CARD_2, possibly empty."""
         moves: List[Move] = []
         if pawn.position.start:
-            # A pawn can move out from start if that position is not occupied by another
-            # pawn of the same color.
-            pass
-        else:
-            # A pawn can move forward 2 spaces if that position is not occupied by
-            # another pawn of the same color and does not move it past home.
-            pass
+            moves += BoardRules.move_start(color, card, pawn, all_pawns)
+        moves += BoardRules.move_simple(color, card, pawn, all_pawns, 2)
         return moves
 
-    # pylint: disable=unused-argument   # TODO: remove this
     @staticmethod
     def _construct_legal_moves_3(color: PlayerColor, card: Card, pawn: Pawn, all_pawns: List[Pawn]) -> List[Move]:
         """Return the set of legal moves for a pawn using CARD_3, possibly empty."""
-        moves: List[Move] = []
-        if not pawn.position.start:
-            # A pawn on the board can move forward 3 spaces if that position is not
-            # occupied by another pawn of the same color and does not move it past home.
-            pass
-        return moves
+        return BoardRules.move_simple(color, card, pawn, all_pawns, 3)
 
-    # pylint: disable=unused-argument   # TODO: remove this
     @staticmethod
     def _construct_legal_moves_4(color: PlayerColor, card: Card, pawn: Pawn, all_pawns: List[Pawn]) -> List[Move]:
         """Return the set of legal moves for a pawn using CARD_4, possibly empty."""
-        moves: List[Move] = []
-        if not pawn.position.start:
-            # A pawn on the board can move backward 4 spaces if that position is not
-            # occupied by another pawn of the same color and does not move it past home.
-            pass
-        return moves
+        return BoardRules.move_simple(color, card, pawn, all_pawns, -4)
 
-    # pylint: disable=unused-argument   # TODO: remove this
     @staticmethod
     def _construct_legal_moves_5(color: PlayerColor, card: Card, pawn: Pawn, all_pawns: List[Pawn]) -> List[Move]:
         """Return the set of legal moves for a pawn using CARD_5, possibly empty."""
-        moves: List[Move] = []
-        if not pawn.position.start:
-            # A pawn on the board can move forward 5 spaces if that position is not
-            # occupied by another pawn of the same color and does not move it past home.
-            pass
-        return moves
+        return BoardRules.move_simple(color, card, pawn, all_pawns, 5)
 
-    # pylint: disable=unused-argument   # TODO: remove this
     @staticmethod
     def _construct_legal_moves_7(color: PlayerColor, card: Card, pawn: Pawn, all_pawns: List[Pawn]) -> List[Move]:
         """Return the set of legal moves for a pawn using CARD_7, possibly empty."""
         moves: List[Move] = []
         if not pawn.position.start:
-            # A pawn on the board can move forward 7 spaces or split its move with another
-            # pawn of the same color as long as their positions are not occupied by another
-            # pawns of the same color and they do not move past home
-            pass
+            # A pawn on the board can move forward 7 spaces or split its move with another pawn of the same color.
+            moves += BoardRules.move_simple(color, card, pawn, all_pawns, 7)
+            for other in all_pawns:
+                if other != pawn and other.color == color and not other.position.home and not other.position.start:
+                    for (left, right) in [(1, 6), (2, 5), (3, 4), (4, 3), (5, 2), (6, 1)]:  # legal ways to split up a move of 7
+                        moves += BoardRules.move_simple(color, card, pawn, all_pawns, left)
+                        moves += BoardRules.move_simple(color, card, other, all_pawns, right)
         return moves
 
-    # pylint: disable=unused-argument   # TODO: remove this
     @staticmethod
     def _construct_legal_moves_8(color: PlayerColor, card: Card, pawn: Pawn, all_pawns: List[Pawn]) -> List[Move]:
         """Return the set of legal moves for a pawn using CARD_8, possibly empty."""
-        moves: List[Move] = []
-        if not pawn.position.start:
-            # A pawn on the board can move forward 8 spaces if that position is not
-            # occupied by another pawn of the same color and does not move it past home
-            pass
-        return moves
+        return BoardRules.move_simple(color, card, pawn, all_pawns, 8)
 
-    # pylint: disable=unused-argument   # TODO: remove this
     @staticmethod
     def _construct_legal_moves_10(color: PlayerColor, card: Card, pawn: Pawn, all_pawns: List[Pawn]) -> List[Move]:
         """Return the set of legal moves for a pawn using CARD_10, possibly empty."""
-        moves: List[Move] = []
-        if not pawn.position.start:
-            # A pawn on the board can move forward 10 spaces or backward 1 space if that
-            # position is not occupied by another pawn of the same color and does not move
-            # it past home.
-            pass
-        return moves
+        return BoardRules.move_simple(color, card, pawn, all_pawns, 10)
 
-    # pylint: disable=unused-argument   # TODO: remove this
     @staticmethod
     def _construct_legal_moves_11(color: PlayerColor, card: Card, pawn: Pawn, all_pawns: List[Pawn]) -> List[Move]:
         """Return the set of legal moves for a pawn using CARD_11, possibly empty."""
         moves: List[Move] = []
         if not pawn.position.start:
-            # A pawn on the board can move forward 11 spaces if that position is not
-            # occupied by another pawn of the same color and does not move it past home or
-            # may switch with another pawn of a different color that is not in start or
-            # home.
-            pass
+            moves += BoardRules.move_swap(color, card, pawn, all_pawns)
+        moves += BoardRules.move_simple(color, card, pawn, all_pawns, 11)
         return moves
 
-    # pylint: disable=unused-argument   # TODO: remove this
     @staticmethod
     def _construct_legal_moves_12(color: PlayerColor, card: Card, pawn: Pawn, all_pawns: List[Pawn]) -> List[Move]:
         """Return the set of legal moves for a pawn using CARD_12, possibly empty."""
-        moves: List[Move] = []
-        if not pawn.position.start:
-            # A pawn on the board can move forward 12 spaces if that position is not
-            # occupied by another pawn of the same color and does not move it past home.
-            pass
-        return moves
+        return BoardRules.move_simple(color, card, pawn, all_pawns, 12)
 
-    # pylint: disable=unused-argument   # TODO: remove this
     @staticmethod
     def _construct_legal_moves_apologies(color: PlayerColor, card: Card, pawn: Pawn, all_pawns: List[Pawn]) -> List[Move]:
         """Return the set of legal moves for a pawn using CARD_APOLOGIES, possibly empty."""
         moves: List[Move] = []
         if pawn.position.start:
-            # A pawn in start may switch with another pawn of a different color that is not
-            # in start or home.
-            for other in [
-                other for other in all_pawns if other.color != pawn.color and not other.position.home and not other.position.start
-            ]:
-                action = Action(ActionType.BUMP_TO_START, mine=pawn, theirs=other)
-                move = Move(card, [action])
-                moves.append(move)
+            moves += BoardRules.move_swap(color, card, pawn, all_pawns)
         return moves
+
+    @staticmethod
+    def move_start(color: PlayerColor, card: Card, pawn: Pawn, all_pawns: List[Pawn]) -> List[Move]:
+        # For start-related cards, a pawn in the start area can move to the associated
+        # start square if that position is not occupied by another pawn of the same color.
+        if pawn.position.start:
+            conflict = BoardRules._find_pawn(all_pawns, _CIRCLE[color])
+            if not conflict:
+                return [Move(card, [Action(ActionType.MOVE_TO_POSITION, pawn, _CIRCLE[color]),],)]
+            elif conflict and conflict.color != color:
+                return [
+                    Move(
+                        card,
+                        [Action(ActionType.MOVE_TO_START, conflict), Action(ActionType.MOVE_TO_POSITION, pawn, _CIRCLE[color]),],
+                    )
+                ]
+        return []
+
+    @staticmethod
+    def move_simple(color: PlayerColor, card: Card, pawn: Pawn, all_pawns: List[Pawn], squares: int) -> List[Move]:
+        # For most cards, a pawn on the board can move forward or backward if that position is
+        # not occupied by another pawn of the same color and does not move the pawn past home.
+        if not pawn.position.start:
+            target = BoardRules.position(color, pawn.position, squares)
+            conflict = BoardRules._find_pawn(all_pawns, target)
+            if not conflict:
+                return [Move(card, [Action(ActionType.MOVE_TO_POSITION, pawn, target),],)]
+            elif conflict and conflict.color != color:
+                return [
+                    Move(card, [Action(ActionType.MOVE_TO_START, conflict), Action(ActionType.MOVE_TO_POSITION, pawn, target),],)
+                ]
+        return []
+
+    @staticmethod
+    def move_swap(color: PlayerColor, card: Card, pawn: Pawn, all_pawns: List[Pawn]) -> List[Move]:
+        # For swap-related cards, a pawn on the board can swap with another pawn of a different
+        # color, as long as that pawn is outside of the start area, safe area, or home area.
+        moves: List[Move] = []
+        for candidate in all_pawns:
+            if (
+                candidate.color != color
+                and not candidate.position.home
+                and not candidate.position.start
+                and candidate.position.safe is None
+            ):
+                moves.append(
+                    Move(
+                        card,
+                        [
+                            Action(ActionType.MOVE_TO_POSITION, pawn, candidate.position),
+                            Action(ActionType.MOVE_TO_POSITION, candidate, pawn.position),
+                        ],
+                    )
+                )
+        return moves
+
+    @staticmethod
+    def _find_pawn(all_pawns: List[Pawn], position: Position) -> Optional[Pawn]:
+        """Return the first pawn at the indicated position, or None."""
+        for pawn in all_pawns:
+            if pawn.position == position:
+                return pawn
+        return None
 
 
 # noinspection PyProtectedMember
@@ -346,13 +350,6 @@ class Rules:
         """
         Return the set of all legal moves for a player and its opponents.
 
-        Note that legal moves describe both the move that the player would make, as well
-        as the end state of the pawns affected by that move.  For instance, the player
-        might move their green pawn to the top of a blue side.  However, the end state
-        is that that the pawn moves to the bottom of the slide and any other pawns on
-        the slide are moved back to their start.  So, there is enough information
-        encapulated in the move to fully execute it, without doing any other analysis.
-
         Attributes:
             view(PlayerView): Player-specific view of the game
             card(Card, optional): The card to play, or None if move should come from player's hand
@@ -376,24 +373,23 @@ class Rules:
 
     def execute_move(self, game: Game, color: PlayerColor, move: Move) -> None:
         """
-            Execute a player's move, updating game state.
+        Execute a player's move, updating game state.
 
-            Args:
-                game(Game): Game to operate on
-                color(PlayerColor): Color of the player associated with the move
-                move(Move): Move to validate
+        Args:
+            game(Game): Game to operate on
+            color(PlayerColor): Color of the player associated with the move
+            move(Move): Move to validate
 
-            Raises:
-                ValidationError: If the move is not valid
-            """
-
-    # TODO: implement Rules.execute_move()
+        Raises:
+            ValidationError: If the move is not valid
+        """
+        # TODO: implement Rules.execute_move()
 
     @staticmethod
     def _setup_adult_mode(game: Game) -> None:
         """Setup adult mode at the start of the game, which moves some pieces and deals some cards."""
         for player in game.players.values():
-            player.pawns[0].position.move_to_square(_START_SQUARE[player.color])
+            player.pawns[0].position.move_to_position(_CIRCLE[player.color])
         for _ in range(ADULT_HAND):
             for player in game.players.values():
                 player.hand.append(game.deck.draw())

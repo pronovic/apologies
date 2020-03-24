@@ -10,53 +10,19 @@ from apologies.rules import Action, ActionType, BoardRules, Move, Rules
 
 
 class TestAction:
-    def test_move_from_start(self):
-        mine = Pawn(PlayerColor.BLUE, 1, "whatever")
-        action = Action(ActionType.MOVE_FROM_START, mine=mine)
-        assert action.actiontype == ActionType.MOVE_FROM_START
-        assert action.mine is mine
-        assert action.theirs is None
-        assert action.squares is None
-
-    def test_move_forward(self):
-        mine = Pawn(PlayerColor.BLUE, 1, "whatever")
-        action = Action(actiontype=ActionType.MOVE_FORWARD, mine=mine, squares=5)
-        assert action.actiontype == ActionType.MOVE_FORWARD
-        assert action.mine is mine
-        assert action.theirs is None
-        assert action.squares == 5
-
-    def test_move_backward(self):
-        mine = Pawn(PlayerColor.BLUE, 1, "whatever")
-        action = Action(actiontype=ActionType.MOVE_BACKARD, mine=mine, squares=5)
-        assert action.actiontype == ActionType.MOVE_BACKARD
-        assert action.mine is mine
-        assert action.theirs is None
-        assert action.squares == 5
-
-    def test_change_places(self):
-        mine = Pawn(PlayerColor.BLUE, 1, "whatever")
-        theirs = Pawn(PlayerColor.BLUE, 2, "theirs")
-        action = Action(actiontype=ActionType.CHANGE_PLACES, mine=mine, theirs=theirs, squares=5)
-        assert action.actiontype == ActionType.CHANGE_PLACES
-        assert action.mine is mine
-        assert action.theirs is theirs
-        assert action.squares == 5
-
-    def test_bump_to_start(self):
-        mine = Pawn(PlayerColor.BLUE, 1, "whatever")
-        theirs = Pawn(PlayerColor.BLUE, 1, "whatever")
-        action = Action(actiontype=ActionType.BUMP_TO_START, mine=mine, theirs=theirs)
-        assert action.actiontype == ActionType.BUMP_TO_START
-        assert action.mine is mine
-        assert action.theirs is theirs
-        assert action.squares is None
+    def test_constructor(self):
+        pawn = Pawn(PlayerColor.BLUE, 1, "whatever")
+        position = Position().move_to_square(32)
+        action = Action(ActionType.MOVE_TO_START, pawn, position)
+        assert action.actiontype == ActionType.MOVE_TO_START
+        assert action.pawn is pawn
+        assert action.position is position
 
 
 class TestMove:
     def test_constructor(self):
         card = Card(3, CardType.CARD_12)
-        actions = [Action(ActionType.MOVE_FROM_START, mine=Pawn(PlayerColor.BLUE, 1, "whatever"))]
+        actions = [Action(ActionType.MOVE_TO_START, pawn=Pawn(PlayerColor.BLUE, 1, "whatever"))]
         move = Move(card, actions)
         assert move.card is card
         assert move.actions == actions
@@ -198,14 +164,14 @@ class TestRules:
         all_pawns = [MagicMock(), MagicMock()]
 
         card_pawn1_moves = [
-            Move(card, [Action(ActionType.MOVE_FROM_START, pawn1)]),
-            Move(card, [Action(ActionType.MOVE_FROM_START, pawn1)]),
+            Move(card, [Action(ActionType.MOVE_TO_START, pawn1)]),
+            Move(card, [Action(ActionType.MOVE_TO_START, pawn1)]),
         ]
-        card_pawn2_moves = [Move(card, [Action(ActionType.MOVE_FORWARD, pawn2), Action(ActionType.BUMP_TO_START, pawn2)])]
+        card_pawn2_moves = [Move(card, [Action(ActionType.MOVE_TO_POSITION, pawn2), Action(ActionType.MOVE_TO_START, pawn2)])]
         legal_moves = [card_pawn1_moves, card_pawn2_moves]
         expected_moves = [
-            Move(card, [Action(ActionType.MOVE_FROM_START, pawn1)]),
-            Move(card, [Action(ActionType.MOVE_FORWARD, pawn2), Action(ActionType.BUMP_TO_START, pawn2)]),
+            Move(card, [Action(ActionType.MOVE_TO_START, pawn1)]),
+            Move(card, [Action(ActionType.MOVE_TO_POSITION, pawn2), Action(ActionType.MOVE_TO_START, pawn2)]),
         ]  # result is a list of all returned moves, with duplicates are removed
 
         view = MagicMock()
@@ -234,18 +200,18 @@ class TestRules:
         all_pawns = [MagicMock(), MagicMock()]
 
         hand1_pawn1_moves = [
-            Move(hand1, [Action(ActionType.MOVE_FROM_START, pawn1)]),
-            Move(hand1, [Action(ActionType.MOVE_FROM_START, pawn1)]),
+            Move(hand1, [Action(ActionType.MOVE_TO_START, pawn1)]),
+            Move(hand1, [Action(ActionType.MOVE_TO_START, pawn1)]),
         ]
-        hand1_pawn2_moves = [Move(hand1, [Action(ActionType.MOVE_FORWARD, pawn2), Action(ActionType.BUMP_TO_START, pawn2)])]
-        hand2_pawn1_moves = [Move(hand2, [Action(ActionType.CHANGE_PLACES, pawn1)])]
-        hand2_pawn2_moves = [Move(hand2, [Action(ActionType.MOVE_BACKARD, pawn2)])]
+        hand1_pawn2_moves = [Move(hand1, [Action(ActionType.MOVE_TO_START, pawn2), Action(ActionType.MOVE_TO_POSITION, pawn2)])]
+        hand2_pawn1_moves = [Move(hand2, [Action(ActionType.MOVE_TO_POSITION, pawn1, Position())])]
+        hand2_pawn2_moves = [Move(hand2, [Action(ActionType.MOVE_TO_POSITION, pawn2, Position())])]
         legal_moves = [hand1_pawn1_moves, hand1_pawn2_moves, hand2_pawn1_moves, hand2_pawn2_moves]
         expected_moves = [
-            Move(hand1, [Action(ActionType.MOVE_FROM_START, pawn1)]),
-            Move(hand1, [Action(ActionType.MOVE_FORWARD, pawn2), Action(ActionType.BUMP_TO_START, pawn2)]),
-            Move(hand2, [Action(ActionType.CHANGE_PLACES, pawn1)]),
-            Move(hand2, [Action(ActionType.MOVE_BACKARD, pawn2)]),
+            Move(hand1, [Action(ActionType.MOVE_TO_START, pawn1)]),
+            Move(hand1, [Action(ActionType.MOVE_TO_START, pawn2), Action(ActionType.MOVE_TO_POSITION, pawn2)]),
+            Move(hand2, [Action(ActionType.MOVE_TO_POSITION, pawn1, Position())]),
+            Move(hand2, [Action(ActionType.MOVE_TO_POSITION, pawn2, Position())]),
         ]  # result is a list of all returned moves, with duplicates are removed
 
         view = MagicMock()

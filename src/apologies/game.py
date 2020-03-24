@@ -192,6 +192,19 @@ class Position:
         """Return a fully-independent copy of the position."""
         return _CONVERTER.structure(_CONVERTER.unstructure(self), Position)  # type: ignore
 
+    def move_to_position(self, position: Position) -> Position:
+        """
+        Move the pawn to a specific position on the board.
+
+        Returns:
+            Position: A reference to the position, for chaining
+        """
+        self.start = position.start
+        self.home = position.home
+        self.safe = position.safe
+        self.square = position.square
+        return self
+
     def move_to_start(self) -> Position:
         """
         Move the pawn back to its start area.
@@ -444,14 +457,6 @@ class Game:
     def track(self, action: str, player: Optional[Player] = None) -> None:
         """Tracks a move made by a player."""
         self.history.append(History(action, player.color if player else None))
-
-    def find_pawn_on_square(self, square: int) -> Optional[Pawn]:
-        """Return the pawn on the indicated square, or None."""
-        for player in self.players.values():
-            for pawn in player.pawns:
-                if pawn.position.square == square:
-                    return pawn
-        return None
 
     def create_player_view(self, color: PlayerColor) -> PlayerView:
         """Return a player-specific view of the game, showing only the information a player would have available on their turn."""

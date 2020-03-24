@@ -113,6 +113,20 @@ class TestPosition:
         copy = position.copy()
         assert copy is not position and copy == position
 
+    def test_move_to_position(self):
+        target = Position()
+        target.start = "x"
+        target.home = "x"
+        target.safe = "x"
+        target.square = "x"
+        position = Position()
+        result = position.move_to_position(target)
+        assert result is position
+        assert position.start == "x"
+        assert position.home == "x"
+        assert position.safe == "x"
+        assert position.square == "x"
+
     def test_move_to_start(self):
         position = Position()
         position.start = "x"
@@ -343,14 +357,6 @@ class TestGame:
         assert game.history[0].action == "action"
         assert game.history[0].color is PlayerColor.RED
         assert game.history[0].timestamp <= DateTime.utcnow()
-
-    def test_find_pawn_on_square(self):
-        game = Game(4)
-        assert game.find_pawn_on_square(32) is None
-        game.players[PlayerColor.RED].pawns[0].position.move_to_square(32)
-        assert game.find_pawn_on_square(32) is game.players[PlayerColor.RED].pawns[0]
-        game.players[PlayerColor.GREEN].pawns[0].position.move_to_square(32)
-        assert game.find_pawn_on_square(32) is game.players[PlayerColor.RED].pawns[0]  # returns the first found
 
     def test_create_player_view_invalid(self):
         game = Game(2)

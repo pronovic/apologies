@@ -126,8 +126,8 @@ class TestEngine:
         player = engine._game.players[PlayerColor.RED]
         pawn = player.pawns[0]
         view = Mock()
-        move = Move(card, [Action(ActionType.MOVE_BACKARD, Mock())])  # not found in legal_moves
-        legal_moves = [Move(card, [Action(ActionType.BUMP_TO_START, pawn)])]
+        move = Move(card, [Action(ActionType.MOVE_TO_START, Mock())])  # not found in legal_moves
+        legal_moves = [Move(card, [Action(ActionType.MOVE_TO_POSITION, pawn)])]
 
         engine._game.create_player_view = MagicMock(return_value=view)
         engine._rules.construct_legal_moves = MagicMock(return_value=legal_moves)
@@ -154,7 +154,7 @@ class TestEngine:
         player = engine._game.players[PlayerColor.RED]
         pawn = player.pawns[0]
         view = Mock()
-        move = Move(card, [Action(ActionType.BUMP_TO_START, pawn)])
+        move = Move(card, [Action(ActionType.MOVE_TO_START, pawn)])
         legal_moves = [move]
 
         engine._game.create_player_view = MagicMock(return_value=view)
@@ -183,8 +183,8 @@ class TestEngine:
         player = engine._game.players[PlayerColor.RED]
         pawn = player.pawns[0]
         view = Mock()
-        move1 = Move(card1, [Action(ActionType.BUMP_TO_START, pawn)])
-        move2 = Move(card2, [Action(ActionType.CHANGE_PLACES, pawn)])
+        move1 = Move(card1, [Action(ActionType.MOVE_TO_START, pawn)])
+        move2 = Move(card2, [Action(ActionType.MOVE_TO_POSITION, pawn)])
         legal_moves1 = [move1]
         legal_moves2 = [move2]
 
@@ -220,7 +220,7 @@ class TestEngine:
             player = engine._game.players[PlayerColor.RED]
             pawn = player.pawns[0]
             view = Mock()
-            move = Move(card, [Action(ActionType.BUMP_TO_START, pawn)])
+            move = Move(card, [Action(ActionType.MOVE_TO_START, pawn)])
             legal_moves = [move]
 
             engine._game.create_player_view = MagicMock(return_value=view)
@@ -277,8 +277,8 @@ class TestEngine:
         view = Mock()
         movecard = player.hand[0]
         replacementcard = Card(999, CardType.CARD_APOLOGIES)
-        move = Move(movecard, [Action(ActionType.MOVE_BACKARD, Mock())])  # not found in legal_moves
-        legal_moves = [Move(movecard, [Action(ActionType.BUMP_TO_START, pawn)])]
+        move = Move(movecard, [Action(ActionType.MOVE_TO_START, Mock())])  # not found in legal_moves
+        legal_moves = [Move(movecard, [Action(ActionType.MOVE_TO_POSITION, pawn)])]
 
         engine._game.create_player_view = MagicMock(return_value=view)
         engine._rules.construct_legal_moves = MagicMock(return_value=legal_moves)
@@ -309,7 +309,7 @@ class TestEngine:
         view = Mock()
         movecard = player.hand[0]
         replacementcard = Card(999, CardType.CARD_APOLOGIES)
-        move = Move(movecard, [Action(ActionType.BUMP_TO_START, pawn)])
+        move = Move(movecard, [Action(ActionType.MOVE_TO_START, pawn)])
         legal_moves = [move]
 
         engine._game.create_player_view = MagicMock(return_value=view)
@@ -343,8 +343,8 @@ class TestEngine:
         movecard2 = player.hand[1]
         replacementcard1 = Card(998, CardType.CARD_APOLOGIES)
         replacementcard2 = Card(999, CardType.CARD_APOLOGIES)
-        move1 = Move(movecard1, [Action(ActionType.BUMP_TO_START, pawn)])
-        move2 = Move(movecard2, [Action(ActionType.CHANGE_PLACES, pawn)])
+        move1 = Move(movecard1, [Action(ActionType.MOVE_TO_START, pawn)])
+        move2 = Move(movecard2, [Action(ActionType.MOVE_TO_POSITION, pawn)])
         legal_moves1 = [move1]
         legal_moves2 = [move2]
 
@@ -386,7 +386,7 @@ class TestEngine:
             view = Mock()
             movecard = player.hand[0]
             replacementcard = Card(999, CardType.CARD_APOLOGIES)
-            move = Move(movecard, [Action(ActionType.BUMP_TO_START, pawn)])
+            move = Move(movecard, [Action(ActionType.MOVE_TO_START, pawn)])
             legal_moves = [move]
 
             engine._game.create_player_view = MagicMock(return_value=view)
