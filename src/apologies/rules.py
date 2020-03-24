@@ -149,10 +149,9 @@ class Rules:
         all_pawns = view.all_pawns()
         for played in [card] if card else view.player.hand:
             for pawn in view.player.pawns:
-                if not pawn.position.home:  # there are no legal moves for cards in home
-                    for move in self._board_rules.construct_legal_moves(played, pawn, all_pawns):
-                        if move not in moves:  # filter out duplicates
-                            moves.append(move)
+                for move in self._board_rules.construct_legal_moves(played, pawn, all_pawns):
+                    if move not in moves:  # filter out duplicates
+                        moves.append(move)
         if not moves:  # if there are no legal moves, then forfeit (discarding one card) becomes the only allowable move
             for played in [card] if card else view.player.hand:
                 moves.append(Move(played, []))

@@ -134,18 +134,14 @@ class TestRules:
         hand = [hand1, hand2]
 
         pawn1 = MagicMock()
-        pawn1.position.home = False
         pawn2 = MagicMock()
-        pawn2.position.home = True  # will be filtered out because there are no legal moves for a pawn in home
-        pawn3 = MagicMock()
-        pawn3.position.home = False
-        player_pawns = [pawn1, pawn2, pawn3]
+        player_pawns = [pawn1, pawn2]
 
         all_pawns = [MagicMock(), MagicMock()]
 
         card_pawn1_moves = []
-        card_pawn3_moves = []
-        legal_moves = [card_pawn1_moves, card_pawn3_moves]
+        card_pawn2_moves = []
+        legal_moves = [card_pawn1_moves, card_pawn2_moves]
         expected_moves = [Move(card, [])]  # result is a forfeit for the only card
 
         view = MagicMock()
@@ -156,7 +152,7 @@ class TestRules:
         rules._board_rules.construct_legal_moves = MagicMock(side_effect=legal_moves)
         assert rules.construct_legal_moves(view, card=card) == expected_moves
 
-        rules._board_rules.construct_legal_moves.assert_has_calls([call(card, pawn1, all_pawns), call(card, pawn3, all_pawns)])
+        rules._board_rules.construct_legal_moves.assert_has_calls([call(card, pawn1, all_pawns), call(card, pawn2, all_pawns)])
 
     def test_construct_legal_moves_no_moves_no_card(self):
         card = None
@@ -166,20 +162,16 @@ class TestRules:
         hand = [hand1, hand2]
 
         pawn1 = MagicMock()
-        pawn1.position.home = False
         pawn2 = MagicMock()
-        pawn2.position.home = True  # will be filtered out because there are no legal moves for a pawn in home
-        pawn3 = MagicMock()
-        pawn3.position.home = False
-        player_pawns = [pawn1, pawn2, pawn3]
+        player_pawns = [pawn1, pawn2]
 
         all_pawns = [MagicMock(), MagicMock()]
 
         hand1_pawn1_moves = []
-        hand1_pawn3_moves = []
+        hand1_pawn2_moves = []
         hand2_pawn1_moves = []
-        hand2_pawn3_moves = []
-        legal_moves = [hand1_pawn1_moves, hand1_pawn3_moves, hand2_pawn1_moves, hand2_pawn3_moves]
+        hand2_pawn2_moves = []
+        legal_moves = [hand1_pawn1_moves, hand1_pawn2_moves, hand2_pawn1_moves, hand2_pawn2_moves]
         expected_moves = [Move(hand1, []), Move(hand2, [])]  # result is a forfeit for all cards in the hand
 
         view = MagicMock()
@@ -193,9 +185,9 @@ class TestRules:
         rules._board_rules.construct_legal_moves.assert_has_calls(
             [
                 call(hand1, pawn1, all_pawns),
-                call(hand1, pawn3, all_pawns),
+                call(hand1, pawn2, all_pawns),
                 call(hand2, pawn1, all_pawns),
-                call(hand2, pawn3, all_pawns),
+                call(hand2, pawn2, all_pawns),
             ]
         )
 
@@ -207,12 +199,8 @@ class TestRules:
         hand = [hand1, hand2]
 
         pawn1 = MagicMock()
-        pawn1.position.home = False
         pawn2 = MagicMock()
-        pawn2.position.home = True  # will be filtered out because there are no legal moves for a pawn in home
-        pawn3 = MagicMock()
-        pawn3.position.home = False
-        player_pawns = [pawn1, pawn2, pawn3]
+        player_pawns = [pawn1, pawn2]
 
         all_pawns = [MagicMock(), MagicMock()]
 
@@ -220,11 +208,11 @@ class TestRules:
             Move(card, [Action(ActionType.MOVE_FROM_START, pawn1)]),
             Move(card, [Action(ActionType.MOVE_FROM_START, pawn1)]),
         ]
-        card_pawn3_moves = [Move(card, [Action(ActionType.MOVE_FORWARD, pawn3), Action(ActionType.BUMP_TO_START, pawn3)])]
-        legal_moves = [card_pawn1_moves, card_pawn3_moves]
+        card_pawn2_moves = [Move(card, [Action(ActionType.MOVE_FORWARD, pawn2), Action(ActionType.BUMP_TO_START, pawn2)])]
+        legal_moves = [card_pawn1_moves, card_pawn2_moves]
         expected_moves = [
             Move(card, [Action(ActionType.MOVE_FROM_START, pawn1)]),
-            Move(card, [Action(ActionType.MOVE_FORWARD, pawn3), Action(ActionType.BUMP_TO_START, pawn3)]),
+            Move(card, [Action(ActionType.MOVE_FORWARD, pawn2), Action(ActionType.BUMP_TO_START, pawn2)]),
         ]  # result is a list of all returned moves, with duplicates are removed
 
         view = MagicMock()
@@ -235,7 +223,7 @@ class TestRules:
         rules._board_rules.construct_legal_moves = MagicMock(side_effect=legal_moves)
         assert rules.construct_legal_moves(view, card=card) == expected_moves
 
-        rules._board_rules.construct_legal_moves.assert_has_calls([call(card, pawn1, all_pawns), call(card, pawn3, all_pawns)])
+        rules._board_rules.construct_legal_moves.assert_has_calls([call(card, pawn1, all_pawns), call(card, pawn2, all_pawns)])
 
     def test_construct_legal_moves_with_moves_no_card(self):
         card = None
@@ -245,12 +233,8 @@ class TestRules:
         hand = [hand1, hand2]
 
         pawn1 = MagicMock()
-        pawn1.position.home = False
         pawn2 = MagicMock()
-        pawn2.position.home = True  # will be filtered out because there are no legal moves for a pawn in home
-        pawn3 = MagicMock()
-        pawn3.position.home = False
-        player_pawns = [pawn1, pawn2, pawn3]
+        player_pawns = [pawn1, pawn2]
 
         all_pawns = [MagicMock(), MagicMock()]
 
@@ -258,15 +242,15 @@ class TestRules:
             Move(hand1, [Action(ActionType.MOVE_FROM_START, pawn1)]),
             Move(hand1, [Action(ActionType.MOVE_FROM_START, pawn1)]),
         ]
-        hand1_pawn3_moves = [Move(hand1, [Action(ActionType.MOVE_FORWARD, pawn3), Action(ActionType.BUMP_TO_START, pawn3)])]
+        hand1_pawn2_moves = [Move(hand1, [Action(ActionType.MOVE_FORWARD, pawn2), Action(ActionType.BUMP_TO_START, pawn2)])]
         hand2_pawn1_moves = [Move(hand2, [Action(ActionType.CHANGE_PLACES, pawn1)])]
-        hand2_pawn3_moves = [Move(hand2, [Action(ActionType.MOVE_BACKARD, pawn3)])]
-        legal_moves = [hand1_pawn1_moves, hand1_pawn3_moves, hand2_pawn1_moves, hand2_pawn3_moves]
+        hand2_pawn2_moves = [Move(hand2, [Action(ActionType.MOVE_BACKARD, pawn2)])]
+        legal_moves = [hand1_pawn1_moves, hand1_pawn2_moves, hand2_pawn1_moves, hand2_pawn2_moves]
         expected_moves = [
             Move(hand1, [Action(ActionType.MOVE_FROM_START, pawn1)]),
-            Move(hand1, [Action(ActionType.MOVE_FORWARD, pawn3), Action(ActionType.BUMP_TO_START, pawn3)]),
+            Move(hand1, [Action(ActionType.MOVE_FORWARD, pawn2), Action(ActionType.BUMP_TO_START, pawn2)]),
             Move(hand2, [Action(ActionType.CHANGE_PLACES, pawn1)]),
-            Move(hand2, [Action(ActionType.MOVE_BACKARD, pawn3)]),
+            Move(hand2, [Action(ActionType.MOVE_BACKARD, pawn2)]),
         ]  # result is a list of all returned moves, with duplicates are removed
 
         view = MagicMock()
@@ -280,8 +264,8 @@ class TestRules:
         rules._board_rules.construct_legal_moves.assert_has_calls(
             [
                 call(hand1, pawn1, all_pawns),
-                call(hand1, pawn3, all_pawns),
+                call(hand1, pawn2, all_pawns),
                 call(hand2, pawn1, all_pawns),
-                call(hand2, pawn3, all_pawns),
+                call(hand2, pawn2, all_pawns),
             ]
         )
