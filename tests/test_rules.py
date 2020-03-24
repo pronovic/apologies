@@ -260,7 +260,7 @@ class TestRules:
         game.players[PlayerColor.GREEN].pawns[0].position.move_to_position.assert_called_once_with(Position().move_to_square(12))
 
 
-class TestBoardRules:
+class TestPosition:
     def test_constructor(self):
         BoardRules()  # just make sure it doesn't blow up
 
@@ -372,3 +372,504 @@ class TestBoardRules:
         assert BoardRules().position(PlayerColor.GREEN, Position().move_to_square(47), 6) == Position().move_to_home()
         with pytest.raises(ValueError):
             assert BoardRules().position(PlayerColor.GREEN, Position().move_to_square(47), 7) == Position().move_to_home()
+
+
+RED = PlayerColor.RED
+YELLOW = PlayerColor.YELLOW
+GREEN = PlayerColor.GREEN
+BLUE = PlayerColor.BLUE
+
+
+def _setup_game():
+    game = Game(4)
+    for color in PlayerColor:
+        for pawn in range(PAWNS):
+            game.players[color].pawns[pawn].position.move_to_home()
+    return game
+
+
+def _square(pawn, square):
+    return Action(ActionType.MOVE_TO_POSITION, pawn, Position().move_to_square(square))
+
+
+def _safe(pawn, square):
+    return Action(ActionType.MOVE_TO_POSITION, pawn, Position().move_to_safe(square))
+
+
+def _start(pawn):
+    return Action(ActionType.MOVE_TO_START, pawn)
+
+
+def _bump(view, color, index):
+    if view.player.color == color:
+        return _start(view.player.pawns[index])
+    return _start(view.opponents[color].pawns[index])
+
+
+def _swap(view, pawn, color, index):
+    other = view.opponents[color].pawns[index]
+    return [_square(pawn, other.position.square), _square(other, pawn.position.square)]
+
+
+def _home(pawn):
+    return Action(ActionType.MOVE_TO_POSITION, pawn, Position().move_to_home())
+
+
+def _legal_moves(color, game, index, cardtype):
+    card = Card(id="test", cardtype=CardType(cardtype))
+    view = game.create_player_view(color)
+    pawn = view.player.pawns[index]
+    rules = BoardRules()
+    moves = rules.construct_legal_moves(view.player.color, card, pawn, view.all_pawns())
+    return card, pawn, view, moves
+
+
+class TestLegalMoves:
+    def test_construct_legal_moves_card_1(self):
+        # No legal moves if no pawn in start, on the board, or in safe
+        game = _setup_game()
+        card, pawn, view, moves = _legal_moves(RED, game, 0, "1")
+        assert moves == []
+
+        # Move pawn from start with no conflicts
+        game = _setup_game()
+        game.players[RED].pawns[0].position.move_to_start()
+        card, pawn, view, moves = _legal_moves(RED, game, 0, "1")
+        assert moves == [Move(card, actions=[_square(pawn, 4)], side_effects=[])]
+
+        # Move pawn from start with conflict (same color)
+        game = _setup_game()
+        game.players[RED].pawns[0].position.move_to_start()
+        game.players[RED].pawns[1].position.move_to_square(4)
+        card, pawn, view, moves = _legal_moves(RED, game, 0, "1")
+        assert moves == []  # can't start because we have a pawn there already
+
+        # Move pawn from start with conflict (different color)
+        game = _setup_game()
+        game.players[RED].pawns[0].position.move_to_start()
+        game.players[YELLOW].pawns[0].position.move_to_square(4)
+        card, pawn, view, moves = _legal_moves(RED, game, 0, "1")
+        assert moves == [Move(card, actions=[_square(pawn, 4)], side_effects=[_bump(view, YELLOW, 0)])]
+
+        # Move pawn on board
+        game = _setup_game()
+        game.players[RED].pawns[0].position.move_to_square(6)
+        card, pawn, view, moves = _legal_moves(RED, game, 0, "1")
+        assert moves == [Move(card, actions=[_square(pawn, 7)], side_effects=[])]
+
+        # Move pawn on board with conflict (same color)
+        game = _setup_game()
+        game.players[RED].pawns[0].position.move_to_square(6)
+        game.players[RED].pawns[1].position.move_to_square(7)
+        card, pawn, view, moves = _legal_moves(RED, game, 0, "1")
+        assert moves == []  # can't move because we have a pawn there already
+
+        # Move pawn on board with conflict (different color)
+        game = _setup_game()
+        game.players[RED].pawns[0].position.move_to_square(6)
+        game.players[GREEN].pawns[1].position.move_to_square(7)
+        card, pawn, view, moves = _legal_moves(RED, game, 0, "1")
+        assert moves == [Move(card, actions=[_square(pawn, 7)], side_effects=[_bump(view, GREEN, 1)])]
+
+    def test_construct_legal_moves_card_2(self):
+        # No legal moves if no pawn in start, on the board, or in safe
+        game = _setup_game()
+        card, pawn, view, moves = _legal_moves(RED, game, 0, "1")
+        assert moves == []
+
+        # Move pawn from start with no conflicts
+        game = _setup_game()
+        game.players[RED].pawns[0].position.move_to_start()
+        card, pawn, view, moves = _legal_moves(RED, game, 0, "2")
+        assert moves == [Move(card, actions=[_square(pawn, 4)], side_effects=[])]
+
+        # Move pawn from start with conflict (same color)
+        game = _setup_game()
+        game.players[RED].pawns[0].position.move_to_start()
+        game.players[RED].pawns[1].position.move_to_square(4)
+        card, pawn, view, moves = _legal_moves(RED, game, 0, "2")
+        assert moves == []  # can't start because we have a pawn there already
+
+        # Move pawn from start with conflict (different color)
+        game = _setup_game()
+        game.players[RED].pawns[0].position.move_to_start()
+        game.players[YELLOW].pawns[0].position.move_to_square(4)
+        card, pawn, view, moves = _legal_moves(RED, game, 0, "2")
+        assert moves == [Move(card, actions=[_square(pawn, 4)], side_effects=[_bump(view, YELLOW, 0)])]
+
+        # Move pawn on board
+        game = _setup_game()
+        game.players[RED].pawns[0].position.move_to_square(6)
+        card, pawn, view, moves = _legal_moves(RED, game, 0, "2")
+        assert moves == [Move(card, actions=[_square(pawn, 8)], side_effects=[])]
+
+        # Move pawn on board with conflict (same color)
+        game = _setup_game()
+        game.players[RED].pawns[0].position.move_to_square(6)
+        game.players[RED].pawns[1].position.move_to_square(8)
+        card, pawn, view, moves = _legal_moves(RED, game, 0, "2")
+        assert moves == []  # can't move because we have a pawn there already
+
+        # Move pawn on board with conflict (different color)
+        game = _setup_game()
+        game.players[RED].pawns[0].position.move_to_square(6)
+        game.players[GREEN].pawns[1].position.move_to_square(8)
+        card, pawn, view, moves = _legal_moves(RED, game, 0, "2")
+        assert moves == [Move(card, actions=[_square(pawn, 8)], side_effects=[_bump(view, GREEN, 1)])]
+
+    def test_construct_legal_moves_card_3(self):
+        # No legal moves if no pawn on the board, or in safe
+        game = _setup_game()
+        game.players[RED].pawns[0].position.move_to_home()
+        card, pawn, view, moves = _legal_moves(RED, game, 0, "3")
+        assert moves == []
+
+        # Move pawn on board
+        game = _setup_game()
+        game.players[RED].pawns[0].position.move_to_square(6)
+        card, pawn, view, moves = _legal_moves(RED, game, 0, "3")
+        assert moves == [Move(card, actions=[_square(pawn, 9)], side_effects=[])]
+
+        # Move pawn on board with conflict (same color)
+        game = _setup_game()
+        game.players[RED].pawns[0].position.move_to_square(6)
+        game.players[RED].pawns[1].position.move_to_square(9)
+        card, pawn, view, moves = _legal_moves(RED, game, 0, "3")
+        assert moves == []  # can't move because we have a pawn there already
+
+        # Move pawn on board with conflict (different color)
+        game = _setup_game()
+        game.players[RED].pawns[0].position.move_to_square(6)
+        game.players[GREEN].pawns[1].position.move_to_square(9)
+        card, pawn, view, moves = _legal_moves(RED, game, 0, "3")
+        assert moves == [Move(card, actions=[_square(pawn, 9)], side_effects=[_bump(view, GREEN, 1)])]
+
+    def test_construct_legal_moves_card_4(self):
+        # No legal moves if no pawn on the board, or in safe
+        game = _setup_game()
+        game.players[RED].pawns[0].position.move_to_home()
+        card, pawn, view, moves = _legal_moves(RED, game, 0, "4")
+        assert moves == []
+
+        # Move pawn on board
+        game = _setup_game()
+        game.players[RED].pawns[0].position.move_to_square(6)
+        card, pawn, view, moves = _legal_moves(RED, game, 0, "4")
+        assert moves == [Move(card, actions=[_square(pawn, 2)], side_effects=[])]
+
+        # Move pawn on board with conflict (same color)
+        game = _setup_game()
+        game.players[RED].pawns[0].position.move_to_square(6)
+        game.players[RED].pawns[1].position.move_to_square(2)
+        card, pawn, view, moves = _legal_moves(RED, game, 0, "4")
+        assert moves == []  # can't move because we have a pawn there already
+
+        # Move pawn on board with conflict (different color)
+        game = _setup_game()
+        game.players[RED].pawns[0].position.move_to_square(6)
+        game.players[GREEN].pawns[1].position.move_to_square(2)
+        card, pawn, view, moves = _legal_moves(RED, game, 0, "4")
+        assert moves == [Move(card, actions=[_square(pawn, 2)], side_effects=[_bump(view, GREEN, 1)])]
+
+    def test_construct_legal_moves_card_5(self):
+        # No legal moves if no pawn on the board, or in safe
+        game = _setup_game()
+        game.players[RED].pawns[0].position.move_to_home()
+        card, pawn, view, moves = _legal_moves(RED, game, 0, "5")
+        assert moves == []
+
+        # Move pawn on board
+        game = _setup_game()
+        game.players[RED].pawns[0].position.move_to_square(6)
+        card, pawn, view, moves = _legal_moves(RED, game, 0, "5")
+        assert moves == [Move(card, actions=[_square(pawn, 11)], side_effects=[])]
+
+        # Move pawn on board with conflict (same color)
+        game = _setup_game()
+        game.players[RED].pawns[0].position.move_to_square(6)
+        game.players[RED].pawns[1].position.move_to_square(11)
+        card, pawn, view, moves = _legal_moves(RED, game, 0, "5")
+        assert moves == []  # can't move because we have a pawn there already
+
+        # Move pawn on board with conflict (different color)
+        game = _setup_game()
+        game.players[RED].pawns[0].position.move_to_square(6)
+        game.players[GREEN].pawns[1].position.move_to_square(11)
+        card, pawn, view, moves = _legal_moves(RED, game, 0, "5")
+        assert moves == [Move(card, actions=[_square(pawn, 11)], side_effects=[_bump(view, GREEN, 1)])]
+
+    def test_construct_legal_moves_card_7(self):
+        # No legal moves if no pawn on the board, or in safe
+        game = _setup_game()
+        game.players[RED].pawns[0].position.move_to_home()
+        card, pawn, view, moves = _legal_moves(RED, game, 0, "7")
+        assert moves == []
+
+        # One move available if there is one pawn on the board
+        game = _setup_game()
+        game.players[RED].pawns[0].position.move_to_square(6)
+        card, pawn, view, moves = _legal_moves(RED, game, 0, "7")
+        assert moves == [Move(card, actions=[_square(pawn, 13)], side_effects=[])]
+
+        # Multiple moves available if there is more than one pawn on the board
+        game = _setup_game()
+        game.players[RED].pawns[0].position.move_to_square(6)
+        game.players[RED].pawns[2].position.move_to_square(55)
+        card, pawn, view, moves = _legal_moves(RED, game, 0, "7")
+        other = view.player.pawns[2]
+        assert moves == [
+            Move(card, actions=[_square(pawn, 13)], side_effects=[]),  # move our pawn 7
+            Move(card, actions=[_square(pawn, 7), _square(other, 1)], side_effects=[]),  # split (1, 6)
+            Move(card, actions=[_square(pawn, 8), _square(other, 0)], side_effects=[]),  # split (2, 5)
+            Move(card, actions=[_square(pawn, 9), _square(other, 59)], side_effects=[]),  # split (3, 4)
+            Move(card, actions=[_square(pawn, 10), _square(other, 58)], side_effects=[]),  # split (4, 3)
+            Move(card, actions=[_square(pawn, 11), _square(other, 57)], side_effects=[]),  # split (5, 2)
+            Move(card, actions=[_square(pawn, 12), _square(other, 56)], side_effects=[]),  # split (6, 1)
+        ]
+
+        # Either half of a move might bump an opponent back to start
+        game = _setup_game()
+        game.players[RED].pawns[0].position.move_to_square(6)
+        game.players[RED].pawns[2].position.move_to_square(55)
+        game.players[GREEN].pawns[1].position.move_to_square(10)
+        game.players[BLUE].pawns[3].position.move_to_square(56)
+        card, pawn, view, moves = _legal_moves(RED, game, 0, "7")
+        other = view.player.pawns[2]
+        assert moves == [
+            Move(card, actions=[_square(pawn, 13)], side_effects=[]),  # move our pawn 7
+            Move(card, actions=[_square(pawn, 7), _square(other, 1)], side_effects=[]),  # split (1, 6)
+            Move(card, actions=[_square(pawn, 8), _square(other, 0)], side_effects=[]),  # split (2, 5)
+            Move(card, actions=[_square(pawn, 9), _square(other, 59)], side_effects=[]),  # split (3, 4)
+            Move(card, actions=[_square(pawn, 10), _square(other, 58)], side_effects=[_bump(view, GREEN, 1)]),  # split (4, 3)
+            Move(card, actions=[_square(pawn, 11), _square(other, 57)], side_effects=[]),  # split (5, 2)
+            Move(card, actions=[_square(pawn, 12), _square(other, 56)], side_effects=[_bump(view, BLUE, 3)]),  # split (6, 1)
+        ]
+
+        # If either half of the move has a conflict with another pawn of the same color, the entire move is invalidated
+        game = _setup_game()
+        game.players[RED].pawns[0].position.move_to_square(6)
+        game.players[RED].pawns[1].position.move_to_square(9)
+        game.players[RED].pawns[2].position.move_to_square(55)
+        card, pawn, view, moves = _legal_moves(RED, game, 0, "7")
+        other1 = view.player.pawns[1]
+        other2 = view.player.pawns[2]
+        assert moves == [
+            Move(card, actions=[_square(pawn, 13)], side_effects=[]),  # move our pawn 7
+            Move(card, actions=[_square(pawn, 7), _square(other1, 15)], side_effects=[]),  # split (1, 6)
+            Move(card, actions=[_square(pawn, 8), _square(other1, 14)], side_effects=[]),  # split (2, 5)
+            Move(card, actions=[_square(pawn, 9), _square(other1, 13)], side_effects=[]),  # split (3, 4)
+            Move(card, actions=[_square(pawn, 10), _square(other1, 12)], side_effects=[]),  # split (4, 3)
+            Move(card, actions=[_square(pawn, 11), _square(other1, 11)], side_effects=[]),  # split (5, 2)
+            Move(card, actions=[_square(pawn, 12), _square(other1, 10)], side_effects=[]),  # split (6, 1)
+            Move(card, actions=[_square(pawn, 7), _square(other2, 1)], side_effects=[]),  # split (1, 6)
+            Move(card, actions=[_square(pawn, 8), _square(other2, 0)], side_effects=[]),  # split (2, 5)
+            # the move for square 9 is disallowed because pawn[1] already lives there, and isn't part of this action
+            Move(card, actions=[_square(pawn, 10), _square(other2, 58)], side_effects=[]),  # split (4, 3)
+            Move(card, actions=[_square(pawn, 11), _square(other2, 57)], side_effects=[]),  # split (5, 2)
+            Move(card, actions=[_square(pawn, 12), _square(other2, 56)], side_effects=[]),  # split (6, 1)
+        ]
+
+    def test_construct_legal_moves_card_8(self):
+        # No legal moves if no pawn on the board, or in safe
+        game = _setup_game()
+        game.players[RED].pawns[0].position.move_to_home()
+        card, pawn, view, moves = _legal_moves(RED, game, 0, "8")
+        assert moves == []
+
+        # Move pawn on board
+        game = _setup_game()
+        game.players[RED].pawns[0].position.move_to_square(6)
+        card, pawn, view, moves = _legal_moves(RED, game, 0, "8")
+        assert moves == [Move(card, actions=[_square(pawn, 14)], side_effects=[])]
+
+        # Move pawn on board with conflict (same color)
+        game = _setup_game()
+        game.players[RED].pawns[0].position.move_to_square(6)
+        game.players[RED].pawns[1].position.move_to_square(14)
+        card, pawn, view, moves = _legal_moves(RED, game, 0, "8")
+        assert moves == []  # can't move because we have a pawn there already
+
+        # Move pawn on board with conflict (different color)
+        game = _setup_game()
+        game.players[RED].pawns[0].position.move_to_square(6)
+        game.players[GREEN].pawns[1].position.move_to_square(14)
+        card, pawn, view, moves = _legal_moves(RED, game, 0, "8")
+        assert moves == [Move(card, actions=[_square(pawn, 14)], side_effects=[_bump(view, GREEN, 1)])]
+
+    def test_construct_legal_moves_card_10(self):
+        # No legal moves if no pawn on the board, or in safe
+        game = _setup_game()
+        game.players[RED].pawns[0].position.move_to_home()
+        card, pawn, view, moves = _legal_moves(RED, game, 0, "10")
+        assert moves == []
+
+        # Move pawn on board
+        game = _setup_game()
+        game.players[RED].pawns[0].position.move_to_square(5)
+        card, pawn, view, moves = _legal_moves(RED, game, 0, "10")
+        assert moves == [
+            Move(card, actions=[_square(pawn, 15)], side_effects=[]),
+            Move(card, actions=[_square(pawn, 4)], side_effects=[]),
+        ]
+
+        # Move pawn on board with conflict (same color)
+        game = _setup_game()
+        game.players[RED].pawns[0].position.move_to_square(5)
+        game.players[RED].pawns[1].position.move_to_square(15)
+        card, pawn, view, moves = _legal_moves(RED, game, 0, "10")
+        assert moves == [Move(card, actions=[_square(pawn, 4)], side_effects=[])]  # can't move because we have a pawn there already
+
+        # Move pawn on board with conflict (same color)
+        game = _setup_game()
+        game.players[RED].pawns[0].position.move_to_square(5)
+        game.players[RED].pawns[1].position.move_to_square(4)
+        card, pawn, view, moves = _legal_moves(RED, game, 0, "10")
+        assert moves == [
+            Move(card, actions=[_square(pawn, 15)], side_effects=[])
+        ]  # can't move because we have a pawn there already
+
+        # Move pawn on board with conflict (different color)
+        game = _setup_game()
+        game.players[RED].pawns[0].position.move_to_square(5)
+        game.players[GREEN].pawns[1].position.move_to_square(15)
+        card, pawn, view, moves = _legal_moves(RED, game, 0, "10")
+        assert moves == [
+            Move(card, actions=[_square(pawn, 15)], side_effects=[_bump(view, GREEN, 1)]),
+            Move(card, actions=[_square(pawn, 4)], side_effects=[]),
+        ]
+
+        # Move pawn on board with conflict (different color)
+        game = _setup_game()
+        game.players[RED].pawns[0].position.move_to_square(5)
+        game.players[GREEN].pawns[1].position.move_to_square(4)
+        card, pawn, view, moves = _legal_moves(RED, game, 0, "10")
+        assert moves == [
+            Move(card, actions=[_square(pawn, 15)], side_effects=[]),
+            Move(card, actions=[_square(pawn, 4)], side_effects=[_bump(view, GREEN, 1)]),
+        ]
+
+    def test_construct_legal_moves_card_11(self):
+        # No legal moves if no pawn on the board, or in safe
+        game = _setup_game()
+        game.players[RED].pawns[0].position.move_to_home()
+        card, pawn, view, moves = _legal_moves(RED, game, 0, "11")
+        assert moves == []
+
+        # Move pawn on board
+        game = _setup_game()
+        game.players[RED].pawns[0].position.move_to_square(15)
+        card, pawn, view, moves = _legal_moves(RED, game, 0, "11")
+        assert moves == [Move(card, actions=[_square(pawn, 26)], side_effects=[])]
+
+        # Move pawn on board with conflict (same color)
+        game = _setup_game()
+        game.players[RED].pawns[0].position.move_to_square(15)
+        game.players[RED].pawns[1].position.move_to_square(26)
+        card, pawn, view, moves = _legal_moves(RED, game, 0, "11")
+        assert moves == []  # can't move because we have a pawn there already
+
+        # Move pawn on board with conflict (different color), which also gets us a swap opportunity
+        game = _setup_game()
+        game.players[RED].pawns[0].position.move_to_square(15)
+        game.players[GREEN].pawns[1].position.move_to_square(26)
+        card, pawn, view, moves = _legal_moves(RED, game, 0, "11")
+        assert moves == [
+            Move(card, actions=_swap(view, pawn, GREEN, 1), side_effects=[]),
+            Move(card, actions=[_square(pawn, 26)], side_effects=[_bump(view, GREEN, 1)]),
+        ]
+
+        # Swap pawns elsewhere on board
+        game = _setup_game()
+        game.players[RED].pawns[0].position.move_to_square(15)
+        game.players[RED].pawns[1].position.move_to_square(32)  # can't be swapped, same color
+        game.players[GREEN].pawns[0].position.move_to_start()  # can't be swapped, in start area
+        game.players[YELLOW].pawns[0].position.move_to_safe(0)  # can't be swapped, in safe area
+        game.players[YELLOW].pawns[3].position.move_to_square(52)  # can be swapped, on board
+        game.players[BLUE].pawns[1].position.move_to_square(19)  # can be swapped, on board\
+        card, pawn, view, moves = _legal_moves(RED, game, 0, "11")
+        assert moves == [
+            Move(card, actions=_swap(view, pawn, YELLOW, 3), side_effects=[]),
+            Move(card, actions=_swap(view, pawn, BLUE, 1), side_effects=[]),
+            Move(card, actions=[_square(pawn, 26)], side_effects=[]),
+        ]
+
+    def test_construct_legal_moves_card_12(self):
+        # No legal moves if no pawn on the board, or in safe
+        game = _setup_game()
+        game.players[RED].pawns[0].position.move_to_home()
+        card, pawn, view, moves = _legal_moves(RED, game, 0, "12")
+        assert moves == []
+
+        # Move pawn on board
+        game = _setup_game()
+        game.players[RED].pawns[0].position.move_to_square(6)
+        card, pawn, view, moves = _legal_moves(RED, game, 0, "12")
+        assert moves == [Move(card, actions=[_square(pawn, 18)], side_effects=[])]
+
+        # Move pawn on board with conflict (same color)
+        game = _setup_game()
+        game.players[RED].pawns[0].position.move_to_square(6)
+        game.players[RED].pawns[1].position.move_to_square(18)
+        card, pawn, view, moves = _legal_moves(RED, game, 0, "12")
+        assert moves == []  # can't move because we have a pawn there already
+
+        # Move pawn on board with conflict (different color)
+        game = _setup_game()
+        game.players[RED].pawns[0].position.move_to_square(6)
+        game.players[GREEN].pawns[1].position.move_to_square(18)
+        card, pawn, view, moves = _legal_moves(RED, game, 0, "12")
+        assert moves == [Move(card, actions=[_square(pawn, 18)], side_effects=[_bump(view, GREEN, 1)])]
+
+    def test_construct_legal_moves_card_apologies(self):
+        # No legal moves if no pawn in start
+        game = _setup_game()
+        card, pawn, view, moves = _legal_moves(RED, game, 0, "Apologies")
+        game.players[YELLOW].pawns[3].position.move_to_square(52)  # can be swapped, on board
+        game.players[BLUE].pawns[1].position.move_to_square(19)  # can be swapped, on board
+        assert moves == []
+
+        # Swap pawns elsewhere on board
+        game = _setup_game()
+        game.players[RED].pawns[0].position.move_to_start()
+        game.players[GREEN].pawns[0].position.move_to_start()  # can't be swapped, in start area
+        game.players[YELLOW].pawns[0].position.move_to_safe(0)  # can't be swapped, in safe area
+        game.players[YELLOW].pawns[3].position.move_to_square(52)  # can be swapped, on board
+        game.players[BLUE].pawns[1].position.move_to_square(19)  # can be swapped, on board
+        card, pawn, view, moves = _legal_moves(RED, game, 0, "Apologies")
+        assert moves == [
+            Move(card, actions=[_square(pawn, 52), _bump(view, YELLOW, 3)], side_effects=[]),
+            Move(card, actions=[_square(pawn, 19), _bump(view, BLUE, 1)], side_effects=[]),
+        ]
+
+    def test_construct_legal_moves_special(self):
+        # Move pawn into safe zone
+        game = _setup_game()
+        game.players[RED].pawns[0].position.move_to_square(2)
+        card, pawn, view, moves = _legal_moves(RED, game, 0, "1")
+        assert moves == [Move(card, actions=[_safe(pawn, 0)], side_effects=[])]
+
+        # Move pawn to home
+        game = _setup_game()
+        game.players[RED].pawns[0].position.move_to_safe(4)
+        card, pawn, view, moves = _legal_moves(RED, game, 0, "1")
+        assert moves == [Move(card, actions=[_home(pawn)], side_effects=[])]
+
+        # Move pawn past home
+        game = _setup_game()
+        game.players[RED].pawns[0].position.move_to_safe(4)
+        card, pawn, view, moves = _legal_moves(RED, game, 0, "2")
+        assert moves == []  # No moves, because it isn't legal
+
+        # Slide of the same color
+        game = _setup_game()
+        game.players[RED].pawns[0].position.move_to_square(8)
+        card, pawn, view, moves = _legal_moves(RED, game, 0, "1")
+        assert moves == [Move(card, actions=[_square(pawn, 9)], side_effects=[])]
+
+        # Slide of a different color
+        game = _setup_game()
+        game.players[RED].pawns[0].position.move_to_square(15)
+        game.players[RED].pawns[1].position.move_to_square(17)
+        game.players[YELLOW].pawns[2].position.move_to_square(18)
+        card, pawn, view, moves = _legal_moves(RED, game, 0, "1")
+        assert moves == [Move(card, actions=[_square(pawn, 19)], side_effects=[_bump(view, RED, 1), _bump(view, YELLOW, 2)])]

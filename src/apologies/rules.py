@@ -193,8 +193,7 @@ class BoardRules:
     def _construct_legal_moves_1(color: PlayerColor, card: Card, pawn: Pawn, all_pawns: List[Pawn]) -> List[Move]:
         """Return the set of legal moves for a pawn using CARD_1, possibly empty."""
         moves: List[Move] = []
-        if pawn.position.start:
-            moves += BoardRules._move_circle(color, card, pawn, all_pawns)
+        moves += BoardRules._move_circle(color, card, pawn, all_pawns)
         moves += BoardRules._move_simple(color, card, pawn, all_pawns, 1)
         return moves
 
@@ -202,8 +201,7 @@ class BoardRules:
     def _construct_legal_moves_2(color: PlayerColor, card: Card, pawn: Pawn, all_pawns: List[Pawn]) -> List[Move]:
         """Return the set of legal moves for a pawn using CARD_2, possibly empty."""
         moves: List[Move] = []
-        if pawn.position.start:
-            moves += BoardRules._move_circle(color, card, pawn, all_pawns)
+        moves += BoardRules._move_circle(color, card, pawn, all_pawns)
         moves += BoardRules._move_simple(color, card, pawn, all_pawns, 2)
         return moves
 
@@ -227,11 +225,7 @@ class BoardRules:
         """Return the set of legal moves for a pawn using CARD_7, possibly empty."""
         moves: List[Move] = []
         moves += BoardRules._move_simple(color, card, pawn, all_pawns, 7)
-        for other in all_pawns:
-            if other != pawn and other.color == color and not other.position.home and not other.position.start:
-                for (left, right) in [(1, 6), (2, 5), (3, 4), (4, 3), (5, 2), (6, 1)]:  # legal ways to split up a move of 7
-                    moves += BoardRules._move_simple(color, card, pawn, all_pawns, left)
-                    moves += BoardRules._move_simple(color, card, other, all_pawns, right)
+        moves += BoardRules._move_split(color, card, pawn, all_pawns)
         return moves
 
     @staticmethod
@@ -251,8 +245,7 @@ class BoardRules:
     def _construct_legal_moves_11(color: PlayerColor, card: Card, pawn: Pawn, all_pawns: List[Pawn]) -> List[Move]:
         """Return the set of legal moves for a pawn using CARD_11, possibly empty."""
         moves: List[Move] = []
-        if not pawn.position.start:
-            moves += BoardRules._move_swap(color, card, pawn, all_pawns)
+        moves += BoardRules._move_swap(color, card, pawn, all_pawns)
         moves += BoardRules._move_simple(color, card, pawn, all_pawns, 11)
         return moves
 
@@ -264,10 +257,7 @@ class BoardRules:
     @staticmethod
     def _construct_legal_moves_apologies(color: PlayerColor, card: Card, pawn: Pawn, all_pawns: List[Pawn]) -> List[Move]:
         """Return the set of legal moves for a pawn using CARD_APOLOGIES, possibly empty."""
-        moves: List[Move] = []
-        if pawn.position.start:
-            moves += BoardRules._move_swap(color, card, pawn, all_pawns)
-        return moves
+        return BoardRules._move_apologies(color, card, pawn, all_pawns)
 
     @staticmethod
     def _find_pawn(all_pawns: List[Pawn], position: Position) -> Optional[Pawn]:
@@ -301,40 +291,84 @@ class BoardRules:
         # For most cards, a pawn on the board can move forward or backward if the
         # resulting position is not occupied by another pawn of the same color.
         moves: List[Move] = []
-        if not pawn.position.start and not pawn.position.home:
+        if pawn.position.square is not None or pawn.position.safe is not None:
             try:
                 target = BoardRules.position(color, pawn.position, squares)
-                conflict = BoardRules._find_pawn(all_pawns, target)
-                if not conflict:
+                if target.home or target.start:  # by definition, there can't be a conflict going to home or start
                     moves.append(Move(card, actions=[Action(ActionType.MOVE_TO_POSITION, pawn, target)]))
-                elif conflict and conflict.color != color:
-                    moves.append(
-                        Move(
-                            card,
-                            actions=[Action(ActionType.MOVE_TO_POSITION, pawn, target)],
-                            side_effects=[Action(ActionType.MOVE_TO_START, conflict)],
+                else:
+                    conflict = BoardRules._find_pawn(all_pawns, target)
+                    if not conflict:
+                        moves.append(Move(card, actions=[Action(ActionType.MOVE_TO_POSITION, pawn, target)]))
+                    elif conflict and conflict.color != color:
+                        moves.append(
+                            Move(
+                                card,
+                                actions=[Action(ActionType.MOVE_TO_POSITION, pawn, target)],
+                                side_effects=[Action(ActionType.MOVE_TO_START, conflict)],
+                            )
                         )
-                    )
             except ValueError as ignored:
                 pass  # if the requested position is not legal, then just ignore it
         return moves
 
     @staticmethod
+    def _move_split(color: PlayerColor, card: Card, pawn: Pawn, all_pawns: List[Pawn]) -> List[Move]:
+        # For the 7 card, we can split up the move between two different pawns.
+        # Any combination of 7 moves is legal, as long as the resulting positions
+        # not occupied by another pawn of the same color.
+        moves: List[Move] = []
+        for other in all_pawns:
+            if other != pawn and other.color == color and not other.position.home and not other.position.start:
+                for (left, right) in [(1, 6), (2, 5), (3, 4), (4, 3), (5, 2), (6, 1)]:  # legal ways to split up a move of 7
+                    left_moves = BoardRules._move_simple(color, card, pawn, [p for p in all_pawns if p != other], left)
+                    right_moves = BoardRules._move_simple(color, card, other, [p for p in all_pawns if p != other], right)
+                    if left_moves and right_moves:
+                        moves.append(
+                            Move(
+                                card,
+                                actions=left_moves[0].actions + right_moves[0].actions,
+                                side_effects=left_moves[0].side_effects + right_moves[0].side_effects,
+                            )
+                        )
+        return moves
+
+    @staticmethod
     def _move_swap(color: PlayerColor, card: Card, pawn: Pawn, all_pawns: List[Pawn]) -> List[Move]:
-        # For swap-related cards, a pawn on the board can swap with another pawn of a different
+        # For the 11 card, a pawn on the board can swap with another pawn of a different
         # color, as long as that pawn is outside of the start area, safe area, or home area.
         moves: List[Move] = []
-        for swap in all_pawns:
-            if swap.color != color and not swap.position.home and not swap.position.start and swap.position.safe is None:
-                moves.append(
-                    Move(
-                        card,
-                        actions=[
-                            Action(ActionType.MOVE_TO_POSITION, pawn, swap.position.copy()),
-                            Action(ActionType.MOVE_TO_POSITION, swap, pawn.position.copy()),
-                        ],
+        if pawn.position.square is not None:  # pawn is on the board
+            for swap in all_pawns:
+                if swap.color != color and not swap.position.home and not swap.position.start and swap.position.safe is None:
+                    moves.append(
+                        Move(
+                            card,
+                            actions=[
+                                Action(ActionType.MOVE_TO_POSITION, pawn, swap.position.copy()),
+                                Action(ActionType.MOVE_TO_POSITION, swap, pawn.position.copy()),
+                            ],
+                        )
                     )
-                )
+        return moves
+
+    @staticmethod
+    def _move_apologies(color: PlayerColor, card: Card, pawn: Pawn, all_pawns: List[Pawn]) -> List[Move]:
+        # For the Apologies card, a pawn in start can swap with another pawn of a different
+        # color, as long as that pawn is outside of the start area, safe area, or home area.
+        moves: List[Move] = []
+        if pawn.position.start:
+            for swap in all_pawns:
+                if swap.color != color and not swap.position.home and not swap.position.start and swap.position.safe is None:
+                    moves.append(
+                        Move(
+                            card,
+                            actions=[
+                                Action(ActionType.MOVE_TO_POSITION, pawn, swap.position.copy()),
+                                Action(ActionType.MOVE_TO_START, swap),
+                            ],
+                        )
+                    )
         return moves
 
     # pylint: disable=too-many-nested-blocks
@@ -346,8 +380,8 @@ class BoardRules:
                 if action.actiontype == ActionType.MOVE_TO_POSITION:  # look at any move to a position on the board
                     for color in [color for color in PlayerColor if color != action.pawn.color]:  # any color other than the pawn's
                         for (start, end) in _SLIDE[color]:  # look at all slides with this color
-                            if action.pawn.position.square == start:  # if the pawn landed on the start of the slide
-                                action.pawn.position.move_to_square(end)  # move the pawn to the end of the slide
+                            if action.position.square == start:  # if the pawn landed on the start of the slide
+                                action.position.move_to_square(end)  # move the pawn to the end of the slide
                                 for square in range(start + 1, end + 1):  # and then bump any pawns that were already on the slide
                                     # Note: in this one case, a pawn can bump another pawn of the same color
                                     pawn = BoardRules._find_pawn(all_pawns, Position().move_to_square(square))
