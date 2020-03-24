@@ -56,7 +56,7 @@ class ActionType(Enum):
     """Enumeration of all actions that a character can take."""
 
     MOVE_TO_START = "Move to start"  # Move a pawn back to its start area
-    MOVE_TO_POSITION = "Move to position"  # Move a pawn to a specific square on the board
+    MOVE_TO_POSITION = "Move to position"  # Move a pawn to a specific position on the board
 
 
 @attr.s
@@ -83,10 +83,16 @@ class Move:
     Attributes:
         card(Card): the card that is being played by this move
         actions(:obj: List of :obj: Action): List of actions to execute
+        side_effects(:obj: List of :obj: Action): List of side effects that occurred as a result of the actions
     """
 
     card = attr.ib(type=Card)
     actions = attr.ib(type=List[Action])
+    side_effects = attr.ib(type=List[Action])
+
+    @side_effects.default
+    def _default_side_effects(self) -> List[Action]:
+        return []
 
 
 # noinspection PyMethodMayBeStatic
@@ -183,31 +189,13 @@ class BoardRules:
         BoardRules._augment_with_slides(all_pawns, moves)
         return moves
 
-    # pylint: disable=too-many-nested-blocks
-    @staticmethod
-    def _augment_with_slides(all_pawns: List[Pawn], moves: List[Move]) -> None:
-        """Augument any legal moves with additional side-effects that occur as a result of sliding."""
-        for move in moves:
-            for action in move.actions[:]:  # operate on a copy so we can modify move.actions if necessary
-                if action.actiontype == ActionType.MOVE_TO_POSITION:  # look at any move to a position on the board
-                    for color in [color for color in PlayerColor if color != action.pawn.color]:  # any color other than the pawn's
-                        for (start, end) in _SLIDE[color]:  # look at all slides with this color
-                            if action.pawn.position.square == start:  # if the pawn landed on the start of the slide
-                                action.pawn.position.move_to_square(end)  # move the pawn to the end of the slide
-                                for square in range(start + 1, end + 1):  # and then bump any pawns that were already on the slide
-                                    pawn = BoardRules._find_pawn(all_pawns, Position().move_to_square(square))
-                                    if pawn:
-                                        bump = Action(ActionType.MOVE_TO_START, pawn)
-                                        if bump not in move.actions:
-                                            move.actions.append(bump)
-
     @staticmethod
     def _construct_legal_moves_1(color: PlayerColor, card: Card, pawn: Pawn, all_pawns: List[Pawn]) -> List[Move]:
         """Return the set of legal moves for a pawn using CARD_1, possibly empty."""
         moves: List[Move] = []
         if pawn.position.start:
-            moves += BoardRules.move_start(color, card, pawn, all_pawns)
-        moves += BoardRules.move_simple(color, card, pawn, all_pawns, 1)
+            moves += BoardRules._move_circle(color, card, pawn, all_pawns)
+        moves += BoardRules._move_simple(color, card, pawn, all_pawns, 1)
         return moves
 
     @staticmethod
@@ -215,124 +203,70 @@ class BoardRules:
         """Return the set of legal moves for a pawn using CARD_2, possibly empty."""
         moves: List[Move] = []
         if pawn.position.start:
-            moves += BoardRules.move_start(color, card, pawn, all_pawns)
-        moves += BoardRules.move_simple(color, card, pawn, all_pawns, 2)
+            moves += BoardRules._move_circle(color, card, pawn, all_pawns)
+        moves += BoardRules._move_simple(color, card, pawn, all_pawns, 2)
         return moves
 
     @staticmethod
     def _construct_legal_moves_3(color: PlayerColor, card: Card, pawn: Pawn, all_pawns: List[Pawn]) -> List[Move]:
         """Return the set of legal moves for a pawn using CARD_3, possibly empty."""
-        return BoardRules.move_simple(color, card, pawn, all_pawns, 3)
+        return BoardRules._move_simple(color, card, pawn, all_pawns, 3)
 
     @staticmethod
     def _construct_legal_moves_4(color: PlayerColor, card: Card, pawn: Pawn, all_pawns: List[Pawn]) -> List[Move]:
         """Return the set of legal moves for a pawn using CARD_4, possibly empty."""
-        return BoardRules.move_simple(color, card, pawn, all_pawns, -4)
+        return BoardRules._move_simple(color, card, pawn, all_pawns, -4)
 
     @staticmethod
     def _construct_legal_moves_5(color: PlayerColor, card: Card, pawn: Pawn, all_pawns: List[Pawn]) -> List[Move]:
         """Return the set of legal moves for a pawn using CARD_5, possibly empty."""
-        return BoardRules.move_simple(color, card, pawn, all_pawns, 5)
+        return BoardRules._move_simple(color, card, pawn, all_pawns, 5)
 
     @staticmethod
     def _construct_legal_moves_7(color: PlayerColor, card: Card, pawn: Pawn, all_pawns: List[Pawn]) -> List[Move]:
         """Return the set of legal moves for a pawn using CARD_7, possibly empty."""
         moves: List[Move] = []
-        if not pawn.position.start:
-            # A pawn on the board can move forward 7 spaces or split its move with another pawn of the same color.
-            moves += BoardRules.move_simple(color, card, pawn, all_pawns, 7)
-            for other in all_pawns:
-                if other != pawn and other.color == color and not other.position.home and not other.position.start:
-                    for (left, right) in [(1, 6), (2, 5), (3, 4), (4, 3), (5, 2), (6, 1)]:  # legal ways to split up a move of 7
-                        moves += BoardRules.move_simple(color, card, pawn, all_pawns, left)
-                        moves += BoardRules.move_simple(color, card, other, all_pawns, right)
+        moves += BoardRules._move_simple(color, card, pawn, all_pawns, 7)
+        for other in all_pawns:
+            if other != pawn and other.color == color and not other.position.home and not other.position.start:
+                for (left, right) in [(1, 6), (2, 5), (3, 4), (4, 3), (5, 2), (6, 1)]:  # legal ways to split up a move of 7
+                    moves += BoardRules._move_simple(color, card, pawn, all_pawns, left)
+                    moves += BoardRules._move_simple(color, card, other, all_pawns, right)
         return moves
 
     @staticmethod
     def _construct_legal_moves_8(color: PlayerColor, card: Card, pawn: Pawn, all_pawns: List[Pawn]) -> List[Move]:
         """Return the set of legal moves for a pawn using CARD_8, possibly empty."""
-        return BoardRules.move_simple(color, card, pawn, all_pawns, 8)
+        return BoardRules._move_simple(color, card, pawn, all_pawns, 8)
 
     @staticmethod
     def _construct_legal_moves_10(color: PlayerColor, card: Card, pawn: Pawn, all_pawns: List[Pawn]) -> List[Move]:
         """Return the set of legal moves for a pawn using CARD_10, possibly empty."""
-        return BoardRules.move_simple(color, card, pawn, all_pawns, 10)
+        moves: List[Move] = []
+        moves += BoardRules._move_simple(color, card, pawn, all_pawns, 10)
+        moves += BoardRules._move_simple(color, card, pawn, all_pawns, -1)
+        return moves
 
     @staticmethod
     def _construct_legal_moves_11(color: PlayerColor, card: Card, pawn: Pawn, all_pawns: List[Pawn]) -> List[Move]:
         """Return the set of legal moves for a pawn using CARD_11, possibly empty."""
         moves: List[Move] = []
         if not pawn.position.start:
-            moves += BoardRules.move_swap(color, card, pawn, all_pawns)
-        moves += BoardRules.move_simple(color, card, pawn, all_pawns, 11)
+            moves += BoardRules._move_swap(color, card, pawn, all_pawns)
+        moves += BoardRules._move_simple(color, card, pawn, all_pawns, 11)
         return moves
 
     @staticmethod
     def _construct_legal_moves_12(color: PlayerColor, card: Card, pawn: Pawn, all_pawns: List[Pawn]) -> List[Move]:
         """Return the set of legal moves for a pawn using CARD_12, possibly empty."""
-        return BoardRules.move_simple(color, card, pawn, all_pawns, 12)
+        return BoardRules._move_simple(color, card, pawn, all_pawns, 12)
 
     @staticmethod
     def _construct_legal_moves_apologies(color: PlayerColor, card: Card, pawn: Pawn, all_pawns: List[Pawn]) -> List[Move]:
         """Return the set of legal moves for a pawn using CARD_APOLOGIES, possibly empty."""
         moves: List[Move] = []
         if pawn.position.start:
-            moves += BoardRules.move_swap(color, card, pawn, all_pawns)
-        return moves
-
-    @staticmethod
-    def move_start(color: PlayerColor, card: Card, pawn: Pawn, all_pawns: List[Pawn]) -> List[Move]:
-        # For start-related cards, a pawn in the start area can move to the associated
-        # start square if that position is not occupied by another pawn of the same color.
-        if pawn.position.start:
-            conflict = BoardRules._find_pawn(all_pawns, _CIRCLE[color])
-            if not conflict:
-                return [Move(card, [Action(ActionType.MOVE_TO_POSITION, pawn, _CIRCLE[color]),],)]
-            elif conflict and conflict.color != color:
-                return [
-                    Move(
-                        card,
-                        [Action(ActionType.MOVE_TO_START, conflict), Action(ActionType.MOVE_TO_POSITION, pawn, _CIRCLE[color]),],
-                    )
-                ]
-        return []
-
-    @staticmethod
-    def move_simple(color: PlayerColor, card: Card, pawn: Pawn, all_pawns: List[Pawn], squares: int) -> List[Move]:
-        # For most cards, a pawn on the board can move forward or backward if that position is
-        # not occupied by another pawn of the same color and does not move the pawn past home.
-        if not pawn.position.start:
-            target = BoardRules.position(color, pawn.position, squares)
-            conflict = BoardRules._find_pawn(all_pawns, target)
-            if not conflict:
-                return [Move(card, [Action(ActionType.MOVE_TO_POSITION, pawn, target),],)]
-            elif conflict and conflict.color != color:
-                return [
-                    Move(card, [Action(ActionType.MOVE_TO_START, conflict), Action(ActionType.MOVE_TO_POSITION, pawn, target),],)
-                ]
-        return []
-
-    @staticmethod
-    def move_swap(color: PlayerColor, card: Card, pawn: Pawn, all_pawns: List[Pawn]) -> List[Move]:
-        # For swap-related cards, a pawn on the board can swap with another pawn of a different
-        # color, as long as that pawn is outside of the start area, safe area, or home area.
-        moves: List[Move] = []
-        for candidate in all_pawns:
-            if (
-                candidate.color != color
-                and not candidate.position.home
-                and not candidate.position.start
-                and candidate.position.safe is None
-            ):
-                moves.append(
-                    Move(
-                        card,
-                        [
-                            Action(ActionType.MOVE_TO_POSITION, pawn, candidate.position),
-                            Action(ActionType.MOVE_TO_POSITION, candidate, pawn.position),
-                        ],
-                    )
-                )
+            moves += BoardRules._move_swap(color, card, pawn, all_pawns)
         return moves
 
     @staticmethod
@@ -342,6 +276,85 @@ class BoardRules:
             if pawn.position == position:
                 return pawn
         return None
+
+    @staticmethod
+    def _move_circle(color: PlayerColor, card: Card, pawn: Pawn, all_pawns: List[Pawn]) -> List[Move]:
+        # For start-related cards, a pawn in the start area can move to the associated
+        # circle position if that position is not occupied by another pawn of the same color.
+        moves: List[Move] = []
+        if pawn.position.start:
+            conflict = BoardRules._find_pawn(all_pawns, _CIRCLE[color])
+            if not conflict:
+                moves.append(Move(card, actions=[Action(ActionType.MOVE_TO_POSITION, pawn, _CIRCLE[color].copy())]))
+            elif conflict and conflict.color != color:
+                moves.append(
+                    Move(
+                        card,
+                        actions=[Action(ActionType.MOVE_TO_POSITION, pawn, _CIRCLE[color].copy())],
+                        side_effects=[Action(ActionType.MOVE_TO_START, conflict)],
+                    )
+                )
+        return moves
+
+    @staticmethod
+    def _move_simple(color: PlayerColor, card: Card, pawn: Pawn, all_pawns: List[Pawn], squares: int) -> List[Move]:
+        # For most cards, a pawn on the board can move forward or backward if the
+        # resulting position is not occupied by another pawn of the same color.
+        moves: List[Move] = []
+        if not pawn.position.start and not pawn.position.home:
+            try:
+                target = BoardRules.position(color, pawn.position, squares)
+                conflict = BoardRules._find_pawn(all_pawns, target)
+                if not conflict:
+                    moves.append(Move(card, actions=[Action(ActionType.MOVE_TO_POSITION, pawn, target)]))
+                elif conflict and conflict.color != color:
+                    moves.append(
+                        Move(
+                            card,
+                            actions=[Action(ActionType.MOVE_TO_POSITION, pawn, target)],
+                            side_effects=[Action(ActionType.MOVE_TO_START, conflict)],
+                        )
+                    )
+            except ValueError as ignored:
+                pass  # if the requested position is not legal, then just ignore it
+        return moves
+
+    @staticmethod
+    def _move_swap(color: PlayerColor, card: Card, pawn: Pawn, all_pawns: List[Pawn]) -> List[Move]:
+        # For swap-related cards, a pawn on the board can swap with another pawn of a different
+        # color, as long as that pawn is outside of the start area, safe area, or home area.
+        moves: List[Move] = []
+        for swap in all_pawns:
+            if swap.color != color and not swap.position.home and not swap.position.start and swap.position.safe is None:
+                moves.append(
+                    Move(
+                        card,
+                        actions=[
+                            Action(ActionType.MOVE_TO_POSITION, pawn, swap.position.copy()),
+                            Action(ActionType.MOVE_TO_POSITION, swap, pawn.position.copy()),
+                        ],
+                    )
+                )
+        return moves
+
+    # pylint: disable=too-many-nested-blocks
+    @staticmethod
+    def _augment_with_slides(all_pawns: List[Pawn], moves: List[Move]) -> None:
+        """Augument any legal moves with additional side-effects that occur as a result of slides."""
+        for move in moves:
+            for action in move.actions:
+                if action.actiontype == ActionType.MOVE_TO_POSITION:  # look at any move to a position on the board
+                    for color in [color for color in PlayerColor if color != action.pawn.color]:  # any color other than the pawn's
+                        for (start, end) in _SLIDE[color]:  # look at all slides with this color
+                            if action.pawn.position.square == start:  # if the pawn landed on the start of the slide
+                                action.pawn.position.move_to_square(end)  # move the pawn to the end of the slide
+                                for square in range(start + 1, end + 1):  # and then bump any pawns that were already on the slide
+                                    # Note: in this one case, a pawn can bump another pawn of the same color
+                                    pawn = BoardRules._find_pawn(all_pawns, Position().move_to_square(square))
+                                    if pawn:
+                                        bump = Action(ActionType.MOVE_TO_START, pawn)
+                                        if bump not in move.actions:
+                                            move.side_effects.append(bump)
 
 
 # noinspection PyProtectedMember
@@ -406,7 +419,7 @@ class Rules:
         return moves
 
     # noinspection PyMethodMayBeStatic
-    def execute_move(self, game: Game, color: PlayerColor, move: Move) -> None:
+    def execute_move(self, game: Game, move: Move) -> None:
         """
         Execute a player's move, updating game state.
 
@@ -415,8 +428,9 @@ class Rules:
             color(PlayerColor): Color of the player associated with the move
             move(Move): Move to validate
         """
-        for action in move.actions:
-            pawn = game.players[color].pawns[action.pawn.index]
+        for action in move.actions + move.side_effects:  # execute actions, then side-effects, in order
+            # Keep in mind that the pawn on the action is a different object than the pawn in the game.
+            pawn = game.players[action.pawn.color].pawns[action.pawn.index]
             if action.actiontype == ActionType.MOVE_TO_START:
                 pawn.position.move_to_start()
             elif action.actiontype == ActionType.MOVE_TO_POSITION:

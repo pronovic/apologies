@@ -5,7 +5,7 @@
 import pytest
 from mock import MagicMock, call
 
-from apologies.game import ADULT_HAND, DECK_SIZE, Card, CardType, Game, GameMode, Pawn, PlayerColor, Position
+from apologies.game import ADULT_HAND, DECK_SIZE, PAWNS, Card, CardType, Game, GameMode, Pawn, PlayerColor, Position
 from apologies.rules import Action, ActionType, BoardRules, Move, Rules
 
 
@@ -231,21 +231,33 @@ class TestRules:
             ]
         )
 
-    def test_execute_move_start(self):
+    def test_execute_move(self):
         rules = Rules(GameMode.STANDARD)
         game = Game(4)
-        game.players[PlayerColor.RED].pawns[1].position.move_to_start = MagicMock()
-        move = Move(MagicMock(), [Action(ActionType.MOVE_TO_START, MagicMock(index=1))])
-        rules.execute_move(game, PlayerColor.RED, move)
-        game.players[PlayerColor.RED].pawns[1].position.move_to_start.assert_called_once()
 
-    def test_execute_move_position(self):
-        rules = Rules(GameMode.STANDARD)
-        game = Game(4)
-        game.players[PlayerColor.RED].pawns[1].position.move_to_position = MagicMock()
-        move = Move(MagicMock(), [Action(ActionType.MOVE_TO_POSITION, MagicMock(index=1), Position().move_to_square(32))])
-        rules.execute_move(game, PlayerColor.RED, move)
-        game.players[PlayerColor.RED].pawns[1].position.move_to_position.assert_called_once_with(Position().move_to_square(32))
+        for color in PlayerColor:
+            for pawn in range(PAWNS):
+                game.players[color].pawns[pawn].position.move_to_start = MagicMock()
+                game.players[color].pawns[pawn].position.move_to_position = MagicMock()
+
+        move = Move(
+            MagicMock(),
+            actions=[
+                Action(ActionType.MOVE_TO_POSITION, MagicMock(color=PlayerColor.RED, index=1), Position().move_to_square(10)),
+                Action(ActionType.MOVE_TO_POSITION, MagicMock(color=PlayerColor.YELLOW, index=3), Position().move_to_square(11)),
+            ],
+            side_effects=[
+                Action(ActionType.MOVE_TO_START, MagicMock(color=PlayerColor.BLUE, index=2)),
+                Action(ActionType.MOVE_TO_POSITION, MagicMock(color=PlayerColor.GREEN, index=0), Position().move_to_square(12)),
+            ],
+        )
+
+        rules.execute_move(game, move)
+
+        game.players[PlayerColor.RED].pawns[1].position.move_to_position.assert_called_once_with(Position().move_to_square(10))
+        game.players[PlayerColor.YELLOW].pawns[3].position.move_to_position.assert_called_once_with(Position().move_to_square(11))
+        game.players[PlayerColor.BLUE].pawns[2].position.move_to_start.assert_called_once()
+        game.players[PlayerColor.GREEN].pawns[0].position.move_to_position.assert_called_once_with(Position().move_to_square(12))
 
 
 class TestBoardRules:
