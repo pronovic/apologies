@@ -86,7 +86,7 @@ class CardType(Enum):
     CARD_10 = "10"
     CARD_11 = "11"
     CARD_12 = "12"
-    CARD_APOLOGIES = "Apologies"
+    CARD_APOLOGIES = "A"
 
 
 # For an adult-mode game, we deal out 5 cards

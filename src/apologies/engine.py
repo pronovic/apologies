@@ -5,46 +5,15 @@
 Game engine that coordinates character actions to play a game.
 """
 
-
 import random
-from abc import ABC, abstractmethod
 from typing import Dict, List
 
 import attr
 
 from .game import Game, GameMode, PlayerColor, PlayerView
 from .rules import Move, Rules
+from .source import CharacterInputSource
 from .util import CircularQueue
-
-
-class CharacterInputSource(ABC):
-
-    """A generic source of input for a character, which could be a person or could be computer-driven."""
-
-    @abstractmethod
-    def choose_move(self, mode: GameMode, view: PlayerView, legal_moves: List[Move]) -> Move:
-        """
-        Choose the next move for a character.
-
-        If a move has an empty list of actions, then this is a forfeit; nothing else is legal, so
-        the character must choose to discard one card.  In standard mode, there is effectively no
-        choice (since there is only one card in play), but in adult mode the character can choose
-        which to discard.
-
-        The source _must_ return a move from among the passed-in set of legal moves.  If a source
-        returns an illegal move, then a legal move will be chosen at random and executed.  This way,
-        a misbehaving source (or a source attempting to cheat) does not get an advantage.  The game
-        rules require a player to make a legal move if one is available, even if that move is
-        disadvantageous.
-
-        Args:
-            mode(GameMode): Game mode
-            view(PlayerView): Player-specific view of the game
-            legal_moves(:obj: Set of :obj: Move): The set of legal moves, possibly empty
-
-        Returns:
-            Move: the character's next move as described above
-        """
 
 
 @attr.s
@@ -130,6 +99,21 @@ class Engine:
             result[player.color] = self.characters[index]
             index += 1
         return result
+
+    @property
+    def players(self) -> int:
+        """Number of players in the game."""
+        return len(self.characters)
+
+    # pylint: disable=no-else-return
+    @property
+    def state(self) -> str:
+        if self.completed:
+            return "Game completed"
+        elif self.started:
+            return "Game in progress"
+        else:
+            return "Game waiting to start"
 
     @property
     def started(self) -> bool:

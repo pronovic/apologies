@@ -43,10 +43,12 @@ class TestEngine:
         character1 = Character("one", Mock())
         character2 = Character("two", Mock())
         engine = Engine(GameMode.STANDARD, [character1, character2])
+        assert engine.players == 2
         assert engine.characters == [character1, character2]
         assert engine.mode == GameMode.STANDARD
         assert engine.started is False
         assert engine.completed is False
+        assert engine.state == "Game waiting to start"
         assert len(engine._game.players) == 2
         assert engine._queue.entries == [PlayerColor.RED, PlayerColor.YELLOW]
         assert engine._rules.mode == GameMode.STANDARD
@@ -57,16 +59,20 @@ class TestEngine:
         with mock.patch("apologies.game.Game.started", new_callable=mock.PropertyMock) as started:
             started.return_value = False
             assert engine.started is False
+            assert engine.state == "Game waiting to start"
             started.return_value = True
             assert engine.started is True
+            assert engine.state == "Game in progress"
 
     def test_completed(self):
         engine = TestEngine._create_engine()
         with mock.patch("apologies.game.Game.completed", new_callable=mock.PropertyMock) as completed:
             completed.return_value = False
             assert engine.completed is False
+            assert engine.state == "Game in progress"
             completed.return_value = True
             assert engine.completed is True
+            assert engine.state == "Game completed"
 
     def test_start_game(self):
         engine = TestEngine._create_engine()

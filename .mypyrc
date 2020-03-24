@@ -20,6 +20,10 @@ warn_return_any = True
 warn_unused_configs = True
 warn_unused_ignores = True
 
+# It's hard to make ncurses code compliant
+[mypy-apologies.demo]
+ignore_errors = True
+
 # It's just too hard to make tests compliant using Mock
 [mypy-tests.*]
 check_untyped_defs = False
