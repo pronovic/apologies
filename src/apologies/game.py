@@ -86,7 +86,7 @@ class CardType(Enum):
     CARD_10 = "10"
     CARD_11 = "11"
     CARD_12 = "12"
-    CARD_APOLOGIES = "Apologies"
+    CARD_APOLOGIES = "A"
 
 
 # For an adult-mode game, we deal out 5 cards
@@ -188,6 +188,19 @@ class Position:
     safe = attr.ib(default=None, type=Optional[int])
     square = attr.ib(default=None, type=Optional[int])
 
+    # pylint: disable=no-else-return
+    @property
+    def log(self) -> str:
+        """A version of the position for logging."""
+        if self.home:
+            return "home"
+        elif self.start:
+            return "start"
+        elif self.safe is not None:
+            return "safe %s" % self.safe
+        else:
+            return "square %s" % self.square
+
     def copy(self) -> Position:
         """Return a fully-independent copy of the position."""
         return _CONVERTER.structure(_CONVERTER.unstructure(self), Position)  # type: ignore
@@ -288,7 +301,7 @@ class Pawn:
     Attributes:
         color(str): The color of this pawn
         index(int): Zero-based index of this pawn for a given user
-        name(str): The full name of this pawn as "color-index"
+        name(str): The full name of this pawn as "colorindex"
         position(Position): The position of this pawn on the board
     """
 
@@ -299,11 +312,16 @@ class Pawn:
 
     @name.default
     def _default_name(self) -> str:
-        return "%s-%s" % (self.color.value, self.index)
+        return "%s%s" % (self.color.value, self.index)
 
     @position.default
     def _default_position(self) -> Position:
         return Position()
+
+    @property
+    def log(self) -> str:
+        """A version of the pawn for logging."""
+        return "%s->%s" % (self.name, self.position.log)
 
 
 @attr.s
@@ -440,6 +458,13 @@ class Game:
             if player.all_pawns_in_home():
                 return True
         return False
+
+    @property
+    def winner(self) -> Optional[Player]:
+        for player in self.players.values():
+            if player.all_pawns_in_home():
+                return player
+        return None
 
     def copy(self) -> Game:
         """Return a fully-independent copy of the game."""

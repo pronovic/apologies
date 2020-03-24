@@ -234,6 +234,7 @@ class TestRules:
     def test_execute_move(self):
         rules = Rules(GameMode.STANDARD)
         game = Game(4)
+        player = game.players[PlayerColor.RED]
 
         for color in PlayerColor:
             for pawn in range(PAWNS):
@@ -252,7 +253,7 @@ class TestRules:
             ],
         )
 
-        rules.execute_move(game, move)
+        rules.execute_move(game, player, move)
 
         game.players[PlayerColor.RED].pawns[1].position.move_to_position.assert_called_once_with(Position().move_to_square(10))
         game.players[PlayerColor.YELLOW].pawns[3].position.move_to_position.assert_called_once_with(Position().move_to_square(11))
@@ -823,7 +824,7 @@ class TestLegalMoves:
     def test_construct_legal_moves_card_apologies(self):
         # No legal moves if no pawn in start
         game = _setup_game()
-        card, pawn, view, moves = _legal_moves(RED, game, 0, "Apologies")
+        card, pawn, view, moves = _legal_moves(RED, game, 0, "A")
         game.players[YELLOW].pawns[3].position.move_to_square(52)  # can be swapped, on board
         game.players[BLUE].pawns[1].position.move_to_square(19)  # can be swapped, on board
         assert moves == []
@@ -835,7 +836,7 @@ class TestLegalMoves:
         game.players[YELLOW].pawns[0].position.move_to_safe(0)  # can't be swapped, in safe area
         game.players[YELLOW].pawns[3].position.move_to_square(52)  # can be swapped, on board
         game.players[BLUE].pawns[1].position.move_to_square(19)  # can be swapped, on board
-        card, pawn, view, moves = _legal_moves(RED, game, 0, "Apologies")
+        card, pawn, view, moves = _legal_moves(RED, game, 0, "A")
         assert moves == [
             Move(card, actions=[_square(pawn, 52), _bump(view, YELLOW, 3)], side_effects=[]),
             Move(card, actions=[_square(pawn, 19), _bump(view, BLUE, 1)], side_effects=[]),

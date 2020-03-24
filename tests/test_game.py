@@ -103,6 +103,7 @@ class TestPosition:
         assert position.home is False
         assert position.safe is None
         assert position.square is None
+        assert position.log == "start"
 
     def test_copy(self):
         position = Position()
@@ -126,6 +127,7 @@ class TestPosition:
         assert position.home == "x"
         assert position.safe == "x"
         assert position.square == "x"
+        assert position.log == "home"
 
     def test_move_to_start(self):
         position = Position()
@@ -139,6 +141,7 @@ class TestPosition:
         assert position.home is False
         assert position.safe is None
         assert position.square is None
+        assert position.log == "start"
 
     def test_move_to_home(self):
         position = Position()
@@ -152,6 +155,7 @@ class TestPosition:
         assert position.home is True
         assert position.safe is None
         assert position.square is None
+        assert position.log == "home"
 
     def test_move_to_safe_valid(self):
         for square in range(SAFE_SQUARES):
@@ -166,6 +170,7 @@ class TestPosition:
             assert position.home is False
             assert position.safe == square
             assert position.square is None
+            assert position.log == "safe %d" % square
 
     def test_move_to_safe_invalid(self):
         for square in [-1000, -2 - 1, 5, 6, 1000]:
@@ -186,6 +191,7 @@ class TestPosition:
             assert position.home is False
             assert position.safe is None
             assert position.square is square
+            assert position.log == "square %d" % square
 
     def test_move_to_square_invalid(self):
         for square in [-1000, -2 - 1, 60, 61, 1000]:
@@ -199,8 +205,9 @@ class TestPawn:
         pawn = Pawn(PlayerColor.RED, 0)
         assert pawn.color == PlayerColor.RED
         assert pawn.index == 0
-        assert pawn.name == "Red-0"
+        assert pawn.name == "Red0"
         assert pawn.position == Position()
+        assert pawn.log == "Red0->start"  # because default position is in startZ
 
     def test_constructor_with_name(self):
         pawn = Pawn(PlayerColor.RED, 0, name="whatever")
@@ -208,6 +215,7 @@ class TestPawn:
         assert pawn.index == 0
         assert pawn.name == "whatever"
         assert pawn.position == Position()
+        assert pawn.log == "whatever->start"  # because default position is in startZ
 
 
 class TestPlayer:
@@ -308,7 +316,7 @@ class TestGame:
         game.track("whatever")
         assert game.started is True
 
-    def test_completed(self):
+    def test_completed_and_winner(self):
         game = Game(4)
 
         # move all but last pawn into home for all of the players; the game is not complete
@@ -321,6 +329,7 @@ class TestGame:
         game.players[PlayerColor.RED].pawns[PAWNS - 1].position.move_to_home()
 
         assert game.completed is True
+        assert game.winner is game.players[PlayerColor.RED]
 
     def test_copy(self):
         game = Game(4)
