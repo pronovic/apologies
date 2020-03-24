@@ -209,14 +209,14 @@ def _apply_game_state(board: str, game: Game) -> str:
     """
     for player in game.players.values():
         for pawn in player.pawns:
-            if pawn.start:
+            if pawn.position.start:
                 index = _START[pawn.color][pawn.index]
-            elif pawn.home:
+            elif pawn.position.home:
                 index = _HOME[pawn.color][pawn.index]
-            elif pawn.safe is not None:
-                index = _SAFE[pawn.color][pawn.safe]
-            elif pawn.square is not None:
-                index = _SQUARE[pawn.square]
+            elif pawn.position.safe is not None:
+                index = _SAFE[pawn.color][pawn.position.safe]
+            elif pawn.position.square is not None:
+                index = _SQUARE[pawn.position.square]
             else:
                 raise ValueError("Pawn is not in a valid state")
             board = board[:index] + _PLAYER[pawn.color] + board[index + 1 :]

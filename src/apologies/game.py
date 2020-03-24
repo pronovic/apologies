@@ -40,6 +40,9 @@ from pendulum.datetime import DateTime
 
 from .util import CattrConverter
 
+# Cattr converter that serializes/deserializes DateTime to an ISO 8601 timestamp.
+_CONVERTER = CattrConverter()
+
 # A game consists of 2-4 players
 MIN_PLAYERS = 2
 MAX_PLAYERS = 4
@@ -165,56 +168,78 @@ class Deck:
 
 
 @attr.s
-class Pawn:
+class Position:
     """
-    A pawn on the board, belonging to a player.
+    The position of a pawn on the board.
 
     Callers should not pass in or directly modify the start, home, safe, or square
     attributes.  These are accessible to support serialization and deserialization.
     Instead, use the provided methods to safely modify the object in-place.
 
     Attributes:
-        color(str): The color of this pawn
-        index(int): Zero-based index of this pawn for a given user
-        name(str): The full name of this pawn as "color-index"
         start(boolean): Whether this pawn resides in its start area
         home(boolean): Whether this pawn resides in its home area
         safe(int): Zero-based index of the square in the safe area where this pawn resides
         square(int): Zero-based index of the square on the board where this pawn resides
     """
 
-    color = attr.ib(type=PlayerColor)
-    index = attr.ib(type=int)
-    name = attr.ib(type=str)
     start = attr.ib(default=True, type=bool)
     home = attr.ib(default=False, type=bool)
     safe = attr.ib(default=None, type=Optional[int])
     square = attr.ib(default=None, type=Optional[int])
 
-    @name.default
-    def _default_name(self) -> str:
-        return "%s-%s" % (self.color.value, self.index)
+    def copy(self) -> Position:
+        """Return a fully-independent copy of the position."""
+        return _CONVERTER.structure(_CONVERTER.unstructure(self), Position)  # type: ignore
 
-    def move_to_start(self) -> None:
-        """Move the pawn back to its start area."""
+    def move_to_position(self, position: Position) -> Position:
+        """
+        Move the pawn to a specific position on the board.
+
+        Returns:
+            Position: A reference to the position, for chaining
+        """
+        self.start = position.start
+        self.home = position.home
+        self.safe = position.safe
+        self.square = position.square
+        return self
+
+    def move_to_start(self) -> Position:
+        """
+        Move the pawn back to its start area.
+
+        Returns:
+            Position: A reference to the position, for chaining
+        """
         self.start = True
         self.home = False
         self.safe = None
         self.square = None
+        return self
 
-    def move_to_home(self) -> None:
-        """Move the pawn to its home area."""
+    def move_to_home(self) -> Position:
+        """
+        Move the pawn to its home area.
+
+        Returns:
+            Position: A reference to the position, for chaining
+        """
         self.start = False
         self.home = True
         self.safe = None
         self.square = None
+        return self
 
-    def move_to_safe(self, square: int) -> None:
+    def move_to_safe(self, square: int) -> Position:
         """
         Move the pawn to a square in its safe area.
 
         Args:
             square(int): Zero-based index of the square in the safe area
+
+        Returns:
+            Position: A reference to the position, for chaining
 
         Raises:
             ValueError: If the square is not valid
@@ -226,13 +251,17 @@ class Pawn:
         self.home = False
         self.safe = square
         self.square = None
+        return self
 
-    def move_to_square(self, square: int) -> None:
+    def move_to_square(self, square: int) -> Position:
         """
         Move the pawn to a square on the board.
 
         Args:
             square(int): Zero-based index of the square on the board where this pawn resides
+
+        Returns:
+            Position: A reference to the position, for chaining
 
         Raises:
             ValueError: If the square is not valid
@@ -244,6 +273,37 @@ class Pawn:
         self.home = False
         self.safe = None
         self.square = square
+        return self
+
+
+@attr.s
+class Pawn:
+    """
+    A pawn on the board, belonging to a player.
+
+    Callers should not pass in the position attribute.  This is accessible
+    to support serialization and deserialization. Instead, use the provided
+    methods to safely modify the position in-place.
+
+    Attributes:
+        color(str): The color of this pawn
+        index(int): Zero-based index of this pawn for a given user
+        name(str): The full name of this pawn as "color-index"
+        position(Position): The position of this pawn on the board
+    """
+
+    color = attr.ib(type=PlayerColor)
+    index = attr.ib(type=int)
+    name = attr.ib(type=str)
+    position = attr.ib(type=Position)
+
+    @name.default
+    def _default_name(self) -> str:
+        return "%s-%s" % (self.color.value, self.index)
+
+    @position.default
+    def _default_position(self) -> Position:
+        return Position()
 
 
 @attr.s
@@ -272,17 +332,27 @@ class Player:
     def _init_pawns(self) -> List[Pawn]:
         return [Pawn(self.color, index) for index in range(0, PAWNS)]
 
+    def copy(self) -> Player:
+        """Return a fully-independent copy of the player."""
+        return _CONVERTER.structure(_CONVERTER.unstructure(self), Player)  # type: ignore
+
+    def public_data(self) -> Player:
+        """Return a fully-independent copy of the player with only public data visible."""
+        player = self.copy()
+        del player.hand[:]
+        return player
+
     def find_first_pawn_in_start(self) -> Optional[Pawn]:
         """Find the first pawn in the start area, if any."""
         for pawn in self.pawns:
-            if pawn.start:
+            if pawn.position.start:
                 return pawn
         return None
 
     def all_pawns_in_home(self) -> bool:
         """Whether all of this user's pawns are in home."""
         for pawn in self.pawns:
-            if not pawn.home:
+            if not pawn.position.home:
                 return False
         return True
 
@@ -301,6 +371,28 @@ class History:
 
 
 @attr.s
+class PlayerView:
+    """
+    A player-specific view of the game, showing only the information a player would have available on their turn.
+      
+    Attributes:
+        player(Player): The player associated with the view.
+        opponents(:obj:`dict` of :obj:`Player`): The player's opponents, with private information stripped
+    """
+
+    player = attr.ib(type=Player)
+    opponents = attr.ib(type=Dict[PlayerColor, Player])
+
+    def all_pawns(self) -> List[Pawn]:
+        """Return a list of all pawns on the board."""
+        pawns = []
+        pawns.extend(self.player.pawns)
+        for opponent in self.opponents.values():
+            pawns.extend(opponent.pawns)
+        return pawns
+
+
+@attr.s
 class Game:
     """
     The game, consisting of state for a set of players.
@@ -313,8 +405,6 @@ class Game:
         players(:obj:`dict` of :obj:`Player`): All players in the game
         deck(Deck): The deck of cards for the game
     """
-
-    converter = CattrConverter()
 
     playercount = attr.ib(type=int)
     players = attr.ib(type=Dict[PlayerColor, Player])
@@ -353,25 +443,23 @@ class Game:
 
     def copy(self) -> Game:
         """Return a fully-independent copy of the game."""
-        return Game.converter.structure(Game.converter.unstructure(self), Game)  # type: ignore
+        return _CONVERTER.structure(_CONVERTER.unstructure(self), Game)  # type: ignore
 
     def to_json(self) -> str:
         """Serialize the game state to JSON."""
-        return orjson.dumps(Game.converter.unstructure(self), option=orjson.OPT_INDENT_2).decode("utf-8")  # type: ignore
+        return orjson.dumps(_CONVERTER.unstructure(self), option=orjson.OPT_INDENT_2).decode("utf-8")  # type: ignore
 
     @staticmethod
     def from_json(data: str) -> Game:
         """Deserialize the game state from JSON."""
-        return Game.converter.structure(orjson.loads(data), Game)  # type: ignore
+        return _CONVERTER.structure(orjson.loads(data), Game)  # type: ignore
 
     def track(self, action: str, player: Optional[Player] = None) -> None:
         """Tracks a move made by a player."""
         self.history.append(History(action, player.color if player else None))
 
-    def find_pawn_on_square(self, square: int) -> Optional[Pawn]:
-        """Return the pawn on the indicated square, or None."""
-        for player in self.players.values():
-            for pawn in player.pawns:
-                if pawn.square == square:
-                    return pawn
-        return None
+    def create_player_view(self, color: PlayerColor) -> PlayerView:
+        """Return a player-specific view of the game, showing only the information a player would have available on their turn."""
+        player = self.players[color].copy()
+        opponents = {player.color: player.public_data() for player in self.players.values() if player.color != color}
+        return PlayerView(player, opponents)
