@@ -192,26 +192,41 @@ class Position:
         """Return a fully-independent copy of the position."""
         return _CONVERTER.structure(_CONVERTER.unstructure(self), Position)  # type: ignore
 
-    def move_to_start(self) -> None:
-        """Move the pawn back to its start area."""
+    def move_to_start(self) -> Position:
+        """
+        Move the pawn back to its start area.
+
+        Returns:
+            Position: A reference to the position, for chaining
+        """
         self.start = True
         self.home = False
         self.safe = None
         self.square = None
+        return self
 
-    def move_to_home(self) -> None:
-        """Move the pawn to its home area."""
+    def move_to_home(self) -> Position:
+        """
+        Move the pawn to its home area.
+
+        Returns:
+            Position: A reference to the position, for chaining
+        """
         self.start = False
         self.home = True
         self.safe = None
         self.square = None
+        return self
 
-    def move_to_safe(self, square: int) -> None:
+    def move_to_safe(self, square: int) -> Position:
         """
         Move the pawn to a square in its safe area.
 
         Args:
             square(int): Zero-based index of the square in the safe area
+
+        Returns:
+            Position: A reference to the position, for chaining
 
         Raises:
             ValueError: If the square is not valid
@@ -223,13 +238,17 @@ class Position:
         self.home = False
         self.safe = square
         self.square = None
+        return self
 
-    def move_to_square(self, square: int) -> None:
+    def move_to_square(self, square: int) -> Position:
         """
         Move the pawn to a square on the board.
 
         Args:
             square(int): Zero-based index of the square on the board where this pawn resides
+
+        Returns:
+            Position: A reference to the position, for chaining
 
         Raises:
             ValueError: If the square is not valid
@@ -241,6 +260,7 @@ class Position:
         self.home = False
         self.safe = None
         self.square = square
+        return self
 
 
 @attr.s

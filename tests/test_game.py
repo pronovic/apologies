@@ -7,6 +7,7 @@ from mock import MagicMock
 from pendulum.datetime import DateTime
 
 from apologies.game import (
+    BOARD_SQUARES,
     DECK_COUNTS,
     DECK_SIZE,
     PAWNS,
@@ -118,7 +119,8 @@ class TestPosition:
         position.home = "x"
         position.safe = "x"
         position.square = "x"
-        position.move_to_start()
+        result = position.move_to_start()
+        assert result is position
         assert position.start is True
         assert position.home is False
         assert position.safe is None
@@ -130,7 +132,8 @@ class TestPosition:
         position.home = "x"
         position.safe = "x"
         position.square = "x"
-        position.move_to_home()
+        result = position.move_to_home()
+        assert result is position
         assert position.start is False
         assert position.home is True
         assert position.safe is None
@@ -143,7 +146,8 @@ class TestPosition:
             position.home = "x"
             position.safe = "x"
             position.square = "x"
-            position.move_to_safe(square)
+            result = position.move_to_safe(square)
+            assert result is position
             assert position.start is False
             assert position.home is False
             assert position.safe == square
@@ -154,6 +158,20 @@ class TestPosition:
             with pytest.raises(ValueError):
                 position = Position()
                 position.move_to_safe(square)
+
+    def test_move_to_square_valid(self):
+        for square in range(BOARD_SQUARES):
+            position = Position()
+            position.start = "x"
+            position.home = "x"
+            position.safe = "x"
+            position.square = "x"
+            result = position.move_to_square(square)
+            assert result is position
+            assert position.start is False
+            assert position.home is False
+            assert position.safe is None
+            assert position.square is square
 
     def test_move_to_square_invalid(self):
         for square in [-1000, -2 - 1, 60, 61, 1000]:
