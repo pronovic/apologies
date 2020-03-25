@@ -34,24 +34,13 @@ class Character:
         """
         Choose the next move for a character via the user input source.
 
-        If a move has an empty list of actions, then this is a forfeit; nothing else is legal, so
-        the character must choose to discard one card.  In standard mode, there is effectively no
-        choice (since there is only one card in play), but in adult mode the character can choose
-        which to discard.
-
-        The source _must_ return a move from among the passed-in set of legal moves.  If a source
-        returns an illegal move, then a legal move will be chosen at random and executed.  This way,
-        a misbehaving source (or a source attempting to cheat) does not get an advantage.  The game
-        rules require a player to make a legal move if one is available, even if that move is
-        disadvantageous.
-
         Args:
             mode(GameMode): Game mode
             view(PlayerView): Player-specific view of the game
-            legal_moves(:obj: Set of :obj: Move): The set of legal moves, possibly empty
+            legal_moves(Set[Move]): The set of legal moves
 
         Returns:
-            Move: the character's next move as described above
+            Move: The character's next as chosen by the configured source
         """
         return self.source.choose_move(mode, view, legal_moves)
 
@@ -64,12 +53,7 @@ class Engine:
 
     Attributes:
         mode(GameMode): The game mode
-        characters(:obj: list of :obj: Character): Characters playing the game
-        started(boolean): Whether the game is started
-        completed(boolean): Whether the game is completed
-        _game(Game): The current state of the game, not to be modified by callers
-        _queue(CircularQueue): Queue that controls the order in which characters play
-        _rules(Rules): Implements all rules related to game play
+        characters(List[Character]): Characters playing the game
     """
 
     mode = attr.ib(type=GameMode)
@@ -108,6 +92,7 @@ class Engine:
     # pylint: disable=no-else-return
     @property
     def state(self) -> str:
+        """String describing the state of the game."""
         if self.completed:
             return "Game completed"
         elif self.started:
@@ -130,7 +115,7 @@ class Engine:
         Start the game, returning game state.
 
         Returns:
-            Current state of the game.
+            Game: Current state of the game.
         """
         self._rules.start_game(self._game)
         return self._game
@@ -140,7 +125,7 @@ class Engine:
         Play the next turn of the game, returning initial game state.
 
         Returns:
-            Current state of the game.
+            Game: Current state of the game.
         """
         if self.completed:
             raise ValueError("Game is complete")

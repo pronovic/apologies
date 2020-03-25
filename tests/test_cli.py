@@ -7,7 +7,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from apologies.cli import _example, _lookup_method, _render, cli
+from apologies.cli import _lookup_method, cli, example, render
 
 FIXTURE_DIR = os.path.join(os.path.dirname(__file__), "fixtures/test_cli")
 
@@ -29,8 +29,8 @@ class TestCli:
     """
 
     def test_lookup_method(self):
-        assert _lookup_method("example") is _example
-        assert _lookup_method("render") is _render
+        assert _lookup_method("example") is example
+        assert _lookup_method("render") is render
         with pytest.raises(AttributeError):
             assert _lookup_method("")
         with pytest.raises(AttributeError):
@@ -40,7 +40,7 @@ class TestCli:
         argv = ["1", "a", "b"]
         stdout = MagicMock()
         stderr = MagicMock()
-        _example(argv, stdout, stderr)
+        example(argv, stdout, stderr)
         stdout.write.assert_called_once_with("Hello, stdout: 1\n")
         stderr.write.assert_called_once_with("Hello, stderr: 1\n")
 
@@ -55,5 +55,5 @@ class TestRender:
 
     def test_render(self, data):
         stdout = MagicMock()
-        _render(MagicMock(), stdout, MagicMock())
+        render(MagicMock(), stdout, MagicMock())
         stdout.write.assert_called_once_with(data["render"])

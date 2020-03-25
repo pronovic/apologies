@@ -74,7 +74,14 @@ class ActionType(Enum):
 
 @attr.s
 class Action:
-    """An action that can be taken as part of a move."""
+    """
+    An action that can be taken as part of a move.
+
+    Attributes:
+        actiontype(ActionType): The type of action
+        pawn(Pawn): The pawn that the action operates on
+        position(Position): Optionally, a position the pawn should move to
+    """
 
     actiontype = attr.ib(type=ActionType)
     pawn = attr.ib(type=Pawn)
@@ -94,9 +101,9 @@ class Move:
     up-front.
 
     Attributes:
-        card(Card): the card that is being played by this move
-        actions(:obj: List of :obj: Action): List of actions to execute
-        side_effects(:obj: List of :obj: Action): List of side effects that occurred as a result of the actions
+        card(Card): The card that is being played by this move
+        actions(List[Action]): List of actions to execute
+        side_effects(List[Action]): List of side effects that occurred as a result of the actions
     """
 
     card = attr.ib(type=Card)
@@ -115,53 +122,6 @@ class BoardRules:
     Rules related to the way the board works.
     """
 
-    # noinspection PyChainedComparisons
-    # pylint: disable=no-else-raise,no-else-return,too-many-branches,too-many-return-statements,line-too-long
-    @staticmethod
-    def position(color: PlayerColor, position: Position, squares: int) -> Position:
-        """
-        Calculate the new position for a forward or backwards move, taking into account safe zone turns but disregarding slides.
-        """
-        if position.home or position.start:
-            raise ValueError("Pawn in home or start may not move.")
-        elif position.safe is not None:
-            if squares == 0:
-                return position.copy()
-            elif squares > 0:
-                if position.safe + squares < SAFE_SQUARES:
-                    return position.copy().move_to_safe(position.safe + squares)
-                elif position.safe + squares == SAFE_SQUARES:
-                    return position.copy().move_to_home()
-                else:
-                    raise ValueError("Pawn cannot move past home.")
-            else:  # squares < 0
-                if position.safe + squares >= 0:
-                    return position.copy().move_to_safe(position.safe + squares)
-                else:  # handle moving back out of the safe area
-                    return BoardRules.position(color, position.copy().move_to_square(_TURN[color].square), squares + position.safe + 1)  # type: ignore
-        elif position.square is not None:
-            if squares == 0:
-                return position.copy()
-            elif squares > 0:
-                if position.square + squares < BOARD_SQUARES:
-                    if position.square <= _TURN[color].square and position.square + squares > _TURN[color].square:  # type: ignore
-                        return BoardRules.position(color, position.copy().move_to_safe(0), squares - (_TURN[color].square - position.square) - 1)  # type: ignore
-                    else:
-                        return position.copy().move_to_square(position.square + squares)
-                else:  # handle turning the corner
-                    return BoardRules.position(
-                        color, position.copy().move_to_square(0), squares - (BOARD_SQUARES - position.square)
-                    )
-            else:  # squares < 0
-                if position.square + squares >= 0:
-                    return position.copy().move_to_square(position.square + squares)
-                else:  # handle turning the corner
-                    return BoardRules.position(
-                        color, position.copy().move_to_square(BOARD_SQUARES - 1), squares + position.square + 1
-                    )
-        else:
-            raise ValueError("Position is in an illegal state")
-
     # pylint: disable=no-else-return,too-many-return-statements
     def construct_legal_moves(self, color: PlayerColor, card: Card, pawn: Pawn, all_pawns: List[Pawn]) -> List[Move]:
         """
@@ -170,7 +130,7 @@ class BoardRules:
         Attributes:
             card(Card): Card to be played
             pawn(Pawn): Pawn that the card will be applied to
-            all_pawns(:obj: List of :obj: Pawn): All pawns on the board, including the one to be played
+            all_pawns(List[Pawn]): All pawns on the board, including the one to be played
 
         Return:
             Set of legal moves for the pawn using the card.
@@ -201,6 +161,53 @@ class BoardRules:
                 moves += BoardRules._construct_legal_moves_apologies(color, card, pawn, all_pawns)
         BoardRules._augment_with_slides(all_pawns, moves)
         return moves
+
+    # noinspection PyChainedComparisons
+    # pylint: disable=no-else-raise,no-else-return,too-many-branches,too-many-return-statements,line-too-long
+    @staticmethod
+    def _position(color: PlayerColor, position: Position, squares: int) -> Position:
+        """
+        Calculate the new position for a forward or backwards move, taking into account safe zone turns but disregarding slides.
+        """
+        if position.home or position.start:
+            raise ValueError("Pawn in home or start may not move.")
+        elif position.safe is not None:
+            if squares == 0:
+                return position.copy()
+            elif squares > 0:
+                if position.safe + squares < SAFE_SQUARES:
+                    return position.copy().move_to_safe(position.safe + squares)
+                elif position.safe + squares == SAFE_SQUARES:
+                    return position.copy().move_to_home()
+                else:
+                    raise ValueError("Pawn cannot move past home.")
+            else:  # squares < 0
+                if position.safe + squares >= 0:
+                    return position.copy().move_to_safe(position.safe + squares)
+                else:  # handle moving back out of the safe area
+                    return BoardRules._position(color, position.copy().move_to_square(_TURN[color].square), squares + position.safe + 1)  # type: ignore
+        elif position.square is not None:
+            if squares == 0:
+                return position.copy()
+            elif squares > 0:
+                if position.square + squares < BOARD_SQUARES:
+                    if position.square <= _TURN[color].square and position.square + squares > _TURN[color].square:  # type: ignore
+                        return BoardRules._position(color, position.copy().move_to_safe(0), squares - (_TURN[color].square - position.square) - 1)  # type: ignore
+                    else:
+                        return position.copy().move_to_square(position.square + squares)
+                else:  # handle turning the corner
+                    return BoardRules._position(
+                        color, position.copy().move_to_square(0), squares - (BOARD_SQUARES - position.square)
+                    )
+            else:  # squares < 0
+                if position.square + squares >= 0:
+                    return position.copy().move_to_square(position.square + squares)
+                else:  # handle turning the corner
+                    return BoardRules._position(
+                        color, position.copy().move_to_square(BOARD_SQUARES - 1), squares + position.square + 1
+                    )
+        else:
+            raise ValueError("Position is in an illegal state")
 
     @staticmethod
     def _construct_legal_moves_1(color: PlayerColor, card: Card, pawn: Pawn, all_pawns: List[Pawn]) -> List[Move]:
@@ -306,7 +313,7 @@ class BoardRules:
         moves: List[Move] = []
         if pawn.position.square is not None or pawn.position.safe is not None:
             try:
-                target = BoardRules.position(color, pawn.position, squares)
+                target = BoardRules._position(color, pawn.position, squares)
                 if target.home or target.start:  # by definition, there can't be a conflict going to home or start
                     moves.append(Move(card, actions=[Action(ActionType.MOVE_TO_POSITION, pawn, target)]))
                 else:
@@ -449,7 +456,7 @@ class Rules:
             card(Card, optional): The card to play, or None if move should come from player's hand
 
         Returns:
-            Set of legal moves for the player, as described above.
+            List[Move]: Set of legal moves for the player, as described above.
         """
         moves: List[Move] = []
         all_pawns = view.all_pawns()

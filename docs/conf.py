@@ -40,10 +40,10 @@ metadata = toml.load(Path(__file__).parent.parent / "pyproject.toml")["tool"]["p
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    "sphinx.ext.autodoc",
     "sphinx.ext.intersphinx",
     "sphinx.ext.todo",
     "sphinx.ext.napoleon",
+    "autoapi.extension",
 ]
 
 # Napoleon settings for docstrings
@@ -59,6 +59,12 @@ napoleon_use_ivar = False
 napoleon_use_param = True
 napoleon_use_rtype = True
 autodoc_member_order = "bysource"
+
+# Auto-api settings
+autoapi_type = "python"
+autoapi_dirs = ["../src"]
+autoapi_add_toctree_entry = True
+autoapi_options = ['members', 'undoc-members', 'show-inheritance', 'special-members']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]

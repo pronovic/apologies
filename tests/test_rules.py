@@ -269,111 +269,111 @@ class TestPosition:
     def test_calculate_position_home(self):
         for color in PlayerColor:
             with pytest.raises(ValueError):
-                BoardRules().position(color, Position().move_to_home(), 1)
+                BoardRules()._position(color, Position().move_to_home(), 1)
 
     def test_calculate_position_start(self):
         for color in PlayerColor:
             with pytest.raises(ValueError):
-                BoardRules().position(color, Position().move_to_home(), 1)
+                BoardRules()._position(color, Position().move_to_home(), 1)
 
     def test_calculate_position_from_safe(self):
         for color in PlayerColor:
-            assert BoardRules().position(color, Position().move_to_safe(0), 0) == Position().move_to_safe(0)
-            assert BoardRules().position(color, Position().move_to_safe(3), 0) == Position().move_to_safe(3)
+            assert BoardRules()._position(color, Position().move_to_safe(0), 0) == Position().move_to_safe(0)
+            assert BoardRules()._position(color, Position().move_to_safe(3), 0) == Position().move_to_safe(3)
 
         for color in PlayerColor:
-            assert BoardRules().position(color, Position().move_to_safe(0), 1) == Position().move_to_safe(1)
-            assert BoardRules().position(color, Position().move_to_safe(2), 2) == Position().move_to_safe(4)
-            assert BoardRules().position(color, Position().move_to_safe(4), 1) == Position().move_to_home()
+            assert BoardRules()._position(color, Position().move_to_safe(0), 1) == Position().move_to_safe(1)
+            assert BoardRules()._position(color, Position().move_to_safe(2), 2) == Position().move_to_safe(4)
+            assert BoardRules()._position(color, Position().move_to_safe(4), 1) == Position().move_to_home()
 
         for color in PlayerColor:
             with pytest.raises(ValueError):
-                BoardRules().position(color, Position().move_to_safe(3), 3)
-                BoardRules().position(color, Position().move_to_safe(4), 2)
+                BoardRules()._position(color, Position().move_to_safe(3), 3)
+                BoardRules()._position(color, Position().move_to_safe(4), 2)
 
         for color in PlayerColor:
-            assert BoardRules().position(color, Position().move_to_safe(4), -2) == Position().move_to_safe(2)
-            assert BoardRules().position(color, Position().move_to_safe(1), -1) == Position().move_to_safe(0)
+            assert BoardRules()._position(color, Position().move_to_safe(4), -2) == Position().move_to_safe(2)
+            assert BoardRules()._position(color, Position().move_to_safe(1), -1) == Position().move_to_safe(0)
 
-        assert BoardRules().position(PlayerColor.RED, Position().move_to_safe(0), -1) == Position().move_to_square(2)
-        assert BoardRules().position(PlayerColor.RED, Position().move_to_safe(0), -2) == Position().move_to_square(1)
-        assert BoardRules().position(PlayerColor.RED, Position().move_to_safe(0), -3) == Position().move_to_square(0)
-        assert BoardRules().position(PlayerColor.RED, Position().move_to_safe(0), -4) == Position().move_to_square(59)
-        assert BoardRules().position(PlayerColor.RED, Position().move_to_safe(0), -5) == Position().move_to_square(58)
+        assert BoardRules()._position(PlayerColor.RED, Position().move_to_safe(0), -1) == Position().move_to_square(2)
+        assert BoardRules()._position(PlayerColor.RED, Position().move_to_safe(0), -2) == Position().move_to_square(1)
+        assert BoardRules()._position(PlayerColor.RED, Position().move_to_safe(0), -3) == Position().move_to_square(0)
+        assert BoardRules()._position(PlayerColor.RED, Position().move_to_safe(0), -4) == Position().move_to_square(59)
+        assert BoardRules()._position(PlayerColor.RED, Position().move_to_safe(0), -5) == Position().move_to_square(58)
 
-        assert BoardRules().position(PlayerColor.BLUE, Position().move_to_safe(0), -1) == Position().move_to_square(17)
-        assert BoardRules().position(PlayerColor.BLUE, Position().move_to_safe(0), -2) == Position().move_to_square(16)
+        assert BoardRules()._position(PlayerColor.BLUE, Position().move_to_safe(0), -1) == Position().move_to_square(17)
+        assert BoardRules()._position(PlayerColor.BLUE, Position().move_to_safe(0), -2) == Position().move_to_square(16)
 
-        assert BoardRules().position(PlayerColor.YELLOW, Position().move_to_safe(0), -1) == Position().move_to_square(32)
-        assert BoardRules().position(PlayerColor.YELLOW, Position().move_to_safe(0), -2) == Position().move_to_square(31)
+        assert BoardRules()._position(PlayerColor.YELLOW, Position().move_to_safe(0), -1) == Position().move_to_square(32)
+        assert BoardRules()._position(PlayerColor.YELLOW, Position().move_to_safe(0), -2) == Position().move_to_square(31)
 
-        assert BoardRules().position(PlayerColor.GREEN, Position().move_to_safe(0), -1) == Position().move_to_square(47)
-        assert BoardRules().position(PlayerColor.GREEN, Position().move_to_safe(0), -2) == Position().move_to_square(46)
+        assert BoardRules()._position(PlayerColor.GREEN, Position().move_to_safe(0), -1) == Position().move_to_square(47)
+        assert BoardRules()._position(PlayerColor.GREEN, Position().move_to_safe(0), -2) == Position().move_to_square(46)
 
     def test_calculate_position_from_square(self):
-        assert BoardRules().position(PlayerColor.RED, Position().move_to_square(58), 1) == Position().move_to_square(59)
-        assert BoardRules().position(PlayerColor.RED, Position().move_to_square(59), 1) == Position().move_to_square(0)
-        assert BoardRules().position(PlayerColor.RED, Position().move_to_square(54), 5) == Position().move_to_square(59)
-        assert BoardRules().position(PlayerColor.RED, Position().move_to_square(54), 6) == Position().move_to_square(0)
-        assert BoardRules().position(PlayerColor.RED, Position().move_to_square(54), 7) == Position().move_to_square(1)
+        assert BoardRules()._position(PlayerColor.RED, Position().move_to_square(58), 1) == Position().move_to_square(59)
+        assert BoardRules()._position(PlayerColor.RED, Position().move_to_square(59), 1) == Position().move_to_square(0)
+        assert BoardRules()._position(PlayerColor.RED, Position().move_to_square(54), 5) == Position().move_to_square(59)
+        assert BoardRules()._position(PlayerColor.RED, Position().move_to_square(54), 6) == Position().move_to_square(0)
+        assert BoardRules()._position(PlayerColor.RED, Position().move_to_square(54), 7) == Position().move_to_square(1)
 
         for color in PlayerColor:
-            assert BoardRules().position(color, Position().move_to_square(54), 5) == Position().move_to_square(59)
-            assert BoardRules().position(color, Position().move_to_square(54), 6) == Position().move_to_square(0)
-            assert BoardRules().position(color, Position().move_to_square(54), 7) == Position().move_to_square(1)
-            assert BoardRules().position(color, Position().move_to_square(58), 1) == Position().move_to_square(59)
-            assert BoardRules().position(color, Position().move_to_square(59), 1) == Position().move_to_square(0)
-            assert BoardRules().position(color, Position().move_to_square(0), 1) == Position().move_to_square(1)
-            assert BoardRules().position(color, Position().move_to_square(1), 1) == Position().move_to_square(2)
-            assert BoardRules().position(color, Position().move_to_square(10), 5) == Position().move_to_square(15)
+            assert BoardRules()._position(color, Position().move_to_square(54), 5) == Position().move_to_square(59)
+            assert BoardRules()._position(color, Position().move_to_square(54), 6) == Position().move_to_square(0)
+            assert BoardRules()._position(color, Position().move_to_square(54), 7) == Position().move_to_square(1)
+            assert BoardRules()._position(color, Position().move_to_square(58), 1) == Position().move_to_square(59)
+            assert BoardRules()._position(color, Position().move_to_square(59), 1) == Position().move_to_square(0)
+            assert BoardRules()._position(color, Position().move_to_square(0), 1) == Position().move_to_square(1)
+            assert BoardRules()._position(color, Position().move_to_square(1), 1) == Position().move_to_square(2)
+            assert BoardRules()._position(color, Position().move_to_square(10), 5) == Position().move_to_square(15)
 
         for color in PlayerColor:
-            assert BoardRules().position(color, Position().move_to_square(59), -5) == Position().move_to_square(54)
-            assert BoardRules().position(color, Position().move_to_square(0), -6) == Position().move_to_square(54)
-            assert BoardRules().position(color, Position().move_to_square(1), -7) == Position().move_to_square(54)
-            assert BoardRules().position(color, Position().move_to_square(59), -1) == Position().move_to_square(58)
-            assert BoardRules().position(color, Position().move_to_square(0), -1) == Position().move_to_square(59)
-            assert BoardRules().position(color, Position().move_to_square(1), -1) == Position().move_to_square(0)
-            assert BoardRules().position(color, Position().move_to_square(2), -1) == Position().move_to_square(1)
-            assert BoardRules().position(color, Position().move_to_square(15), -5) == Position().move_to_square(10)
+            assert BoardRules()._position(color, Position().move_to_square(59), -5) == Position().move_to_square(54)
+            assert BoardRules()._position(color, Position().move_to_square(0), -6) == Position().move_to_square(54)
+            assert BoardRules()._position(color, Position().move_to_square(1), -7) == Position().move_to_square(54)
+            assert BoardRules()._position(color, Position().move_to_square(59), -1) == Position().move_to_square(58)
+            assert BoardRules()._position(color, Position().move_to_square(0), -1) == Position().move_to_square(59)
+            assert BoardRules()._position(color, Position().move_to_square(1), -1) == Position().move_to_square(0)
+            assert BoardRules()._position(color, Position().move_to_square(2), -1) == Position().move_to_square(1)
+            assert BoardRules()._position(color, Position().move_to_square(15), -5) == Position().move_to_square(10)
 
-        assert BoardRules().position(PlayerColor.RED, Position().move_to_square(0), 3) == Position().move_to_safe(0)
-        assert BoardRules().position(PlayerColor.RED, Position().move_to_square(1), 2) == Position().move_to_safe(0)
-        assert BoardRules().position(PlayerColor.RED, Position().move_to_square(2), 1) == Position().move_to_safe(0)
-        assert BoardRules().position(PlayerColor.RED, Position().move_to_square(1), 3) == Position().move_to_safe(1)
-        assert BoardRules().position(PlayerColor.RED, Position().move_to_square(2), 2) == Position().move_to_safe(1)
-        assert BoardRules().position(PlayerColor.RED, Position().move_to_square(2), 6) == Position().move_to_home()
-        assert BoardRules().position(PlayerColor.RED, Position().move_to_square(51), 12) == Position().move_to_safe(0)
-        assert BoardRules().position(PlayerColor.RED, Position().move_to_square(52), 12) == Position().move_to_safe(1)
-        assert BoardRules().position(PlayerColor.RED, Position().move_to_square(58), 5) == Position().move_to_safe(0)
-        assert BoardRules().position(PlayerColor.RED, Position().move_to_square(59), 4) == Position().move_to_safe(0)
+        assert BoardRules()._position(PlayerColor.RED, Position().move_to_square(0), 3) == Position().move_to_safe(0)
+        assert BoardRules()._position(PlayerColor.RED, Position().move_to_square(1), 2) == Position().move_to_safe(0)
+        assert BoardRules()._position(PlayerColor.RED, Position().move_to_square(2), 1) == Position().move_to_safe(0)
+        assert BoardRules()._position(PlayerColor.RED, Position().move_to_square(1), 3) == Position().move_to_safe(1)
+        assert BoardRules()._position(PlayerColor.RED, Position().move_to_square(2), 2) == Position().move_to_safe(1)
+        assert BoardRules()._position(PlayerColor.RED, Position().move_to_square(2), 6) == Position().move_to_home()
+        assert BoardRules()._position(PlayerColor.RED, Position().move_to_square(51), 12) == Position().move_to_safe(0)
+        assert BoardRules()._position(PlayerColor.RED, Position().move_to_square(52), 12) == Position().move_to_safe(1)
+        assert BoardRules()._position(PlayerColor.RED, Position().move_to_square(58), 5) == Position().move_to_safe(0)
+        assert BoardRules()._position(PlayerColor.RED, Position().move_to_square(59), 4) == Position().move_to_safe(0)
 
         with pytest.raises(ValueError):
-            assert BoardRules().position(PlayerColor.RED, Position().move_to_square(2), 7) == Position().move_to_home()
+            assert BoardRules()._position(PlayerColor.RED, Position().move_to_square(2), 7) == Position().move_to_home()
 
-        assert BoardRules().position(PlayerColor.BLUE, Position().move_to_square(16), 2) == Position().move_to_safe(0)
-        assert BoardRules().position(PlayerColor.BLUE, Position().move_to_square(17), 1) == Position().move_to_safe(0)
-        assert BoardRules().position(PlayerColor.BLUE, Position().move_to_square(16), 3) == Position().move_to_safe(1)
-        assert BoardRules().position(PlayerColor.BLUE, Position().move_to_square(17), 2) == Position().move_to_safe(1)
-        assert BoardRules().position(PlayerColor.BLUE, Position().move_to_square(17), 6) == Position().move_to_home()
+        assert BoardRules()._position(PlayerColor.BLUE, Position().move_to_square(16), 2) == Position().move_to_safe(0)
+        assert BoardRules()._position(PlayerColor.BLUE, Position().move_to_square(17), 1) == Position().move_to_safe(0)
+        assert BoardRules()._position(PlayerColor.BLUE, Position().move_to_square(16), 3) == Position().move_to_safe(1)
+        assert BoardRules()._position(PlayerColor.BLUE, Position().move_to_square(17), 2) == Position().move_to_safe(1)
+        assert BoardRules()._position(PlayerColor.BLUE, Position().move_to_square(17), 6) == Position().move_to_home()
         with pytest.raises(ValueError):
-            assert BoardRules().position(PlayerColor.BLUE, Position().move_to_square(17), 7) == Position().move_to_home()
+            assert BoardRules()._position(PlayerColor.BLUE, Position().move_to_square(17), 7) == Position().move_to_home()
 
-        assert BoardRules().position(PlayerColor.YELLOW, Position().move_to_square(31), 2) == Position().move_to_safe(0)
-        assert BoardRules().position(PlayerColor.YELLOW, Position().move_to_square(32), 1) == Position().move_to_safe(0)
-        assert BoardRules().position(PlayerColor.YELLOW, Position().move_to_square(31), 3) == Position().move_to_safe(1)
-        assert BoardRules().position(PlayerColor.YELLOW, Position().move_to_square(32), 2) == Position().move_to_safe(1)
-        assert BoardRules().position(PlayerColor.YELLOW, Position().move_to_square(32), 6) == Position().move_to_home()
+        assert BoardRules()._position(PlayerColor.YELLOW, Position().move_to_square(31), 2) == Position().move_to_safe(0)
+        assert BoardRules()._position(PlayerColor.YELLOW, Position().move_to_square(32), 1) == Position().move_to_safe(0)
+        assert BoardRules()._position(PlayerColor.YELLOW, Position().move_to_square(31), 3) == Position().move_to_safe(1)
+        assert BoardRules()._position(PlayerColor.YELLOW, Position().move_to_square(32), 2) == Position().move_to_safe(1)
+        assert BoardRules()._position(PlayerColor.YELLOW, Position().move_to_square(32), 6) == Position().move_to_home()
         with pytest.raises(ValueError):
-            assert BoardRules().position(PlayerColor.YELLOW, Position().move_to_square(32), 7) == Position().move_to_home()
+            assert BoardRules()._position(PlayerColor.YELLOW, Position().move_to_square(32), 7) == Position().move_to_home()
 
-        assert BoardRules().position(PlayerColor.GREEN, Position().move_to_square(46), 2) == Position().move_to_safe(0)
-        assert BoardRules().position(PlayerColor.GREEN, Position().move_to_square(47), 1) == Position().move_to_safe(0)
-        assert BoardRules().position(PlayerColor.GREEN, Position().move_to_square(46), 3) == Position().move_to_safe(1)
-        assert BoardRules().position(PlayerColor.GREEN, Position().move_to_square(47), 2) == Position().move_to_safe(1)
-        assert BoardRules().position(PlayerColor.GREEN, Position().move_to_square(47), 6) == Position().move_to_home()
+        assert BoardRules()._position(PlayerColor.GREEN, Position().move_to_square(46), 2) == Position().move_to_safe(0)
+        assert BoardRules()._position(PlayerColor.GREEN, Position().move_to_square(47), 1) == Position().move_to_safe(0)
+        assert BoardRules()._position(PlayerColor.GREEN, Position().move_to_square(46), 3) == Position().move_to_safe(1)
+        assert BoardRules()._position(PlayerColor.GREEN, Position().move_to_square(47), 2) == Position().move_to_safe(1)
+        assert BoardRules()._position(PlayerColor.GREEN, Position().move_to_square(47), 6) == Position().move_to_home()
         with pytest.raises(ValueError):
-            assert BoardRules().position(PlayerColor.GREEN, Position().move_to_square(47), 7) == Position().move_to_home()
+            assert BoardRules()._position(PlayerColor.GREEN, Position().move_to_square(47), 7) == Position().move_to_home()
 
 
 RED = PlayerColor.RED

@@ -2,7 +2,7 @@
 # vim: set ft=python ts=4 sw=4 expandtab:
 
 """
-Character input sources.
+Character input sources.  A character could be a person or could be computer-driven.
 """
 
 import random
@@ -28,12 +28,12 @@ class CharacterInputSource(ABC):
         """
         Choose the next move for a character.
 
-        If a move has an empty list of actions, then this is a forfeit; nothing else is legal, so
-        the character must choose to discard one card.  In standard mode, there is effectively no
+        There is always at least one legal move: a forfeit.  Nothing else is legal, so the
+        character must choose to discard one card.  In standard mode, there is effectively no
         choice (since there is only one card in play), but in adult mode the character can choose
-        which to discard.
+        which to discard.  If a move has an empty list of actions, then this is a forfeit.
 
-        The source _must_ return a move from among the passed-in set of legal moves.  If a source
+        The source `must` return a move from among the passed-in set of legal moves.  If a source
         returns an illegal move, then a legal move will be chosen at random and executed.  This way,
         a misbehaving source (or a source attempting to cheat) does not get an advantage.  The game
         rules require a player to make a legal move if one is available, even if that move is
@@ -42,10 +42,10 @@ class CharacterInputSource(ABC):
         Args:
             mode(GameMode): Game mode
             view(PlayerView): Player-specific view of the game
-            legal_moves(:obj: Set of :obj: Move): The set of legal moves, possibly empty
+            legal_moves(List[Move]): The set of legal moves
 
         Returns:
-            Move: the character's next move as described above
+            Move: The character's next move as described above
         """
 
 
@@ -69,7 +69,7 @@ def source(name: str) -> CharacterInputSource:
         name(str): Fully-qualified name of the source, like "apologies.source.RandomInputSource"
 
     Returns:
-        An instance of the named source
+        CharacterInputSource: An instance of the named source
 
     Raises:
         ValueError: If the named source does not exist or is not a CharacterInputSource

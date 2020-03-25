@@ -16,8 +16,8 @@ from .render import render_board
 from .source import CharacterInputSource
 
 # Minimum terminal size needed to support the demo
-MIN_COLS = 155
-MIN_ROWS = 70
+_MIN_COLS = 155
+_MIN_ROWS = 70
 
 
 def _render_history(entry):
@@ -65,7 +65,7 @@ def _refresh_screen(unused_source, unused_engine, unused_game, unused_delay_sec,
     stdscr.border()
     stdscr.addstr(1, 4, "APOLOGIES DEMO")
     stdscr.addstr(1, 138, "CTRL-C TO EXIT")
-    stdscr.move(MIN_ROWS - 2, MIN_COLS - 2)  # bottom-right corner
+    stdscr.move(_MIN_ROWS - 2, _MIN_COLS - 2)  # bottom-right corner
     stdscr.refresh()
 
 
@@ -158,13 +158,13 @@ def run_demo(players: int, mode: GameMode, source: CharacterInputSource, delay_s
     Run the quick'n'dirty demo in a terminal window.
 
     Args:
-        players: Number of players in the game
-        mode: The game mode
-        source: The source to use for choosing player moves
-        delay_sec: The delay between turns when executing the game
+        players(int): Number of players in the game
+        mode(GameMode): The game mode
+        source(CharacterInputSource): The source to use for choosing player moves
+        delay_sec(float): The delay between turns when executing the game
     """
     characters = [Character(name="Player %d" % player, source=source) for player in range(players)]
     engine = Engine(mode=mode, characters=characters)
     engine.start_game()
-    _force_resize(MIN_COLS, MIN_ROWS)
+    _force_resize(_MIN_COLS, _MIN_ROWS)
     curses.wrapper(_main, source, engine, delay_sec)

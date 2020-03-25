@@ -334,8 +334,8 @@ class Player:
 
     Attributes:
         color(str): The color of the player
-        hand(:obj:`list` of :obj:`Card`): List of cards in the player's hand
-        pawns(:obj:`list` of :obj:`Pawn`): List of all pawns belonging to the player
+        hand(List[Card]): List of cards in the player's hand
+        pawns(List[Pawn]): List of all pawns belonging to the player
     """
 
     color = attr.ib(type=PlayerColor)
@@ -377,7 +377,14 @@ class Player:
 
 @attr.s
 class History:
-    """Tracks a move made by a player."""
+    """
+    Tracks an action taken during the game.
+
+    Attributes:
+        action(str): String describing the action
+        color(Optional[PlayerColor]): Color of the player associated with the action
+        timestamp(DateTime): Timestamp tied to the action (defaults to current time)
+    """
 
     action = attr.ib(type=str)
     color = attr.ib(default=None, type=Optional[PlayerColor])
@@ -395,7 +402,7 @@ class PlayerView:
       
     Attributes:
         player(Player): The player associated with the view.
-        opponents(:obj:`dict` of :obj:`Player`): The player's opponents, with private information stripped
+        opponents(Dict[PlayerColor, Player]): The player's opponents, with private information stripped
     """
 
     player = attr.ib(type=Player)
@@ -420,7 +427,7 @@ class Game:
 
     Attributes:
         playercount(int): Number of players in the game
-        players(:obj:`dict` of :obj:`Player`): All players in the game
+        players(Dict[PlayerColor, Player]): All players in the game
         deck(Deck): The deck of cards for the game
     """
 
@@ -461,6 +468,7 @@ class Game:
 
     @property
     def winner(self) -> Optional[Player]:
+        """The winner of the game, if any."""
         for player in self.players.values():
             if player.all_pawns_in_home():
                 return player
@@ -480,7 +488,7 @@ class Game:
         return _CONVERTER.structure(orjson.loads(data), Game)  # type: ignore
 
     def track(self, action: str, player: Optional[Player] = None) -> None:
-        """Tracks a move made by a player."""
+        """Tracks an action taken during the game."""
         self.history.append(History(action, player.color if player else None))
 
     def create_player_view(self, color: PlayerColor) -> PlayerView:

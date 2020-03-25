@@ -16,8 +16,9 @@ Release v\ |version|.
     :target: https://github.com/pronovic/apologies
 
 `Apologies <https://pypi.org/project/apologies/>`_ is a Python library that
-implements a game similar to the Sorry board game.  It includes a rudimentary
-way to play the game, intended for use by developers and not by end users.
+implements a game similar to the Sorry board game.  It includes a console demo
+that plays the game with automated players, intended for use by developers and
+not by end users.
 
 
 Installation
@@ -28,9 +29,9 @@ Install the package with pip:
     $ pip install apologies
 
 
-The API Documentation
----------------------
+Documentation
+-------------
 
 .. toctree::
-   api
-
+   :maxdepth: 2
+   :glob:

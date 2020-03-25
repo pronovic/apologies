@@ -3,7 +3,7 @@
 # pylint: disable=line-too-long
 
 """
-Render a game on the terminal, for development purposes.
+Render a game as a string.
 """
 
 # This is kind of ugly.  It was built by hand and all of the mappings, etc. are
@@ -153,6 +153,6 @@ def render_board(game: Game) -> str:
         game(Game): The game to render
 
     Returns:
-        str: The board as a string for display on a terminal, including ANSI color escape sequences
+        str: The board as a string, to be printed or for display on a terminal
     """
     return _apply_game_state(_generate_empty_board(), game)

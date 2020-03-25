@@ -12,12 +12,10 @@ import cattr
 from pendulum.datetime import DateTime
 from pendulum.parser import parse
 
-Type = TypeVar("Type")
-
 
 class CattrConverter(cattr.Converter):  # type: ignore
     """
-    Cattr converter that serializes/deserializes DateTime to an ISO 8601 timestamp.
+    Cattr converter that knows how to correctly serialize/deserialize DateTime to an ISO 8601 timestamp.
     """
 
     def __init__(self) -> None:
@@ -26,9 +24,13 @@ class CattrConverter(cattr.Converter):  # type: ignore
         self.register_structure_hook(DateTime, lambda string, _: parse(string) if string else None)
 
 
+Type = TypeVar("Type")
+"""Generic type"""
+
+
 @attr.s
 class CircularQueue(Generic[Type]):
-    """A circular queue, that keeps returning the original entries repeatedly, in order."""
+    """A circular queue that keeps returning the original entries repeatedly, in order."""
 
     entries = attr.ib(type=List[Type])
     _working = attr.ib(type=List[Type])
