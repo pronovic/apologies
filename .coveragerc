@@ -6,5 +6,5 @@ branch = true
 source = src/apologies
 
 [report]
-show_missing = true
-precision = 2
+show_missing = false
+precision = 1
