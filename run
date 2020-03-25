@@ -101,6 +101,20 @@ run_tox() {
 
 # Build the Sphinx documentation for apologies.readthedocs.io
 run_docs() {
+   open="no"
+
+   while getopts ":o" option; do
+     case $option in
+       o) 
+         open="yes"
+         ;;
+       ?) 
+         echo "invalid option -$OPTARG"
+         exit 1
+         ;;
+     esac
+   done
+
    poetry run which sphinx-build > /dev/null
    if [ $? != 0 ]; then
       run_install
@@ -108,7 +122,10 @@ run_docs() {
 
    cd docs 
    poetry run sphinx-build -b html -d _build/doctrees . _build/html
-   $(which start || which open) _build/html/index.html 2>/dev/null  # start on Windows, open on MacOS
+
+   if [ $open == "yes" ]; then
+      $(which start || which open) _build/html/index.html 2>/dev/null  # start on Windows, open on MacOS
+   fi
 }
 
 # Tag the current code and publish to PyPI
@@ -177,7 +194,8 @@ case $1 in
       run_tox
       ;;
    doc*)
-      run_docs
+      shift 1
+      run_docs $*
       ;;
    publish)
       run_publish
@@ -205,6 +223,7 @@ case $1 in
       echo "- run test -ch: Run the unit tests with coverage and open the HTML report"
       echo "- run tox: Run the broader Tox test suite used by the GitHub CI action"
       echo "- run docs: Build the Spinx documentation for apologies.readthedocs.io"
+      echo "- run docs -o: Build the Spinx documentation and open in a browser"
       echo "- run publish: Tag the current code and publish to PyPI"
       echo "- run demo: Run a game with simulated players, displaying output on the terminal"
       echo ""
