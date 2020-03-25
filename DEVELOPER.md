@@ -176,7 +176,7 @@ Click on **Modules**.  On the **Sources** tab, find the **Exclude files** box.
 Enter the following, and click **Apply**:
 
 ```
-.coverage;.coveragerc;.github;.htmlcov;.idea;.mypyrc;.mypy_cache;.pre-commit-config.yaml;.pylintrc;.pytest_cache;.readthedocs.yml;.tox;.toxrc;build;dist;docs/_build;out;poetry.lock;run
+.coverage;.coveragerc;.github;.htmlcov;.idea;.isort.cfg;.mypyrc;.mypy_cache;.pre-commit-config.yaml;.pylintrc;.pytest_cache;.readthedocs.yml;.tox;.toxrc;build;dist;docs/_build;out;poetry.lock;run
 ```
 
 On the **Dependencies** tab, select the Python SDK you configured above as the
