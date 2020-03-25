@@ -2,7 +2,7 @@
 isolated_build = true
 envlist = 
    precommit,
-   {py,py37,py38}-{coverage,nocoverage}
+   {py}-{coverage,nocoverage}
 ignore_basepython_conflict = true
 
 [testenv]
@@ -11,7 +11,7 @@ commands =
    nocoverage: poetry run pytest tests
    coverage: poetry run coverage erase
    coverage: poetry run coverage run --rcfile=.coveragerc -m pytest tests
-   coverage: poetry run coverage report -m
+   coverage: poetry run coverage report
 
 [testenv:precommit]
 whitelist_externals = poetry
