@@ -4,6 +4,7 @@
 
 from unittest.mock import MagicMock
 
+import pendulum
 import pytest
 from pendulum.datetime import DateTime
 
@@ -257,6 +258,15 @@ class TestHistory:
         assert history.action == "action"
         assert history.color is color
         assert history.timestamp <= DateTime.utcnow()
+
+    def test_str(self):
+        timestamp = pendulum.parse("2020-03-25T14:02:16")
+
+        history = History("This is an action", color=None, timestamp=timestamp)
+        assert "%s" % history == "[14:02:16] General - This is an action"
+
+        history = History("This is an action", color=PlayerColor.BLUE, timestamp=timestamp)
+        assert "%s" % history == "[14:02:16] Blue - This is an action"
 
 
 class TestPlayerView:

@@ -394,6 +394,12 @@ class History:
     def _init_timestamp(self) -> DateTime:
         return pendulum.now(pendulum.UTC)
 
+    def __str__(self) -> str:
+        time = self.timestamp.to_time_string()  # type: ignore
+        color = "General" if not self.color else "%s" % self.color.value
+        action = self.action
+        return "[%s] %s - %s" % (time, color, action)
+
 
 @attr.s
 class PlayerView:

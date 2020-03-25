@@ -5,7 +5,8 @@
 ![](https://img.shields.io/pypi/pyversions/apologies.svg)
 ![](https://github.com/pronovic/apologies/workflows/Test%20Suite/badge.svg)
 
-This is a Python library that implements a game similar to the Sorry board
+This is a Python library that implements a game similar 
+to the [Sorry](https://en.wikipedia.org/wiki/Sorry!_(game)) board
 game.  It includes a console demo that plays the game with automated players,
 intended for use by developers and not by end users.
 

@@ -20,14 +20,6 @@ _MIN_COLS = 155
 _MIN_ROWS = 70
 
 
-def _render_history(entry):
-    """Return a history entry for display on the screen."""
-    timestamp = entry.timestamp.to_time_string()
-    color = "General" if not entry.color else "%s" % entry.color.value
-    action = entry.action
-    return "[%s] %s - %s" % (timestamp, color, action)
-
-
 # pylint: disable=no-else-return
 def _render_hand(player):
     """Return a string describing the cards in a player's hand."""
@@ -115,7 +107,7 @@ def _refresh_history(game, history):
 
     row = 1
     for entry in game.history[-9:]:
-        history.addstr(row, 2, "%s" % _render_history(entry))
+        history.addstr(row, 2, "%s" % entry)
         row += 1
 
     history.refresh()

@@ -6,9 +6,9 @@
 ![](https://github.com/pronovic/apologies/workflows/Test%20Suite/badge.svg)
 
 [Apologies](https://gitub.com/pronovic/apologies) is a Python library that
-implements a game similar to the Sorry board game.  It includes a console demo
-that plays the game with automated players, intended for use by developers and
-not by end users.
+implements a game similar to the [Sorry](https://en.wikipedia.org/wiki/Sorry!_(game)) board 
+game.  It includes a console demo that plays the game with automated players,
+intended for use by developers and not by end users.
 
 It also serves as a complete example of how to manage a modern (circa 2020)
 Python project, including style checks, code formatting, integration with
