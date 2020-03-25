@@ -1,5 +1,48 @@
 # Developer Notes
 
+## Running the Demo
+
+While this is primarily a library, it includes a quick'n'dirty console demo
+that plays a game with 2-4 automated players.  Here's the help output:
+
+```
+$ poetry run demo
+usage: demo [-h] [--players PLAYERS] [--mode {STANDARD,ADULT}]
+            [--source SOURCE] [--delay DELAY]
+
+Run a game with simulated players, displaying output on the terminal.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --players PLAYERS     Number of simulated players in the game
+  --mode {STANDARD,ADULT}
+                        Choose the game mode
+  --source SOURCE       Fully-qualified name of the character source
+  --delay DELAY         Delay between computer-generated moves (fractional
+                        seconds)
+
+By default, the game runs in STANDARD mode with 4 players. A source is a class
+that chooses a player's move.
+```
+
+It's simplest to run a demo with the default arguments:
+
+```
+$ run demo
+```
+
+This runs a really fast game in adult mode with 3 players:
+
+```
+$ run demo --players=3 --mode=ADULT --delay=0.1
+```
+
+> _Note:_ The demo only works inside a UNIX-style terminal window (like an
+> xterm or a MacOS terminal).  It doesn't work in a Windows console, because it
+> relies on the curses terminal library.  Some terminals (like (iTerm2)[https://www.iterm2.com/]) may
+> require extra configuration before the terminal can be resized properly
+> (see [StackExchange](https://apple.stackexchange.com/a/47841/249172Z)).
+
 ## Development Environment
 
 My primary development environment is IntelliJ (or just Vim) on MacOS, but the
@@ -8,16 +51,9 @@ and on Debian buster.
 
 ## Packaging and Dependencies
 
-This project uses [Poetry](https://python-poetry.org/) to manage Python
-packaging and dependencies.  Most day-to-day tasks (such as running unit 
-tests from the command line) are orchestrated through Poetry.  
+This project uses [Poetry](https://python-poetry.org/) to manage Python packaging and dependencies.  Most day-to-day tasks (such as running unit tests from the command line) are orchestrated through Poetry.  
 
-A coding standard is enforced using [Black](https://github.com/psf/black), 
-[isort](https://pypi.org/project/isort/) and [Pylint](https://www.pylint.org/).  
-Python 3 type hinting is validated using [MyPy](https://pypi.org/project/mypy/).  
-To reduce boilerplate, classes are defined using [Attrs](https://www.attrs.org/) 
-(see this [rationale](https://glyph.twistedmatrix.com/2016/08/attrs.html) for 
-why Attrs is worthwhile.)
+A coding standard is enforced using [Black](https://github.com/psf/black), [isort](https://pypi.org/project/isort/) and [Pylint](https://www.pylint.org/).  Python 3 type hinting is validated using [MyPy](https://pypi.org/project/mypy/).  To reduce boilerplate, classes are defined using [Attrs](https://www.attrs.org/) (see this [rationale](https://glyph.twistedmatrix.com/2016/08/attrs.html)).
 
 ## Pre-Commit Hooks
 
@@ -26,9 +62,9 @@ clean, and type-safe when it's checked in.  The `run install` step described
 below installs the project pre-commit hooks into your repository.  These hooks
 are configured in [`.pre-commit-config.yaml`](.pre-commit-config.yaml).
 
-If necessary, you can temporarily [disable a hook](https://pre-commit.com/#temporarily-disabling-hooks)
-or even remove the hooks with `poetry run pre-commit uninstall`.  However, keep
-in mind that the CI build on GitHub enforces these checks, so the build will fail.
+If necessary, you can temporarily [disable a hook](https://pre-commit.com/#temporarily-disabling-hooks) or 
+even remove the hooks with `poetry run pre-commit uninstall`.  However, keep in
+mind that the CI build on GitHub enforces these checks, so the build will fail.
 
 ## Prequisites
 
@@ -104,14 +140,16 @@ Usage: run <command>
 
 - run install: Setup the virtualenv via Poetry and install pre-commit hooks
 - run activate: Print command needed to activate the Poetry virtualenv
-- run checks: Run the Pylint and MyPy code checkers
+- run checks: Run the PyLint and MyPy code checkers
 - run format: Run the Black code formatter
 - run test: Run the unit tests
 - run test -c: Run the unit tests with coverage
 - run test -ch: Run the unit tests with coverage and open the HTML report
 - run tox: Run the broader Tox test suite used by the GitHub CI action
-- run docs: Build the Sphinx documentation for apologies.readthedocs.io
+- run docs: Build the Spinx documentation for apologies.readthedocs.io
+- run docs -o: Build the Spinx documentation and open in a browser
 - run publish: Tag the current code and publish to PyPI
+- run demo: Run a game with simulated players, displaying output on the terminal
 ```
 
 ## Integration with IntelliJ or PyCharm
