@@ -24,13 +24,11 @@ warn_unused_ignores = True
 [mypy-apologies.demo]
 ignore_errors = True
 
-# It's just too hard to make tests compliant using Mock
+# It's hard to make tests compliant using unittest.mock
 [mypy-tests.*]
 check_untyped_defs = False
 allow_untyped_defs = True
 
+# There is no type hinting for pytest
 [mypy-pytest]
-ignore_missing_imports = True
-
-[mypy-flexmock]
 ignore_missing_imports = True
