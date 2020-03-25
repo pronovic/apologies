@@ -293,6 +293,6 @@ $ run demo --players=3 --mode=ADULT --delay=0.1
 
 > _Note:_ The demo only works inside a UNIX-style terminal window (like an
 > xterm or a MacOS terminal).  It doesn't work in a Windows console, because it
-> relies on the curses terminal library.  Some terminals (like (iTerm2)[https://www.iterm2.com/]) may
+> relies on the curses terminal library.  Some terminals (like [iTerm2](https://www.iterm2.com/)) may
 > require extra configuration before the terminal can be resized properly
 > (see [StackExchange](https://apple.stackexchange.com/a/47841/249172Z)).
