@@ -18,7 +18,7 @@ DEFAULT_PLAYERS = MAX_PLAYERS
 DEFAULT_MODE = GameMode.STANDARD.name
 MODE_CHOICES = [GameMode.STANDARD.name, GameMode.ADULT.name]
 DEFAULT_SOURCE = "apologies.source.RandomInputSource"
-DEFAULT_DELAY_SEC = 5
+DEFAULT_DELAY_SEC = 1
 
 
 def _demo(argv: List[str], unused_stdout: IO[str], unused_stderr: IO[str]) -> None:
