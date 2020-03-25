@@ -1,7 +1,7 @@
 Apologies Python Library
 ========================
 
-Release v\ |version|.
+Release v\ |version|
 
 .. image:: https://img.shields.io/pypi/l/apologies.svg
     :target: https://pypi.org/project/apologies/
