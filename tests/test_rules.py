@@ -2,8 +2,9 @@
 # vim: set ft=python ts=4 sw=4 expandtab:
 # pylint: disable=no-self-use,protected-access,too-many-locals,too-many-statements
 
+from unittest.mock import MagicMock, call
+
 import pytest
-from mock import MagicMock, call
 
 from apologies.game import ADULT_HAND, DECK_SIZE, PAWNS, Card, CardType, Game, GameMode, Pawn, PlayerColor, Position
 from apologies.rules import Action, ActionType, BoardRules, Move, Rules

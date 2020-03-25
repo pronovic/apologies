@@ -3,8 +3,9 @@
 # pylint: disable=redefined-outer-name,protected-access,broad-except
 # Unit tests for source.py
 
+from unittest.mock import MagicMock
+
 import pytest
-from mock import MagicMock
 
 from apologies.game import GameMode
 from apologies.source import RandomInputSource, source

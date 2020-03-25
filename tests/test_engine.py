@@ -3,9 +3,9 @@
 # pylint: disable=redefined-outer-name,protected-access,broad-except
 # Unit tests for engine.py
 
-import mock
+from unittest.mock import MagicMock, Mock, PropertyMock, call, patch
+
 import pytest
-from mock import MagicMock, Mock, call
 
 from apologies.engine import Character, Engine
 from apologies.game import Card, CardType, GameMode, PlayerColor
@@ -56,7 +56,7 @@ class TestEngine:
 
     def test_started(self):
         engine = TestEngine._create_engine()
-        with mock.patch("apologies.game.Game.started", new_callable=mock.PropertyMock) as started:
+        with patch("apologies.game.Game.started", new_callable=PropertyMock) as started:
             started.return_value = False
             assert engine.started is False
             assert engine.state == "Game waiting to start"
@@ -66,7 +66,7 @@ class TestEngine:
 
     def test_completed(self):
         engine = TestEngine._create_engine()
-        with mock.patch("apologies.game.Game.completed", new_callable=mock.PropertyMock) as completed:
+        with patch("apologies.game.Game.completed", new_callable=PropertyMock) as completed:
             completed.return_value = False
             assert engine.completed is False
             assert engine.state == "Game in progress"
@@ -82,7 +82,7 @@ class TestEngine:
 
     def test_play_next_completed(self):
         engine = TestEngine._create_engine()
-        with mock.patch("apologies.game.Game.completed", new_callable=mock.PropertyMock) as completed:
+        with patch("apologies.game.Game.completed", new_callable=PropertyMock) as completed:
             completed.return_value = True
             with pytest.raises(ValueError):
                 engine.play_next()
@@ -215,7 +215,7 @@ class TestEngine:
         engine._rules.draw_again.assert_has_calls([call(card1), call(card2)])
 
     def test_play_next_standard_complete(self):
-        with mock.patch("apologies.game.Game.completed", new_callable=mock.PropertyMock) as completed:
+        with patch("apologies.game.Game.completed", new_callable=PropertyMock) as completed:
             completed.side_effect = [False, True]  # not complete when we start execution, but complete after the 1st move
 
             engine = TestEngine._create_engine()
@@ -378,7 +378,7 @@ class TestEngine:
         assert replacementcard2 in player.hand
 
     def test_play_next_adult_draw_again_complete(self):
-        with mock.patch("apologies.game.Game.completed", new_callable=mock.PropertyMock) as completed:
+        with patch("apologies.game.Game.completed", new_callable=PropertyMock) as completed:
             completed.side_effect = [False, True]  # not complete when we start execution, but complete after the 1st move
 
             engine = TestEngine._create_engine(GameMode.ADULT)

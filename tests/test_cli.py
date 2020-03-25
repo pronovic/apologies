@@ -3,9 +3,9 @@
 # pylint: disable=redefined-outer-name
 
 import os
+from unittest.mock import MagicMock
 
 import pytest
-from mock import MagicMock
 
 from apologies.cli import _example, _lookup_method, _render, cli
 
