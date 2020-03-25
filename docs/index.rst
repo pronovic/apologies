@@ -19,9 +19,6 @@ Release v\ |version|.
 implements a game similar to the Sorry board game.  It includes a rudimentary
 way to play the game, intended for use by developers and not by end users.
 
-*Note:* This is alpha-quality code that is still under active development.
-Interfaces may change without warning until the design stabilizes.
-
 
 Installation
 ------------
@@ -35,7 +32,5 @@ The API Documentation
 ---------------------
 
 .. toctree::
-   :maxdepth: 2
-
    api
 

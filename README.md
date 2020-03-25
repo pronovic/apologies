@@ -16,7 +16,3 @@ IntelliJ, CI builds at GitHub, and integration with PyPI and Read the Docs.
 Developer documentation is found in [DEVELOPER.md](DEVELOPER.md).  See that
 file for notes about how the code is structured, how to set up a development
 environment, etc.
-
-> *Note:* This is alpha-quality code that is still under active development.
-> Interfaces may change without warning until the design stabilizes. 
-

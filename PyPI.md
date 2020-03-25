@@ -12,7 +12,3 @@ way to play the game, intended for use by developers and not by end users.
 It also serves as a complete example of how to manage a modern (circa 2020)
 Python project, including style checks, code formatting, integration with
 IntelliJ, CI builds at GitHub, and integration with PyPI and Read the Docs.
-
-*Note:* This is alpha-quality code that is still under active development.
-Interfaces may change without warning until the design stabilizes.
-

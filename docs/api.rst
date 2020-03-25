@@ -1,9 +1,6 @@
 apologies package
 =================
 
-Modules
-----------
-
 apologies.cli module
 ---------------------
 
