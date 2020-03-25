@@ -1,48 +1,5 @@
 # Developer Notes
 
-## Running the Demo
-
-While this is primarily a library, it includes a quick'n'dirty console demo
-that plays a game with 2-4 automated players.  Here's the help output:
-
-```
-$ poetry run demo
-usage: demo [-h] [--players PLAYERS] [--mode {STANDARD,ADULT}]
-            [--source SOURCE] [--delay DELAY]
-
-Run a game with simulated players, displaying output on the terminal.
-
-optional arguments:
-  -h, --help            show this help message and exit
-  --players PLAYERS     Number of simulated players in the game
-  --mode {STANDARD,ADULT}
-                        Choose the game mode
-  --source SOURCE       Fully-qualified name of the character source
-  --delay DELAY         Delay between computer-generated moves (fractional
-                        seconds)
-
-By default, the game runs in STANDARD mode with 4 players. A source is a class
-that chooses a player's move.
-```
-
-It's simplest to run a demo with the default arguments:
-
-```
-$ run demo
-```
-
-This runs a really fast game in adult mode with 3 players:
-
-```
-$ run demo --players=3 --mode=ADULT --delay=0.1
-```
-
-> _Note:_ The demo only works inside a UNIX-style terminal window (like an
-> xterm or a MacOS terminal).  It doesn't work in a Windows console, because it
-> relies on the curses terminal library.  Some terminals (like (iTerm2)[https://www.iterm2.com/]) may
-> require extra configuration before the terminal can be resized properly
-> (see [StackExchange](https://apple.stackexchange.com/a/47841/249172Z)).
-
 ## Development Environment
 
 My primary development environment is IntelliJ (or just Vim) on MacOS, but the
@@ -296,3 +253,46 @@ tools as described below.
 |Make console active on message in stdout|_Checked_|
 |Make console active on message in stderr|_Checked_|
 |Output filters|`$FILE_PATH$:$LINE$:$COLUMN.*`|
+
+## Running the Demo
+
+While this is primarily a library, it includes a quick'n'dirty console demo
+that plays a game with 2-4 automated players.  Here's the help output:
+
+```
+$ poetry run demo
+usage: demo [-h] [--players PLAYERS] [--mode {STANDARD,ADULT}]
+            [--source SOURCE] [--delay DELAY]
+
+Run a game with simulated players, displaying output on the terminal.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --players PLAYERS     Number of simulated players in the game
+  --mode {STANDARD,ADULT}
+                        Choose the game mode
+  --source SOURCE       Fully-qualified name of the character source
+  --delay DELAY         Delay between computer-generated moves (fractional
+                        seconds)
+
+By default, the game runs in STANDARD mode with 4 players. A source is a class
+that chooses a player's move.
+```
+
+It's simplest to run a demo with the default arguments:
+
+```
+$ run demo
+```
+
+This runs a really fast game in adult mode with 3 players:
+
+```
+$ run demo --players=3 --mode=ADULT --delay=0.1
+```
+
+> _Note:_ The demo only works inside a UNIX-style terminal window (like an
+> xterm or a MacOS terminal).  It doesn't work in a Windows console, because it
+> relies on the curses terminal library.  Some terminals (like (iTerm2)[https://www.iterm2.com/]) may
+> require extra configuration before the terminal can be resized properly
+> (see [StackExchange](https://apple.stackexchange.com/a/47841/249172Z)).
