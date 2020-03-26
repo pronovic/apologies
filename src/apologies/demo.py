@@ -20,7 +20,6 @@ _MIN_COLS = 155
 _MIN_ROWS = 70
 
 
-# pylint: disable=no-else-return
 def _render_hand(player):
     """Return a string describing the cards in a player's hand."""
     if not player.hand:
@@ -91,10 +90,10 @@ def _refresh_state(source, engine, delay_sec, game, state):
         state.addstr(row + 0, 2, "%s PLAYER" % player.color.name)
         state.addstr(row + 2, 3, "Hand.....: %s" % _render_hand(player))
         state.addstr(row + 3, 3, "Pawns....:")
-        state.addstr(row + 4, 6, "%s" % player.pawns[0].log)
-        state.addstr(row + 5, 6, "%s" % player.pawns[1].log)
-        state.addstr(row + 6, 6, "%s" % player.pawns[2].log)
-        state.addstr(row + 7, 6, "%s" % player.pawns[3].log)
+        state.addstr(row + 4, 6, "%s" % player.pawns[0])
+        state.addstr(row + 5, 6, "%s" % player.pawns[1])
+        state.addstr(row + 6, 6, "%s" % player.pawns[2])
+        state.addstr(row + 7, 6, "%s" % player.pawns[3])
         row += 10
 
     state.refresh()

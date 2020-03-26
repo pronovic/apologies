@@ -64,19 +64,19 @@ class Engine:
     _map = attr.ib(init=False, type=Dict[PlayerColor, Character])
 
     @_game.default
-    def _init_game(self) -> Game:
+    def _default_game(self) -> Game:
         return Game(playercount=len(self.characters))
 
     @_queue.default
-    def _init_queue(self) -> CircularQueue[PlayerColor]:
+    def _default_queue(self) -> CircularQueue[PlayerColor]:
         return CircularQueue(list(PlayerColor)[: len(self.characters)])
 
     @_rules.default
-    def _init_rules(self) -> Rules:
+    def _default_rules(self) -> Rules:
         return Rules(self.mode)
 
     @_map.default
-    def _init_map(self) -> Dict[PlayerColor, Character]:
+    def _default_map(self) -> Dict[PlayerColor, Character]:
         index = 0
         result = {}
         for player in self._game.players.values():
@@ -89,7 +89,6 @@ class Engine:
         """Number of players in the game."""
         return len(self.characters)
 
-    # pylint: disable=no-else-return
     @property
     def state(self) -> str:
         """String describing the state of the game."""

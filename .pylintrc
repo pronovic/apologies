@@ -72,6 +72,8 @@ disable=fixme,
         trailing-whitespace,
         bad-continuation,
         too-few-public-methods,
+        no-else-return,
+        no-else-raise,
         no-self-use,
         duplicate-code
 

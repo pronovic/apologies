@@ -122,7 +122,7 @@ class BoardRules:
     Rules related to the way the board works.
     """
 
-    # pylint: disable=no-else-return,too-many-return-statements
+    # pylint: disable=too-many-return-statements
     def construct_legal_moves(self, color: PlayerColor, card: Card, pawn: Pawn, all_pawns: List[Pawn]) -> List[Move]:
         """
         Return the set of legal moves for a pawn using a card, possibly empty.
@@ -163,7 +163,7 @@ class BoardRules:
         return moves
 
     # noinspection PyChainedComparisons
-    # pylint: disable=no-else-raise,no-else-return,too-many-branches,too-many-return-statements,line-too-long
+    # pylint: disable=too-many-branches,too-many-return-statements,line-too-long
     @staticmethod
     def _position(color: PlayerColor, position: Position, squares: int) -> Position:
         """
@@ -335,8 +335,8 @@ class BoardRules:
     @staticmethod
     def _move_split(color: PlayerColor, card: Card, pawn: Pawn, all_pawns: List[Pawn]) -> List[Move]:
         # For the 7 card, we can split up the move between two different pawns.
-        # Any combination of 7 moves is legal, as long as the resulting positions
-        # not occupied by another pawn of the same color.
+        # Any combination of 7 forward moves is legal, as long as the resulting position
+        # is not occupied by another pawn of the same color.
         moves: List[Move] = []
         for other in all_pawns:
             if other != pawn and other.color == color and not other.position.home and not other.position.start:
@@ -426,7 +426,7 @@ class Rules:
     _board_rules = attr.ib(init=False, type=BoardRules)
 
     @_board_rules.default
-    def _init_board_rules(self) -> BoardRules:
+    def _default_board_rules(self) -> BoardRules:
         return BoardRules()
 
     # noinspection PyMethodMayBeStatic
@@ -479,7 +479,7 @@ class Rules:
 
         Args:
             game(Game): Game to operate on
-            color(PlayerColor): Color of the player associated with the move
+            player(Player): Color of the player associated with the move
             move(Move): Move to validate
         """
         log = "Played card %s: [ " % move.card.cardtype.value
@@ -491,7 +491,7 @@ class Rules:
                 log += "%s->start, " % pawn.name
             elif action.actiontype == ActionType.MOVE_TO_POSITION:
                 pawn.position.move_to_position(action.position)
-                log += "%s, " % pawn.log
+                log += "%s, " % pawn
         log += "]"
         game.track(log, player)
         if game.completed:

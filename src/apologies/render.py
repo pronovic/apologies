@@ -115,14 +115,8 @@ _BOARD_TEXT = """
     │   │|   || ● || ◼ || ◼ || ◼ || ◀ ||   ||   ||   ||   || ● || ◼ || ◼ || ◀ ||   | 
     └───┘└───┘└───┘└───┘└───┘└───┘└───┘└───┘└───┘└───┘└───┘└───┘└───┘└───┘└───┘└───┘
       45   44   43   42   41   40   39   38   37   36   35   34   33   32   31   30
+
 """
-
-
-def _generate_empty_board() -> str:
-    """
-    Generate an empty board.
-    """
-    return "%s\n" % _BOARD_TEXT
 
 
 def _apply_game_state(board: str, game: Game) -> str:
@@ -155,4 +149,4 @@ def render_board(game: Game) -> str:
     Returns:
         str: The board as a string, to be printed or for display on a terminal
     """
-    return _apply_game_state(_generate_empty_board(), game)
+    return _apply_game_state(_BOARD_TEXT, game)

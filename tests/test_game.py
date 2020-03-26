@@ -105,7 +105,7 @@ class TestPosition:
         assert position.home is False
         assert position.safe is None
         assert position.square is None
-        assert position.log == "start"
+        assert "%s" % position == "start"
 
     def test_copy(self):
         position = Position()
@@ -116,20 +116,113 @@ class TestPosition:
         copy = position.copy()
         assert copy is not position and copy == position
 
-    def test_move_to_position(self):
+    def test_move_to_position_valid_start(self):
         target = Position()
-        target.start = "x"
-        target.home = "x"
-        target.safe = "x"
-        target.square = "x"
+        target.start = True
+        target.home = False
+        target.safe = None
+        target.square = None
         position = Position()
+        position.start = "x"
+        position.home = "x"
+        position.safe = "x"
+        position.square = "x"
         result = position.move_to_position(target)
         assert result is position
-        assert position.start == "x"
-        assert position.home == "x"
-        assert position.safe == "x"
-        assert position.square == "x"
-        assert position.log == "home"
+        assert position == target
+        assert "%s" % position == "start"
+
+    def test_move_to_position_valid_home(self):
+        target = Position()
+        target.start = False
+        target.home = True
+        target.safe = None
+        target.square = None
+        position = Position()
+        position.start = "x"
+        position.home = "x"
+        position.safe = "x"
+        position.square = "x"
+        result = position.move_to_position(target)
+        assert result is position
+        assert position == target
+        assert "%s" % position == "home"
+
+    def test_move_to_position_valid_safe(self):
+        target = Position()
+        target.start = False
+        target.home = False
+        target.safe = 3
+        target.square = None
+        position = Position()
+        position.start = "x"
+        position.home = "x"
+        position.safe = "x"
+        position.square = "x"
+        result = position.move_to_position(target)
+        assert result is position
+        assert position == target
+        assert "%s" % position == "safe 3"
+
+    def test_move_to_position_valid_square(self):
+        target = Position()
+        target.start = False
+        target.home = False
+        target.safe = None
+        target.square = 3
+        position = Position()
+        position.start = "x"
+        position.home = "x"
+        position.safe = "x"
+        position.square = "x"
+        result = position.move_to_position(target)
+        assert result is position
+        assert position == target
+        assert "%s" % position == "square 3"
+
+    def test_move_to_position_invalid_multiple(self):
+        position = Position()
+        for (start, home, safe, square) in [
+            (True, True, None, None),
+            (True, False, 1, None),
+            (True, False, None, 1),
+            (False, True, 1, None),
+            (False, True, None, 1),
+            (False, False, 1, 1),
+        ]:
+            with pytest.raises(ValueError):
+                target = Position()
+                target.start = start
+                target.home = home
+                target.safe = safe
+                target.square = square
+                position.move_to_position(target)
+
+    def test_move_to_position_invalid_none(self):
+        position = Position()
+        with pytest.raises(ValueError):
+            target = Position()
+            target.start = False
+            target.home = False
+            target.safe = None
+            target.square = None
+            position.move_to_position(target)
+
+    def test_move_to_position_invalid_safe(self):
+        position = Position()
+        for square in [-1000, -2 - 1, 5, 6, 1000]:
+            with pytest.raises(ValueError):
+                target = Position()
+                target.safe = square
+                position.move_to_position(target)
+
+    def test_move_to_position_invalid_square(self):
+        position = Position()
+        for square in [-1000, -2 - 1, 60, 61, 1000]:
+            with pytest.raises(ValueError):
+                target = Position()
+                target.square = square
+                position.move_to_position(target)
 
     def test_move_to_start(self):
         position = Position()
@@ -143,7 +236,7 @@ class TestPosition:
         assert position.home is False
         assert position.safe is None
         assert position.square is None
-        assert position.log == "start"
+        assert "%s" % position == "start"
 
     def test_move_to_home(self):
         position = Position()
@@ -157,7 +250,7 @@ class TestPosition:
         assert position.home is True
         assert position.safe is None
         assert position.square is None
-        assert position.log == "home"
+        assert "%s" % position == "home"
 
     def test_move_to_safe_valid(self):
         for square in range(SAFE_SQUARES):
@@ -172,7 +265,7 @@ class TestPosition:
             assert position.home is False
             assert position.safe == square
             assert position.square is None
-            assert position.log == "safe %d" % square
+            assert "%s" % position == "safe %d" % square
 
     def test_move_to_safe_invalid(self):
         for square in [-1000, -2 - 1, 5, 6, 1000]:
@@ -193,7 +286,7 @@ class TestPosition:
             assert position.home is False
             assert position.safe is None
             assert position.square is square
-            assert position.log == "square %d" % square
+            assert "%s" % position == "square %d" % square
 
     def test_move_to_square_invalid(self):
         for square in [-1000, -2 - 1, 60, 61, 1000]:
@@ -209,7 +302,7 @@ class TestPawn:
         assert pawn.index == 0
         assert pawn.name == "Red0"
         assert pawn.position == Position()
-        assert pawn.log == "Red0->start"  # because default position is in startZ
+        assert "%s" % pawn == "Red0->start"  # because default position is in start
 
     def test_constructor_with_name(self):
         pawn = Pawn(PlayerColor.RED, 0, name="whatever")
@@ -217,7 +310,7 @@ class TestPawn:
         assert pawn.index == 0
         assert pawn.name == "whatever"
         assert pawn.position == Position()
-        assert pawn.log == "whatever->start"  # because default position is in startZ
+        assert "%s" % pawn == "whatever->start"  # because default position is in start
 
 
 class TestPlayer:
@@ -343,22 +436,12 @@ class TestGame:
         assert game.winner is game.players[PlayerColor.RED]
 
     def test_copy(self):
-        game = Game(4)
-        game.track("this happened", game.players[PlayerColor.RED])
-        game.players[PlayerColor.RED].pawns[0].position.move_to_square(32)
-        game.players[PlayerColor.BLUE].pawns[2].position.move_to_home()
-        game.players[PlayerColor.YELLOW].pawns[3].position.move_to_safe(1)
-        game.players[PlayerColor.GREEN].pawns[1].position.move_to_square(19)
+        game = TestGame._create_realistic_game()
         copy = game.copy()
         assert copy == game
 
     def test_json_roundtrip(self):
-        game = Game(4)
-        game.track("this happened", game.players[PlayerColor.RED])
-        game.players[PlayerColor.RED].pawns[0].position.move_to_square(32)
-        game.players[PlayerColor.BLUE].pawns[2].position.move_to_home()
-        game.players[PlayerColor.YELLOW].pawns[3].position.move_to_safe(1)
-        game.players[PlayerColor.GREEN].pawns[1].position.move_to_square(19)
+        game = TestGame._create_realistic_game()
         data = game.to_json()
         copy = Game.from_json(data)
         assert copy == game
@@ -402,3 +485,22 @@ class TestGame:
             assert view.opponents[color].color == color
             assert len(view.opponents[color].hand) == 0
             assert view.opponents[color].pawns == game.players[color].pawns
+
+    @staticmethod
+    def _create_realistic_game():
+        """Create a realistic game with changes to the defaults for all types of values."""
+        game = Game(4)
+        game.track("this happened")
+        game.track("another thing", game.players[PlayerColor.RED])
+        card1 = game.deck.draw()
+        card2 = game.deck.draw()
+        game.deck.draw()  # just throw it away
+        game.deck.discard(card1)
+        game.deck.discard(card2)
+        game.players[PlayerColor.RED].pawns[0].position.move_to_square(32)
+        game.players[PlayerColor.BLUE].pawns[2].position.move_to_home()
+        game.players[PlayerColor.BLUE].hand.append(card1)
+        game.players[PlayerColor.YELLOW].pawns[3].position.move_to_safe(1)
+        game.players[PlayerColor.GREEN].pawns[1].position.move_to_square(19)
+        game.players[PlayerColor.GREEN].hand.append(card2)
+        return game

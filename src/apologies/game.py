@@ -40,7 +40,7 @@ from pendulum.datetime import DateTime
 
 from .util import CattrConverter
 
-# Cattr converter that serializes/deserializes DateTime to an ISO 8601 timestamp.
+# Cattr converter that serializes/deserializes DateTime to an ISO 8601 timestamp
 _CONVERTER = CattrConverter()
 
 # A game consists of 2-4 players
@@ -74,7 +74,11 @@ class PlayerColor(Enum):
 
 
 class CardType(Enum):
-    """All legal types of cards."""
+    """
+    All legal types of cards.
+
+    The "A" card (CARD_APOLOGIES) is like the "Sorry" card in the original game.
+    """
 
     CARD_1 = "1"
     CARD_2 = "2"
@@ -86,7 +90,7 @@ class CardType(Enum):
     CARD_10 = "10"
     CARD_11 = "11"
     CARD_12 = "12"
-    CARD_APOLOGIES = "A"
+    CARD_APOLOGIES = "A"  # This is like the "Sorry" card in the original game
 
 
 # For an adult-mode game, we deal out 5 cards
@@ -136,7 +140,7 @@ class Deck:
     _discard_pile = attr.ib(type=Dict[str, Card])
 
     @_draw_pile.default
-    def _init_draw_pile(self) -> Dict[str, Card]:
+    def _default_draw_pile(self) -> Dict[str, Card]:
         pile = {}
         cardid = 0
         for card in CardType:
@@ -146,7 +150,7 @@ class Deck:
         return pile
 
     @_discard_pile.default
-    def _init_discard_pile(self) -> Dict[str, Card]:
+    def _default_discard_pile(self) -> Dict[str, Card]:
         return {}
 
     def draw(self) -> Card:
@@ -157,7 +161,7 @@ class Deck:
                 self._discard_pile.pop(card.id)
                 self._draw_pile[card.id] = card
         if len(self._draw_pile) < 1:
-            raise ValueError("No cards available in deck")
+            raise ValueError("No cards available in deck")  # in any normal game, this should never happen
         return self._draw_pile.pop(random.choice(list(self._draw_pile.keys())))
 
     def discard(self, card: Card) -> None:
@@ -188,10 +192,7 @@ class Position:
     safe = attr.ib(default=None, type=Optional[int])
     square = attr.ib(default=None, type=Optional[int])
 
-    # pylint: disable=no-else-return
-    @property
-    def log(self) -> str:
-        """A version of the position for logging."""
+    def __str__(self) -> str:
         if self.home:
             return "home"
         elif self.start:
@@ -211,11 +212,29 @@ class Position:
 
         Returns:
             Position: A reference to the position, for chaining
+            
+        Raises:
+            ValueError: If the position is invalid
         """
-        self.start = position.start
-        self.home = position.home
-        self.safe = position.safe
-        self.square = position.square
+        fields = 0
+        if position.start:
+            fields += 1
+        if position.home:
+            fields += 1
+        if position.safe is not None:
+            fields += 1
+        if position.square is not None:
+            fields += 1
+        if fields != 1:
+            raise ValueError("Invalid position")
+        if position.start:
+            self.move_to_start()
+        elif position.home:
+            self.move_to_home()
+        elif position.safe is not None:
+            self.move_to_safe(position.safe)
+        elif position.square is not None:
+            self.move_to_square(position.square)
         return self
 
     def move_to_start(self) -> Position:
@@ -224,6 +243,9 @@ class Position:
 
         Returns:
             Position: A reference to the position, for chaining
+            
+        Raises:
+            ValueError: If the position is invalid
         """
         self.start = True
         self.home = False
@@ -237,6 +259,9 @@ class Position:
 
         Returns:
             Position: A reference to the position, for chaining
+            
+        Raises:
+            ValueError: If the position is invalid
         """
         self.start = False
         self.home = True
@@ -257,7 +282,6 @@ class Position:
         Raises:
             ValueError: If the square is not valid
         """
-
         if square not in range(SAFE_SQUARES):
             raise ValueError("Invalid square")
         self.start = False
@@ -279,7 +303,6 @@ class Position:
         Raises:
             ValueError: If the square is not valid
         """
-
         if square not in range(BOARD_SQUARES):
             raise ValueError("Invalid square")
         self.start = False
@@ -318,10 +341,8 @@ class Pawn:
     def _default_position(self) -> Position:
         return Position()
 
-    @property
-    def log(self) -> str:
-        """A version of the pawn for logging."""
-        return "%s->%s" % (self.name, self.position.log)
+    def __str__(self) -> str:
+        return "%s->%s" % (self.name, self.position)
 
 
 @attr.s
@@ -343,11 +364,11 @@ class Player:
     pawns = attr.ib(type=List[Pawn])
 
     @hand.default
-    def _init_hand(self) -> List[Card]:
+    def _default_hand(self) -> List[Card]:
         return []
 
     @pawns.default
-    def _init_pawns(self) -> List[Pawn]:
+    def _default_pawns(self) -> List[Pawn]:
         return [Pawn(self.color, index) for index in range(0, PAWNS)]
 
     def copy(self) -> Player:
@@ -357,7 +378,7 @@ class Player:
     def public_data(self) -> Player:
         """Return a fully-independent copy of the player with only public data visible."""
         player = self.copy()
-        del player.hand[:]
+        del player.hand[:]  # other players should not see this player's hand when making decisions
         return player
 
     def find_first_pawn_in_start(self) -> Optional[Pawn]:
@@ -391,12 +412,12 @@ class History:
     timestamp = attr.ib(type=DateTime)
 
     @timestamp.default
-    def _init_timestamp(self) -> DateTime:
+    def _default_timestamp(self) -> DateTime:
         return pendulum.now(pendulum.UTC)
 
     def __str__(self) -> str:
         time = self.timestamp.to_time_string()  # type: ignore
-        color = "General" if not self.color else "%s" % self.color.value
+        color = "General" if not self.color else self.color.value
         action = self.action
         return "[%s] %s - %s" % (time, color, action)
 
@@ -448,15 +469,15 @@ class Game:
             raise ValueError("Invalid number of players")
 
     @players.default
-    def _init_players(self) -> Dict[PlayerColor, Player]:
+    def _default_players(self) -> Dict[PlayerColor, Player]:
         return {color: Player(color) for color in list(PlayerColor)[: self.playercount]}
 
     @deck.default
-    def _init_deck(self) -> Deck:
+    def _default_deck(self) -> Deck:
         return Deck()
 
     @history.default
-    def _init_history(self) -> List[History]:
+    def _default_history(self) -> List[History]:
         return []
 
     @property

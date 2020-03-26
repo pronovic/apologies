@@ -33,11 +33,7 @@ def demo(argv: List[str], unused_stdout: IO[str], unused_stderr: IO[str]) -> Non
         "--players", type=int, default=_DEMO_DEFAULT_PLAYERS, help="Number of simulated players in the game",
     )
     parser.add_argument(
-        "--mode",
-        type=str,
-        default=_DEMO_DEFAULT_MODE,
-        choices=[GameMode.STANDARD.name, GameMode.ADULT.name],
-        help="Choose the game mode",
+        "--mode", type=str, default=_DEMO_DEFAULT_MODE, choices=_DEMO_MODE_CHOICES, help="Choose the game mode",
     )
     parser.add_argument(
         "--source", type=str, default=_DEMO_DEFAULT_SOURCE, help="Fully-qualified name of the character source",

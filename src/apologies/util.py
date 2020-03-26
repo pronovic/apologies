@@ -36,7 +36,7 @@ class CircularQueue(Generic[Type]):
     _working = attr.ib(type=List[Type])
 
     @_working.default
-    def _init_working(self) -> List[Type]:
+    def _default_working(self) -> List[Type]:
         return self.entries[:]
 
     @entries.validator

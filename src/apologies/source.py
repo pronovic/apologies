@@ -74,7 +74,7 @@ def source(name: str) -> CharacterInputSource:
     Raises:
         ValueError: If the named source does not exist or is not a CharacterInputSource
     """
-    clazz = locate(name)
-    if not issubclass(clazz, CharacterInputSource):  # type: ignore
+    cls = locate(name)
+    if not issubclass(cls, CharacterInputSource):  # type: ignore
         raise ValueError("%s is not a CharacterInputSource" % name)
-    return clazz()  # type: ignore
+    return cls()  # type: ignore
