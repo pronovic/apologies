@@ -6,7 +6,7 @@ Game engine that coordinates character actions to play a game.
 """
 
 import random
-from typing import Dict, List
+from typing import Callable, Dict, List
 
 import attr
 
@@ -30,7 +30,9 @@ class Character:
     name = attr.ib(type=str)
     source = attr.ib(type=CharacterInputSource)
 
-    def choose_move(self, mode: GameMode, view: PlayerView, legal_moves: List[Move]) -> Move:
+    def choose_move(
+        self, mode: GameMode, view: PlayerView, legal_moves: List[Move], evaluator: Callable[[PlayerView, Move], PlayerView]
+    ) -> Move:
         """
         Choose the next move for a character via the user input source.
 
@@ -38,11 +40,12 @@ class Character:
             mode(GameMode): Game mode
             view(PlayerView): Player-specific view of the game
             legal_moves(Set[Move]): The set of legal moves
+            evaluator(Callable[[PlayerView, Move], PlayerView]): Function to evaluate a move, returning new state
 
         Returns:
             Move: The character's next as chosen by the configured source
         """
-        return self.source.choose_move(mode, view, legal_moves)
+        return self.source.choose_move(mode, view, legal_moves, evaluator)
 
 
 @attr.s
@@ -147,7 +150,7 @@ class Engine:
         character = self._map[color]
         view = self._game.create_player_view(color)
         legal_moves = self._rules.construct_legal_moves(view, card=card)
-        move = character.choose_move(self.mode, view, legal_moves[:])  # provide a copy of legal moves so character can't modify
+        move = character.choose_move(self.mode, view, legal_moves[:], Rules.evaluate_move)
         if move not in legal_moves:  # an illegal move is ignored and we choose randomly for the character
             self._game.track("Illegal move: a random legal move will be chosen", player)
             move = random.choice(legal_moves)
@@ -166,7 +169,7 @@ class Engine:
         character = self._map[color]
         view = self._game.create_player_view(color)
         legal_moves = self._rules.construct_legal_moves(view, card=None)
-        move = character.choose_move(self.mode, view, legal_moves[:])  # provide a copy of legal moves so character can't modify
+        move = character.choose_move(self.mode, view, legal_moves[:], Rules.evaluate_move)
         if move not in legal_moves:  # an illegal move is ignored and we choose randomly for the character
             self._game.track("Illegal move: a random legal move will be chosen", player)
             move = random.choice(legal_moves)

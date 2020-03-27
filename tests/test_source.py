@@ -36,4 +36,4 @@ class TestRandomInputSource:
         legal_moves = [move1, move2, move3]
         ris = RandomInputSource()
         for _ in range(100):
-            assert ris.choose_move(GameMode.ADULT, MagicMock(), legal_moves) in legal_moves
+            assert ris.choose_move(GameMode.ADULT, MagicMock(), legal_moves, MagicMock()) in legal_moves

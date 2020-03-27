@@ -9,7 +9,7 @@ import pytest
 
 from apologies.engine import Character, Engine
 from apologies.game import Card, CardType, GameMode, PlayerColor
-from apologies.rules import Action, ActionType, Move
+from apologies.rules import Action, ActionType, Move, Rules
 
 
 class TestCharacter:
@@ -25,8 +25,9 @@ class TestCharacter:
         mode = Mock()
         view = Mock()
         legal_moves = []
-        character.choose_move(mode, view, legal_moves)
-        source.choose_move.assert_called_once_with(mode, view, legal_moves)
+        evaluator = MagicMock()
+        character.choose_move(mode, view, legal_moves, evaluator)
+        source.choose_move.assert_called_once_with(mode, view, legal_moves, evaluator)
 
     def test_choose_move_all_args(self):
         source = Mock()
@@ -34,8 +35,9 @@ class TestCharacter:
         mode = Mock()
         view = Mock()
         legal_moves = []
-        character.choose_move(mode, view, legal_moves)
-        source.choose_move.assert_called_once_with(mode, view, legal_moves)
+        evaluator = MagicMock()
+        character.choose_move(mode, view, legal_moves, evaluator)
+        source.choose_move.assert_called_once_with(mode, view, legal_moves, evaluator)
 
 
 class TestEngine:
@@ -121,7 +123,7 @@ class TestEngine:
 
         engine._game.create_player_view.assert_called_once_with(PlayerColor.RED)
         engine._rules.construct_legal_moves.assert_called_once_with(view, card=card)
-        engine.characters[0].choose_move.assert_called_once_with(engine.mode, view, legal_moves)
+        engine.characters[0].choose_move.assert_called_once_with(engine.mode, view, legal_moves, Rules.evaluate_move)
         engine._game.track.assert_called_once_with("Turn is forfeit; discarded card 1", player)
         engine._game.deck.discard.assert_called_once_with(card)
 
@@ -148,7 +150,7 @@ class TestEngine:
 
         engine._game.create_player_view.assert_called_once_with(PlayerColor.RED)
         engine._rules.construct_legal_moves.assert_called_once_with(view, card=card)
-        engine.characters[0].choose_move.assert_called_once_with(engine.mode, view, legal_moves)
+        engine.characters[0].choose_move.assert_called_once_with(engine.mode, view, legal_moves, Rules.evaluate_move)
         engine._rules.execute_move.assert_called_once_with(engine._game, player, legal_moves[0])  # we choose random move
         engine._game.deck.discard.assert_called_once_with(card)
         engine._rules.draw_again.assert_called_once_with(card)
@@ -176,7 +178,7 @@ class TestEngine:
 
         engine._game.create_player_view.assert_called_once_with(PlayerColor.RED)
         engine._rules.construct_legal_moves.assert_called_once_with(view, card=card)
-        engine.characters[0].choose_move.assert_called_once_with(engine.mode, view, legal_moves)
+        engine.characters[0].choose_move.assert_called_once_with(engine.mode, view, legal_moves, Rules.evaluate_move)
         engine._rules.execute_move.assert_called_once_with(engine._game, player, move)
         engine._game.deck.discard.assert_called_once_with(card)
         engine._rules.draw_again.assert_called_once_with(card)
@@ -208,7 +210,7 @@ class TestEngine:
         engine._game.create_player_view.assert_has_calls([call(PlayerColor.RED), call(PlayerColor.RED)])
         engine._rules.construct_legal_moves.assert_has_calls([call(view, card=card1), call(view, card=card2)])
         engine.characters[0].choose_move.assert_has_calls(
-            [call(engine.mode, view, legal_moves1), call(engine.mode, view, legal_moves2)]
+            [call(engine.mode, view, legal_moves1, Rules.evaluate_move), call(engine.mode, view, legal_moves2, Rules.evaluate_move)]
         )
         engine._rules.execute_move.assert_has_calls([call(engine._game, player, move1), call(engine._game, player, move2)])
         engine._game.deck.discard.assert_has_calls([call(card1), call(card2)])
@@ -240,7 +242,7 @@ class TestEngine:
 
             engine._game.create_player_view.assert_called_once_with(PlayerColor.RED)
             engine._rules.construct_legal_moves.assert_called_once_with(view, card=card)
-            engine.characters[0].choose_move.assert_called_once_with(engine.mode, view, legal_moves)
+            engine.characters[0].choose_move.assert_called_once_with(engine.mode, view, legal_moves, Rules.evaluate_move)
             engine._rules.execute_move.assert_called_once_with(engine._game, player, move)
             engine._game.deck.discard.assert_called_once_with(card)
             engine._rules.draw_again.assert_not_called()
@@ -266,7 +268,7 @@ class TestEngine:
 
         engine._game.create_player_view.assert_called_once_with(PlayerColor.RED)
         engine._rules.construct_legal_moves.assert_called_once_with(view, card=None)
-        engine.characters[0].choose_move.assert_called_once_with(engine.mode, view, legal_moves)
+        engine.characters[0].choose_move.assert_called_once_with(engine.mode, view, legal_moves, Rules.evaluate_move)
         engine._game.track.assert_called_once_with("Turn is forfeit; discarded card %s" % movecard.cardtype.value, player)
         engine._game.deck.discard.assert_called_once_with(movecard)
 
@@ -297,7 +299,7 @@ class TestEngine:
 
         engine._game.create_player_view.assert_called_once_with(PlayerColor.RED)
         engine._rules.construct_legal_moves.assert_called_once_with(view, card=None)
-        engine.characters[0].choose_move.assert_called_once_with(engine.mode, view, legal_moves)
+        engine.characters[0].choose_move.assert_called_once_with(engine.mode, view, legal_moves, Rules.evaluate_move)
         engine._rules.execute_move.assert_called_once_with(engine._game, player, legal_moves[0])  # we choose random move
         engine._game.deck.discard.assert_called_once_with(movecard)
         engine._rules.draw_again.assert_called_once_with(movecard)
@@ -329,7 +331,7 @@ class TestEngine:
 
         engine._game.create_player_view.assert_called_once_with(PlayerColor.RED)
         engine._rules.construct_legal_moves.assert_called_once_with(view, card=None)
-        engine.characters[0].choose_move.assert_called_once_with(engine.mode, view, legal_moves)
+        engine.characters[0].choose_move.assert_called_once_with(engine.mode, view, legal_moves, Rules.evaluate_move)
         engine._rules.execute_move.assert_called_once_with(engine._game, player, move)
         engine._game.deck.discard.assert_called_once_with(movecard)
         engine._rules.draw_again.assert_called_once_with(movecard)
@@ -366,7 +368,7 @@ class TestEngine:
         engine._game.create_player_view.assert_has_calls([call(PlayerColor.RED), call(PlayerColor.RED)])
         engine._rules.construct_legal_moves.assert_has_calls([call(view, card=None), call(view, card=None)])
         engine.characters[0].choose_move.assert_has_calls(
-            [call(engine.mode, view, legal_moves1), call(engine.mode, view, legal_moves2)]
+            [call(engine.mode, view, legal_moves1, Rules.evaluate_move), call(engine.mode, view, legal_moves2, Rules.evaluate_move)]
         )
         engine._rules.execute_move.assert_has_calls([call(engine._game, player, move1), call(engine._game, player, move2)])
         engine._game.deck.discard.assert_has_calls([call(movecard1), call(movecard2)])
@@ -404,7 +406,7 @@ class TestEngine:
 
             engine._game.create_player_view.assert_called_once_with(PlayerColor.RED)
             engine._rules.construct_legal_moves.assert_called_once_with(view, card=None)
-            engine.characters[0].choose_move.assert_called_once_with(engine.mode, view, legal_moves)
+            engine.characters[0].choose_move.assert_called_once_with(engine.mode, view, legal_moves, Rules.evaluate_move)
             engine._rules.execute_move.assert_called_once_with(engine._game, player, move)
             engine._game.deck.discard.assert_called_once_with(movecard)
             engine._rules.draw_again.assert_not_called()

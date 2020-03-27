@@ -484,7 +484,7 @@ class Rules:
         """
         log = "Played card %s: [ " % move.card.cardtype.value
         for action in move.actions + move.side_effects:  # execute actions, then side-effects, in order
-            # Keep in mind that the pawn on the action is a different object than the pawn in the game.
+            # Keep in mind that the pawn on the action is a different object than the pawn in the game
             pawn = game.players[action.pawn.color].pawns[action.pawn.index]
             if action.actiontype == ActionType.MOVE_TO_START:
                 pawn.position.move_to_start()
@@ -496,6 +496,32 @@ class Rules:
         game.track(log, player)
         if game.completed:
             game.track("Game is completed: winner is %s" % game.winner.color.value)  # type: ignore
+
+    @staticmethod
+    def evaluate_move(view: PlayerView, move: Move) -> PlayerView:
+        """
+        Construct the new player view that results from executing the passed-in move.
+
+        This is equivalent to execute_move() but has no permanent effect on the game.  It's intended for
+        use by a character, to evaluate the results of each legal move.
+
+        Args:
+            view(PlayerView):
+            move(Move):
+
+        Returns:
+            PlayerView: The new state after executing the move.
+        """
+        result = view.copy()
+        for action in move.actions + move.side_effects:  # execute actions, then side-effects, in order
+            # Keep in mind that the pawn on the action is a different object than the pawn in the view
+            pawn = result.get_pawn(action.pawn)
+            if pawn:  # if the pawn isn't valid, just ignore it
+                if action.actiontype == ActionType.MOVE_TO_START:
+                    pawn.position.move_to_start()
+                elif action.actiontype == ActionType.MOVE_TO_POSITION:
+                    pawn.position.move_to_position(action.position)
+        return result
 
     @staticmethod
     def _setup_adult_mode(game: Game) -> None:

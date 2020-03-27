@@ -435,6 +435,17 @@ class PlayerView:
     player = attr.ib(type=Player)
     opponents = attr.ib(type=Dict[PlayerColor, Player])
 
+    def copy(self) -> PlayerView:
+        """Return a fully-independent copy of the player view."""
+        return _CONVERTER.structure(_CONVERTER.unstructure(self), PlayerView)  # type: ignore
+
+    def get_pawn(self, prototype: Pawn) -> Optional[Pawn]:
+        """Return the pawn from this view with the same color and index."""
+        for pawn in self.all_pawns():
+            if pawn.color == prototype.color and pawn.index == prototype.index:
+                return pawn
+        return None
+
     def all_pawns(self) -> List[Pawn]:
         """Return a list of all pawns on the board."""
         pawns = []

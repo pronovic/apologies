@@ -261,6 +261,30 @@ class TestRules:
         game.players[PlayerColor.BLUE].pawns[2].position.move_to_start.assert_called_once()
         game.players[PlayerColor.GREEN].pawns[0].position.move_to_position.assert_called_once_with(Position().move_to_square(12))
 
+    def test_evaluate_move(self):
+        move = Move(
+            MagicMock(),
+            actions=[
+                Action(ActionType.MOVE_TO_POSITION, MagicMock(color=PlayerColor.RED, index=1), Position().move_to_square(10)),
+                Action(ActionType.MOVE_TO_POSITION, MagicMock(color=PlayerColor.YELLOW, index=3), Position().move_to_square(11)),
+            ],
+            side_effects=[
+                Action(ActionType.MOVE_TO_START, MagicMock(color=PlayerColor.BLUE, index=2)),
+                Action(ActionType.MOVE_TO_POSITION, MagicMock(color=PlayerColor.GREEN, index=0), Position().move_to_square(12)),
+            ],
+        )
+
+        game = Game(4)
+        view = game.create_player_view(PlayerColor.RED)
+
+        expected = view.copy()
+        expected.player.pawns[1].position.move_to_square(10)
+        expected.opponents[PlayerColor.YELLOW].pawns[3].position.move_to_square(11)
+        expected.opponents[PlayerColor.BLUE].pawns[2].position.move_to_start()
+        expected.opponents[PlayerColor.GREEN].pawns[0].position.move_to_square(12)
+
+        assert expected == Rules.evaluate_move(view, move)
+
 
 class TestPosition:
     def test_constructor(self):

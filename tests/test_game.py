@@ -365,10 +365,25 @@ class TestHistory:
 class TestPlayerView:
     def test_constructor(self):
         player = Player(PlayerColor.RED)
-        opponents = [Player(PlayerColor.GREEN)]
+        opponents = {PlayerColor.GREEN: Player(PlayerColor.GREEN)}
         view = PlayerView(player, opponents)
         assert view.player == player
         assert view.opponents == opponents
+
+    def test_copy(self):
+        player = Player(PlayerColor.RED)
+        opponents = {PlayerColor.GREEN: Player(PlayerColor.GREEN)}
+        view = PlayerView(player, opponents)
+        copy = view.copy()
+        assert copy is not view and copy == view
+
+    def test_get_pawn(self):
+        player = Player(PlayerColor.RED)
+        opponents = {PlayerColor.GREEN: Player(PlayerColor.GREEN)}
+        view = PlayerView(player, opponents)
+        assert view.get_pawn(MagicMock(color=PlayerColor.RED, index=3)) == view.player.pawns[3]
+        assert view.get_pawn(MagicMock(color=PlayerColor.GREEN, index=1)) == view.opponents[PlayerColor.GREEN].pawns[1]
+        assert view.get_pawn(MagicMock(color=PlayerColor.YELLOW, index=0)) is None
 
     def test_all_pawns(self):
         player = Player(PlayerColor.RED)

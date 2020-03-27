@@ -8,7 +8,7 @@ Character input sources.  A character could be a person or could be computer-dri
 import random
 from abc import ABC, abstractmethod
 from pydoc import locate
-from typing import List
+from typing import Callable, List
 
 import attr
 
@@ -24,7 +24,9 @@ class CharacterInputSource(ABC):
     """
 
     @abstractmethod
-    def choose_move(self, mode: GameMode, view: PlayerView, legal_moves: List[Move]) -> Move:
+    def choose_move(
+        self, mode: GameMode, view: PlayerView, legal_moves: List[Move], evaluator: Callable[[PlayerView, Move], PlayerView]
+    ) -> Move:
         """
         Choose the next move for a character.
 
@@ -43,6 +45,7 @@ class CharacterInputSource(ABC):
             mode(GameMode): Game mode
             view(PlayerView): Player-specific view of the game
             legal_moves(List[Move]): The set of legal moves
+            evaluator(Callable[[PlayerView, Move], PlayerView]): Function to evaluate a move, returning new state
 
         Returns:
             Move: The character's next move as described above
@@ -56,7 +59,9 @@ class RandomInputSource(CharacterInputSource):
     A source of input for a character which chooses randomly from among legal moves.
     """
 
-    def choose_move(self, mode: GameMode, view: PlayerView, legal_moves: List[Move]) -> Move:
+    def choose_move(
+        self, mode: GameMode, view: PlayerView, legal_moves: List[Move], unused: Callable[[PlayerView, Move], PlayerView]
+    ) -> Move:
         """Randomly choose the next move for a character."""
         return random.choice(legal_moves)
 
