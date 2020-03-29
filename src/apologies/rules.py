@@ -13,7 +13,11 @@ import attr
 from .game import (
     ADULT_HAND,
     BOARD_SQUARES,
+    CIRCLE,
+    DRAW_AGAIN,
     SAFE_SQUARES,
+    SLIDE,
+    TURN,
     Card,
     CardType,
     Game,
@@ -24,45 +28,6 @@ from .game import (
     PlayerView,
     Position,
 )
-
-# The start circles for each color
-_CIRCLE = {
-    PlayerColor.RED: Position().move_to_square(4),
-    PlayerColor.BLUE: Position().move_to_square(19),
-    PlayerColor.YELLOW: Position().move_to_square(34),
-    PlayerColor.GREEN: Position().move_to_square(49),
-}
-
-# The turn squares for each color, where forward movement turns into the safe zone
-_TURN = {
-    PlayerColor.RED: Position().move_to_square(2),
-    PlayerColor.BLUE: Position().move_to_square(17),
-    PlayerColor.YELLOW: Position().move_to_square(32),
-    PlayerColor.GREEN: Position().move_to_square(47),
-}
-
-# The slide start/end positions for each color
-_SLIDE = {
-    PlayerColor.RED: ((1, 4), (9, 13)),
-    PlayerColor.BLUE: ((16, 19), (24, 28)),
-    PlayerColor.YELLOW: ((31, 34), (39, 43)),
-    PlayerColor.GREEN: ((46, 49), (54, 58)),
-}
-
-# Whether a card draws again
-_DRAW_AGAIN = {
-    CardType.CARD_1: False,
-    CardType.CARD_2: True,
-    CardType.CARD_3: False,
-    CardType.CARD_4: False,
-    CardType.CARD_5: False,
-    CardType.CARD_7: False,
-    CardType.CARD_8: False,
-    CardType.CARD_10: False,
-    CardType.CARD_11: False,
-    CardType.CARD_12: False,
-    CardType.CARD_APOLOGIES: False,
-}
 
 
 class ActionType(Enum):
@@ -185,14 +150,14 @@ class BoardRules:
                 if position.safe + squares >= 0:
                     return position.copy().move_to_safe(position.safe + squares)
                 else:  # handle moving back out of the safe area
-                    return BoardRules._position(color, position.copy().move_to_square(_TURN[color].square), squares + position.safe + 1)  # type: ignore
+                    return BoardRules._position(color, position.copy().move_to_square(TURN[color].square), squares + position.safe + 1)  # type: ignore
         elif position.square is not None:
             if squares == 0:
                 return position.copy()
             elif squares > 0:
                 if position.square + squares < BOARD_SQUARES:
-                    if position.square <= _TURN[color].square and position.square + squares > _TURN[color].square:  # type: ignore
-                        return BoardRules._position(color, position.copy().move_to_safe(0), squares - (_TURN[color].square - position.square) - 1)  # type: ignore
+                    if position.square <= TURN[color].square and position.square + squares > TURN[color].square:  # type: ignore
+                        return BoardRules._position(color, position.copy().move_to_safe(0), squares - (TURN[color].square - position.square) - 1)  # type: ignore
                     else:
                         return position.copy().move_to_square(position.square + squares)
                 else:  # handle turning the corner
@@ -293,14 +258,14 @@ class BoardRules:
         # circle position if that position is not occupied by another pawn of the same color.
         moves: List[Move] = []
         if pawn.position.start:
-            conflict = BoardRules._find_pawn(all_pawns, _CIRCLE[color])
+            conflict = BoardRules._find_pawn(all_pawns, CIRCLE[color])
             if not conflict:
-                moves.append(Move(card, actions=[Action(ActionType.MOVE_TO_POSITION, pawn, _CIRCLE[color].copy())]))
+                moves.append(Move(card, actions=[Action(ActionType.MOVE_TO_POSITION, pawn, CIRCLE[color].copy())]))
             elif conflict and conflict.color != color:
                 moves.append(
                     Move(
                         card,
-                        actions=[Action(ActionType.MOVE_TO_POSITION, pawn, _CIRCLE[color].copy())],
+                        actions=[Action(ActionType.MOVE_TO_POSITION, pawn, CIRCLE[color].copy())],
                         side_effects=[Action(ActionType.MOVE_TO_START, conflict)],
                     )
                 )
@@ -399,7 +364,7 @@ class BoardRules:
             for action in move.actions:
                 if action.actiontype == ActionType.MOVE_TO_POSITION:  # look at any move to a position on the board
                     for color in [color for color in PlayerColor if color != action.pawn.color]:  # any color other than the pawn's
-                        for (start, end) in _SLIDE[color]:  # look at all slides with this color
+                        for (start, end) in SLIDE[color]:  # look at all slides with this color
                             if action.position.square == start:  # if the pawn landed on the start of the slide
                                 action.position.move_to_square(end)  # move the pawn to the end of the slide
                                 for square in range(start + 1, end + 1):  # and then bump any pawns that were already on the slide
@@ -432,7 +397,7 @@ class Rules:
     # noinspection PyMethodMayBeStatic
     def draw_again(self, card: Card) -> bool:
         """Whether the player gets to draw again based on the passed-in card."""
-        return _DRAW_AGAIN[card.cardtype]
+        return DRAW_AGAIN[card.cardtype]
 
     def start_game(self, game: Game) -> None:
         """
@@ -527,7 +492,7 @@ class Rules:
     def _setup_adult_mode(game: Game) -> None:
         """Setup adult mode at the start of the game, which moves some pieces and deals some cards."""
         for player in game.players.values():
-            player.pawns[0].position.move_to_position(_CIRCLE[player.color])
+            player.pawns[0].position.move_to_position(CIRCLE[player.color])
         for _ in range(ADULT_HAND):
             for player in game.players.values():
                 player.hand.append(game.deck.draw())

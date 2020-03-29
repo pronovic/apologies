@@ -23,8 +23,12 @@ Attributes:
     SAFE_SQUARES(int): Number of safe squares for each color
     BOARD_SQUARES(int): Number of squares around the outside of the board
     ADULT_HAND(int): Number of cards in a player's hand for an adult mode game
-    DECK_COUNTS(dict): Dictionary from card name to number of cards in a standard deck
+    DECK_COUNTS(Dict[Card, int]): Dictionary from card name to number of cards in a standard deck
     DECK_SIZE(int): The total expected size of a complete deck
+    DRAW_AGAIN(Dict[Card, bool]): Whether each card results in a draw again action
+    CIRCLE(Dict[PlayerColor, Position]): The position of the start circle for each color
+    TURN(Dict[PlayerColor, Position()): The position of the turn square for each color, where forward movement turns into safe zone
+    SLIDE(Dict[PlayerColor, Tuple(int, int)): The slide start/end squares for each color
 """
 
 from __future__ import annotations  # see: https://stackoverflow.com/a/33533514/2907667
@@ -111,6 +115,21 @@ DECK_COUNTS = {
     CardType.CARD_APOLOGIES: 4,
 }
 DECK_SIZE = sum(DECK_COUNTS.values())
+
+# Whether a card draws again
+DRAW_AGAIN = {
+    CardType.CARD_1: False,
+    CardType.CARD_2: True,
+    CardType.CARD_3: False,
+    CardType.CARD_4: False,
+    CardType.CARD_5: False,
+    CardType.CARD_7: False,
+    CardType.CARD_8: False,
+    CardType.CARD_10: False,
+    CardType.CARD_11: False,
+    CardType.CARD_12: False,
+    CardType.CARD_APOLOGIES: False,
+}
 
 
 @attr.s(frozen=True)
@@ -534,3 +553,28 @@ class Game:
         player = self.players[color].copy()
         opponents = {player.color: player.public_data() for player in self.players.values() if player.color != color}
         return PlayerView(player, opponents)
+
+
+# The start circles for each color
+CIRCLE = {
+    PlayerColor.RED: Position().move_to_square(4),
+    PlayerColor.BLUE: Position().move_to_square(19),
+    PlayerColor.YELLOW: Position().move_to_square(34),
+    PlayerColor.GREEN: Position().move_to_square(49),
+}
+
+# The turn squares for each color, where forward movement turns into the safe zone
+TURN = {
+    PlayerColor.RED: Position().move_to_square(2),
+    PlayerColor.BLUE: Position().move_to_square(17),
+    PlayerColor.YELLOW: Position().move_to_square(32),
+    PlayerColor.GREEN: Position().move_to_square(47),
+}
+
+# The slide start/end positions for each color
+SLIDE = {
+    PlayerColor.RED: ((1, 4), (9, 13)),
+    PlayerColor.BLUE: ((16, 19), (24, 28)),
+    PlayerColor.YELLOW: ((31, 34), (39, 43)),
+    PlayerColor.GREEN: ((46, 49), (54, 58)),
+}
