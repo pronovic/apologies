@@ -286,9 +286,62 @@ class TestRules:
         assert expected == Rules.evaluate_move(view, move)
 
 
+RED = PlayerColor.RED
+YELLOW = PlayerColor.YELLOW
+GREEN = PlayerColor.GREEN
+BLUE = PlayerColor.BLUE
+
+
+def _pawn(color, start=False, home=False, safe=None, square=None):
+    position = Position(start=start, home=home, safe=safe, square=square)
+    return Pawn(color, 0, "name", position)
+
+
 class TestPosition:
     def test_constructor(self):
         BoardRules()  # just make sure it doesn't blow up
+
+    def test_distance_to_home(self):
+        # distance from home is always 0
+        for color in [RED, YELLOW, GREEN, BLUE]:
+            assert BoardRules.distance_to_home(_pawn(color, home=True)) == 0
+
+        # distance from start is always 65
+        for color in [RED, YELLOW, GREEN, BLUE]:
+            assert BoardRules.distance_to_home(_pawn(color, start=True)) == 65
+
+        # distance from within safe is always <= 5
+        assert BoardRules.distance_to_home(_pawn(RED, safe=0)) == 5
+        assert BoardRules.distance_to_home(_pawn(BLUE, safe=1)) == 4
+        assert BoardRules.distance_to_home(_pawn(YELLOW, safe=2)) == 3
+        assert BoardRules.distance_to_home(_pawn(GREEN, safe=3)) == 2
+        assert BoardRules.distance_to_home(_pawn(GREEN, safe=4)) == 1
+
+        # distance from circle is always 64
+        assert BoardRules.distance_to_home(_pawn(RED, square=4)) == 64
+        assert BoardRules.distance_to_home(_pawn(BLUE, square=19)) == 64
+        assert BoardRules.distance_to_home(_pawn(YELLOW, square=34)) == 64
+        assert BoardRules.distance_to_home(_pawn(GREEN, square=49)) == 64
+
+        # distance from square between turn and circle is always 65
+        assert BoardRules.distance_to_home(_pawn(RED, square=3)) == 65
+        assert BoardRules.distance_to_home(_pawn(BLUE, square=18)) == 65
+        assert BoardRules.distance_to_home(_pawn(YELLOW, square=33)) == 65
+        assert BoardRules.distance_to_home(_pawn(GREEN, square=48)) == 65
+
+        # distance from turn is always 6
+        assert BoardRules.distance_to_home(_pawn(RED, square=2)) == 6
+        assert BoardRules.distance_to_home(_pawn(BLUE, square=17)) == 6
+        assert BoardRules.distance_to_home(_pawn(YELLOW, square=32)) == 6
+        assert BoardRules.distance_to_home(_pawn(GREEN, square=47)) == 6
+
+        # check some arbitrary squares
+        assert BoardRules.distance_to_home(_pawn(RED, square=1)) == 7
+        assert BoardRules.distance_to_home(_pawn(RED, square=0)) == 8
+        assert BoardRules.distance_to_home(_pawn(RED, square=59)) == 9
+        assert BoardRules.distance_to_home(_pawn(RED, square=9)) == 59
+        assert BoardRules.distance_to_home(_pawn(BLUE, square=0)) == 23
+        assert BoardRules.distance_to_home(_pawn(GREEN, square=40)) == 13
 
     def test_calculate_position_home(self):
         for color in PlayerColor:
@@ -398,12 +451,6 @@ class TestPosition:
         assert BoardRules()._position(PlayerColor.GREEN, Position().move_to_square(47), 6) == Position().move_to_home()
         with pytest.raises(ValueError):
             assert BoardRules()._position(PlayerColor.GREEN, Position().move_to_square(47), 7) == Position().move_to_home()
-
-
-RED = PlayerColor.RED
-YELLOW = PlayerColor.YELLOW
-GREEN = PlayerColor.GREEN
-BLUE = PlayerColor.BLUE
 
 
 def _setup_game():

@@ -127,6 +127,30 @@ class BoardRules:
         BoardRules._augment_with_slides(all_pawns, moves)
         return moves
 
+    @staticmethod
+    def distance_to_home(pawn: Pawn) -> int:
+        """Return the distance to home for this pawn, a number of squares when moving forward."""
+        if pawn.position.home:
+            return 0
+        elif pawn.position.start:
+            return 65
+        elif pawn.position.safe is not None:
+            return SAFE_SQUARES - pawn.position.safe
+        else:
+            circle = CIRCLE[pawn.color].square
+            turn = TURN[pawn.color].square
+            square = pawn.position.square
+            square_to_corner = BOARD_SQUARES - square  # type: ignore
+            corner_to_turn = turn
+            turn_to_home = SAFE_SQUARES + 1
+            total = square_to_corner + corner_to_turn + turn_to_home  # type: ignore
+            if turn < square < circle:  # type: ignore
+                return total
+            if total < 65:
+                return total
+            else:
+                return total - 60
+
     # noinspection PyChainedComparisons
     # pylint: disable=too-many-branches,too-many-return-statements,line-too-long
     @staticmethod
