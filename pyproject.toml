@@ -1,13 +1,13 @@
 [tool.poetry]
 name = "apologies"
-version = "0.1.9"
+version = "0.1.10"
 description = "Python code to play a game similar to Sorry"
 authors = ["Kenneth J. Pronovici <pronovic@ieee.org>"]
 license = "Apache-2.0"
 readme = "PyPI.md"
 homepage = "https://apologies.readthedocs.io"
 repository = "https://github.com/pronovic/apologies"
-include = ["LICENSE"]
+include = ["LICENSE", "apologies/py.typed", ]
 classifiers=[
    "Programming Language :: Python :: 3",
    "License :: OSI Approved :: Apache Software License",
