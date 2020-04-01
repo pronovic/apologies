@@ -152,10 +152,10 @@ class Engine:
             while not done:
                 view = self._game.create_player_view(color)
                 if self.mode == GameMode.ADULT:
-                    move = self._choose_next_move(character, player, view)
+                    move = self.choose_next_move(character, view)
                     done = self._play_next_adult(player, move)
                 else:
-                    move = self._choose_next_move(character, player, view)
+                    move = self.choose_next_move(character, view)
                     done = self._play_next_standard(player, move)
 
             return self._game
@@ -167,12 +167,12 @@ class Engine:
         """Construct the legal moves based on a player view."""
         return self._rules.construct_legal_moves(view, card=None if self.mode == GameMode.ADULT else self._game.deck.draw())
 
-    def _choose_next_move(self, character: Character, player: Player, view: PlayerView) -> Move:
-        """Choose the next move for a player."""
+    def choose_next_move(self, character: Character, view: PlayerView) -> Move:
+        """Choose the next move for a character based on a player view."""
         legal_moves = self.construct_legal_moves(view)
         move = character.choose_move(self.mode, view, legal_moves[:], Rules.evaluate_move)
         if move not in legal_moves:  # an illegal move is ignored and we choose randomly for the character
-            self._game.track("Illegal move: a random legal move will be chosen", player)
+            self._game.track("Illegal move: a random legal move will be chosen", view.player)
             move = random.choice(legal_moves)
         return move
 
