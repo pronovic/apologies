@@ -6,11 +6,11 @@ Game engine that coordinates character actions to play a game.
 """
 
 import random
-from typing import Callable, Dict, List, Optional
+from typing import Callable, Dict, List
 
 import attr
 
-from .game import Card, Game, GameMode, Player, PlayerColor, PlayerView
+from .game import Game, GameMode, Player, PlayerColor, PlayerView
 from .rules import Move, Rules
 from .source import CharacterInputSource
 from .util import CircularQueue
@@ -155,8 +155,7 @@ class Engine:
                     move = self._choose_next_move(character, player, view)
                     done = self._play_next_adult(player, move)
                 else:
-                    card = self._game.deck.draw()
-                    move = self._choose_next_move(character, player, view, card)
+                    move = self._choose_next_move(character, player, view)
                     done = self._play_next_standard(player, move)
 
             return self._game
@@ -164,8 +163,13 @@ class Engine:
             self._game = saved  # put back original so a failed call is idempotent
             raise e
 
-    def _choose_next_move(self, character: Character, player: Player, view: PlayerView, card: Optional[Card] = None) -> Move:
-        legal_moves = self._rules.construct_legal_moves(view, card=card)
+    def construct_legal_moves(self, view: PlayerView) -> List[Move]:
+        """Construct the legal moves based on a player view."""
+        return self._rules.construct_legal_moves(view, card=None if self.mode == GameMode.ADULT else self._game.deck.draw())
+
+    def _choose_next_move(self, character: Character, player: Player, view: PlayerView) -> Move:
+        """Choose the next move for a player."""
+        legal_moves = self.construct_legal_moves(view)
         move = character.choose_move(self.mode, view, legal_moves[:], Rules.evaluate_move)
         if move not in legal_moves:  # an illegal move is ignored and we choose randomly for the character
             self._game.track("Illegal move: a random legal move will be chosen", player)
