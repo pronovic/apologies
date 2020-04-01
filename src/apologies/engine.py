@@ -10,7 +10,7 @@ from typing import Callable, Dict, List
 
 import attr
 
-from .game import Game, GameMode, PlayerColor, PlayerView
+from .game import Card, Game, GameMode, PlayerColor, PlayerView
 from .rules import Move, Rules
 from .source import CharacterInputSource
 from .util import CircularQueue
@@ -134,18 +134,20 @@ class Engine:
         saved = self._game.copy()
         try:
             color = self._queue.next()
-            if self.mode == GameMode.ADULT:
-                self._play_next_adult(color)
-            else:
-                self._play_next_standard(color)
+            done = False
+            while not done:
+                if self.mode == GameMode.ADULT:
+                    done = self._play_next_adult(color)
+                else:
+                    card = self._game.deck.draw()
+                    done = self._play_next_standard(card, color)
             return self._game
         except Exception as e:
             self._game = saved  # put back original so a failed call is idempotent
             raise e
 
-    def _play_next_standard(self, color: PlayerColor) -> None:
-        """Play the next turn under the rules for standard mode."""
-        card = self._game.deck.draw()
+    def _play_next_standard(self, card: Card, color: PlayerColor) -> bool:
+        """Play the next turn under the rules for standard mode, returning True if the player's turn is done."""
         player = self._game.players[color]
         character = self._map[color]
         view = self._game.create_player_view(color)
@@ -157,14 +159,14 @@ class Engine:
         if not move.actions:  # a move with no actions is a forfeit
             self._game.deck.discard(move.card)
             self._game.track("Turn is forfeit; discarded card %s" % move.card.cardtype.value, player)
+            return True  # player's turn is done if they forfeit
         else:
             self._rules.execute_move(self._game, player, move)  # tracks history, potentially completes game
             self._game.deck.discard(move.card)
-            if not self.completed and self._rules.draw_again(move.card):
-                self._play_next_standard(color)  # recursive call for next move
+            return self.completed or not self._rules.draw_again(move.card)  # player's turn is done unless they can draw again
 
-    def _play_next_adult(self, color: PlayerColor) -> None:
-        """Play the next move under the rules for adult mode."""
+    def _play_next_adult(self, color: PlayerColor) -> bool:
+        """Play the next move under the rules for adult mode, returning True if the player's turn is done."""
         player = self._game.players[color]
         character = self._map[color]
         view = self._game.create_player_view(color)
@@ -178,10 +180,10 @@ class Engine:
             self._game.deck.discard(move.card)
             player.hand.append(self._game.deck.draw())
             self._game.track("Turn is forfeit; discarded card %s" % move.card.cardtype.value, player)
+            return True  # player's turn is done if they forfeit
         else:
             self._rules.execute_move(self._game, player, move)  # tracks history, potentially completes game
             player.hand.remove(move.card)
             self._game.deck.discard(move.card)
             player.hand.append(self._game.deck.draw())
-            if not self.completed and self._rules.draw_again(move.card):
-                self._play_next_adult(color)  # recursive call for next move
+            return self.completed or not self._rules.draw_again(move.card)  # player's turn is done unless they can draw again
