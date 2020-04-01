@@ -112,6 +112,11 @@ class Engine:
         """Whether the game is completed."""
         return self._game.completed
 
+    def reset(self) -> Game:
+        """Reset game state."""
+        self._game = self._default_game()
+        return self._game
+
     def start_game(self) -> Game:
         """
         Start the game, returning game state.

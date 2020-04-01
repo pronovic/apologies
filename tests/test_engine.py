@@ -76,6 +76,12 @@ class TestEngine:
             assert engine.completed is True
             assert engine.state == "Game completed"
 
+    def test_reset(self):
+        engine = TestEngine._create_engine()
+        saved = engine._game
+        engine.reset()
+        assert engine._game is not None and engine._game is not saved and not engine._game.started
+
     def test_start_game(self):
         engine = TestEngine._create_engine()
         engine._rules.start_game = MagicMock()
