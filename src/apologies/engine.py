@@ -54,6 +54,17 @@ class Engine:
     """
     Game engine that coordinates character actions in a game.
 
+    Normally, playing a game via an engine is as simple as::
+
+        engine.start_game()
+        while not engine.completed:
+          state = engine.play_next()
+
+    This plays a turn for each player, one after another, until the
+    game is complete.  Other, more fine-grained methods exist if you
+    need to structure game play differently for your purposes (for
+    instance, to train a machine learning model).
+
     Attributes:
         mode(GameMode): The game mode
         characters(List[Character]): Characters playing the game
@@ -145,18 +156,13 @@ class Engine:
         saved = self._game.copy()
         try:
             color = self._queue.next()
-            player = self._game.players[color]
             character = self._map[color]
 
             done = False
             while not done:
                 view = self._game.create_player_view(color)
-                if self.mode == GameMode.ADULT:
-                    move = self.choose_next_move(character, view)
-                    done = self._play_next_adult(player, move)
-                else:
-                    move = self.choose_next_move(character, view)
-                    done = self._play_next_standard(player, move)
+                move = self.choose_next_move(character, view)
+                done = self.execute_move(color, move)
 
             return self._game
         except Exception as e:
@@ -176,9 +182,17 @@ class Engine:
             move = random.choice(legal_moves)
         return move
 
-    def _play_next_standard(self, player: Player, move: Move) -> bool:
+    def execute_move(self, color: PlayerColor, move: Move) -> bool:
+        """Execute a move for a player, returning True if the player's turn is done."""
+        player = self._game.players[color]
+        if self.mode == GameMode.ADULT:
+            return self._execute_move_adult(player, move)
+        else:
+            return self._execute_move_standard(player, move)
+
+    def _execute_move_standard(self, player: Player, move: Move) -> bool:
         """Play the next turn under the rules for standard mode, returning True if the player's turn is done."""
-        if not move.actions:  # a move with no actions is a forfeit
+        if not move.actions:
             self._game.deck.discard(move.card)
             self._game.track("Turn is forfeit; discarded card %s" % move.card.cardtype.value, player)
             return True  # player's turn is done if they forfeit
@@ -187,9 +201,9 @@ class Engine:
             self._game.deck.discard(move.card)
             return self.completed or not self._rules.draw_again(move.card)  # player's turn is done unless they can draw again
 
-    def _play_next_adult(self, player: Player, move: Move) -> bool:
+    def _execute_move_adult(self, player: Player, move: Move) -> bool:
         """Play the next move under the rules for adult mode, returning True if the player's turn is done."""
-        if not move.actions:  # a move with no actions is a forfeit
+        if not move.actions:
             player.hand.remove(move.card)
             self._game.deck.discard(move.card)
             player.hand.append(self._game.deck.draw())
