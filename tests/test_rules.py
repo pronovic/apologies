@@ -2,12 +2,14 @@
 # vim: set ft=python ts=4 sw=4 expandtab:
 # pylint: disable=no-self-use,protected-access,too-many-locals,too-many-statements
 
-from unittest.mock import MagicMock, call
+from unittest.mock import MagicMock, call, patch
 
 import pytest
 
 from apologies.game import ADULT_HAND, DECK_SIZE, PAWNS, Card, CardType, Game, GameMode, Pawn, PlayerColor, Position
 from apologies.rules import Action, ActionType, BoardRules, Move, Rules
+
+_UUID = MagicMock(return_value=MagicMock(hex="uuid"))  # any call to get a random UUID returns a UUID with hex value "uuid"
 
 
 class TestAction:
@@ -21,12 +23,22 @@ class TestAction:
 
 
 class TestMove:
-    def test_constructor(self):
+    @patch("apologies.rules.uuid.uuid4", new=_UUID)
+    def test_constructor_uuid(self):
         card = Card(3, CardType.CARD_12)
         actions = [Action(ActionType.MOVE_TO_START, pawn=Pawn(PlayerColor.BLUE, 1, "whatever"))]
         move = Move(card, actions)
         assert move.card is card
         assert move.actions == actions
+        assert move.id == "uuid"
+
+    def test_constructor_explicit(self):
+        card = Card(3, CardType.CARD_12)
+        actions = [Action(ActionType.MOVE_TO_START, pawn=Pawn(PlayerColor.BLUE, 1, "whatever"))]
+        move = Move(card, actions, id="whatever")
+        assert move.card is card
+        assert move.actions == actions
+        assert move.id == "whatever"
 
 
 class TestRules:
@@ -84,6 +96,7 @@ class TestRules:
         assert game.players[PlayerColor.BLUE].pawns[0].position.square == 19
         assert len(game.players[PlayerColor.BLUE].hand) == ADULT_HAND
 
+    @patch("apologies.rules.uuid.uuid4", new=_UUID)
     def test_construct_legal_moves_no_moves_with_card(self):
         card = MagicMock()
 
@@ -100,7 +113,7 @@ class TestRules:
         card_pawn1_moves = []
         card_pawn2_moves = []
         legal_moves = [card_pawn1_moves, card_pawn2_moves]
-        expected_moves = [Move(card, [])]  # result is a forfeit for the only card
+        expected_moves = [Move(card, [], id="uuid")]  # result is a forfeit for the only card
 
         view = MagicMock()
         view.player = MagicMock(color=PlayerColor.RED, hand=hand, pawns=player_pawns)
@@ -114,6 +127,7 @@ class TestRules:
             [call(PlayerColor.RED, card, pawn1, all_pawns), call(PlayerColor.RED, card, pawn2, all_pawns)]
         )
 
+    @patch("apologies.rules.uuid.uuid4", new=_UUID)
     def test_construct_legal_moves_no_moves_no_card(self):
         card = None
 
@@ -132,7 +146,7 @@ class TestRules:
         hand2_pawn1_moves = []
         hand2_pawn2_moves = []
         legal_moves = [hand1_pawn1_moves, hand1_pawn2_moves, hand2_pawn1_moves, hand2_pawn2_moves]
-        expected_moves = [Move(hand1, []), Move(hand2, [])]  # result is a forfeit for all cards in the hand
+        expected_moves = [Move(hand1, [], id="uuid"), Move(hand2, [], id="uuid")]  # result is a forfeit for all cards in the hand
 
         view = MagicMock()
         view.player = MagicMock(color=PlayerColor.RED, hand=hand, pawns=player_pawns)
@@ -151,6 +165,7 @@ class TestRules:
             ]
         )
 
+    @patch("apologies.rules.uuid.uuid4", new=_UUID)
     def test_construct_legal_moves_with_moves_with_card(self):
         card = MagicMock()
 
@@ -165,14 +180,16 @@ class TestRules:
         all_pawns = [MagicMock(), MagicMock()]
 
         card_pawn1_moves = [
-            Move(card, [Action(ActionType.MOVE_TO_START, pawn1)]),
-            Move(card, [Action(ActionType.MOVE_TO_START, pawn1)]),
+            Move(card, [Action(ActionType.MOVE_TO_START, pawn1)], id="uuid"),
+            Move(card, [Action(ActionType.MOVE_TO_START, pawn1)], id="uuid"),
         ]
-        card_pawn2_moves = [Move(card, [Action(ActionType.MOVE_TO_POSITION, pawn2), Action(ActionType.MOVE_TO_START, pawn2)])]
+        card_pawn2_moves = [
+            Move(card, [Action(ActionType.MOVE_TO_POSITION, pawn2), Action(ActionType.MOVE_TO_START, pawn2)], id="uuid")
+        ]
         legal_moves = [card_pawn1_moves, card_pawn2_moves]
         expected_moves = [
-            Move(card, [Action(ActionType.MOVE_TO_START, pawn1)]),
-            Move(card, [Action(ActionType.MOVE_TO_POSITION, pawn2), Action(ActionType.MOVE_TO_START, pawn2)]),
+            Move(card, [Action(ActionType.MOVE_TO_START, pawn1)], id="uuid"),
+            Move(card, [Action(ActionType.MOVE_TO_POSITION, pawn2), Action(ActionType.MOVE_TO_START, pawn2)], id="uuid"),
         ]  # result is a list of all returned moves, with duplicates are removed
 
         view = MagicMock()
@@ -187,6 +204,7 @@ class TestRules:
             [call(PlayerColor.RED, card, pawn1, all_pawns), call(PlayerColor.RED, card, pawn2, all_pawns)]
         )
 
+    @patch("apologies.rules.uuid.uuid4", new=_UUID)
     def test_construct_legal_moves_with_moves_no_card(self):
         card = None
 
@@ -201,18 +219,20 @@ class TestRules:
         all_pawns = [MagicMock(), MagicMock()]
 
         hand1_pawn1_moves = [
-            Move(hand1, [Action(ActionType.MOVE_TO_START, pawn1)]),
-            Move(hand1, [Action(ActionType.MOVE_TO_START, pawn1)]),
+            Move(hand1, [Action(ActionType.MOVE_TO_START, pawn1)], id="uuid"),
+            Move(hand1, [Action(ActionType.MOVE_TO_START, pawn1)], id="uuid"),
         ]
-        hand1_pawn2_moves = [Move(hand1, [Action(ActionType.MOVE_TO_START, pawn2), Action(ActionType.MOVE_TO_POSITION, pawn2)])]
-        hand2_pawn1_moves = [Move(hand2, [Action(ActionType.MOVE_TO_POSITION, pawn1, Position())])]
-        hand2_pawn2_moves = [Move(hand2, [Action(ActionType.MOVE_TO_POSITION, pawn2, Position())])]
+        hand1_pawn2_moves = [
+            Move(hand1, [Action(ActionType.MOVE_TO_START, pawn2), Action(ActionType.MOVE_TO_POSITION, pawn2)], id="uuid")
+        ]
+        hand2_pawn1_moves = [Move(hand2, [Action(ActionType.MOVE_TO_POSITION, pawn1, Position())], id="uuid")]
+        hand2_pawn2_moves = [Move(hand2, [Action(ActionType.MOVE_TO_POSITION, pawn2, Position())], id="uuid")]
         legal_moves = [hand1_pawn1_moves, hand1_pawn2_moves, hand2_pawn1_moves, hand2_pawn2_moves]
         expected_moves = [
-            Move(hand1, [Action(ActionType.MOVE_TO_START, pawn1)]),
-            Move(hand1, [Action(ActionType.MOVE_TO_START, pawn2), Action(ActionType.MOVE_TO_POSITION, pawn2)]),
-            Move(hand2, [Action(ActionType.MOVE_TO_POSITION, pawn1, Position())]),
-            Move(hand2, [Action(ActionType.MOVE_TO_POSITION, pawn2, Position())]),
+            Move(hand1, [Action(ActionType.MOVE_TO_START, pawn1)], id="uuid"),
+            Move(hand1, [Action(ActionType.MOVE_TO_START, pawn2), Action(ActionType.MOVE_TO_POSITION, pawn2)], id="uuid"),
+            Move(hand2, [Action(ActionType.MOVE_TO_POSITION, pawn1, Position())], id="uuid"),
+            Move(hand2, [Action(ActionType.MOVE_TO_POSITION, pawn2, Position())], id="uuid"),
         ]  # result is a list of all returned moves, with duplicates are removed
 
         view = MagicMock()
@@ -498,6 +518,7 @@ def _legal_moves(color, game, index, cardtype):
 
 
 class TestLegalMoves:
+    @patch("apologies.rules.uuid.uuid4", new=_UUID)
     def test_construct_legal_moves_card_1(self):
         # No legal moves if no pawn in start, on the board, or in safe
         game = _setup_game()
@@ -544,6 +565,7 @@ class TestLegalMoves:
         card, pawn, view, moves = _legal_moves(RED, game, 0, "1")
         assert moves == [Move(card, actions=[_square(pawn, 7)], side_effects=[_bump(view, GREEN, 1)])]
 
+    @patch("apologies.rules.uuid.uuid4", new=_UUID)
     def test_construct_legal_moves_card_2(self):
         # No legal moves if no pawn in start, on the board, or in safe
         game = _setup_game()
@@ -590,6 +612,7 @@ class TestLegalMoves:
         card, pawn, view, moves = _legal_moves(RED, game, 0, "2")
         assert moves == [Move(card, actions=[_square(pawn, 8)], side_effects=[_bump(view, GREEN, 1)])]
 
+    @patch("apologies.rules.uuid.uuid4", new=_UUID)
     def test_construct_legal_moves_card_3(self):
         # No legal moves if no pawn on the board, or in safe
         game = _setup_game()
@@ -617,6 +640,7 @@ class TestLegalMoves:
         card, pawn, view, moves = _legal_moves(RED, game, 0, "3")
         assert moves == [Move(card, actions=[_square(pawn, 9)], side_effects=[_bump(view, GREEN, 1)])]
 
+    @patch("apologies.rules.uuid.uuid4", new=_UUID)
     def test_construct_legal_moves_card_4(self):
         # No legal moves if no pawn on the board, or in safe
         game = _setup_game()
@@ -644,6 +668,7 @@ class TestLegalMoves:
         card, pawn, view, moves = _legal_moves(RED, game, 0, "4")
         assert moves == [Move(card, actions=[_square(pawn, 2)], side_effects=[_bump(view, GREEN, 1)])]
 
+    @patch("apologies.rules.uuid.uuid4", new=_UUID)
     def test_construct_legal_moves_card_5(self):
         # No legal moves if no pawn on the board, or in safe
         game = _setup_game()
@@ -671,6 +696,7 @@ class TestLegalMoves:
         card, pawn, view, moves = _legal_moves(RED, game, 0, "5")
         assert moves == [Move(card, actions=[_square(pawn, 11)], side_effects=[_bump(view, GREEN, 1)])]
 
+    @patch("apologies.rules.uuid.uuid4", new=_UUID)
     def test_construct_legal_moves_card_7(self):
         # No legal moves if no pawn on the board, or in safe
         game = _setup_game()
@@ -742,6 +768,7 @@ class TestLegalMoves:
             Move(card, actions=[_square(pawn, 12), _square(other2, 56)], side_effects=[]),  # split (6, 1)
         ]
 
+    @patch("apologies.rules.uuid.uuid4", new=_UUID)
     def test_construct_legal_moves_card_8(self):
         # No legal moves if no pawn on the board, or in safe
         game = _setup_game()
@@ -769,6 +796,7 @@ class TestLegalMoves:
         card, pawn, view, moves = _legal_moves(RED, game, 0, "8")
         assert moves == [Move(card, actions=[_square(pawn, 14)], side_effects=[_bump(view, GREEN, 1)])]
 
+    @patch("apologies.rules.uuid.uuid4", new=_UUID)
     def test_construct_legal_moves_card_10(self):
         # No legal moves if no pawn on the board, or in safe
         game = _setup_game()
@@ -821,6 +849,7 @@ class TestLegalMoves:
             Move(card, actions=[_square(pawn, 4)], side_effects=[_bump(view, GREEN, 1)]),
         ]
 
+    @patch("apologies.rules.uuid.uuid4", new=_UUID)
     def test_construct_legal_moves_card_11(self):
         # No legal moves if no pawn on the board, or in safe
         game = _setup_game()
@@ -866,6 +895,7 @@ class TestLegalMoves:
             Move(card, actions=[_square(pawn, 26)], side_effects=[]),
         ]
 
+    @patch("apologies.rules.uuid.uuid4", new=_UUID)
     def test_construct_legal_moves_card_12(self):
         # No legal moves if no pawn on the board, or in safe
         game = _setup_game()
@@ -893,6 +923,7 @@ class TestLegalMoves:
         card, pawn, view, moves = _legal_moves(RED, game, 0, "12")
         assert moves == [Move(card, actions=[_square(pawn, 18)], side_effects=[_bump(view, GREEN, 1)])]
 
+    @patch("apologies.rules.uuid.uuid4", new=_UUID)
     def test_construct_legal_moves_card_apologies(self):
         # No legal moves if no pawn in start
         game = _setup_game()
@@ -914,6 +945,7 @@ class TestLegalMoves:
             Move(card, actions=[_square(pawn, 19), _bump(view, BLUE, 1)], side_effects=[]),
         ]
 
+    @patch("apologies.rules.uuid.uuid4", new=_UUID)
     def test_construct_legal_moves_special(self):
         # Move pawn into safe zone
         game = _setup_game()

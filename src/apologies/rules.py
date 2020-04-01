@@ -5,6 +5,7 @@
 Implements rules related to game play.
 """
 
+import uuid
 from enum import Enum
 from typing import List, Optional
 
@@ -69,11 +70,17 @@ class Move:
         card(Card): The card that is being played by this move
         actions(List[Action]): List of actions to execute
         side_effects(List[Action]): List of side effects that occurred as a result of the actions
+        id(str): Identifier for this move, which must be unique among all legal moves this move is grouped with
     """
 
     card = attr.ib(type=Card)
     actions = attr.ib(type=List[Action])
     side_effects = attr.ib(type=List[Action])
+    id = attr.ib(type=str)
+
+    @id.default
+    def _default_id(self) -> str:
+        return uuid.uuid4().hex
 
     @side_effects.default
     def _default_side_effects(self) -> List[Action]:
