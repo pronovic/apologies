@@ -10,7 +10,7 @@ from typing import Callable, Dict, List
 
 import attr
 
-from .game import Card, Game, GameMode, PlayerColor, PlayerView
+from .game import Game, GameMode, Player, PlayerColor, PlayerView
 from .rules import Move, Rules
 from .source import CharacterInputSource
 from .util import CircularQueue
@@ -134,24 +134,27 @@ class Engine:
         saved = self._game.copy()
         try:
             color = self._queue.next()
+            player = self._game.players[color]
+            character = self._map[color]
+
             done = False
             while not done:
+                view = self._game.create_player_view(color)
                 if self.mode == GameMode.ADULT:
-                    done = self._play_next_adult(color)
+                    legal_moves = self._rules.construct_legal_moves(view, card=None)
+                    done = self._play_next_adult(player, character, view, legal_moves)
                 else:
                     card = self._game.deck.draw()
-                    done = self._play_next_standard(card, color)
+                    legal_moves = self._rules.construct_legal_moves(view, card=card)
+                    done = self._play_next_standard(player, character, view, legal_moves)
+
             return self._game
         except Exception as e:
             self._game = saved  # put back original so a failed call is idempotent
             raise e
 
-    def _play_next_standard(self, card: Card, color: PlayerColor) -> bool:
+    def _play_next_standard(self, player: Player, character: Character, view: PlayerView, legal_moves: List[Move]) -> bool:
         """Play the next turn under the rules for standard mode, returning True if the player's turn is done."""
-        player = self._game.players[color]
-        character = self._map[color]
-        view = self._game.create_player_view(color)
-        legal_moves = self._rules.construct_legal_moves(view, card=card)
         move = character.choose_move(self.mode, view, legal_moves[:], Rules.evaluate_move)
         if move not in legal_moves:  # an illegal move is ignored and we choose randomly for the character
             self._game.track("Illegal move: a random legal move will be chosen", player)
@@ -165,12 +168,8 @@ class Engine:
             self._game.deck.discard(move.card)
             return self.completed or not self._rules.draw_again(move.card)  # player's turn is done unless they can draw again
 
-    def _play_next_adult(self, color: PlayerColor) -> bool:
+    def _play_next_adult(self, player: Player, character: Character, view: PlayerView, legal_moves: List[Move]) -> bool:
         """Play the next move under the rules for adult mode, returning True if the player's turn is done."""
-        player = self._game.players[color]
-        character = self._map[color]
-        view = self._game.create_player_view(color)
-        legal_moves = self._rules.construct_legal_moves(view, card=None)
         move = character.choose_move(self.mode, view, legal_moves[:], Rules.evaluate_move)
         if move not in legal_moves:  # an illegal move is ignored and we choose randomly for the character
             self._game.track("Illegal move: a random legal move will be chosen", player)
