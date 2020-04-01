@@ -51,6 +51,7 @@ class TestEngine:
         assert engine.started is False
         assert engine.completed is False
         assert engine.state == "Game waiting to start"
+        assert engine.game is engine._game
         assert len(engine._game.players) == 2
         assert engine._queue.entries == [PlayerColor.RED, PlayerColor.YELLOW]
         assert engine._rules.mode == GameMode.STANDARD

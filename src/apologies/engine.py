@@ -103,6 +103,11 @@ class Engine:
             return "Game waiting to start"
 
     @property
+    def game(self) -> Game:
+        """A reference to the underlying game."""
+        return self._game
+
+    @property
     def started(self) -> bool:
         """Whether the game is started."""
         return self._game.started
