@@ -10,7 +10,7 @@ from typing import Callable, Dict, List
 
 import attr
 
-from .game import Game, GameMode, PlayerColor, PlayerView
+from .game import Game, GameMode, Player, PlayerColor, PlayerView
 from .rules import Move, Rules
 from .source import CharacterInputSource
 from .util import CircularQueue
@@ -53,6 +53,17 @@ class Engine:
 
     """
     Game engine that coordinates character actions in a game.
+
+    Normally, playing a game via an engine is as simple as::
+
+        engine.start_game()
+        while not engine.completed:
+          state = engine.play_next()
+
+    This plays a turn for each player, one after another, until the
+    game is complete.  Other, more fine-grained methods exist if you
+    need to structure game play differently for your purposes (for
+    instance, to train a machine learning model).
 
     Attributes:
         mode(GameMode): The game mode
@@ -103,6 +114,11 @@ class Engine:
             return "Game waiting to start"
 
     @property
+    def game(self) -> Game:
+        """A reference to the underlying game."""
+        return self._game
+
+    @property
     def started(self) -> bool:
         """Whether the game is started."""
         return self._game.started
@@ -111,6 +127,11 @@ class Engine:
     def completed(self) -> bool:
         """Whether the game is completed."""
         return self._game.completed
+
+    def reset(self) -> Game:
+        """Reset game state."""
+        self._game = self._default_game()
+        return self._game
 
     def start_game(self) -> Game:
         """
@@ -131,57 +152,66 @@ class Engine:
         """
         if self.completed:
             raise ValueError("Game is complete")
+
         saved = self._game.copy()
         try:
             color = self._queue.next()
-            if self.mode == GameMode.ADULT:
-                self._play_next_adult(color)
-            else:
-                self._play_next_standard(color)
+            character = self._map[color]
+
+            done = False
+            while not done:
+                view = self._game.create_player_view(color)
+                move = self.choose_next_move(character, view)
+                done = self.execute_move(color, move)
+
             return self._game
         except Exception as e:
             self._game = saved  # put back original so a failed call is idempotent
             raise e
 
-    def _play_next_standard(self, color: PlayerColor) -> None:
-        """Play the next turn under the rules for standard mode."""
-        card = self._game.deck.draw()
-        player = self._game.players[color]
-        character = self._map[color]
-        view = self._game.create_player_view(color)
-        legal_moves = self._rules.construct_legal_moves(view, card=card)
-        move = character.choose_move(self.mode, view, legal_moves[:], Rules.evaluate_move)
-        if move not in legal_moves:  # an illegal move is ignored and we choose randomly for the character
-            self._game.track("Illegal move: a random legal move will be chosen", player)
-            move = random.choice(legal_moves)
-        if not move.actions:  # a move with no actions is a forfeit
-            self._game.deck.discard(move.card)
-            self._game.track("Turn is forfeit; discarded card %s" % move.card.cardtype.value, player)
-        else:
-            self._rules.execute_move(self._game, player, move)  # tracks history, potentially completes game
-            self._game.deck.discard(move.card)
-            if not self.completed and self._rules.draw_again(move.card):
-                self._play_next_standard(color)  # recursive call for next move
+    def construct_legal_moves(self, view: PlayerView) -> List[Move]:
+        """Construct the legal moves based on a player view."""
+        return self._rules.construct_legal_moves(view, card=None if self.mode == GameMode.ADULT else self._game.deck.draw())
 
-    def _play_next_adult(self, color: PlayerColor) -> None:
-        """Play the next move under the rules for adult mode."""
-        player = self._game.players[color]
-        character = self._map[color]
-        view = self._game.create_player_view(color)
-        legal_moves = self._rules.construct_legal_moves(view, card=None)
+    def choose_next_move(self, character: Character, view: PlayerView) -> Move:
+        """Choose the next move for a character based on a player view."""
+        legal_moves = self.construct_legal_moves(view)
         move = character.choose_move(self.mode, view, legal_moves[:], Rules.evaluate_move)
         if move not in legal_moves:  # an illegal move is ignored and we choose randomly for the character
-            self._game.track("Illegal move: a random legal move will be chosen", player)
+            self._game.track("Illegal move: a random legal move will be chosen", view.player)
             move = random.choice(legal_moves)
-        if not move.actions:  # a move with no actions is a forfeit
+        return move
+
+    def execute_move(self, color: PlayerColor, move: Move) -> bool:
+        """Execute a move for a player, returning True if the player's turn is done."""
+        player = self._game.players[color]
+        if self.mode == GameMode.ADULT:
+            return self._execute_move_adult(player, move)
+        else:
+            return self._execute_move_standard(player, move)
+
+    def _execute_move_standard(self, player: Player, move: Move) -> bool:
+        """Play the next turn under the rules for standard mode, returning True if the player's turn is done."""
+        if not move.actions:
+            self._game.deck.discard(move.card)
+            self._game.track("Turn is forfeit; discarded card %s" % move.card.cardtype.value, player)
+            return True  # player's turn is done if they forfeit
+        else:
+            self._rules.execute_move(self._game, player, move)  # tracks history, potentially completes game
+            self._game.deck.discard(move.card)
+            return self.completed or not self._rules.draw_again(move.card)  # player's turn is done unless they can draw again
+
+    def _execute_move_adult(self, player: Player, move: Move) -> bool:
+        """Play the next move under the rules for adult mode, returning True if the player's turn is done."""
+        if not move.actions:
             player.hand.remove(move.card)
             self._game.deck.discard(move.card)
             player.hand.append(self._game.deck.draw())
             self._game.track("Turn is forfeit; discarded card %s" % move.card.cardtype.value, player)
+            return True  # player's turn is done if they forfeit
         else:
             self._rules.execute_move(self._game, player, move)  # tracks history, potentially completes game
             player.hand.remove(move.card)
             self._game.deck.discard(move.card)
             player.hand.append(self._game.deck.draw())
-            if not self.completed and self._rules.draw_again(move.card):
-                self._play_next_adult(color)  # recursive call for next move
+            return self.completed or not self._rules.draw_again(move.card)  # player's turn is done unless they can draw again

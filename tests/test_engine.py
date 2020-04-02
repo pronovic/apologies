@@ -51,6 +51,7 @@ class TestEngine:
         assert engine.started is False
         assert engine.completed is False
         assert engine.state == "Game waiting to start"
+        assert engine.game is engine._game
         assert len(engine._game.players) == 2
         assert engine._queue.entries == [PlayerColor.RED, PlayerColor.YELLOW]
         assert engine._rules.mode == GameMode.STANDARD
@@ -75,6 +76,12 @@ class TestEngine:
             completed.return_value = True
             assert engine.completed is True
             assert engine.state == "Game completed"
+
+    def test_reset(self):
+        engine = TestEngine._create_engine()
+        saved = engine._game
+        engine.reset()
+        assert engine._game is not None and engine._game is not saved and not engine._game.started
 
     def test_start_game(self):
         engine = TestEngine._create_engine()
