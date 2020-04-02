@@ -5,7 +5,7 @@
 Utility functionality.
 """
 
-from typing import Generic, List, TypeVar
+from typing import Any, Generic, List, TypeVar
 
 import attr
 import cattr
@@ -24,27 +24,39 @@ class CattrConverter(cattr.Converter):  # type: ignore
         self.register_structure_hook(DateTime, lambda string, _: parse(string) if string else None)
 
 
-Type = TypeVar("Type")
+T = TypeVar("T")  # pylint: disable=invalid-name
 """Generic type"""
 
 
 @attr.s
-class CircularQueue(Generic[Type]):
+class CircularQueue(Generic[T]):
     """A circular queue that keeps returning the original entries repeatedly, in order."""
 
-    entries = attr.ib(type=List[Type])
-    _working = attr.ib(type=List[Type])
+    entries = attr.ib(type=List[T])
+    first = attr.ib(type=Any)
+    _working = attr.ib(type=List[T])
+
+    @first.default
+    def _default_first(self) -> Any:
+        return None if not self.entries else self.entries[0]
 
     @_working.default
-    def _default_working(self) -> List[Type]:
-        return self.entries[:]
+    def _default_working(self) -> List[T]:
+        if self.first not in self.entries:
+            raise ValueError("First entry not found")
+        temp = self.entries[:]
+        popped = temp.pop(0)
+        while popped != self.first:
+            popped = temp.pop(0)
+        temp.insert(0, popped)
+        return temp
 
     @entries.validator
     def _check_entries(self, attribute: str, value: int) -> None:
         if not value:
             raise ValueError("Entries must not be empty")
 
-    def next(self) -> Type:
+    def next(self) -> T:
         """Get the next entry from the queue."""
         if len(self._working) == 0:
             self._working.extend(self.entries)
