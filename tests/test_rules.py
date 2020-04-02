@@ -113,7 +113,7 @@ class TestRules:
         card_pawn1_moves = []
         card_pawn2_moves = []
         legal_moves = [card_pawn1_moves, card_pawn2_moves]
-        expected_moves = [Move(card, [], id="uuid")]  # result is a forfeit for the only card
+        expected_moves = [Move(card, [])]  # result is a forfeit for the only card
 
         view = MagicMock()
         view.player = MagicMock(color=PlayerColor.RED, hand=hand, pawns=player_pawns)
@@ -146,7 +146,7 @@ class TestRules:
         hand2_pawn1_moves = []
         hand2_pawn2_moves = []
         legal_moves = [hand1_pawn1_moves, hand1_pawn2_moves, hand2_pawn1_moves, hand2_pawn2_moves]
-        expected_moves = [Move(hand1, [], id="uuid"), Move(hand2, [], id="uuid")]  # result is a forfeit for all cards in the hand
+        expected_moves = [Move(hand1, []), Move(hand2, [])]  # result is a forfeit for all cards in the hand
 
         view = MagicMock()
         view.player = MagicMock(color=PlayerColor.RED, hand=hand, pawns=player_pawns)
@@ -180,16 +180,14 @@ class TestRules:
         all_pawns = [MagicMock(), MagicMock()]
 
         card_pawn1_moves = [
-            Move(card, [Action(ActionType.MOVE_TO_START, pawn1)], id="uuid"),
-            Move(card, [Action(ActionType.MOVE_TO_START, pawn1)], id="uuid"),
+            Move(card, [Action(ActionType.MOVE_TO_START, pawn1)]),
+            Move(card, [Action(ActionType.MOVE_TO_START, pawn1)]),
         ]
-        card_pawn2_moves = [
-            Move(card, [Action(ActionType.MOVE_TO_POSITION, pawn2), Action(ActionType.MOVE_TO_START, pawn2)], id="uuid")
-        ]
+        card_pawn2_moves = [Move(card, [Action(ActionType.MOVE_TO_POSITION, pawn2), Action(ActionType.MOVE_TO_START, pawn2)])]
         legal_moves = [card_pawn1_moves, card_pawn2_moves]
         expected_moves = [
-            Move(card, [Action(ActionType.MOVE_TO_START, pawn1)], id="uuid"),
-            Move(card, [Action(ActionType.MOVE_TO_POSITION, pawn2), Action(ActionType.MOVE_TO_START, pawn2)], id="uuid"),
+            Move(card, [Action(ActionType.MOVE_TO_START, pawn1)]),
+            Move(card, [Action(ActionType.MOVE_TO_POSITION, pawn2), Action(ActionType.MOVE_TO_START, pawn2)]),
         ]  # result is a list of all returned moves, with duplicates are removed
 
         view = MagicMock()
@@ -219,20 +217,18 @@ class TestRules:
         all_pawns = [MagicMock(), MagicMock()]
 
         hand1_pawn1_moves = [
-            Move(hand1, [Action(ActionType.MOVE_TO_START, pawn1)], id="uuid"),
-            Move(hand1, [Action(ActionType.MOVE_TO_START, pawn1)], id="uuid"),
+            Move(hand1, [Action(ActionType.MOVE_TO_START, pawn1)]),
+            Move(hand1, [Action(ActionType.MOVE_TO_START, pawn1)]),
         ]
-        hand1_pawn2_moves = [
-            Move(hand1, [Action(ActionType.MOVE_TO_START, pawn2), Action(ActionType.MOVE_TO_POSITION, pawn2)], id="uuid")
-        ]
-        hand2_pawn1_moves = [Move(hand2, [Action(ActionType.MOVE_TO_POSITION, pawn1, Position())], id="uuid")]
-        hand2_pawn2_moves = [Move(hand2, [Action(ActionType.MOVE_TO_POSITION, pawn2, Position())], id="uuid")]
+        hand1_pawn2_moves = [Move(hand1, [Action(ActionType.MOVE_TO_START, pawn2), Action(ActionType.MOVE_TO_POSITION, pawn2)])]
+        hand2_pawn1_moves = [Move(hand2, [Action(ActionType.MOVE_TO_POSITION, pawn1, Position())])]
+        hand2_pawn2_moves = [Move(hand2, [Action(ActionType.MOVE_TO_POSITION, pawn2, Position())])]
         legal_moves = [hand1_pawn1_moves, hand1_pawn2_moves, hand2_pawn1_moves, hand2_pawn2_moves]
         expected_moves = [
-            Move(hand1, [Action(ActionType.MOVE_TO_START, pawn1)], id="uuid"),
-            Move(hand1, [Action(ActionType.MOVE_TO_START, pawn2), Action(ActionType.MOVE_TO_POSITION, pawn2)], id="uuid"),
-            Move(hand2, [Action(ActionType.MOVE_TO_POSITION, pawn1, Position())], id="uuid"),
-            Move(hand2, [Action(ActionType.MOVE_TO_POSITION, pawn2, Position())], id="uuid"),
+            Move(hand1, [Action(ActionType.MOVE_TO_START, pawn1)]),
+            Move(hand1, [Action(ActionType.MOVE_TO_START, pawn2), Action(ActionType.MOVE_TO_POSITION, pawn2)]),
+            Move(hand2, [Action(ActionType.MOVE_TO_POSITION, pawn1, Position())]),
+            Move(hand2, [Action(ActionType.MOVE_TO_POSITION, pawn2, Position())]),
         ]  # result is a list of all returned moves, with duplicates are removed
 
         view = MagicMock()
