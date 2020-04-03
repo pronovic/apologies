@@ -6,6 +6,21 @@ My primary development environment is IntelliJ (or just Vim) on MacOS, but the
 code and the development process should be portable. I've tested on Windows 10
 and on Debian buster.
 
+## Installing this Package Elsewhere
+
+Normally, you would install a packaged version of [PyPI](https://pypi.org/project/apologies/).
+However, if you've made changes that aren't published, and you want to use them
+locally, then the easiest thing to do is build the wheel package and install it
+in your virtualenv:
+
+```
+$ poetry build
+$ source /path/to/bin/activate
+$ pip install /path/to/repos/apologies/dist/apologies-0.1.11-py3-none-any.whl
+```
+
+You may need to do some manual cleanup later once the package is officially published.
+
 ## Packaging and Dependencies
 
 This project uses [Poetry](https://python-poetry.org/) to manage Python packaging and dependencies.  Most day-to-day tasks (such as running unit tests from the command line) are orchestrated through Poetry.  
