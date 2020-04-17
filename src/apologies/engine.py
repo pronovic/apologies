@@ -6,11 +6,11 @@ Game engine that coordinates character actions to play a game.
 """
 
 import random
-from typing import Callable, Dict, List
+from typing import Callable, Dict, List, Optional, Tuple
 
 import attr
 
-from .game import Game, GameMode, Player, PlayerColor, PlayerView
+from .game import Card, Game, GameMode, Player, PlayerColor, PlayerView
 from .rules import Move, Rules
 from .source import CharacterInputSource
 from .util import CircularQueue
@@ -169,13 +169,22 @@ class Engine:
             self._game = saved  # put back original so a failed call is idempotent
             raise e
 
-    def construct_legal_moves(self, view: PlayerView) -> List[Move]:
-        """Construct the legal moves based on a player view."""
-        return self._rules.construct_legal_moves(view, card=None if self.mode == GameMode.ADULT else self._game.deck.draw())
+    def draw(self) -> Card:
+        """Draw a random card from the game's draw pile."""
+        return self._game.deck.draw()
+
+    def discard(self, card: Card) -> None:
+        """Discard back to the game's discard pile."""
+        self._game.deck.discard(card)
+
+    def construct_legal_moves(self, view: PlayerView, card: Optional[Card] = None) -> Tuple[Optional[Card], List[Move]]:
+        """Construct the legal moves based on a player view, using the passed-in card if provided."""
+        card = card if card is not None else None if self.mode == GameMode.ADULT else self.draw()
+        return card, self._rules.construct_legal_moves(view, card=card)
 
     def choose_next_move(self, character: Character, view: PlayerView) -> Move:
         """Choose the next move for a character based on a player view."""
-        legal_moves = self.construct_legal_moves(view)
+        _, legal_moves = self.construct_legal_moves(view)
         move = character.choose_move(self.mode, view, legal_moves[:], Rules.evaluate_move)
         if move not in legal_moves:  # an illegal move is ignored and we choose randomly for the character
             self._game.track("Illegal move: a random legal move will be chosen", view.player)
@@ -193,25 +202,25 @@ class Engine:
     def _execute_move_standard(self, player: Player, move: Move) -> bool:
         """Play the next turn under the rules for standard mode, returning True if the player's turn is done."""
         if not move.actions:
-            self._game.deck.discard(move.card)
+            self.discard(move.card)
             self._game.track("Turn is forfeit; discarded card %s" % move.card.cardtype.value, player)
             return True  # player's turn is done if they forfeit
         else:
             self._rules.execute_move(self._game, player, move)  # tracks history, potentially completes game
-            self._game.deck.discard(move.card)
+            self.discard(move.card)
             return self.completed or not self._rules.draw_again(move.card)  # player's turn is done unless they can draw again
 
     def _execute_move_adult(self, player: Player, move: Move) -> bool:
         """Play the next move under the rules for adult mode, returning True if the player's turn is done."""
         if not move.actions:
             player.hand.remove(move.card)
-            self._game.deck.discard(move.card)
-            player.hand.append(self._game.deck.draw())
+            self.discard(move.card)
+            player.hand.append(self.draw())
             self._game.track("Turn is forfeit; discarded card %s" % move.card.cardtype.value, player)
             return True  # player's turn is done if they forfeit
         else:
             self._rules.execute_move(self._game, player, move)  # tracks history, potentially completes game
             player.hand.remove(move.card)
-            self._game.deck.discard(move.card)
-            player.hand.append(self._game.deck.draw())
+            self.discard(move.card)
+            player.hand.append(self.draw())
             return self.completed or not self._rules.draw_again(move.card)  # player's turn is done unless they can draw again

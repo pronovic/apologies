@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # vim: set ft=python ts=4 sw=4 expandtab:
-# pylint: disable=redefined-outer-name,protected-access,broad-except
+# pylint: disable=redefined-outer-name,protected-access,broad-except,too-many-public-methods
 # Unit tests for engine.py
 
 from unittest.mock import MagicMock, Mock, PropertyMock, call, patch
@@ -88,6 +88,84 @@ class TestEngine:
         engine._rules.start_game = MagicMock()
         assert engine.start_game() == engine._game
         engine._rules.start_game.assert_called_once_with(engine._game)
+
+    def test_draw(self):
+        engine = TestEngine._create_engine()
+
+        card = MagicMock()
+        engine._game.deck.draw = MagicMock(return_value=card)
+
+        assert card is engine.draw()
+
+    def test_discard(self):
+        engine = TestEngine._create_engine()
+
+        card = MagicMock()
+        engine._game.deck.discard = MagicMock()
+
+        engine.discard(card)
+        engine._game.deck.discard.assert_called_once_with(card)
+
+    def test_construct_legal_moves_standard_nocard(self):
+        engine = TestEngine._create_engine(mode=GameMode.STANDARD)
+
+        view = Mock()
+        drawcard = Mock()
+        movecard = Card(0, CardType.CARD_1)
+        move = Move(movecard, [])
+        legal_moves = [move]
+        engine._game.deck.draw = MagicMock(return_value=drawcard)
+        engine._rules.construct_legal_moves = MagicMock(return_value=legal_moves)
+
+        assert engine.construct_legal_moves(view) == (drawcard, legal_moves)
+        engine._rules.construct_legal_moves.assert_called_once_with(view, card=drawcard)
+
+    def test_construct_legal_moves_standard_card(self):
+        engine = TestEngine._create_engine(mode=GameMode.STANDARD)
+
+        view = Mock()
+        providedcard = Mock()
+        drawcard = Mock()
+        movecard = Card(0, CardType.CARD_1)
+        move = Move(movecard, [])
+        legal_moves = [move]
+        engine._game.deck.draw = MagicMock(return_value=drawcard)
+        engine._rules.construct_legal_moves = MagicMock(return_value=legal_moves)
+
+        assert engine.construct_legal_moves(view, card=providedcard) == (providedcard, legal_moves)
+        engine._rules.construct_legal_moves.assert_called_once_with(view, card=providedcard)
+        engine._game.deck.draw.assert_not_called()
+
+    def test_construct_legal_moves_adult_nocard(self):
+        engine = TestEngine._create_engine(mode=GameMode.ADULT)
+
+        view = Mock()
+        drawcard = Mock()
+        movecard = Card(0, CardType.CARD_1)
+        move = Move(movecard, [])
+        legal_moves = [move]
+        engine._game.deck.draw = MagicMock(return_value=drawcard)
+        engine._rules.construct_legal_moves = MagicMock(return_value=legal_moves)
+
+        assert engine.construct_legal_moves(view) == (None, legal_moves)
+        engine._rules.construct_legal_moves.assert_called_once_with(view, card=None)
+        engine._game.deck.draw.assert_not_called()
+
+    def test_construct_legal_moves_adult_card(self):
+        engine = TestEngine._create_engine(mode=GameMode.ADULT)
+
+        view = Mock()
+        providedcard = Mock()
+        drawcard = Mock()
+        movecard = Card(0, CardType.CARD_1)
+        move = Move(movecard, [])
+        legal_moves = [move]
+        engine._game.deck.draw = MagicMock(return_value=drawcard)
+        engine._rules.construct_legal_moves = MagicMock(return_value=legal_moves)
+
+        assert engine.construct_legal_moves(view, card=providedcard) == (providedcard, legal_moves)
+        engine._rules.construct_legal_moves.assert_called_once_with(view, card=providedcard)
+        engine._game.deck.draw.assert_not_called()
 
     def test_play_next_completed(self):
         engine = TestEngine._create_engine()
