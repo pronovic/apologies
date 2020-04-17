@@ -16,7 +16,7 @@ in your virtualenv:
 ```
 $ poetry build
 $ source /path/to/bin/activate
-$ pip install /path/to/repos/apologies/dist/apologies-0.1.11-py3-none-any.whl
+$ pip install --force /path/to/repos/apologies/dist/apologies-0.1.11-py3-none-any.whl
 ```
 
 You may need to do some manual cleanup later once the package is officially published.
