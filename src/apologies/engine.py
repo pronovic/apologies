@@ -68,14 +68,20 @@ class Engine:
     Attributes:
         mode(GameMode): The game mode
         characters(List[Character]): Characters playing the game
+        first(PlayerColor): The first player, chosen randomly by default
     """
 
     mode = attr.ib(type=GameMode)
     characters = attr.ib(type=List[Character])
+    first = attr.ib(type=PlayerColor)
     _game = attr.ib(init=False, type=Game)
     _queue = attr.ib(init=False, type=CircularQueue[PlayerColor])
     _rules = attr.ib(init=False, type=Rules)
     _map = attr.ib(init=False, type=Dict[PlayerColor, Character])
+
+    @first.default
+    def _default_first(self) -> PlayerColor:
+        return random.choice(list(PlayerColor)[: len(self.characters)])
 
     @_game.default
     def _default_game(self) -> Game:
@@ -83,7 +89,7 @@ class Engine:
 
     @_queue.default
     def _default_queue(self) -> CircularQueue[PlayerColor]:
-        return CircularQueue(list(PlayerColor)[: len(self.characters)])
+        return CircularQueue(list(PlayerColor)[: len(self.characters)], first=self.first)
 
     @_rules.default
     def _default_rules(self) -> Rules:

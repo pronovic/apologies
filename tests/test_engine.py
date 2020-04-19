@@ -41,10 +41,10 @@ class TestCharacter:
 
 
 class TestEngine:
-    def test_constructor(self):
+    def test_constructor_not_random(self):
         character1 = Character("one", Mock())
         character2 = Character("two", Mock())
-        engine = Engine(GameMode.STANDARD, [character1, character2])
+        engine = Engine(GameMode.STANDARD, [character1, character2], first=PlayerColor.RED)  # 1st player deterministic
         assert engine.players == 2
         assert engine.characters == [character1, character2]
         assert engine.mode == GameMode.STANDARD
@@ -53,9 +53,44 @@ class TestEngine:
         assert engine.state == "Game waiting to start"
         assert engine.game is engine._game
         assert len(engine._game.players) == 2
+        assert engine.first == PlayerColor.RED
+        assert engine._queue.first == engine.first
         assert engine._queue.entries == [PlayerColor.RED, PlayerColor.YELLOW]
         assert engine._rules.mode == GameMode.STANDARD
         assert engine._map == {PlayerColor.RED: character1, PlayerColor.YELLOW: character2}
+
+    def test_constructor_random(self):
+        found = []
+        for _ in range(0, 100):
+            character1 = Character("one", Mock())
+            character2 = Character("two", Mock())
+            character3 = Character("three", Mock())
+            character4 = Character("four", Mock())
+            engine = Engine(GameMode.STANDARD, [character1, character2, character3, character4])  # 1st player random
+            assert engine.players == 4
+            assert engine.characters == [character1, character2, character3, character4]
+            assert engine.mode == GameMode.STANDARD
+            assert engine.started is False
+            assert engine.completed is False
+            assert engine.state == "Game waiting to start"
+            assert engine.game is engine._game
+            assert len(engine._game.players) == 4
+            assert engine.first in [PlayerColor.RED, PlayerColor.YELLOW, PlayerColor.GREEN, PlayerColor.BLUE]
+            assert engine._queue.first == engine.first
+            assert engine._queue.entries == [PlayerColor.RED, PlayerColor.YELLOW, PlayerColor.GREEN, PlayerColor.BLUE]
+            assert engine._rules.mode == GameMode.STANDARD
+            assert engine._map == {
+                PlayerColor.RED: character1,
+                PlayerColor.YELLOW: character2,
+                PlayerColor.GREEN: character3,
+                PlayerColor.BLUE: character4,
+            }
+            found.append(engine.first)
+        # check that all players showed up as the first player at least once
+        assert PlayerColor.RED in found
+        assert PlayerColor.YELLOW in found
+        assert PlayerColor.BLUE in found
+        assert PlayerColor.GREEN in found
 
     def test_started(self):
         engine = TestEngine._create_engine()
@@ -507,7 +542,8 @@ class TestEngine:
         character2 = Character("character2", Mock())
         character1.construct_move = MagicMock()  # type: ignore
 
-        engine = Engine(mode, [character1, character2])
+        first = PlayerColor.RED
+        engine = Engine(mode, [character1, character2], first=first)
         engine.start_game()
 
         return engine
