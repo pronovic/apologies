@@ -491,7 +491,7 @@ class Rules:
         log += "]"
         game.track(log, player)
         if game.completed:
-            game.track("Game is completed: winner is %s" % game.winner.color.value)  # type: ignore
+            game.track("Game completed: winner is %s after %d turns" % (game.winner.color.value, game.winner.turns))  # type: ignore
 
     @staticmethod
     def evaluate_move(view: PlayerView, move: Move) -> PlayerView:

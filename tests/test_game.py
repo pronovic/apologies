@@ -317,6 +317,7 @@ class TestPlayer:
     def test_constructor(self):
         player = Player(PlayerColor.RED)
         assert player.color == PlayerColor.RED
+        assert player.turns == 0
         assert len(player.pawns) == PAWNS
         for pawn in player.pawns:
             assert isinstance(pawn, Pawn)
@@ -467,14 +468,22 @@ class TestGame:
         assert game.history[0].action == "action"
         assert game.history[0].color is None
         assert game.history[0].timestamp <= DateTime.utcnow()
+        assert game.players[PlayerColor.RED].turns == 0
+        assert game.players[PlayerColor.YELLOW].turns == 0
+        assert game.players[PlayerColor.BLUE].turns == 0
+        assert game.players[PlayerColor.GREEN].turns == 0
 
     def test_track_with_color(self):
         game = Game(4)
-        color = MagicMock(color=PlayerColor.RED)
-        game.track("action", color)
+        player = MagicMock(color=PlayerColor.RED)
+        game.track("action", player)
         assert game.history[0].action == "action"
         assert game.history[0].color is PlayerColor.RED
         assert game.history[0].timestamp <= DateTime.utcnow()
+        assert game.players[PlayerColor.RED].turns == 1
+        assert game.players[PlayerColor.YELLOW].turns == 0
+        assert game.players[PlayerColor.BLUE].turns == 0
+        assert game.players[PlayerColor.GREEN].turns == 0
 
     def test_create_player_view_invalid(self):
         game = Game(2)

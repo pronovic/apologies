@@ -376,11 +376,13 @@ class Player:
         color(str): The color of the player
         hand(List[Card]): List of cards in the player's hand
         pawns(List[Pawn]): List of all pawns belonging to the player
+        turns(int): Number of turns for this player
     """
 
     color = attr.ib(type=PlayerColor)
     hand = attr.ib(type=List[Card])
     pawns = attr.ib(type=List[Pawn])
+    turns = attr.ib(type=int, default=0)
 
     @hand.default
     def _default_hand(self) -> List[Card]:
@@ -547,6 +549,8 @@ class Game:
     def track(self, action: str, player: Optional[Player] = None) -> None:
         """Tracks an action taken during the game."""
         self.history.append(History(action, player.color if player else None))
+        if player:
+            self.players[player.color].turns += 1
 
     def create_player_view(self, color: PlayerColor) -> PlayerView:
         """Return a player-specific view of the game, showing only the information a player would have available on their turn."""
