@@ -8,7 +8,8 @@ from unittest.mock import MagicMock
 import pytest
 
 from apologies.game import GameMode
-from apologies.source import RandomInputSource, source
+from apologies.reward import RewardCalculatorV1
+from apologies.source import RandomInputSource, RewardV1InputSource, source
 
 
 class TestFunctions:
@@ -37,3 +38,24 @@ class TestRandomInputSource:
         ris = RandomInputSource()
         for _ in range(100):
             assert ris.choose_move(GameMode.ADULT, MagicMock(), legal_moves, MagicMock()) in legal_moves
+
+
+class TestRewardV1InputSource:
+    def test_constructor(self):
+        ris = RewardV1InputSource()  # the contract says there must be a valid zero-args constructor
+        assert isinstance(ris.calculator, RewardCalculatorV1)
+
+    def test_choose_move(self):
+        view = MagicMock()
+
+        move1 = MagicMock()
+        move2 = MagicMock()
+        move3 = MagicMock()
+        legal_moves = [move1, move2, move3]
+
+        ris = RewardV1InputSource()
+
+        ris.calculator.calculate = MagicMock(side_effect=[200, 300, 100])
+        evaluator = MagicMock(side_effect=[1, 2, 3])
+
+        assert ris.choose_move(GameMode.ADULT, view, legal_moves, evaluator) is move2
