@@ -179,7 +179,7 @@ def run_simulation(iterations: int, output: str, sources: List[CharacterInputSou
                 for combination in combinations_with_replacement(sources, players):
                     case += 1
                     scenario += 1
-                    prefix = "Scenario %d: %s mode with %d players (case %d): " % (scenario, mode, players, case)
+                    prefix = "Scenario %d: %s mode with %d players (case %d): " % (scenario, mode.name, players, case)
                     characters = [Character(name=source.name, source=source) for source in combination]
                     engine = Engine(mode=mode, characters=characters)
                     print(" " * 100, end="\r", flush=True)
