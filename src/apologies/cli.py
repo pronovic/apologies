@@ -56,13 +56,15 @@ def simulation(argv: List[str], unused_stdout: IO[str], unused_stderr: IO[str]) 
     """Run a simulation and display results."""
     parser = argparse.ArgumentParser(
         description="Run a simulation to see how well different character input sources behave.",
-        epilog="Every combination of game mode, number of players, and input source is tested, using %d iterations by default."
-        % _SIM_DEFAULT_ITERATIONS,
+        epilog="Every combination of game mode, number of players, and input source is tested, "
+        "using %d iterations by default.  A spreadsheet is generated containing statistics "
+        "on mean and median turns and duration to win, as well as number of wins for each "
+        "source." % _SIM_DEFAULT_ITERATIONS,
     )
 
     parser.add_argument("--iter", type=int, default=_SIM_DEFAULT_ITERATIONS, help="Number of iterations per scenario")
 
-    parser.add_argument("--out", type=str, default=_SIM_DEFAULT_OUT, help="Path to the output file")
+    parser.add_argument("--out", type=str, default=_SIM_DEFAULT_OUT, help="Path to the output CSV file")
 
     parser.add_argument(
         "source", type=str, nargs="+", help="Fully-qualified name of the character sources to test",

@@ -23,6 +23,7 @@ from .source import CharacterInputSource
 BASE_HEADERS = [
     "Scenario",
     "Mode",
+    "Iterations",
     "Players",
     "Player 1",
     "Player 2",
@@ -73,6 +74,7 @@ class _Statistics:
     mean_turns = attr.ib(type=Optional[float])
     median_duration = attr.ib(type=Optional[float])
     mean_duration = attr.ib(type=Optional[float])
+    wins = attr.ib(type=int)
 
     @staticmethod
     def for_results(name: Optional[str], results: List[_Result]) -> _Statistics:
@@ -83,7 +85,8 @@ class _Statistics:
         mean_turns = _mean(turns)
         median_duration = _median(durations)
         mean_duration = _mean(durations)
-        return _Statistics(name, median_turns, mean_turns, median_duration, mean_duration)
+        wins = len(in_scope)
+        return _Statistics(name, median_turns, mean_turns, median_duration, mean_duration, wins)
 
 
 @attr.s
@@ -92,6 +95,7 @@ class _Analysis:
 
     scenario = attr.ib(type=str)
     mode = attr.ib(type=str)
+    iterations = attr.ib(type=int)
     players = attr.ib(type=int)
     playernames = attr.ib(type=List[str])
     overall_stats = attr.ib(type=_Statistics)
@@ -107,10 +111,11 @@ def _analyze_scenario(
     results: List[_Result],
 ) -> _Analysis:
     """Analyze a scenario, generating data that can be written to the CSV file."""
+    iterations = len(results)
     playernames = [source.name for source in combination] + [""] * (MAX_PLAYERS - len(combination))
     overall_stats = _Statistics.for_results(None, results)
     source_stats = {name: _Statistics.for_results(name, results) for name in sorted(list({source.name for source in sources}))}
-    return _Analysis("Scenario %d" % scenario, mode.name, players, playernames, overall_stats, source_stats)
+    return _Analysis("Scenario %d" % scenario, mode.name, iterations, players, playernames, overall_stats, source_stats)
 
 
 def _write_header(csvwriter, sources: List[CharacterInputSource]) -> None:  # type: ignore
@@ -133,7 +138,7 @@ def _write_scenario(csvwriter, analysis: _Analysis) -> None:  # type: ignore
         analysis.overall_stats.mean_duration,
     ]
     for stats in analysis.source_stats.values():
-        row += [stats.median_turns, stats.mean_turns, stats.median_duration, stats.mean_duration]
+        row += [stats.median_turns, stats.mean_turns, stats.median_duration, stats.mean_duration, stats.wins]
     csvwriter.writerow(row)
 
 
