@@ -18,7 +18,10 @@ __pycache__
 /docs/_build
 /dist
 
-# Genearated simulation data
+# Editor lock files
+/.~lock*
+
+# Generated simulation data
 /simulation.csv
 
 # IntelliJ (see: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839)

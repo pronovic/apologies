@@ -40,6 +40,7 @@ SOURCE_HEADERS = [
     "Mean Turns",
     "Median Duration (ms)",
     "Mean Duration (ms)",
+    "Wins",
 ]
 
 
@@ -123,7 +124,7 @@ def _write_header(csvwriter, sources: List[CharacterInputSource]) -> None:  # ty
     headers = BASE_HEADERS[:]
     for name in sorted(list({source.name for source in sources})):
         for column in SOURCE_HEADERS:
-            headers += ["%s %s" % (name, column)]
+            headers += ["%s - %s" % (name, column)]
     csvwriter.writerow(headers)
 
 
