@@ -112,6 +112,17 @@ class TestEngine:
             assert engine.completed is True
             assert engine.state == "Game completed"
 
+    def test_winner(self):
+        engine = TestEngine._create_engine()
+        game_winner = MagicMock(color=PlayerColor.YELLOW)
+        with patch("apologies.game.Game.completed", new_callable=PropertyMock) as completed:
+            with patch("apologies.game.Game.winner", new_callable=PropertyMock) as winner:
+                winner.return_value = game_winner
+                completed.return_value = False
+                assert engine.winner() is None
+                completed.return_value = True
+                assert engine.winner() == (engine._map[PlayerColor.YELLOW], game_winner)
+
     def test_reset(self):
         engine = TestEngine._create_engine()
         saved = engine._game

@@ -122,6 +122,7 @@ Usage: run <command>
 - run docs -o: Build the Spinx documentation and open in a browser
 - run publish: Tag the current code and publish to PyPI
 - run demo: Run a game with simulated players, displaying output on the terminal
+- run sim: Run a simulation to see how well different character input sources behave
 ```
 
 ## Integration with IntelliJ or PyCharm

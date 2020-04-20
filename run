@@ -154,6 +154,11 @@ run_demo() {
    poetry run python src/scripts/demo $*
 }
 
+# Run a simulation to see how well different character input sources behave
+run_sim() {
+   poetry run python src/scripts/simulation $*
+}
+
 # Render a board via the render script
 run_render() {
    poetry run python src/scripts/render
@@ -204,6 +209,9 @@ case $1 in
    demo)
       run_demo $*
       ;;
+   sim*)
+      run_sim $*
+      ;;
    render)
       run_render
       ;;
@@ -227,6 +235,7 @@ case $1 in
       echo "- run docs -o: Build the Spinx documentation and open in a browser"
       echo "- run publish: Tag the current code and publish to PyPI"
       echo "- run demo: Run a game with simulated players, displaying output on the terminal"
+      echo "- run sim: Run a simulation to see how well different character input sources behave"
       echo ""
       exit 1
 esac

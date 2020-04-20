@@ -134,6 +134,10 @@ class Engine:
         """Whether the game is completed."""
         return self._game.completed
 
+    def winner(self) -> Optional[Tuple[Character, Player]]:
+        """Return the winner of the game, as a tuple of (Character, Player)"""
+        return (self._map[self._game.winner.color], self._game.winner) if self.completed else None  # type: ignore
+
     def reset(self) -> Game:
         """Reset game state."""
         self._game = self._default_game()

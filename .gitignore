@@ -18,6 +18,9 @@ __pycache__
 /docs/_build
 /dist
 
+# Genearated simulation data
+/simulation.csv
+
 # IntelliJ (see: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839)
 .idea/**/workspace.xml
 .idea/**/tasks.xml

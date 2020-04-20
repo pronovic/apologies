@@ -24,6 +24,16 @@ class CharacterInputSource(ABC):
     Concrete character input sources must have a valid zero-arguments constructor.
     """
 
+    @property
+    def fullname(self) -> str:
+        """Get the fully-qualified name of the character input source."""
+        return ".".join([type(self).__module__, type(self).__name__])
+
+    @property
+    def name(self) -> str:
+        """Get the fully-qualified name of the character input source."""
+        return type(self).__name__
+
     @abstractmethod
     def choose_move(
         self, mode: GameMode, view: PlayerView, legal_moves: List[Move], evaluator: Callable[[PlayerView, Move], PlayerView]
@@ -105,6 +115,8 @@ class RewardV1InputSource(RewardInputSource):
 def source(name: str) -> CharacterInputSource:
     """
     Create a character input source by name.
+    
+    As a special case, if the name is not fully-qualified, we will assume "apologies.source".
 
     Args:
         name(str): Fully-qualified name of the source, like "apologies.source.RandomInputSource"
@@ -115,6 +127,8 @@ def source(name: str) -> CharacterInputSource:
     Raises:
         ValueError: If the named source does not exist or is not a CharacterInputSource
     """
+    if not "." in name:
+        name = "apologies.source.%s" % name
     cls = locate(name)
     if not issubclass(cls, CharacterInputSource):  # type: ignore
         raise ValueError("%s is not a CharacterInputSource" % name)

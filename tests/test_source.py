@@ -25,10 +25,15 @@ class TestFunctions:
         ris = source("apologies.source.RandomInputSource")
         assert isinstance(ris, RandomInputSource)
 
+        ris = source("RandomInputSource")
+        assert isinstance(ris, RandomInputSource)  # if there's no module, we assume "apologies.source"
+
 
 class TestRandomInputSource:
     def test_constructor(self):
-        RandomInputSource()  # the contract says there must be a valid zero-args constructor
+        ris = RandomInputSource()  # the contract says there must be a valid zero-args constructor
+        assert ris.name == "RandomInputSource"
+        assert ris.fullname == "apologies.source.RandomInputSource"
 
     def test_choose_move(self):
         move1 = MagicMock()
@@ -43,6 +48,8 @@ class TestRandomInputSource:
 class TestRewardV1InputSource:
     def test_constructor(self):
         ris = RewardV1InputSource()  # the contract says there must be a valid zero-args constructor
+        assert ris.name == "RewardV1InputSource"
+        assert ris.fullname == "apologies.source.RewardV1InputSource"
         assert isinstance(ris.calculator, RewardCalculatorV1)
 
     def test_choose_move(self):
