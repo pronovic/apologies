@@ -41,6 +41,7 @@ SOURCE_HEADERS = [
     "Median Duration (ms)",
     "Mean Duration (ms)",
     "Wins",
+    "Win %",
 ]
 
 
@@ -76,6 +77,7 @@ class _Statistics:
     median_duration = attr.ib(type=Optional[float])
     mean_duration = attr.ib(type=Optional[float])
     wins = attr.ib(type=int)
+    win_percent = attr.ib(type=float)
 
     @staticmethod
     def for_results(name: Optional[str], results: List[_Result]) -> _Statistics:
@@ -87,7 +89,8 @@ class _Statistics:
         median_duration = _median(durations)
         mean_duration = _mean(durations)
         wins = len(in_scope)
-        return _Statistics(name, median_turns, mean_turns, median_duration, mean_duration, wins)
+        win_percent = 0.0 if len(results) == 0 else 100.0 * (wins / len(results))
+        return _Statistics(name, median_turns, mean_turns, median_duration, mean_duration, wins, win_percent)
 
 
 @attr.s
@@ -106,13 +109,13 @@ class _Analysis:
 def _analyze_scenario(
     scenario: int,
     mode: GameMode,
+    iterations: int,
     players: int,
     sources: Sequence[CharacterInputSource],
     combination: Sequence[CharacterInputSource],
     results: List[_Result],
 ) -> _Analysis:
     """Analyze a scenario, generating data that can be written to the CSV file."""
-    iterations = len(results)
     playernames = [source.name for source in combination] + [""] * (MAX_PLAYERS - len(combination))
     overall_stats = _Statistics.for_results(None, results)
     source_stats = {name: _Statistics.for_results(name, results) for name in sorted(list({source.name for source in sources}))}
@@ -130,7 +133,7 @@ def _write_header(csvwriter, sources: List[CharacterInputSource]) -> None:  # ty
 
 def _write_scenario(csvwriter, analysis: _Analysis) -> None:  # type: ignore
     """Write analysis results for a scenario into the CSV file."""
-    row = [analysis.scenario, analysis.mode, analysis.players]
+    row = [analysis.scenario, analysis.mode, analysis.iterations, analysis.players]
     row += analysis.playernames
     row += [
         analysis.overall_stats.median_turns,
@@ -139,7 +142,7 @@ def _write_scenario(csvwriter, analysis: _Analysis) -> None:  # type: ignore
         analysis.overall_stats.mean_duration,
     ]
     for stats in analysis.source_stats.values():
-        row += [stats.median_turns, stats.mean_turns, stats.median_duration, stats.mean_duration, stats.wins]
+        row += [stats.median_turns, stats.mean_turns, stats.median_duration, stats.mean_duration, stats.wins, stats.win_percent]
     csvwriter.writerow(row)
 
 
@@ -192,7 +195,7 @@ def run_simulation(iterations: int, output: str, sources: List[CharacterInputSou
                     print("%sstarting" % prefix, end="\r", flush=True)
                     results = _run_scenario(prefix, iterations, engine)
                     print("%sanalyzing" % prefix, end="\r", flush=True)
-                    analysis = _analyze_scenario(scenario, mode, players, sources, combination, results)
+                    analysis = _analyze_scenario(scenario, mode, iterations, players, sources, combination, results)
                     print("%swriting CSV" % prefix, end="\r", flush=True)
                     _write_scenario(csvwriter, analysis)
                     print("%sdone" % prefix, end="\r", flush=True)
