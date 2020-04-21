@@ -89,7 +89,7 @@ class _Statistics:
         median_duration = _median(durations)
         mean_duration = _mean(durations)
         wins = len(in_scope)
-        win_percent = 0.0 if len(results) == 0 else 100.0 * (wins / len(results))
+        win_percent = 0.0 if len(results) == 0 else round(100.0 * (wins / len(results)), 1)
         return _Statistics(name, median_turns, mean_turns, median_duration, mean_duration, wins, win_percent)
 
 
