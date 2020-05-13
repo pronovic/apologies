@@ -134,6 +134,10 @@ class Engine:
         """Whether the game is completed."""
         return self._game.completed
 
+    @property
+    def colors(self) -> Dict[PlayerColor, Character]:
+        return self._map.copy()
+
     def winner(self) -> Optional[Tuple[Character, Player]]:
         """Return the winner of the game, as a tuple of (Character, Player)"""
         return (self._map[self._game.winner.color], self._game.winner) if self.completed else None  # type: ignore

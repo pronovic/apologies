@@ -57,6 +57,7 @@ class TestEngine:
         assert engine._queue.first == engine.first
         assert engine._queue.entries == [PlayerColor.RED, PlayerColor.YELLOW]
         assert engine._rules.mode == GameMode.STANDARD
+        assert engine.colors == engine._map and engine.colors is not engine._map  # it's a copy
         assert engine._map == {PlayerColor.RED: character1, PlayerColor.YELLOW: character2}
 
     def test_constructor_random(self):
@@ -79,6 +80,7 @@ class TestEngine:
             assert engine._queue.first == engine.first
             assert engine._queue.entries == [PlayerColor.RED, PlayerColor.YELLOW, PlayerColor.GREEN, PlayerColor.BLUE]
             assert engine._rules.mode == GameMode.STANDARD
+            assert engine.colors == engine._map and engine.colors is not engine._map  # it's a copy
             assert engine._map == {
                 PlayerColor.RED: character1,
                 PlayerColor.YELLOW: character2,
