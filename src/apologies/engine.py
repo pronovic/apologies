@@ -60,10 +60,11 @@ class Engine:
         while not engine.completed:
           state = engine.play_next()
 
-    This plays a turn for each player, one after another, until the
-    game is complete.  Other, more fine-grained methods exist if you
-    need to structure game play differently for your purposes (for
-    instance, to train a machine learning model).
+    This synchronously plays a turn for each player, one after another, until
+    the game is complete.  Other, more fine-grained methods exist if you need
+    to structure game play differently for your purposes (for instance, to
+    train a machine learning model or to play the game in an asynchronous
+    event-driven environment).
 
     Attributes:
         mode(GameMode): The game mode
@@ -157,9 +158,18 @@ class Engine:
         self._rules.start_game(self._game)
         return self._game
 
+    def next_turn(self) -> Tuple[PlayerColor, Character]:
+        """
+        Get the color and character for the next turn
+        This will give you a different player each time you call it.
+        """
+        color = self._queue.next()
+        character = self._map[color]
+        return color, character
+
     def play_next(self) -> Game:
         """
-        Play the next turn of the game, returning initial game state.
+        Play the next turn of the game, returning game state as of the end of the turn.
 
         Returns:
             Game: Current state of the game.
@@ -169,8 +179,7 @@ class Engine:
 
         saved = self._game.copy()
         try:
-            color = self._queue.next()
-            character = self._map[color]
+            color, character = self.next_turn()
 
             done = False
             while not done:
