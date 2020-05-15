@@ -15,6 +15,9 @@ Release v\ |version|
 .. image:: https://github.com/pronovic/apologies/workflows/Test%20Suite/badge.svg
     :target: https://github.com/pronovic/apologies
 
+.. image:: https://readthedocs.org/projects/apologies/badge/?version=latest&style=plastic
+    :target: https://apologies.readthedocs.io/en/latest/
+
 Apologies_ is a Python library that implements a game similar to the Sorry_
 board game.  It includes a console demo that plays the game with automated
 players, intended for use by developers and not by end users.
