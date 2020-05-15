@@ -496,7 +496,7 @@ class Game:
     history = attr.ib(type=List[History])
 
     @playercount.validator
-    def _check_playercount(self, attribute: str, value: int) -> None:
+    def _check_playercount(self, _attribute: str, value: int) -> None:
         if value < MIN_PLAYERS or value > MAX_PLAYERS:
             raise ValueError("Invalid number of players")
 

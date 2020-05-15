@@ -52,7 +52,7 @@ class CircularQueue(Generic[T]):
         return temp
 
     @entries.validator
-    def _check_entries(self, attribute: str, value: int) -> None:
+    def _check_entries(self, _attribute: str, value: int) -> None:
         if not value:
             raise ValueError("Entries must not be empty")
 
