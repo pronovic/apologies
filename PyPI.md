@@ -6,7 +6,7 @@
 ![](https://github.com/pronovic/apologies/workflows/Test%20Suite/badge.svg)
 ![](https://readthedocs.org/projects/apologies/badge/?version=latest&style=plastic)
 
-[Apologies](https://gitub.com/pronovic/apologies) is a Python library that implements a game similar to the [Sorry](https://en.wikipedia.org/wiki/Sorry!_(game)) board game.  It includes a console demo that plays the game with automated players, intended for use by developers and not by end users.  See the [documentation](https://apologies.readthedocs.io/en/latest) for notes about the public interface.
+[Apologies](https://github.com/pronovic/apologies) is a Python library that implements a game similar to the [Sorry](https://en.wikipedia.org/wiki/Sorry!_(game)) board game.  It includes a console demo that plays the game with automated players, intended for use by developers and not by end users.  See the [documentation](https://apologies.readthedocs.io/en/latest) for notes about the public interface.
 
 It also serves as a complete example of how to manage a modern (circa 2020)
 Python project, including style checks, code formatting, integration with
