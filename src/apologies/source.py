@@ -64,6 +64,25 @@ class CharacterInputSource(ABC):
 
 
 @attr.s
+class NoOpInputSource(CharacterInputSource):
+
+    """
+    A no-op input source, which raises an error if ever used.
+    
+    The Apologies library is designed with a synchronous callback model in mind.  If your
+    application uses a different model, you may use lower-level methods to interact with
+    the game engine directly, rather than getting user input from a callback.  In that case,
+    you will use this character input source.  If you get an error, you'll know that you've
+    done something wrong.
+    """
+
+    def choose_move(
+        self, _mode: GameMode, _view: PlayerView, _moves: List[Move], _evaluator: Callable[[PlayerView, Move], PlayerView]
+    ) -> Move:
+        raise NotImplementedError
+
+
+@attr.s
 class RandomInputSource(CharacterInputSource):
 
     """

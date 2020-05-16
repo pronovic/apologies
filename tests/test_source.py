@@ -9,7 +9,7 @@ import pytest
 
 from apologies.game import GameMode
 from apologies.reward import RewardCalculatorV1
-from apologies.source import RandomInputSource, RewardV1InputSource, source
+from apologies.source import NoOpInputSource, RandomInputSource, RewardV1InputSource, source
 
 
 class TestFunctions:
@@ -27,6 +27,17 @@ class TestFunctions:
 
         ris = source("RandomInputSource")
         assert isinstance(ris, RandomInputSource)  # if there's no module, we assume "apologies.source"
+
+
+class TestNoOpInputSource:
+    def test_constructor(self):
+        nois = NoOpInputSource()  # the contract says there must be a valid zero-args constructor
+        assert nois.name == "NoOpInputSource"
+        assert nois.fullname == "apologies.source.NoOpInputSource"
+
+    def test_choose_move(self):
+        with pytest.raises(NotImplementedError):
+            NoOpInputSource().choose_move(GameMode.ADULT, MagicMock(), MagicMock(), MagicMock())
 
 
 class TestRandomInputSource:
