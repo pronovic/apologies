@@ -52,17 +52,19 @@ to choose between available legal moves.
 
 The central class in the Apologies system is the Engine_, which coordinates
 game play via a set of Characters_.  Game state is maintained in the Game_
-class.  The Game_ class contains methods to serialize and deserialize game
-state to and from JSON, which facilitates sharing state between two networked
-components.
+class.  To play a game, you construct an Engine_, providing a GameMode_ and 2-4
+Characters_ that will participate in the game.  The engine maintains game state
+and coordinates the actions required to play the game.
 
-To play a game, you construct an Engine_, providing a GameMode_ and 2-4
-Characters_ that will participate in the game.  The engine maintains
-game state and coordinates the actions required to play the game.
+The library comes with several `Character Input Sources`.  The simplest is
+called RandomInputSource_, which chooses randomly from among all legal moves.
+RewardV1InputSource_ uses a reward_-based scheme, choosing the move with the
+highest calculated reward value.  More sophisticated sources can be created by
+implementing the CharacterInputSource_ interface.  
 
-The library comes with a single `Character Input Source` called RandomInputSource_,
-which chooses randomly from among all legal moves.  More sophisticated 
-sources can be created by implementing the CharacterInputSource_ interface.
+If this synchronous, callback-based model does not work well for your
+application, you can use lower-level methods instead, and coordinate game play
+in whatever way works best for you.
 
 
 Example Code
@@ -78,17 +80,50 @@ the results of each move::
 
     p1 = Character("Player 1", source=RandomInputSource())
     p2 = Character("Player 2", source=RandomInputSource())
+
     engine = Engine(mode=GameMode.STANDARD, characters=[p1, p2])
     engine.start_game()
+
     while not engine.completed:
-      state = engine.play_next()
-      print("%s" % state.history[-1])
-      sleep(1)
+        state = engine.play_next()
+        print("%s" % state.history[-1])
+        sleep(1)
 
 This example uses the RandomInputSource_, which chooses a legal move at random.
 To create an interactive game for human players, you would implement your
 own CharacterInputSource_ interface to get user input.
 
+If this synchronous, callback-based model does not work well for your application,
+you can use lower-level methods to accomplish the same thing::
+
+    from apologies.engine import Engine, Character
+    from apologies.game import GameMode
+    from apologies.source import NoOpInputSource
+
+    p1 = Character("Player 1", source=NoOpInputSource())
+    p2 = Character("Player 2", source=NoOpInputSource())
+
+    engine = Engine(GameMode.STANDARD, characters=[p1, p2])
+    engine.start_game()
+
+    while not engine.completed:
+        color, character = engine.next_turn()
+
+        done = False
+        while not done:  # i.e. player got a draw-again card
+            view = engine.game.create_player_view(color)
+            card, moves = engine.construct_legal_moves(view)
+            move = choose_my_move(moves)  # however you choose a move in your system
+            done = engine.execute_move(color, move)
+
+        print("%s" % engine.game.history[-1])
+
+The steps shown here give you a game equivalent to callback-based game shown
+above.  In a real application, this would not all be done as part of the same
+loop.  Instead, you would take these individual steps and break them up to
+reflect your flow of control.  For instance, after generating the legal moves,
+you might send those moves off to a client and then come back later to execute
+the move chosen by the client.  
 
 Running the Demo
 ----------------
@@ -141,6 +176,8 @@ require extra configuration before the terminal can be resized properly
 .. _Game: autoapi/apologies/game/index.html#apologies.game.Game
 .. _GameMode: autoapi/apologies/game/index.html#apologies.game.GameMode
 .. _RandomInputSource: autoapi/apologies/source/index.html#apologies.source.RandomInputSource
+.. _RewardV1InputSource: autoapi/apologies/source/index.html#apologies.source.RewardV1InputSource
+.. _reward: autoapi/apologies/reward/index.html
 .. _Sorry: https://en.wikipedia.org/wiki/Sorry!_(game)
 .. _StackExchange: https://apple.stackexchange.com/a/47841/249172Z
 .. _iTerm2: https://www.iterm2.com/
