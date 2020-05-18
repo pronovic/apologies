@@ -3,15 +3,18 @@
 ## Development Environment
 
 My primary development environment is IntelliJ (or just Vim) on MacOS, but the
-code and the development process should be portable. I've tested on Windows 10
-and on Debian buster.
+code and the development process also work in a Linux environment (I've tested
+on Debian buster).  As of now, I do not do any software development on Windows,
+and there are known problems on that platform.  Fixing this is not a high
+priority for me.
 
 ## Installing this Package Elsewhere
 
-Normally, you would install a packaged version of [PyPI](https://pypi.org/project/apologies/).
-However, if you've made changes that aren't published, and you want to use them
-locally, then the easiest thing to do is build the wheel package and install it
-in your virtualenv:
+Normally, you would install a packaged version 
+from [PyPI](https://pypi.org/project/apologies/).  However, if you've made
+changes that aren't published, and you want to use them locally, then the
+easiest thing to do is build the wheel package and install it in your
+virtualenv:
 
 ```
 $ poetry build
@@ -73,18 +76,6 @@ Then, install Poetry in your home directory:
 
 ```
 $ curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
-```
-
-### Windows
-
-First, download the [Windows installer](https://www.python.org/downloads/windows/) for 
-Python 3.7 or later, and install Python on your system.  Make sure that the
-`python` on your `$PATH` is Python 3.
-
-Then, start a Powershell prompt and install Poetry in your home directory:
-
-```powershell
-(Invoke-WebRequest -Uri https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py -UseBasicParsing).Content | python
 ```
 
 ## Activating the Virtual Environment
@@ -308,7 +299,6 @@ $ run demo --players=3 --mode=ADULT --delay=0.1
 ```
 
 > _Note:_ The demo only works inside a UNIX-style terminal window (like an
-> xterm or a MacOS terminal).  It doesn't work in a Windows console, because it
-> relies on the curses terminal library.  Some terminals (like [iTerm2](https://www.iterm2.com/)) may
+> xterm or a MacOS terminal).  Some terminals (like [iTerm2](https://www.iterm2.com/)) may
 > require extra configuration before the terminal can be resized properly
 > (see [StackExchange](https://apple.stackexchange.com/a/47841/249172Z)).
