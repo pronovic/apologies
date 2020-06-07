@@ -425,11 +425,13 @@ class History:
     Attributes:
         action(str): String describing the action
         color(Optional[PlayerColor]): Color of the player associated with the action
+        card(Optional[CardType]): Card associated with the action
         timestamp(DateTime): Timestamp tied to the action (defaults to current time)
     """
 
     action = attr.ib(type=str)
     color = attr.ib(default=None, type=Optional[PlayerColor])
+    card = attr.ib(default=None, type=Optional[CardType])
     timestamp = attr.ib(type=DateTime)
 
     @timestamp.default
@@ -546,9 +548,9 @@ class Game:
         """Deserialize the game state from JSON."""
         return _CONVERTER.structure(orjson.loads(data), Game)  # type: ignore
 
-    def track(self, action: str, player: Optional[Player] = None) -> None:
+    def track(self, action: str, player: Optional[Player] = None, card: Optional[Card] = None) -> None:
         """Tracks an action taken during the game."""
-        self.history.append(History(action, player.color if player else None))
+        self.history.append(History(action, player.color if player else None, card.cardtype if card else None))
         if player:
             self.players[player.color].turns += 1
 

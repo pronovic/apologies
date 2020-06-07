@@ -348,9 +348,11 @@ class TestPlayer:
 class TestHistory:
     def test_constructor(self):
         color = PlayerColor.BLUE
-        history = History("action", color)
+        card = CardType.CARD_APOLOGIES
+        history = History("action", color, card)
         assert history.action == "action"
         assert history.color is color
+        assert history.card is card
         assert history.timestamp <= DateTime.utcnow()
 
     def test_str(self):
@@ -360,6 +362,9 @@ class TestHistory:
         assert "%s" % history == "[14:02:16] General - This is an action"
 
         history = History("This is an action", color=PlayerColor.BLUE, timestamp=timestamp)
+        assert "%s" % history == "[14:02:16] Blue - This is an action"
+
+        history = History("This is an action", color=PlayerColor.BLUE, card=CardType.CARD_10, timestamp=timestamp)
         assert "%s" % history == "[14:02:16] Blue - This is an action"
 
 
@@ -467,6 +472,7 @@ class TestGame:
         game.track("action")
         assert game.history[0].action == "action"
         assert game.history[0].color is None
+        assert game.history[0].card is None
         assert game.history[0].timestamp <= DateTime.utcnow()
         assert game.players[PlayerColor.RED].turns == 0
         assert game.players[PlayerColor.YELLOW].turns == 0
@@ -476,9 +482,11 @@ class TestGame:
     def test_track_with_color(self):
         game = Game(4)
         player = MagicMock(color=PlayerColor.RED)
-        game.track("action", player)
+        card = MagicMock(cardtype=CardType.CARD_12)
+        game.track("action", player, card)
         assert game.history[0].action == "action"
         assert game.history[0].color is PlayerColor.RED
+        assert game.history[0].card == CardType.CARD_12
         assert game.history[0].timestamp <= DateTime.utcnow()
         assert game.players[PlayerColor.RED].turns == 1
         assert game.players[PlayerColor.YELLOW].turns == 0
