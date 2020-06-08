@@ -226,7 +226,7 @@ class Engine:
         """Play the next turn under the rules for standard mode, returning True if the player's turn is done."""
         if not move.actions:
             self.discard(move.card)
-            self._game.track("Turn is forfeit; discarded card %s" % move.card.cardtype.value, player)
+            self._game.track("Turn is forfeit; discarded card %s" % move.card.cardtype.value, player, move.card)
             return True  # player's turn is done if they forfeit
         else:
             self._rules.execute_move(self._game, player, move)  # tracks history, potentially completes game
@@ -239,7 +239,7 @@ class Engine:
             player.hand.remove(move.card)
             self.discard(move.card)
             player.hand.append(self.draw())
-            self._game.track("Turn is forfeit; discarded card %s" % move.card.cardtype.value, player)
+            self._game.track("Turn is forfeit; discarded card %s" % move.card.cardtype.value, player, move.card)
             return True  # player's turn is done if they forfeit
         else:
             self._rules.execute_move(self._game, player, move)  # tracks history, potentially completes game

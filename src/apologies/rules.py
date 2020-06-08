@@ -489,7 +489,7 @@ class Rules:
                 pawn.position.move_to_position(action.position)
                 log += "%s, " % pawn
         log += "]"
-        game.track(log, player)
+        game.track(log, player, move.card)
         if game.completed:
             game.track("Game completed: winner is %s after %d turns" % (game.winner.color.value, game.winner.turns))  # type: ignore
 
