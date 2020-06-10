@@ -8,6 +8,7 @@
 
 [Apologies](https://github.com/pronovic/apologies) is a Python library that implements a game similar to the [Sorry](https://en.wikipedia.org/wiki/Sorry!_(game)) board game.  It includes a console demo that plays the game with automated players, intended for use by developers and not by end users.  See the [documentation](https://apologies.readthedocs.io/en/latest) for notes about the public interface.
 
-It also serves as a complete example of how to manage a modern (circa 2020)
-Python project, including style checks, code formatting, integration with
-IntelliJ, CI builds at GitHub, and integration with PyPI and Read the Docs.
+It was written as a learning exercise and technology demonstration effort, and
+serves as a complete example of how to manage a modern (circa 2020) Python
+project, including style checks, code formatting, integration with IntelliJ, CI
+builds at GitHub, and integration with PyPI and Read the Docs.
