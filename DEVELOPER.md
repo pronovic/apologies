@@ -335,7 +335,7 @@ $ poetry version
 apologies 0.1.21
 ```
 
-Bump it to whatever version you want to use and comming your changes:
+Bump it to whatever version you want to use and commit your changes:
 
 ```
 $ poetry version 0.1.22
