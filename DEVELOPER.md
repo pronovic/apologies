@@ -81,7 +81,7 @@ $ curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-po
 ## Activating the Virtual Environment
 
 Poetry manages the virtual environment used for testing.  Theoretically, the
-Poetry `shell` command gives you a shell using that virutalenv.  However, it
+Poetry `shell` command gives you a shell using that virtualenv.  However, it
 doesn't work that well.  Instead, it's simpler to just activate the virtual
 environment directly.  The [`run`](run) script has an entry that dumps out the
 correct `source` command. Otherwise, see [`notes/venv.sh`](notes/venv.sh) for a way
