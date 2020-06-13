@@ -40,14 +40,13 @@ Documentation
 -------------
 
 .. toctree::
-   :maxdepth: 2
-   :glob:
+   :maxdepth: 1
 
-`Note:` Commonly-used classes are imported into ``__init__.py`` to flatten the
-namespace and make the library easier to use.  Unfortunately, the API reference
-above reflects the code organization and not this flattened namespace.  In
-general, you should follow the examples below and import classes directly from
-``apologies``.
+Commonly-used classes are imported into 
+`__init__.py <https://github.com/pronovic/apologies/blob/master/src/apologies/__init__.py>`_
+to flatten the namespace and make the library easier to use.  In general, you
+should follow the examples below and import classes directly from
+``apologies``, rather than importing from submodules.
 
 
 Playing a Game
