@@ -43,6 +43,12 @@ Documentation
    :maxdepth: 2
    :glob:
 
+`Note:` Commonly-used classes are imported into ``__init__.py`` to flatten the
+namespace and make the library easier to use.  Unfortunately, the API reference
+above reflects the code organization and not this flattened namespace.  In
+general, you should follow the examples below and import classes directly from
+``apologies``.
+
 
 Playing a Game
 --------------
@@ -79,9 +85,7 @@ This is a simple script to play a 2-player, standard-mode game and print
 the results of each move::
 
     from time import sleep
-    from apologies.engine import Engine, Character
-    from apologies.game import GameMode
-    from apologies.source import RandomInputSource
+    from apologies import Engine, Character, GameMode, RandomInputSource
 
     p1 = Character("Player 1", source=RandomInputSource())
     p2 = Character("Player 2", source=RandomInputSource())
@@ -101,9 +105,7 @@ own CharacterInputSource_ interface to get user input.
 If this synchronous, callback-based model does not work well for your application,
 you can use lower-level methods to accomplish the same thing::
 
-    from apologies.engine import Engine, Character
-    from apologies.game import GameMode
-    from apologies.source import NoOpInputSource
+    from apologies import Engine, Character, GameMode, NoOpInputSource
 
     p1 = Character("Player 1", source=NoOpInputSource())
     p2 = Character("Player 2", source=NoOpInputSource())

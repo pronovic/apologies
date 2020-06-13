@@ -1,5 +1,15 @@
 # Developer Notes
 
+## Python's Init File
+
+I've chosen to export some frequently used classes in [`__init__.py`](src/apologies/__init__.py) to
+flatten the namespace and make the library more approachable.  This isn't something
+I've done before, but I noticed this pattern being followed in some other libraries
+and it seemed to be worthwhile.  This [article](https://towardsdatascience.com/whats-init-for-me-d70a312da583) was
+helpful in understanding the options and common practices.  Unfortunately, Sphinx
+does not do a good job of documenting the init file, so this doesn't really simplify
+things for users as much as I had hoped.
+
 ## Development Environment
 
 My primary development environment is IntelliJ (or just Vim) on MacOS, but the
