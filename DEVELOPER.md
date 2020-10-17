@@ -225,8 +225,13 @@ Click on **Project**.  In the **Project SDK**, select the Python interpreter
 virtualenv from above.  Then, under **Project compiler output**, enter `out`.  Then
 click **Apply**.
 
-Click on **Modules**.  On the **Sources** tab, find the **Exclude files** box.
-Enter the following, and click **Apply**:
+Click on **Modules**.  On the **Sources** tab, find the `src` folder. Right
+click on it and make sure the **Sources** entry is checked.  Without this,
+IntelliJ sometimes does not recognize the source tree when trying to run
+tests.
+
+Still on the **Sources** tab, find the **Exclude files** box.  Enter the
+following, and click **Apply**:
 
 ```
 .coverage;.coveragerc;.github;.htmlcov;.idea;.isort.cfg;.mypyrc;.mypy_cache;.pre-commit-config.yaml;.pylintrc;.pytest_cache;.readthedocs.yml;.tox;.toxrc;build;dist;docs/_build;out;poetry.lock;run
@@ -237,6 +242,10 @@ On the **Dependencies** tab, select the Python SDK you configured above as the
 
 You should get a **Frameworks Detected** message again at this point.  If so,
 click the **Configure** link and accept the defaults.
+
+Finally, go to the gear icon in the project panel, and uncheck **Show Excluded
+Files**.  This will hide the files and directories that were excluded above in
+module configuration.
 
 ### Preferences
 
