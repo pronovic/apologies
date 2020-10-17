@@ -13,6 +13,11 @@ run_activate() {
    echo "source "$(dirname $(poetry run which python) 2>/dev/null)/activate""
 }
 
+# Regenerate the doc/requirements file"
+run_requirements() {
+   poetry export --format=requirements.txt --without-hashes --dev --output=docs/requirements.txt
+}
+
 # Run the Pylint code checker
 run_pylint() {
    poetry run which pylint > /dev/null
@@ -189,6 +194,9 @@ case $1 in
    activate)
       run_activate
       ;;
+   requirements)
+      run_requirements
+      ;;
    *lint)
       run_pylint
       ;;
@@ -242,6 +250,7 @@ case $1 in
       echo ""
       echo "- run install: Setup the virtualenv via Poetry and install pre-commit hooks"
       echo "- run activate: Print command needed to activate the Poetry virtualenv"
+      echo "- run requirements: Regenerate the doc/requirements file"
       echo "- run checks: Run the PyLint and MyPy code checkers"
       echo "- run format: Run the Black code formatter"
       echo "- run test: Run the unit tests"
