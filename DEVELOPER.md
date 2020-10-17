@@ -65,9 +65,30 @@ $ brew install python3
 $ brew install poetry
 ```
 
-When you're done, make sure that the `python` on your `$PATH` is Python 3 from
-Homebrew (in `/usr/local`).  By default, you'll get the standard Python 2 that
-comes with MacOS.
+When you're done, you probably want to set up your profile so the `python` on
+your `$PATH` is Python 3 from Homebrew (in `/usr/local`).  By default, you'll
+get the standard Python 2 that comes with MacOS.
+
+At this point, you can either let Poetry use its defaults, or tell it explicity
+which Python interpreter you want it to use.  Poetry seems to be quite
+aggressive about using the most recent version of Python available, which might
+not be what you want.
+
+For instance, as of this writing, the Homebrew default Python is 3.8, but if
+you also have 3.9 installed (even if it's not on the `$PATH`) Poetry will use
+it.  To force Poetry to use a particular version, run:
+
+```
+$ poetry env use 3.8
+```
+
+You can check the version that is in use with:
+
+```
+$ poetry env info
+```
+
+If you're still having problems, see [this discussion](https://github.com/python-poetry/poetry/issues/522) and also [Poetry PR #731](https://github.com/python-poetry/poetry/pull/731).
 
 ### Debian
 
