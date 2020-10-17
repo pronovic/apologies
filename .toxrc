@@ -16,4 +16,6 @@ commands =
 [testenv:precommit]
 whitelist_externals = poetry
 commands =
-   poetry run pre-commit run --all-files
+   poetry --version
+   poetry version
+   poetry run pre-commit run --all-files --show-diff-on-failure
