@@ -39,5 +39,5 @@ jobs:
       - name: Install Dependencies
         run: poetry install -v
         if: steps.cache.outputs.cache-hit != 'true'
-#      - name: Run Tox test suite
-#        run: poetry run tox -c .toxrc -e "precommit,{py}-{coverage,nocoverage}"
+      - name: Run Tox test suite
+        run: poetry run tox -c .toxrc -e "precommit,{py}-{coverage,nocoverage}"
