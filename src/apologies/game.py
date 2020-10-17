@@ -33,12 +33,12 @@ Attributes:
 
 from __future__ import annotations  # see: https://stackoverflow.com/a/33533514/2907667
 
+import json
 import random
 from enum import Enum
 from typing import Dict, List, Optional
 
 import attr
-import orjson
 import pendulum
 from pendulum.datetime import DateTime
 
@@ -541,12 +541,12 @@ class Game:
 
     def to_json(self) -> str:
         """Serialize the game state to JSON."""
-        return orjson.dumps(_CONVERTER.unstructure(self), option=orjson.OPT_INDENT_2).decode("utf-8")  # type: ignore
+        return json.dumps(_CONVERTER.unstructure(self), indent="  ")
 
     @staticmethod
     def from_json(data: str) -> Game:
         """Deserialize the game state from JSON."""
-        return _CONVERTER.structure(orjson.loads(data), Game)  # type: ignore
+        return _CONVERTER.structure(json.loads(data), Game)  # type: ignore
 
     def track(self, action: str, player: Optional[Player] = None, card: Optional[Card] = None) -> None:
         """Tracks an action taken during the game."""
