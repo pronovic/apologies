@@ -252,7 +252,7 @@ case $1 in
       echo "- run activate: Print command needed to activate the Poetry virtualenv"
       echo "- run requirements: Regenerate the docs/requirements.txt file"
       echo "- run checks: Run the PyLint and MyPy code checkers"
-      echo "- run format: Run the Black code formatter"
+      echo "- run format: Run the code formatters"
       echo "- run test: Run the unit tests"
       echo "- run test -c: Run the unit tests with coverage"
       echo "- run test -ch: Run the unit tests with coverage and open the HTML report"
