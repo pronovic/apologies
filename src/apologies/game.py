@@ -231,7 +231,7 @@ class Position:
 
         Returns:
             Position: A reference to the position, for chaining
-            
+
         Raises:
             ValueError: If the position is invalid
         """
@@ -262,7 +262,7 @@ class Position:
 
         Returns:
             Position: A reference to the position, for chaining
-            
+
         Raises:
             ValueError: If the position is invalid
         """
@@ -278,7 +278,7 @@ class Position:
 
         Returns:
             Position: A reference to the position, for chaining
-            
+
         Raises:
             ValueError: If the position is invalid
         """
@@ -449,7 +449,7 @@ class History:
 class PlayerView:
     """
     A player-specific view of the game, showing only the information a player would have available on their turn.
-      
+
     Attributes:
         player(Player): The player associated with the view.
         opponents(Dict[PlayerColor, Player]): The player's opponents, with private information stripped
@@ -541,12 +541,12 @@ class Game:
 
     def to_json(self) -> str:
         """Serialize the game state to JSON."""
-        return json.dumps(_CONVERTER.unstructure(self), indent="  ")
+        return json.dumps(_CONVERTER.unstructure(self), indent="  ")  # type: ignore
 
     @staticmethod
     def from_json(data: str) -> Game:
         """Deserialize the game state from JSON."""
-        return _CONVERTER.structure(json.loads(data), Game)  # type: ignore
+        return _CONVERTER.structure(json.loads(data), Game)
 
     def track(self, action: str, player: Optional[Player] = None, card: Optional[Card] = None) -> None:
         """Tracks an action taken during the game."""

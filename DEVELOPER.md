@@ -155,7 +155,7 @@ Usage: run <command>
 - run activate: Print command needed to activate the Poetry virtualenv
 - run requirements: Regenerate the docs/requirements.txt file
 - run checks: Run the PyLint and MyPy code checkers
-- run format: Run the Black code formatter
+- run format: Run the code formatters
 - run test: Run the unit tests
 - run test -c: Run the unit tests with coverage
 - run test -ch: Run the unit tests with coverage and open the HTML report

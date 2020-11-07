@@ -20,21 +20,21 @@ classifiers=[
 ]
 
 [tool.poetry.dependencies]
-python = ">=3.7,<3.9"
-attrs = "^19.3.0"
-cattrs = "^1.0.0"
+python = ">=3.7,<=3.9"
+attrs = "^20.1.0"
+cattrs = "^1.1.1"
 pendulum = "^2.1.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
 coverage = "^5.0.3"
 tox = "^3.14.5"
-pylint = "^2.4.4"
+pylint = "^2.6.0"
 sphinx = "^2.4.4"
 toml = "^0.10.0"
 pre-commit = "^2.2.0"
 black = "^19.10b0"
-mypy = "^0.770"
+mypy = "^0.790"   
 isort = "^4.3.21"
 sphinx-autoapi = "^1.2.1"
 
