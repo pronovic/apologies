@@ -68,7 +68,7 @@ class NoOpInputSource(CharacterInputSource):
 
     """
     A no-op input source, which raises an error if ever used.
-    
+
     The Apologies library is designed with a synchronous callback model in mind.  If your
     application uses a different model, you may use lower-level methods to interact with
     the game engine directly, rather than getting user input from a callback.  In that case,
@@ -121,7 +121,7 @@ class RewardInputSource(CharacterInputSource):
 class RewardV1InputSource(RewardInputSource):
 
     """
-    A source of input for a character which chooses its next move based on the RewardCalculatorV1. 
+    A source of input for a character which chooses its next move based on the RewardCalculatorV1.
     """
 
     calculator = RewardCalculatorV1()
@@ -134,7 +134,7 @@ class RewardV1InputSource(RewardInputSource):
 def source(name: str) -> CharacterInputSource:
     """
     Create a character input source by name.
-    
+
     As a special case, if the name is not fully-qualified, we will assume "apologies.source".
 
     Args:
