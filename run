@@ -140,7 +140,7 @@ run_docs() {
 # For instance: poetry config pypi-token.pypi token --local
 # See: https://python-poetry.org/docs/repositories/#configuring-credentials
 run_publish() {
-   VERSION=$(poetry version)
+   VERSION=$(poetry version --no-ansi)
    SHORT_VERSION=$(echo "$VERSION" | sed 's/^.* //g')
 
    git tag -a "v$SHORT_VERSION" -m "Release $VERSION to PyPI"
