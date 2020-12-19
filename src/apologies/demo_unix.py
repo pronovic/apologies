@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 # vim: set ft=python ts=4 sw=4 expandtab:
 
+# We'd prefer to disable these only on Windows, but that isn't an option
+# pylint: disable=bad-option-value,no-member,no-name-in-module
+
 """
 Implements a quick'n'dirty game-playing demo using curses.
 """
