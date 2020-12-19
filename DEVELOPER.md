@@ -324,7 +324,8 @@ tools as described below.
 ## Running the Demo
 
 While this is primarily a library, it includes a quick'n'dirty console demo
-that plays a game with 2-4 automated players.  Here's the help output:
+that plays a game with 2-4 automated players.  This demo works only on
+UNIX-like platforms that support curses.  Here's the help output:
 
 ```
 $ poetry run demo
