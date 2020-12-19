@@ -20,7 +20,7 @@ classifiers=[
 ]
 
 [tool.poetry.dependencies]
-python = ">=3.7,<=3.9"
+python = ">=3.7,<4"
 attrs = "^20.1.0"
 cattrs = "^1.1.1"
 pendulum = "^2.1.0"
