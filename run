@@ -3,7 +3,6 @@
 
 # Setup the virtual environment via Poetry and install pre-commit hooks
 run_install() {
-   poetry env use python3
    poetry install -v
    poetry run pre-commit install 
 }

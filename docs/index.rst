@@ -19,8 +19,9 @@ Release v\ |version|
     :target: https://apologies.readthedocs.io/en/latest/
 
 Apologies_ is a Python library that implements a game similar to the Sorry_
-board game.  It includes a console demo that plays the game with automated
-players, intended for use by developers and not by end users.
+board game.  On UNIX-like platforms, it includes a console demo that plays the
+game with automated players, intended for use by developers and not by end
+users.
 
 It was written as a learning exercise and technology demonstration effort, and
 serves as a complete example of how to manage a modern (circa 2020) Python

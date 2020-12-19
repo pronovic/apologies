@@ -23,6 +23,10 @@ warn_unused_ignores = True
 # It's hard to make ncurses code compliant
 [mypy-apologies.demo]
 ignore_errors = True
+[mypy-apologies.demo_unix]
+ignore_errors = True
+[mypy-apologies.demo_windows]
+ignore_errors = True
 
 # It's hard to make tests compliant using unittest.mock
 [mypy-tests.*]
