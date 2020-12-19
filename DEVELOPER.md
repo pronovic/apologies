@@ -12,11 +12,11 @@ things for users as much as I had hoped.
 
 ## Development Environment
 
-My primary development environment is IntelliJ (or just Vim) on MacOS, but the
+My primary development environment when writing this code was IntelliJ on MacOS, but the
 code and the development process also work in a Linux environment (I've tested
-on Debian buster).  As of now, I do not do any software development on Windows,
-and there are known problems on that platform.  Fixing this is not a high
-priority for me.
+on Debian buster).  The demo does not run on Windows (because it needs curses) but
+I have gone through the effort to ensure that the rest of the code does work on
+that platform.
 
 ## Installing this Package Elsewhere
 
@@ -87,6 +87,19 @@ Then, install Poetry in your home directory:
 ```
 $ curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
 ```
+
+### Windows
+
+First, install Python 3 from your preferred source, either a standard
+installer or a meta-installer like Chocolatey.  Then, install Poetry
+in your home directory:
+
+```
+$ curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
+```
+
+The development environment (with the `run` script, etc.) expects a bash shell
+to be available.  It seems to work fine with the standard Git bash.  
 
 ## Configure Poetry's Python Interpreter
 
