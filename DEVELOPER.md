@@ -51,7 +51,7 @@ If necessary, you can temporarily disable a hook using Git's `--no-verify`
 switch.  However, keep in mind that the CI build on GitHub enforces these
 checks, so the build will fail.
 
-## Prequisites
+## Prerequisites
 
 Nearly all prerequisites are managed by Poetry.  All you need to do is make
 sure that you have a working Python 3 enviroment and install Poetry itself.  
