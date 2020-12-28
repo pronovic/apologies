@@ -10,17 +10,19 @@ helpful in understanding the options and common practices.  Unfortunately, Sphin
 does not do a good job of documenting the init file, so this doesn't really simplify
 things for users as much as I had hoped.
 
-## Development Environment & Platform
+## Supported Platforms
+
+The included demo does not run on Windows, because it needs the UNIX-only
+curses library for screen drawing.  However, the rest of the code does work
+basically the same no matter where you run it.
+
+## Development Environment
 
 My primary development environment when writing this code was IntelliJ Ultimate
 on MacOS.  I also tested regularly in my Debian Linux development environment.
 I've since moved (mostly against my will) to a Windows development environment for
 day-to-day work, so I've also gone through the effort to support that platform.
 On Windows, I have typically been using PyCharm rather than IntelliJ.
-
-The included demo does not run on Windows, because it needs the UNIX-only
-curses library for screen drawing.  However, the rest of the code does work
-basically the same no matter where you run it.
 
 ## Installing this Package Elsewhere
 
@@ -186,10 +188,10 @@ Usage: run <command>
 
 ## Integration with IntelliJ or PyCharm
 
-I have used both PyCharm and IntelliJ Ultimate with the Python plugin
-installed, which is basically equivalent except for the location of some
+I have used both PyCharm and IntelliJ Ultimate (with the Python plugin
+installed).  These two IDEs are basically equivalent except for the location of some
 configuration.  By integrating Black and Pylint, most everything important that
-can be done from a shell environment can also be done right in IntelliJ.
+can be done from a shell environment can also be done right in IntelliJ or PyCharm.
 
 Unfortunately, it is somewhat difficult to provide a working IntelliJ or
 PyCharm configuration that other developers can simply import. There are still
@@ -240,7 +242,7 @@ $ poetry run which python
 
 #### PyCharm
 
-Go to the **Settings** dialog and find the `apologies` project.  Under **Python Interpreter**,
+Go to settings and find the `apologies` project.  Under **Python Interpreter**,
 select the Python virtualenv from above.  
 
 Under **Project Structure**, mark both `src` and `tests` as source folders.  In the
@@ -288,8 +290,7 @@ module configuration.
 
 Unit tests are written using [Pytest](https://docs.pytest.org/en/latest/), 
 and API documentation is written 
-using [Google Style Python Docstring](https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html).  
-However, neither of these is the default in IntelliJ or PyCharm.
+using [Google Style Python Docstring](https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html).  However, neither of these is the default in IntelliJ or PyCharm.
 
 In settings, go to **Tools > Python Integrated Tools**.  Under **Testing >
 Default test runner**, select _pytest_.  Under **Docstrings > Docstring
@@ -300,7 +301,7 @@ format**, select _Google_.
 If you are using IntelliJ, first use **Build > Rebuild Project**, just to be
 sure that everything is up-to-date.
 
-In either IntelliJ or PyCharm, right click on the `tests` folder in IntelliJ's
+In either IntelliJ or PyCharm, right click on the `tests` folder in the
 project explorer and choose **Run 'pytest in tests'**.  Make sure that all of
 the tests pass.
 
