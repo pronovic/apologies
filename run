@@ -19,6 +19,8 @@ run_requirements() {
 
 # Run the Pylint code checker
 run_pylint() {
+   echo "Running pylint checks..."
+
    poetry run which pylint > /dev/null
    if [ $? != 0 ]; then
       run_install
@@ -29,6 +31,8 @@ run_pylint() {
 
 # Run the MyPy code checker
 run_mypy() {
+   echo "Running mypy checks..."
+
    poetry run which mypy > /dev/null
    if [ $? != 0 ]; then
       run_install
@@ -39,6 +43,8 @@ run_mypy() {
 
 # Run the black code formatter
 run_black() {
+   echo "Running black formatter..."
+
    poetry run which black > /dev/null
    if [ $? != 0 ]; then
       run_install
@@ -49,12 +55,16 @@ run_black() {
 
 # Run the isort import formatter
 run_isort() {
+   echo "Running isort formatter..."
+
    poetry run which isort > /dev/null
    if [ $? != 0 ]; then
       run_install
    fi
 
    poetry run isort src/**/*.py tests/*.py
+
+   echo "done"
 }
 
 # Run the unit tests, optionally with coverage

@@ -10,13 +10,17 @@ helpful in understanding the options and common practices.  Unfortunately, Sphin
 does not do a good job of documenting the init file, so this doesn't really simplify
 things for users as much as I had hoped.
 
-## Development Environment
+## Development Environment & Platform
 
-My primary development environment when writing this code was IntelliJ on MacOS, but the
-code and the development process also work in a Linux environment (I've tested
-on Debian buster).  The demo does not run on Windows (because it needs curses) but
-I have gone through the effort to ensure that the rest of the code does work on
-that platform.
+My primary development environment when writing this code was IntelliJ Ultimate
+on MacOS.  I also tested regularly in my Debian Linux development environment.
+I've since moved (mostly against my will) to a Windows development environment for
+day-to-day work, so I've also gone through the effort to support that platform.
+On Windows, I have typically been using PyCharm rather than IntelliJ.
+
+The included demo does not run on Windows, because it needs the UNIX-only
+curses library for screen drawing.  However, the rest of the code does work
+basically the same no matter where you run it.
 
 ## Installing this Package Elsewhere
 
@@ -99,7 +103,7 @@ $ curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-po
 ```
 
 The development environment (with the `run` script, etc.) expects a bash shell
-to be available.  It seems to work fine with the standard Git bash.  
+to be available.  It works fine with the standard Git bash.
 
 ## Configure Poetry's Python Interpreter
 
@@ -182,15 +186,15 @@ Usage: run <command>
 
 ## Integration with IntelliJ or PyCharm
 
-For my day-to-day IDE, I use IntelliJ Ultimate with the Python plugin
-installed, which is basically equivalent to PyCharm. By integrating Black and
-Pylint, most everything important that can be done from a shell environment can
-also be done right in IntelliJ.
+I have used both PyCharm and IntelliJ Ultimate with the Python plugin
+installed, which is basically equivalent except for the location of some
+configuration.  By integrating Black and Pylint, most everything important that
+can be done from a shell environment can also be done right in IntelliJ.
 
-Unfortunately, it is somewhat difficult to provide a working IntelliJ
-configuration that other developers can simply import. There are still some
-manual steps required.  I have checked in a minimal `.idea` directory, so at
-least all developers can share a single inspection profile, etc.
+Unfortunately, it is somewhat difficult to provide a working IntelliJ or
+PyCharm configuration that other developers can simply import. There are still
+some manual steps required.  I have checked in a minimal `.idea` directory, so
+at least all developers can share a single inspection profile, etc.
 
 ### Prerequisites
 
@@ -216,7 +220,7 @@ retained.)
 
 ### Plugins
 
-Install the following plugins:
+If you are using IntelliJ rather than PyCharm, install the following plugins:
 
 |Plugin|Description|
 |------|-----------|
@@ -230,6 +234,26 @@ Poetry:
 ```
 $ poetry run which python
 ```
+
+> _Note:_ On Windows, remember that Git Bash is is going to give you the translated
+> UNIX-like path.  Work backwards to find the real Windows path.
+
+#### PyCharm
+
+Go to the **Settings** dialog and find the `apologies` project.  Under **Python Interpreter**,
+select the Python virtualenv from above.  
+
+Under **Project Structure**, mark both `src` and `tests` as source folders.  In the
+**Exclude Files** box, enter the following:
+
+```
+.coverage;.coveragerc;.github;.htmlcov;.idea;.isort.cfg;.mypyrc;.mypy_cache;.pre-commit-config.yaml;.pylintrc;.pytest_cache;.readthedocs.yml;.tox;.toxrc;build;dist;docs/_build;out;poetry.lock;run
+```
+
+Finally, go to the gear icon in the project panel, and uncheck **Show Excluded
+Files**.  This will hide the files and directories that were excluded above.
+
+#### IntelliJ
 
 Right click on the `apologies` project in IntelliJ's project explorer and
 choose **Open Module Settings**.  
@@ -265,34 +289,42 @@ module configuration.
 Unit tests are written using [Pytest](https://docs.pytest.org/en/latest/), 
 and API documentation is written 
 using [Google Style Python Docstring](https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html).  
-However, neither of these is the default in IntelliJ.
+However, neither of these is the default in IntelliJ or PyCharm.
 
-Go to IntelliJ preferences, then select **Tools > Python Integrated Tools**.
-Under **Testing > Default test runner**, select _pytest_.  Under 
-**Docstrings > Docstring format**, select _Google_. Click **OK**.
+In settings, go to **Tools > Python Integrated Tools**.  Under **Testing >
+Default test runner**, select _pytest_.  Under **Docstrings > Docstring
+format**, select _Google_. 
 
 ### Running Unit Tests
 
-Use **Build > Rebuild Project**, just to be sure that everything is up-to-date.
-Then, right click on the `tests` folder in IntelliJ's project explorer and
-choose **Run 'pytest in tests'**.  Make sure that all of the tests pass.
+If you are using IntelliJ, first use **Build > Rebuild Project**, just to be
+sure that everything is up-to-date.
+
+In either IntelliJ or PyCharm, right click on the `tests` folder in IntelliJ's
+project explorer and choose **Run 'pytest in tests'**.  Make sure that all of
+the tests pass.
 
 ### External Tools
 
-Optionally, you might want to set up external tools in IntelliJ for some of
-common developer tasks: code reformatting and the PyLint and MyPy checks.  One
-nice advantage of doing this is that you can configure an output filter, which
-makes the Pylint and MyPy errors clickable in IntelliJ.  To set up external
-tools, go to IntelliJ preferences and find **Tools > External Tools**.  Add the
-tools as described below.
+Optionally, you might want to set up external tools in IntelliJ or PyCharm for
+some of common developer tasks: code reformatting and the PyLint and MyPy
+checks.  One nice advantage of doing this is that you can configure an output
+filter, which makes the Pylint and MyPy errors clickable in IntelliJ.  To set
+up external tools, go to IntelliJ or PyCharm settings and find **Tools >
+External Tools**.  Add the tools as described below.
 
-#### Format Code
+#### Linux or MacOS
+
+On Linux or MacOS, you can set up the external tools to invoke the `run` script
+directly.
+
+##### Format Code
 
 |Field|Value|
 |-----|-----|
 |Name|`Format Code`|
 |Description|`Run the Black and isort code formatters`|
-|Group|`Apologies Tools`|
+|Group|`Developer Tools`|
 |Program|`$ProjectFileDir$/run`|
 |Arguments|`format`|
 |Working directory|`$ProjectFileDir$`|
@@ -302,13 +334,13 @@ tools as described below.
 |Make console active on message in stderr|_Unchecked_|
 |Output filters|_Empty_|
 
-#### Run MyPy Checks
+##### Run MyPy Checks
 
 |Field|Value|
 |-----|-----|
 |Name|`Run MyPy Checks`|
 |Description|`Run the MyPy code checks`|
-|Group|`Apologies Tools`|
+|Group|`Developer Tools`|
 |Program|`$ProjectFileDir$/run`|
 |Arguments|`mypy`|
 |Working directory|`$ProjectFileDir$`|
@@ -318,15 +350,69 @@ tools as described below.
 |Make console active on message in stderr|_Checked_|
 |Output filters|`$FILE_PATH$:$LINE$:$COLUMN$:.*`|
 
-#### Run Pylint Checks
+##### Run Pylint Checks
 
 |Field|Value|
 |-----|-----|
 |Name|`Run Pylint Checks`|
 |Description|`Run the Pylint code checks`|
-|Group|`Apologies Tools`|
+|Group|`Developer Tools`|
 |Program|`$ProjectFileDir$/run`|
 |Arguments|`pylint`|
+|Working directory|`$ProjectFileDir$`|
+|Synchronize files after execution|_Unchecked_|
+|Open console for tool outout|_Checked_|
+|Make console active on message in stdout|_Checked_|
+|Make console active on message in stderr|_Checked_|
+|Output filters|`$FILE_PATH$:$LINE$:$COLUMN.*`|
+
+#### Windows
+
+On Windows, PyCharm and IntelliJ have problems invoking the `run` script,
+even via the Git Bash interpreter.  I have created a Powershell script
+`tools.ps1` that can be used instead.
+
+##### Format Code
+
+|Field|Value|
+|-----|-----|
+|Name|`Format Code`|
+|Description|`Run the Black and isort code formatters`|
+|Group|`Developer Tools`|
+|Program|`powershell.exe`|
+|Arguments|`-executionpolicy bypass -File tools.ps1 format`|
+|Working directory|`$ProjectFileDir$`|
+|Synchronize files after execution|_Checked_|
+|Open console for tool outout|_Checked_|
+|Make console active on message in stdout|_Unchecked_|
+|Make console active on message in stderr|_Unchecked_|
+|Output filters|_Empty_|
+
+##### Run MyPy Checks
+
+|Field|Value|
+|-----|-----|
+|Name|`Run MyPy Checks`|
+|Description|`Run the MyPy code checks`|
+|Group|`Developer Tools`|
+|Program|`powershell.exe`|
+|Arguments|`-executionpolicy bypass -File tools.ps1 mypy`|
+|Working directory|`$ProjectFileDir$`|
+|Synchronize files after execution|_Unchecked_|
+|Open console for tool outout|_Checked_|
+|Make console active on message in stdout|_Checked_|
+|Make console active on message in stderr|_Checked_|
+|Output filters|`$FILE_PATH$:$LINE$:$COLUMN$:.*`|
+
+##### Run Pylint Checks
+
+|Field|Value|
+|-----|-----|
+|Name|`Run Pylint Checks`|
+|Description|`Run the Pylint code checks`|
+|Group|`Developer Tools`|
+|Program|`powershell.exe`|
+|Arguments|`-executionpolicy bypass -File tools.ps1 pylint`|
 |Working directory|`$ProjectFileDir$`|
 |Synchronize files after execution|_Unchecked_|
 |Open console for tool outout|_Checked_|
@@ -338,7 +424,7 @@ tools as described below.
 
 While this is primarily a library, it includes a quick'n'dirty console demo
 that plays a game with 2-4 automated players.  This demo works only on
-UNIX-like platforms that support curses.  Here's the help output:
+UNIX-like platforms that support the curses library.  Here's the help output:
 
 ```
 $ poetry run demo
