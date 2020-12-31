@@ -131,6 +131,7 @@ class RewardV1InputSource(RewardInputSource):
         return move, self.calculator.calculate(evaluator(view, move))
 
 
+# noinspection PyCallingNonCallable
 def source(name: str) -> CharacterInputSource:
     """
     Create a character input source by name.
