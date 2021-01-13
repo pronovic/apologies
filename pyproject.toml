@@ -34,7 +34,7 @@ sphinx = "^2.4.4"
 toml = "^0.10.0"
 pre-commit = "^2.2.0"
 black = "^19.10b0"
-mypy = "^0.790"   
+mypy = "^0.790"
 isort = "^4.3.21"
 sphinx-autoapi = "^1.2.1"
 
@@ -55,5 +55,5 @@ exclude = '''
 '''
 
 [build-system]
-requires = ["poetry>=0.12"]
-build-backend = "poetry.masonry.api"
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
