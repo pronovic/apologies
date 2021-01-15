@@ -4,7 +4,7 @@
 # Setup the virtual environment via Poetry and install pre-commit hooks
 run_install() {
    poetry install -v
-   poetry run pre-commit install 
+   poetry run pre-commit install
 }
 
 # Activate the current Poetry virtual environment
@@ -62,7 +62,7 @@ run_isort() {
       run_install
    fi
 
-   poetry run isort src/**/*.py tests/*.py
+   poetry run isort .
 
    echo "done"
 }
@@ -74,13 +74,13 @@ run_pytest() {
 
    while getopts ":ch" option; do
      case $option in
-       c) 
+       c)
          coverage="yes"
          ;;
-       h) 
+       h)
          html="yes"
          ;;
-       ?) 
+       ?)
          echo "invalid option -$OPTARG"
          exit 1
          ;;
@@ -120,10 +120,10 @@ run_docs() {
 
    while getopts ":o" option; do
      case $option in
-       o) 
+       o)
          open="yes"
          ;;
-       ?) 
+       ?)
          echo "invalid option -$OPTARG"
          exit 1
          ;;
@@ -135,7 +135,7 @@ run_docs() {
       run_install
    fi
 
-   cd docs 
+   cd docs
    poetry run sphinx-build -b html -d _build/doctrees . _build/html 2>&1 | \
          grep -v "WARNING: document isn't included in any toctree" | \
          grep -v "WARNING: more than one target found for cross-reference"
@@ -255,7 +255,7 @@ case $1 in
       echo "Shortcuts for common developer tasks"
       echo "------------------------------------"
       echo ""
-      echo "Usage: run <command>"  
+      echo "Usage: run <command>"
       echo ""
       echo "- run install: Setup the virtualenv via Poetry and install pre-commit hooks"
       echo "- run activate: Print command needed to activate the Poetry virtualenv"
