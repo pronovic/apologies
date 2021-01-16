@@ -51,6 +51,7 @@ exclude = '''
   | build
   | dist
   | docs
+  | notes
 )/
 '''
 
