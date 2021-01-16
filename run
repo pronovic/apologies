@@ -62,7 +62,7 @@ run_isort() {
       run_install
    fi
 
-   poetry run isort src/**/*.py tests/*.py
+   poetry run isort .
 
    echo "done"
 }
@@ -224,6 +224,7 @@ case $1 in
       ;;
    format)
       run_black
+      echo ""
       run_isort
       ;;
    pytest|test*)
