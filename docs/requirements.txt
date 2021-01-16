@@ -47,7 +47,7 @@ requests==2.25.1; python_version >= "3.5" and python_full_version < "3.0.0" or p
 six==1.15.0; python_version >= "3.5" and python_full_version < "3.0.0" or python_full_version >= "3.5.0" and python_version >= "3.5"
 snowballstemmer==2.0.0; python_version >= "3.5" and python_full_version < "3.0.0" or python_full_version >= "3.6.0" and python_version >= "3.5"
 sphinx-autoapi==1.5.1; (python_version >= "2.7" and python_full_version < "3.0.0") or (python_full_version >= "3.6.0")
-sphinx==2.4.4; python_version >= "3.5"
+sphinx==3.4.3; python_version >= "3.5"
 sphinxcontrib-applehelp==1.0.2; python_version >= "3.5" and python_full_version < "3.0.0" or python_full_version >= "3.6.0" and python_version >= "3.5"
 sphinxcontrib-devhelp==1.0.2; python_version >= "3.5" and python_full_version < "3.0.0" or python_full_version >= "3.6.0" and python_version >= "3.5"
 sphinxcontrib-htmlhelp==1.0.3; python_version >= "3.5" and python_full_version < "3.0.0" or python_full_version >= "3.6.0" and python_version >= "3.5"
