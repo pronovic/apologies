@@ -16,8 +16,7 @@ Switch ($command)
       poetry run black .
 
       Write-Output "`nRunning isort formatter..." 
-      $files = cmd /c dir /b /a-d /s src\apologies tests | findstr \.py$
-      poetry run isort $files
+      poetry run isort .
       Write-Output "done"
     }
 
