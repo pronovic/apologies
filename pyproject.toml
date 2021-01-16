@@ -54,6 +54,12 @@ exclude = '''
 )/
 '''
 
+[tool.isort]
+profile = "black"
+line_length = 132
+multi_line_output = 3
+skip = [ "docs", "notes", ".tox", ".venv" ]
+
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
