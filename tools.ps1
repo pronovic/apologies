@@ -27,7 +27,7 @@ Switch ($command)
 
     pylint {
       Write-Output "Running pylint checks..." 
-      poetry run pylint src/apologies tests
+      poetry run pylint -j 0 src/apologies tests
     }
 }
 

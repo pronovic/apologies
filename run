@@ -27,7 +27,7 @@ run_pylint() {
       run_install
    fi
 
-   poetry run pylint src/apologies tests
+   poetry run pylint -j 0 src/apologies tests
 }
 
 # Run the MyPy code checker
