@@ -32,13 +32,13 @@ repos:
     hooks:
       - id: system
         name: MyPy
-        entry: poetry run mypy --config-file=.mypyrc src/apologies tests
+        entry: poetry run mypy
         pass_filenames: false
         language: system
   - repo: local
     hooks:
       - id: system
         name: Pylint
-        entry: poetry run pylint --rcfile=.pylintrc src/apologies tests
+        entry: poetry run pylint -j 0 src/apologies tests
         pass_filenames: false
         language: system
