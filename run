@@ -39,7 +39,7 @@ run_mypy() {
       run_install
    fi
 
-   poetry run mypy --config-file=.mypyrc
+   poetry run mypy
 }
 
 # Run the black code formatter

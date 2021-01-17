@@ -32,7 +32,7 @@ repos:
     hooks:
       - id: system
         name: MyPy
-        entry: poetry run mypy --config-file=.mypyrc
+        entry: poetry run mypy
         pass_filenames: false
         language: system
   - repo: local
