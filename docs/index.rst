@@ -188,4 +188,3 @@ require extra configuration before the terminal can be resized properly
 .. _Sorry: https://en.wikipedia.org/wiki/Sorry!_(game)
 .. _StackExchange: https://apple.stackexchange.com/a/47841/249172Z
 .. _iTerm2: https://www.iterm2.com/
-
