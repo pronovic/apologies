@@ -146,24 +146,88 @@ run_docs() {
    fi
 }
 
-# Tag the current code and publish to PyPI
+# Release a specific version and tag the code
+run_release() {
+   if [ $# != 1 ]; then
+      echo "run release <version>"
+      exit 1
+   fi
+
+   VERSION=$(echo "$1" | sed 's/^v//') # so you can use "0.1.5 or "v0.1.5"
+   COPYRIGHT="2020-$(date +'%Y')"
+   DATE=$(date +'%d %b %Y')
+   TAG="v$VERSION" # follow PEP 440 naming convention
+   FILES="pyproject.toml Changelog"
+   MESSAGE="Release v$VERSION to PyPI"
+
+   if [ "$(git branch -a | grep '^\*' | sed 's/^\* //')" != "master" ]; then
+      echo "*** You are not on master; you cannot release from this branch"
+      exit 1
+   fi
+
+   git tag -l "$TAG" | grep -q "$TAG"
+   if [ $? = 0 ]; then
+      echo "*** Version v$VERSION already tagged"
+      exit 1
+   fi
+
+   head -1 Changelog | grep -q "^Version $VERSION\s\s*unreleased"
+   if [ $? != 0 ]; then
+      echo "*** Unreleased version v$VERSION is not at the head of the Changelog"
+      exit 1
+   fi
+
+   poetry version $VERSION
+   poetry run python ./dos2unix.py pyproject.toml
+
+   # annoyingly, BSD sed and GNU sed are not compatible on the syntax for -i
+   # I failed miserably in all attempts to put the sed command (with empty string) into a variable
+   sed --version 2>&1 | grep -iq "GNU sed"
+   if [ $? = 0 ]; then
+      # GNU sed accepts a bare -i and assumes no backup file
+      sed -i "s/^Version $VERSION\s\s*unreleased/Version $VERSION     $DATE/g" Changelog
+   else
+      # BSD set requires you to set an empty backup file extension
+      sed -i "" "s/^Version $VERSION\s\s*unreleased/Version $VERSION     $DATE/g" Changelog
+   fi
+
+   git diff $FILES
+
+   git commit --no-verify -m "$MESSAGE" $FILES
+   if [ $? != 0 ]; then
+      echo "*** Commit step failed"
+      exit 1
+   fi
+
+   git tag -a "$TAG" -m "$MESSAGE"
+   if [ $? != 0 ]; then
+      echo "*** Tag step failed"
+      exit 1
+   fi
+
+   echo ""
+   echo "*** Version v$VERSION has been released and commited; you may publish now"
+   echo ""
+}
+
+# Publish the current code to PyPI and push to GitHub
 # Before doing this, you must retrieve and configure a local API token
 # For instance: poetry config pypi-token.pypi token --local
 # See: https://python-poetry.org/docs/repositories/#configuring-credentials
 run_publish() {
-   VERSION=$(poetry version --no-ansi)
-   SHORT_VERSION=$(echo "$VERSION" | sed 's/^.* //g')
-
-   git tag -a "v$SHORT_VERSION" -m "Release $VERSION to PyPI"
+   poetry build
    if [ $? != 0 ]; then
-      echo "*** Tag step failed.  Does this version already exist?"
+      echo "*** Build step failed."
       exit 1
    fi
 
-   poetry build
    poetry publish
+   if [ $? != 0 ]; then
+      echo "*** Publish step failed."
+      exit 1
+   fi
 
-   git push origin "v$SHORT_VERSION"
+   git push --follow-tags
 }
 
 # Run a game with simulated players, displaying output on the terminal
@@ -239,6 +303,10 @@ case $1 in
       shift 1
       run_docs $*
       ;;
+   release)
+      shift 1
+      run_release $*
+      ;;
    publish)
       run_publish
       ;;
@@ -262,15 +330,16 @@ case $1 in
       echo "- run install: Setup the virtualenv via Poetry and install pre-commit hooks"
       echo "- run activate: Print command needed to activate the Poetry virtualenv"
       echo "- run requirements: Regenerate the docs/requirements.txt file"
-      echo "- run checks: Run the PyLint and MyPy code checkers"
       echo "- run format: Run the code formatters"
+      echo "- run checks: Run the PyLint and MyPy code checkers"
       echo "- run test: Run the unit tests"
       echo "- run test -c: Run the unit tests with coverage"
       echo "- run test -ch: Run the unit tests with coverage and open the HTML report"
-      echo "- run tox: Run the broader Tox test suite used by the GitHub CI action"
       echo "- run docs: Build the Spinx documentation for apologies.readthedocs.io"
       echo "- run docs -o: Build the Spinx documentation and open in a browser"
-      echo "- run publish: Tag the current code and publish to PyPI"
+      echo "- run tox: Run the broader Tox test suite used by the GitHub CI action"
+      echo "- run release: Release a specific version and tag the code"
+      echo "- run publish: Publish the current code to PyPI and push to GitHub"
       echo "- run demo: Run a game with simulated players, displaying output on the terminal"
       echo "- run sim: Run a simulation to see how well different character input sources behave"
       echo ""

@@ -5,9 +5,10 @@ description = "Python code to play a game similar to Sorry"
 authors = ["Kenneth J. Pronovici <pronovic@ieee.org>"]
 license = "Apache-2.0"
 readme = "PyPI.md"
-homepage = "https://apologies.readthedocs.io"
+homepage = "https://pypi.org/project/apologies/"
 repository = "https://github.com/pronovic/apologies"
-include = ["LICENSE", "apologies/py.typed", ]
+include = [ "Changelog", "LICENSE", "README.md", "docs", "tests", ]
+packages = [ { include = "apologies", from = "src" } ]
 classifiers=[
    "Programming Language :: Python :: 3",
    "License :: OSI Approved :: Apache Software License",
