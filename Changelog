@@ -1,0 +1,15 @@
+Version 0.1.29    unreleased
+
+	* Fix typo in DEVELOPER.md, submitted by @billykern.
+	* Improve and cleanup the Windows and PyCharm build process.
+	* Update build system to use poetry.core, submitted by @Spectre5.
+	* Fix the GitHub test suite by adding Python version into cache id.
+	* Update isort to use the new black profile, submitted by @Spectre5.
+	* Move to newer versions of various build dependencies (black, Sphinx, etc.).
+	* Standardize on UNIX line endings in Git working copy and PyPI package.
+	* Make improvements to Read the Docs integration, including a PR merge gate.
+	* Clean up badges shown in documentation, so they are links to something sane.
+	* Make improvements to the MyPy and Pylint configuration.
+	* Move to a new two-step release process based on cedar-backup3.
+	* Create a changelog for the first time, along with new release process.
+

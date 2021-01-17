@@ -195,15 +195,16 @@ Usage: run <command>
 - run install: Setup the virtualenv via Poetry and install pre-commit hooks
 - run activate: Print command needed to activate the Poetry virtualenv
 - run requirements: Regenerate the docs/requirements.txt file
-- run checks: Run the PyLint and MyPy code checkers
 - run format: Run the code formatters
+- run checks: Run the PyLint and MyPy code checkers
 - run test: Run the unit tests
 - run test -c: Run the unit tests with coverage
 - run test -ch: Run the unit tests with coverage and open the HTML report
-- run tox: Run the broader Tox test suite used by the GitHub CI action
 - run docs: Build the Spinx documentation for apologies.readthedocs.io
 - run docs -o: Build the Spinx documentation and open in a browser
-- run publish: Tag the current code and publish to PyPI
+- run tox: Run the broader Tox test suite used by the GitHub CI action
+- run release: Release a specific version and tag the code
+- run publish: Publish the current code to PyPI and push to GitHub
 - run demo: Run a game with simulated players, displaying output on the terminal
 - run sim: Run a simulation to see how well different character input sources behave
 ```
@@ -497,51 +498,103 @@ is no formal release process for the documentation.
 ### Code
 
 Code is released to [PyPI](https://pypi.org/project/apologies/).  There is a
-manual process to publish a new release. 
+partially-automated process to publish a new release.  
 
-Before publishing code, you must must have push permissions to the GitHub repo
-and be a collaborator on the PyPI project.
+> _Note:_ In order to publish code, you must must have push permissions to the
+> GitHub repo and be a collaborator on the PyPI project.  Before running this
+> process for the first time, you must set up a PyPI API token and configure
+> Poetry to use it.  (See notes below.)
 
-First, configure an API token which has permission to publish to the
-PyPI project.  This is a one-time step. In your PyPI [account settings](https://pypi.org/manage/account/),
-create an API token with upload permissions.  Save off the token, and then tell
-Poetry to use it, following the [instructions](https://python-poetry.org/docs/repositories/#configuring-credentials):
+Ensure that you are on the `master` branch.  Releases must always be done from
+`master`.
 
-```
-poetry config pypi-token.pypi my-token
-```
-
-To publish a new release, check the current version:
+Ensure that the `Changelog` is up-to-date and reflects all of the changes that
+will be published.  The top line must show your version as unreleased:
 
 ```
-$ poetry version 
-apologies 0.1.21
+Version 0.1.29     unreleased
 ```
 
-Bump it to whatever version you want to use and commit your changes:
+Run the release step:
 
 ```
-$ poetry version 0.1.22
-Bumping version from 0.1.21 to 0.1.22
-
-$ git add pyproject.toml
-
-$ git commit -m "Release v0.1.22"
+$ run release 0.1.29
 ```
 
-Finally, kick off the custom publish process via the `run` script:
+This updates `pyproject.toml` and the `Changelog` to reflect the released
+version, then commits those changes and tags the code.  Nothing has been pushed
+or published yet, so you can always remove the tag (i.e. `git tag -d v0.1.28`)
+and revert your commit (`git reset HEAD~1`) if you made a mistake.
+
+Finally, publish the release:
 
 ```
 $ run publish
 ```
 
-This tags the code, builds the deployment artifacts, publishes the artifacts to
-PyPI, and pushes the tag to GitHub.  You still need to push your change to
-`pyproject.toml` and any other pending changes to the repo:
+This builds the deployment artifacts, publishes the artifacts to PyPI, and
+pushes the repo to GitHub.  The code will be available on PyPI for others to
+use after a little while, sometimes within a minute or two, and sometimes as
+much as half an hour later.
+
+### Configuring the PyPI API Token
+
+First, in your PyPI [account settings](https://pypi.org/manage/account/),
+create an API token with upload permissions for the cedar-backup3 project.
+
+Once you have the token, you will configure Poetry to use it.  Poetry relies on
+the Python keyring to store this secret.  On MacOS, it will use the system
+keyring, and no other setup is required.  
+
+On Debian, the process is more complicated (see the the [keyring documentation](https://pypi.org/project/keyring/) for more details).  
+
+First, install a keyring manager, and then log out:
 
 ```
-$ git push
+$ sudo apt-get install gnome-keyring
+$ exit
 ```
 
-The code will be available on PyPI for others to use after a little while,
-sometimes within a minute or two, and sometimes as much as half an hour later.
+Log back in and initialize your keyring by setting and then removing a dummy
+value:
+
+```
+$ keyring set testvalue "user"
+Password for 'user' in 'testvalue': 
+Please enter password for encrypted keyring: 
+
+$ keyring get testvalue "user"
+Please enter password for encrypted keyring: 
+password
+
+$ keyring del testvalue "user"
+Deleting password for 'user' in 'testvalue':
+```
+
+At this point, the keyring should be fully functional.
+
+Now, configure Poetry following the [instructions](https://python-poetry.org/docs/repositories/#configuring-credentials):
+
+```
+poetry config pypi-token.pypi <the PyPI token>
+```
+
+You will have to type in the same keyring password that you set above.  Note
+that this leaves your actual secret in the command-line history, so make sure
+to scrub it once you're done.
+
+> _Note:_ The user experience is frankly terrible if you're trying to work on a
+> simple SSH session outside of a Linux desktop.  The GNOME keyring manager
+> wants to pop up its dialog to accept your credentials to unlock the keyring.
+> That won't work on an SSH session where there is no GUI.  One alternative is
+> to follow the notes in the [keyring documentation](https://pypi.org/project/keyring/) under
+> **Using Keyring on headless Linux systems**.  This gives you a way to unlock
+> the keyring inside a DBUS session. 
+>
+> The documented process does work, but it's slow and clunky.  And _you must
+> keep the DBUS session open in a separate terminal window for as long as you
+> need to use the keyring_.  When the instructions say "enter your password and
+> type CTRL-D", they mean that literally.  Don't press Enter first or anything
+> like that.  I've found that it works best if I enter the password and press
+> CTRL-D twice so I get back to the DBUS `$` prompt before proceeding in
+> another window.
