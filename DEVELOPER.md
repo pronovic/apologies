@@ -523,7 +523,7 @@ $ run release 0.1.29
 
 This updates `pyproject.toml` and the `Changelog` to reflect the released
 version, then commits those changes and tags the code.  Nothing has been pushed
-or published yet, so you can always remove the tag (i.e. `git tag -d v0.1.28`)
+or published yet, so you can always remove the tag (i.e. `git tag -d v0.1.29`)
 and revert your commit (`git reset HEAD~1`) if you made a mistake.
 
 Finally, publish the release:
