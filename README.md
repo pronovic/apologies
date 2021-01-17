@@ -1,10 +1,11 @@
 # Apologies Python Library
 
-![](https://img.shields.io/pypi/l/apologies.svg)
-![](https://img.shields.io/pypi/wheel/apologies.svg)
-![](https://img.shields.io/pypi/pyversions/apologies.svg)
-![](https://github.com/pronovic/apologies/workflows/Test%20Suite/badge.svg)
-![](https://readthedocs.org/projects/apologies/badge/?version=stable&style=flat)
+[![pypi](https://img.shields.io/pypi/v/apologies.svg)](https://pypi.org/project/apologies/)
+[![license](https://img.shields.io/pypi/l/apologies.svg)](https://github.com/pronovic/apologies/blob/master/LICENSE)
+[![wheel](https://img.shields.io/pypi/wheel/apologies.svg)](https://pypi.org/project/apologies/)
+[![python](https://img.shields.io/pypi/pyversions/apologies.svg)](https://pypi.org/project/apologies/)
+[![Test Suite](https://github.com/pronovic/apologies/workflows/Test%20Suite/badge.svg)](https://github.com/pronovic/apologies/actions?query=workflow%3A%22Test+Suite%22)
+[![docs](https://readthedocs.org/projects/apologies/badge/?version=stable&style=flat)](https://apologies.readthedocs.io/en/stable/)
 
 This is a Python library that implements a game similar to the [Sorry](https://en.wikipedia.org/wiki/Sorry!_(game)) board game.  On UNIX-like platforms, it includes a console demo that plays the game with automated players, intended for use by developers and not by end users.
 

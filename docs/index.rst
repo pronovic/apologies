@@ -3,8 +3,11 @@ Apologies Python Library
 
 Release v\ |version|
 
-.. image:: https://img.shields.io/pypi/l/apologies.svg
+.. image:: https://img.shields.io/pypi/v/apologies.svg
     :target: https://pypi.org/project/apologies/
+
+.. image:: https://img.shields.io/pypi/l/apologies.svg
+    :target: https://github.com/pronovic/apologies/blob/master/LICENSE
 
 .. image:: https://img.shields.io/pypi/wheel/apologies.svg
     :target: https://pypi.org/project/apologies/
@@ -13,7 +16,7 @@ Release v\ |version|
     :target: https://pypi.org/project/apologies/
 
 .. image:: https://github.com/pronovic/apologies/workflows/Test%20Suite/badge.svg
-    :target: https://github.com/pronovic/apologies
+    :target: https://github.com/pronovic/apologies/actions?query=workflow%3A%22Test+Suite%22
 
 .. image:: https://readthedocs.org/projects/apologies/badge/?version=stable&style=flat
     :target: https://apologies.readthedocs.io/en/stable/
