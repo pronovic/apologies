@@ -3,6 +3,7 @@ pretty = True
 show_absolute_path = True
 show_column_numbers = True
 show_error_codes = True
+files = src/apologies, tests
 
 # This is mostly equivalent to strict=true as of v0.770
 check_untyped_defs = True

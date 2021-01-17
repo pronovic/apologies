@@ -39,7 +39,7 @@ run_mypy() {
       run_install
    fi
 
-   poetry run mypy --config-file=.mypyrc src/apologies tests
+   poetry run mypy --config-file=.mypyrc
 }
 
 # Run the black code formatter
