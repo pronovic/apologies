@@ -37,4 +37,4 @@ jobs:
         run: poetry install -v
         if: steps.cached-poetry.outputs.cache-hit != 'true'
       - name: Run Tox test suite
-        run: poetry run tox -c .toxrc -e "precommit,docs,{py}-{coverage,nocoverage}"
+        run: poetry run tox -c .toxrc -e "precommit,{py}-{coverage,nocoverage}"

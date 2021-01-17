@@ -490,7 +490,7 @@ $ run demo --players=3 --mode=ADULT --delay=0.1
 
 ### Documentation
 
-Documentation at [Read the Docs](https://apologies.readthedocs.io/en/latest/)
+Documentation at [Read the Docs](https://apologies.readthedocs.io/en/stable/)
 is generated via a GitHub hook each time code is pushed to master.  So, there
 is no formal release process for the documentation.
 
