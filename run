@@ -153,7 +153,7 @@ run_release() {
       exit 1
    fi
 
-   VERSION=$1
+   VERSION=$(echo "$1" | sed 's/^v//') # so you can use "0.1.5 or "v0.1.5"
    COPYRIGHT="2020-$(date +'%Y')"
    DATE=$(date +'%d %b %Y')
    TAG="v$VERSION" # follow PEP 440 naming convention
