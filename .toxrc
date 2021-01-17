@@ -2,7 +2,6 @@
 isolated_build = true
 envlist = 
    precommit,
-   docs,
    {py}-{coverage,nocoverage}
 ignore_basepython_conflict = true
 
@@ -20,11 +19,3 @@ commands =
    poetry --version
    poetry version
    poetry run pre-commit run --all-files --show-diff-on-failure
-
-[testenv:docs]
-whitelist_externals = poetry
-changedir = docs
-commands =
-   poetry --version
-   poetry version
-   poetry run sphinx-build -b html -d _build/doctrees . _build/html
