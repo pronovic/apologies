@@ -540,7 +540,7 @@ much as half an hour later.
 ### Configuring the PyPI API Token
 
 First, in your PyPI [account settings](https://pypi.org/manage/account/),
-create an API token with upload permissions for the cedar-backup3 project.
+create an API token with upload permissions for the apologies project.
 
 Once you have the token, you will configure Poetry to use it.  Poetry relies on
 the Python keyring to store this secret.  On MacOS, it will use the system
