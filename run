@@ -15,6 +15,7 @@ run_activate() {
 # Regenerate the docs/requirements.txt file"
 run_requirements() {
    poetry export --format=requirements.txt --without-hashes --dev --output=docs/requirements.txt
+   poetry run python ./dos2unix.py docs/requirements.txt
 }
 
 # Run the Pylint code checker
