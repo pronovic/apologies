@@ -1,4 +1,4 @@
-Version 0.1.29    unreleased
+Version 0.1.29     17 Jan 2021
 
 	* Fix typo in DEVELOPER.md, submitted by @billykern.
 	* Improve and cleanup the Windows and PyCharm build process.
