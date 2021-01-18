@@ -342,6 +342,21 @@ External Tools**.  Add the tools as described below.
 On Linux or MacOS, you can set up the external tools to invoke the `run` script
 directly.
 
+##### Shell Environment
+
+For this to work, it's important that tools like `poetry` are on the system
+path used by IntelliJ or PyCharm.  On Linux, depending on how you start
+IntelliJ or PyCharm, your normal shell environment may or may not be inherited.
+For instance, I had to adjust the target of my LXDE desktop shortcut to be the
+script below, which sources my profile before running the `pycharm.sh` shell
+script:
+
+```sh
+#!/bin/bash
+source ~/.bash_profile
+/opt/local/lib/pycharm/pycharm-community-2020.3.2/bin/pycharm.sh
+```
+
 ##### Format Code
 
 |Field|Value|
