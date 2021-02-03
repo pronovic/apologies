@@ -42,6 +42,36 @@ run_mypy() {
    poetry run mypy
 }
 
+# Run the Safety code checker
+run_safety() {
+   quiet=""
+
+   while getopts ":q" option; do
+     case $option in
+       q) 
+         quiet="--bare"
+         ;;
+       *) 
+         echo "run safety [-q]"
+         exit 1
+         ;;
+     esac
+   done
+
+   shift $((OPTIND -1))  # pop off the options consumed by getopts
+
+   poetry run which safety > /dev/null
+   if [ $? != 0 ]; then
+      run_install
+   fi
+
+   echo "Running safety checks..."
+   poetry run safety check $quiet
+   if [ $? = 0 ]; then
+      echo "No Safety warnings."
+   fi
+}
+
 # Run the black code formatter
 run_black() {
    echo "Running black formatter..."
@@ -277,9 +307,16 @@ case $1 in
    mypy)
       run_mypy
       ;;
+   safety)
+      shift 1
+      run_safety $*
+      ;;
    check*)
-      run_pylint
+      run_safety -q
+      echo ""
       run_mypy
+      echo ""
+      run_pylint
       ;;
    black)
       run_black
@@ -331,7 +368,7 @@ case $1 in
       echo "- run activate: Print command needed to activate the Poetry virtualenv"
       echo "- run requirements: Regenerate the docs/requirements.txt file"
       echo "- run format: Run the code formatters"
-      echo "- run checks: Run the PyLint and MyPy code checkers"
+      echo "- run checks: Run the code checkers"
       echo "- run test: Run the unit tests"
       echo "- run test -c: Run the unit tests with coverage"
       echo "- run test -ch: Run the unit tests with coverage and open the HTML report"

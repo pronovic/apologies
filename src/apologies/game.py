@@ -223,7 +223,7 @@ class Position:
 
     def copy(self) -> Position:
         """Return a fully-independent copy of the position."""
-        return _CONVERTER.structure(_CONVERTER.unstructure(self), Position)  # type: ignore
+        return _CONVERTER.structure(_CONVERTER.unstructure(self), Position)
 
     def move_to_position(self, position: Position) -> Position:
         """
@@ -394,7 +394,7 @@ class Player:
 
     def copy(self) -> Player:
         """Return a fully-independent copy of the player."""
-        return _CONVERTER.structure(_CONVERTER.unstructure(self), Player)  # type: ignore
+        return _CONVERTER.structure(_CONVERTER.unstructure(self), Player)
 
     def public_data(self) -> Player:
         """Return a fully-independent copy of the player with only public data visible."""
@@ -460,7 +460,7 @@ class PlayerView:
 
     def copy(self) -> PlayerView:
         """Return a fully-independent copy of the player view."""
-        return _CONVERTER.structure(_CONVERTER.unstructure(self), PlayerView)  # type: ignore
+        return _CONVERTER.structure(_CONVERTER.unstructure(self), PlayerView)
 
     def get_pawn(self, prototype: Pawn) -> Optional[Pawn]:
         """Return the pawn from this view with the same color and index."""
@@ -537,11 +537,11 @@ class Game:
 
     def copy(self) -> Game:
         """Return a fully-independent copy of the game."""
-        return _CONVERTER.structure(_CONVERTER.unstructure(self), Game)  # type: ignore
+        return _CONVERTER.structure(_CONVERTER.unstructure(self), Game)
 
     def to_json(self) -> str:
         """Serialize the game state to JSON."""
-        return json.dumps(_CONVERTER.unstructure(self), indent="  ")  # type: ignore
+        return json.dumps(_CONVERTER.unstructure(self), indent="  ")
 
     @staticmethod
     def from_json(data: str) -> Game:

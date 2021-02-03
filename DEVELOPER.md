@@ -44,7 +44,7 @@ You may need to do some manual cleanup later once the package is officially publ
 
 This project uses [Poetry](https://python-poetry.org/) to manage Python packaging and dependencies.  Most day-to-day tasks (such as running unit tests from the command line) are orchestrated through Poetry.  
 
-A coding standard is enforced using [Black](https://github.com/psf/black), [isort](https://pypi.org/project/isort/) and [Pylint](https://www.pylint.org/).  Python 3 type hinting is validated using [MyPy](https://pypi.org/project/mypy/).  To reduce boilerplate, classes are defined using [Attrs](https://www.attrs.org/) (see this [rationale](https://glyph.twistedmatrix.com/2016/08/attrs.html)).
+A coding standard is enforced using [Black](https://github.com/psf/black), [isort](https://pypi.org/project/isort/) and [Pylint](https://www.pylint.org/).  Python 3 type hinting is validated using [MyPy](https://pypi.org/project/mypy/).  To reduce boilerplate, classes are defined using [Attrs](https://www.attrs.org/) (see this [rationale](https://glyph.twistedmatrix.com/2016/08/attrs.html)).  Additional code security standards are enforced [Safety](https://github.com/pyupio/safety).
 
 ## Pre-Commit Hooks
 
@@ -196,7 +196,7 @@ Usage: run <command>
 - run activate: Print command needed to activate the Poetry virtualenv
 - run requirements: Regenerate the docs/requirements.txt file
 - run format: Run the code formatters
-- run checks: Run the PyLint and MyPy code checkers
+- run checks: Run the code checkers
 - run test: Run the unit tests
 - run test -c: Run the unit tests with coverage
 - run test -ch: Run the unit tests with coverage and open the HTML report
@@ -405,6 +405,22 @@ source ~/.bash_profile
 |Make console active on message in stderr|_Checked_|
 |Output filters|`$FILE_PATH$:$LINE$:$COLUMN.*`|
 
+##### Run Safety Checks
+
+|Field|Value|
+|-----|-----|
+|Name|`Run Safety Checks`|
+|Description|`Run the Safety code cehcks`|
+|Group|`Developer Tools`|
+|Program|`$ProjectFileDir$/run`|
+|Arguments|`safety`|
+|Working directory|`$ProjectFileDir$`|
+|Synchronize files after execution|_Checked_|
+|Open console for tool outout|_Checked_|
+|Make console active on message in stdout|_Unchecked_|
+|Make console active on message in stderr|_Unchecked_|
+|Output filters|_Empty_|
+
 #### Windows
 
 On Windows, PyCharm and IntelliJ have problems invoking the `run` script,
@@ -458,6 +474,22 @@ even via the Git Bash interpreter.  I have created a Powershell script
 |Make console active on message in stdout|_Checked_|
 |Make console active on message in stderr|_Checked_|
 |Output filters|`$FILE_PATH$:$LINE$:$COLUMN.*`|
+
+##### Run Safety Checks
+
+|Field|Value|
+|-----|-----|
+|Name|`Run Safety Checks`|
+|Description|`Run the Safety code checks`|
+|Group|`Developer Tools`|
+|Program|`powershell.exe`|
+|Arguments|`-executionpolicy bypass -File tools.ps1 safety`|
+|Working directory|`$ProjectFileDir$`|
+|Synchronize files after execution|_Checked_|
+|Open console for tool outout|_Checked_|
+|Make console active on message in stdout|_Unchecked_|
+|Make console active on message in stderr|_Unchecked_|
+|Output filters|_Empty_|
 
 ## Running the Demo
 
