@@ -4,7 +4,6 @@
 """
 Utility functionality.
 """
-
 from typing import Any, Generic, List, TypeVar
 
 import attr
@@ -20,7 +19,7 @@ class CattrConverter(cattr.Converter):
 
     def __init__(self) -> None:
         super().__init__()  # type: ignore
-        self.register_unstructure_hook(DateTime, lambda datetime: datetime.isoformat() if datetime else None)
+        self.register_unstructure_hook(DateTime, lambda datetime: datetime.isoformat() if datetime else None)  # type: ignore
         self.register_structure_hook(DateTime, lambda string, _: parse(string) if string else None)
 
 
