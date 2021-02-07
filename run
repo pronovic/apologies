@@ -22,6 +22,10 @@ run_activate() {
 # Regenerate the docs/requirements.txt file"
 run_requirements() {
    poetry export --format=requirements.txt --without-hashes --dev --output=docs/requirements.txt
+   if [ $? != 0 ]; then
+      exit 1
+   fi
+
    poetry run python utils/dos2unix.py docs/requirements.txt
    if [ $? != 0 ]; then
       exit 1
@@ -234,7 +238,16 @@ run_release() {
    fi
 
    poetry version $VERSION
+   if [ $? != 0 ]; then
+      echo "*** Failed to update version"
+      exit 1
+   fi
+
    poetry run python utils/dos2unix.py pyproject.toml
+   if [ $? != 0 ]; then
+      echo "*** Failed to update line endings"
+      exit 1
+   fi
 
    # annoyingly, BSD sed and GNU sed are not compatible on the syntax for -i
    # I failed miserably in all attempts to put the sed command (with empty string) into a variable
@@ -242,9 +255,17 @@ run_release() {
    if [ $? = 0 ]; then
       # GNU sed accepts a bare -i and assumes no backup file
       sed -i "s/^Version $VERSION\s\s*unreleased/Version $VERSION     $DATE/g" Changelog
+      if [ $? != 0 ]; then
+         echo "*** Failed to update changelog"
+         exit 1
+      fi
    else
       # BSD set requires you to set an empty backup file extension
       sed -i "" "s/^Version $VERSION\s\s*unreleased/Version $VERSION     $DATE/g" Changelog
+      if [ $? != 0 ]; then
+         echo "*** Failed to update changelog"
+         exit 1
+      fi
    fi
 
    git diff $FILES
