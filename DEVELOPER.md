@@ -410,7 +410,7 @@ source ~/.bash_profile
 |Field|Value|
 |-----|-----|
 |Name|`Run Safety Checks`|
-|Description|`Run the Safety code cehcks`|
+|Description|`Run the Safety code checks`|
 |Group|`Developer Tools`|
 |Program|`$ProjectFileDir$/run`|
 |Arguments|`safety`|
