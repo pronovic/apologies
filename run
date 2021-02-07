@@ -1,10 +1,17 @@
-#!/bin/bash -e
+#!/bin/bash
 # Shortcuts for common developer tasks
 
 # Setup the virtual environment via Poetry and install pre-commit hooks
 run_install() {
    poetry install -v
+   if [ $? != 0 ]; then
+      exit 1
+   fi
+
    poetry run pre-commit install 
+   if [ $? != 0 ]; then
+      exit 1
+   fi
 }
 
 # Activate the current Poetry virtual environment
@@ -15,7 +22,14 @@ run_activate() {
 # Regenerate the docs/requirements.txt file"
 run_requirements() {
    poetry export --format=requirements.txt --without-hashes --dev --output=docs/requirements.txt
-   poetry run python ./dos2unix.py docs/requirements.txt
+   if [ $? != 0 ]; then
+      exit 1
+   fi
+
+   poetry run python utils/dos2unix.py docs/requirements.txt
+   if [ $? != 0 ]; then
+      exit 1
+   fi
 }
 
 # Run the Pylint code checker
@@ -28,6 +42,9 @@ run_pylint() {
    fi
 
    poetry run pylint -j 0 src/apologies tests
+   if [ $? != 0 ]; then
+      exit 1
+   fi
 
    echo "done"
 }
@@ -42,6 +59,9 @@ run_mypy() {
    fi
 
    poetry run mypy
+   if [ $? != 0 ]; then
+      exit 1
+   fi
 
    echo "done"
 }
@@ -56,6 +76,9 @@ run_safety() {
    fi
 
    poetry run safety check $*
+   if [ $? != 0 ]; then
+      exit 1
+   fi
 
    echo "done"
 }
@@ -70,6 +93,9 @@ run_black() {
    fi
 
    poetry run black $* .
+   if [ $? != 0 ]; then
+      exit 1
+   fi
 
    echo "done"
 }
@@ -84,6 +110,9 @@ run_isort() {
    fi
 
    poetry run isort $* .
+   if [ $? != 0 ]; then
+      exit 1
+   fi
 
    echo "done"
 }
@@ -115,6 +144,10 @@ run_pytest() {
 
    if [ $coverage == "yes" ]; then
       poetry run coverage run -m pytest tests
+      if [ $? != 0 ]; then
+         exit 1
+      fi
+
       poetry run coverage report
       if [ $html == "yes" ]; then
          poetry run coverage html -d .htmlcov
@@ -122,6 +155,9 @@ run_pytest() {
       fi
    else
       poetry run pytest tests
+      if [ $? != 0 ]; then
+         exit 1
+      fi
    fi
 }
 
@@ -133,6 +169,9 @@ run_tox() {
    fi
 
    poetry run tox -c .toxrc -e "precommit,docs,{py}-{coverage,nocoverage}"
+   if [ $? != 0 ]; then
+      exit 1
+   fi
 }
 
 # Build the Sphinx documentation for apologies.readthedocs.io
@@ -158,6 +197,9 @@ run_docs() {
 
    cd docs 
    poetry run sphinx-build -N -E -a -b html -d _build/doctrees . _build/html 2>&1 | grep -v -F --file=.sphinxignore
+   if [ $? != 0 ]; then
+      exit 1
+   fi
 
    if [ $open == "yes" ]; then
       $(which start || which open) _build/html/index.html 2>/dev/null  # start on Windows, open on MacOS
@@ -196,7 +238,16 @@ run_release() {
    fi
 
    poetry version $VERSION
-   poetry run python ./dos2unix.py pyproject.toml
+   if [ $? != 0 ]; then
+      echo "*** Failed to update version"
+      exit 1
+   fi
+
+   poetry run python utils/dos2unix.py pyproject.toml
+   if [ $? != 0 ]; then
+      echo "*** Failed to update line endings"
+      exit 1
+   fi
 
    # annoyingly, BSD sed and GNU sed are not compatible on the syntax for -i
    # I failed miserably in all attempts to put the sed command (with empty string) into a variable
@@ -204,9 +255,17 @@ run_release() {
    if [ $? = 0 ]; then
       # GNU sed accepts a bare -i and assumes no backup file
       sed -i "s/^Version $VERSION\s\s*unreleased/Version $VERSION     $DATE/g" Changelog
+      if [ $? != 0 ]; then
+         echo "*** Failed to update changelog"
+         exit 1
+      fi
    else
       # BSD set requires you to set an empty backup file extension
       sed -i "" "s/^Version $VERSION\s\s*unreleased/Version $VERSION     $DATE/g" Changelog
+      if [ $? != 0 ]; then
+         echo "*** Failed to update changelog"
+         exit 1
+      fi
    fi
 
    git diff $FILES
@@ -312,7 +371,7 @@ case $1 in
    check*)
       run_black --check
       echo ""
-      run isort --check-only
+      run_isort --check-only
       echo ""
       run_safety --bare
       echo ""

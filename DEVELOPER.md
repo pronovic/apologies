@@ -75,7 +75,7 @@ have native platform line endings, and you can't override that behavior.  Even
 with sane configuration in `.gitattributes`, you sometimes still get spurious
 differences, where Git says that a file has changed but then `git diff` shows
 an empty result.  The `run` script and the pre-commit hooks both normalize the
-line endings for `requirements.txt` using [`dos2unix.py`](dos2unix.py).  I wish
+line endings for `requirements.txt` using [`utils/dos2unix.py`](utils/dos2unix.py).  I wish
 there were a standard way to do this in Poetry or in Python, but there isn't as
 of this writing.
 
