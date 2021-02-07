@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 # Shortcuts for common developer tasks
 
 # Setup the virtual environment via Poetry and install pre-commit hooks
@@ -28,6 +28,8 @@ run_pylint() {
    fi
 
    poetry run pylint -j 0 src/apologies tests
+
+   echo "done"
 }
 
 # Run the MyPy code checker
@@ -40,36 +42,22 @@ run_mypy() {
    fi
 
    poetry run mypy
+
+   echo "done"
 }
 
 # Run the Safety code checker
 run_safety() {
-   quiet=""
-
-   while getopts ":q" option; do
-     case $option in
-       q) 
-         quiet="--bare"
-         ;;
-       *) 
-         echo "run safety [-q]"
-         exit 1
-         ;;
-     esac
-   done
-
-   shift $((OPTIND -1))  # pop off the options consumed by getopts
+   echo "Running safety checks..."
 
    poetry run which safety > /dev/null
    if [ $? != 0 ]; then
       run_install
    fi
 
-   echo "Running safety checks..."
-   poetry run safety check $quiet
-   if [ $? = 0 ]; then
-      echo "No Safety warnings."
-   fi
+   poetry run safety check $*
+
+   echo "done"
 }
 
 # Run the black code formatter
@@ -81,7 +69,9 @@ run_black() {
       run_install
    fi
 
-   poetry run black .
+   poetry run black $* .
+
+   echo "done"
 }
 
 # Run the isort import formatter
@@ -93,7 +83,7 @@ run_isort() {
       run_install
    fi
 
-   poetry run isort .
+   poetry run isort $* .
 
    echo "done"
 }
@@ -124,7 +114,7 @@ run_pytest() {
    fi
 
    if [ $coverage == "yes" ]; then
-      poetry run coverage run --rcfile=.coveragerc -m pytest tests
+      poetry run coverage run -m pytest tests
       poetry run coverage report
       if [ $html == "yes" ]; then
          poetry run coverage html -d .htmlcov
@@ -167,8 +157,9 @@ run_docs() {
    fi
 
    cd docs 
-   poetry run sphinx-build -b html -d _build/doctrees . _build/html 2>&1 | \
+   poetry run sphinx-build -N -E -a -b html -d _build/doctrees . _build/html 2>&1 | \
          grep -v "WARNING: document isn't included in any toctree" | \
+         grep -v "WARNING: duplicate object description" | \
          grep -v "WARNING: more than one target found for cross-reference"
 
    if [ $open == "yes" ]; then
@@ -301,33 +292,36 @@ case $1 in
    requirements)
       run_requirements
       ;;
-   *lint)
-      run_pylint
-      ;;
-   mypy)
-      run_mypy
-      ;;
-   safety)
-      shift 1
-      run_safety $*
-      ;;
-   check*)
-      run_safety -q
-      echo ""
-      run_mypy
-      echo ""
-      run_pylint
-      ;;
    black)
       run_black
       ;;
    isort)
       run_isort
       ;;
+   safety)
+      run_safety
+      ;;
+   *lint)
+      run_pylint
+      ;;
+   mypy)
+      run_mypy
+      ;;
    format)
       run_black
       echo ""
       run_isort
+      ;;
+   check*)
+      run_black --check
+      echo ""
+      run isort --check-only
+      echo ""
+      run_safety --bare
+      echo ""
+      run_mypy
+      echo ""
+      run_pylint
       ;;
    pytest|test*)
       shift 1
@@ -374,7 +368,7 @@ case $1 in
       echo "- run test -ch: Run the unit tests with coverage and open the HTML report"
       echo "- run docs: Build the Spinx documentation for apologies.readthedocs.io"
       echo "- run docs -o: Build the Spinx documentation and open in a browser"
-      echo "- run tox: Run the broader Tox test suite used by the GitHub CI action"
+      echo "- run tox: Run the Tox test suite used by the GitHub CI action"
       echo "- run release: Release a specific version and tag the code"
       echo "- run publish: Publish the current code to PyPI and push to GitHub"
       echo "- run demo: Run a game with simulated players, displaying output on the terminal"

@@ -11,7 +11,7 @@ whitelist_externals = poetry
 commands =
    nocoverage: poetry run pytest tests
    coverage: poetry run coverage erase
-   coverage: poetry run coverage run --rcfile=.coveragerc -m pytest tests
+   coverage: poetry run coverage run -m pytest tests
    coverage: poetry run coverage report
 
 [testenv:precommit]
@@ -27,4 +27,7 @@ changedir = docs
 commands =
    poetry --version
    poetry version
-   poetry run sphinx-build -b html -d _build/doctrees . _build/html
+   poetry run sphinx-build -N -E -a -b html -d _build/doctrees . _build/html 2>&1 | \
+          grep -v "WARNING: document isn't included in any toctree" | \
+          grep -v "WARNING: duplicate object description" | \
+          grep -v "WARNING: more than one target found for cross-reference"
