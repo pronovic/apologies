@@ -157,10 +157,7 @@ run_docs() {
    fi
 
    cd docs 
-   poetry run sphinx-build -N -E -a -b html -d _build/doctrees . _build/html 2>&1 | \
-         grep -v "WARNING: document isn't included in any toctree" | \
-         grep -v "WARNING: duplicate object description" | \
-         grep -v "WARNING: more than one target found for cross-reference"
+   poetry run sphinx-build -N -E -a -b html -d _build/doctrees . _build/html 2>&1 | grep -v -F --file=.sphinxignore
 
    if [ $open == "yes" ]; then
       $(which start || which open) _build/html/index.html 2>/dev/null  # start on Windows, open on MacOS
