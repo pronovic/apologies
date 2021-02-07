@@ -1,6 +1,7 @@
 Version 0.1.30     unreleased
 
 	* Update build process to include security scans using Safety.
+	* Make other structural improvements to the build process.
 
 Version 0.1.29     17 Jan 2021
 
