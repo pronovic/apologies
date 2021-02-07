@@ -37,4 +37,22 @@ jobs:
         run: poetry install -v
         if: steps.cached-poetry.outputs.cache-hit != 'true'
       - name: Run Tox test suite
-        run: poetry run tox -c .toxrc -e "precommit,{py}-{coverage,nocoverage}"
+        run: poetry run tox -c .toxrc -e "checks,coverage"
+      - name: Upload coverage data to coveralls.io
+        run: poetry run coveralls --service=github
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COVERALLS_FLAG_NAME: ${{ runner.os }}-python${{ matrix.python }}
+          COVERALLS_PARALLEL: true
+  coveralls:
+    name: Indicate completion to coveralls.io
+    needs: build
+    runs-on: ubuntu-latest
+    container: python:3-slim
+    steps:
+    - name: Finished
+      run: |
+         pip3 install --upgrade coveralls
+         coveralls --service=github --finish
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

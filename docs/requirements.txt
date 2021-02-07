@@ -12,7 +12,9 @@ chardet==4.0.0; python_version >= "3.5" and python_full_version < "3.0.0" or pyt
 click==7.1.2; python_version >= "3.6" and python_full_version < "3.0.0" or python_full_version >= "3.5.0" and python_version >= "3.6"
 colorama==0.4.4; python_version >= "3.6" and python_full_version < "3.0.0" and sys_platform == "win32" and platform_system == "Windows" or sys_platform == "win32" and python_version >= "3.6" and python_full_version >= "3.5.0" and platform_system == "Windows"
 coverage==5.4; (python_version >= "2.7" and python_full_version < "3.0.0") or (python_full_version >= "3.5.0" and python_version < "4")
+coveralls==3.0.0; python_version >= "3.5"
 distlib==0.3.1; python_version >= "2.7" and python_full_version < "3.0.0" or python_full_version >= "3.5.0"
+docopt==0.6.2; python_version >= "3.5"
 docutils==0.16; python_version >= "3.6" and python_full_version < "3.0.0" or python_full_version >= "3.5.0" and python_version >= "3.6"
 dparse==0.5.1; python_version >= "3.5"
 filelock==3.0.12; python_version >= "2.7" and python_full_version < "3.0.0" or python_full_version >= "3.5.0"

@@ -168,7 +168,7 @@ run_tox() {
       run_install
    fi
 
-   poetry run tox -c .toxrc -e "precommit,docs,{py}-{coverage,nocoverage}"
+   poetry run tox -c .toxrc -e "checks,docs,coverage"
    if [ $? != 0 ]; then
       exit 1
    fi
