@@ -1,3 +1,7 @@
+Version 0.1.31     07 Feb 2021
+
+	* Publish coverage data to coveralls.io in GitHub workflow.
+
 Version 0.1.30     07 Feb 2021
 
 	* Update build process to include security scans using Safety.
