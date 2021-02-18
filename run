@@ -217,7 +217,7 @@ run_release() {
    COPYRIGHT="2020-$(date +'%Y')"
    DATE=$(date +'%d %b %Y')
    TAG="v$VERSION" # follow PEP 440 naming convention
-   FILES="LICENSE pyproject.toml Changelog"
+   FILES="NOTICE pyproject.toml Changelog"
    MESSAGE="Release v$VERSION to PyPI"
 
    if [ "$(git branch -a | grep '^\*' | sed 's/^\* //')" != "master" ]; then
@@ -255,11 +255,11 @@ run_release() {
    if [ $? = 0 ]; then
       # GNU sed accepts a bare -i and assumes no backup file
       sed -i "s/^Version $VERSION\s\s*unreleased/Version $VERSION     $DATE/g" Changelog
-      sed -i -E "s/(^ *Copyright \(c\) *)([0-9,-]+)( *Kenneth.*$)/\1$COPYRIGHT\3/" LICENSE
+      sed -i -E "s/(^ *Copyright \(c\) *)([0-9,-]+)( *Kenneth.*$)/\1$COPYRIGHT\3/" NOTICE
    else
       # BSD sed requires you to set an empty backup file extension
       sed -i "" "s/^Version $VERSION\s\s*unreleased/Version $VERSION     $DATE/g" Changelog
-      sed -i "" -E "s/(^ *Copyright \(c\) *)([0-9,-]+)( *Kenneth.*$)/\1$COPYRIGHT\3/" LICENSE
+      sed -i "" -E "s/(^ *Copyright \(c\) *)([0-9,-]+)( *Kenneth.*$)/\1$COPYRIGHT\3/" NOTICE
    fi
 
    git diff $FILES
