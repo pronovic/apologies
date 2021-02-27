@@ -28,6 +28,7 @@ pendulum = "^2.1.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2"
+pytest-testdox = "^2.0.1"
 coverage = "^5.0.3"
 tox = "^3.14.5"
 pylint = "^2.6.0"

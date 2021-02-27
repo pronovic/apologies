@@ -19,7 +19,7 @@ commands =
    poetry --version
    poetry version
    poetry run coverage erase
-   poetry run coverage run -m pytest tests
+   poetry run coverage run -m pytest --force-testdox --color=no tests
    poetry run coverage report
 
 [testenv:docs]

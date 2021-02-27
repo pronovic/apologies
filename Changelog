@@ -1,6 +1,9 @@
 Version 0.1.33     17 Feb 2021
 
 	* Standardize the format of the Apache v2 statement in LICENSE.
+Version 0.1.32     unreleased
+
+	* Run test suite with python-testdox for more verbose output.
 
 Version 0.1.31     07 Feb 2021
 

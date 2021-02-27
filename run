@@ -143,7 +143,7 @@ run_pytest() {
    fi
 
    if [ $coverage == "yes" ]; then
-      poetry run coverage run -m pytest tests
+      poetry run coverage run -m pytest --testdox tests
       if [ $? != 0 ]; then
          exit 1
       fi
@@ -154,7 +154,7 @@ run_pytest() {
          $(which start || which open) .htmlcov/index.html 2>/dev/null  # start on Windows, open on MacOS
       fi
    else
-      poetry run pytest tests
+      poetry run pytest --testdox tests
       if [ $? != 0 ]; then
          exit 1
       fi
