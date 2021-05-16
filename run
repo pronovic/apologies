@@ -10,9 +10,9 @@ run_install() {
       exit 1
    fi
 
-   # Upgrade packages within the virtualenv, like pip
-   # See: https://github.com/python-poetry/poetry/issues/1651#issuecomment-746486601
-   poetry run virtualenv --upgrade-embed-wheels --quiet | sed 's/^SystemExit: None/Completed updating embedded wheels/'
+   # Upgrade embedded packages within the virtualenv
+   # Safety will alert on these even though they aren't technically dependencies
+   poetry run pip install --quiet --upgrade pip setuptools wheel
    if [ $? != 0 ]; then
       exit 1
    fi
