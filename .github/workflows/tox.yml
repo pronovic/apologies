@@ -38,7 +38,7 @@ jobs:
       - name: Check pip
         run: poetry run pip --version
       - name: Upgrade pip
-        run: poetry run pip --upgrade pip
+        run: poetry run pip install --upgrade pip
       - name: Check pip
         run: poetry run pip --version
       #- name: Run Tox test suite
