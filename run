@@ -3,15 +3,26 @@
 
 # Setup the virtual environment via Poetry and install pre-commit hooks
 run_install() {
+
+   # Create and update the virtualenv
    poetry install -v
    if [ $? != 0 ]; then
       exit 1
    fi
 
+   # Upgrade packages within the virtualenv, like pip
+   # See: https://github.com/python-poetry/poetry/issues/1651#issuecomment-746486601
+   poetry run virtualenv --upgrade-embed-wheels --quiet | sed 's/^SystemExit: None/Completed updating embedded wheels/'
+   if [ $? != 0 ]; then
+      exit 1
+   fi
+
+   # Install the pre-commit hooks
    poetry run pre-commit install 
    if [ $? != 0 ]; then
       exit 1
    fi
+
 }
 
 # Activate the current Poetry virtual environment
