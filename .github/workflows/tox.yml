@@ -22,6 +22,8 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python }}
+      - name: Upgrade pip
+        run: pip install --upgrade pip
       - name: Install and configure Poetry
         uses: snok/install-poetry@v1.1.1 # see https://github.com/snok/install-poetry
         with:
@@ -29,12 +31,6 @@ jobs:
           virtualenvs-in-project: true
       - name: Install Dependencies
         run: poetry install -v
-      - name: Upgrade embedded wheels in the virtualenv
-        # This is the recommended way to upgrade things like pip within the
-        # virtualenv.  If there is a vulnerability in pip, then Safety will
-        # alert on it, which is why it's important for these to be up-to-date.
-        # See: https://github.com/python-poetry/poetry/issues/1651#issuecomment-746486601
-        run: poetry run virtualenv --upgrade-embed-wheels
       - name: Run Tox test suite
         run: poetry run tox -c .toxrc -e "checks,coverage"
       - name: Upload coverage data to coveralls.io
