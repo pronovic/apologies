@@ -37,6 +37,10 @@ jobs:
         run: poetry install -v
       - name: Check pip
         run: poetry run pip --version
+      - name: Upgrade pip
+        run: poetry run pip --upgrade pip
+      - name: Check pip
+        run: poetry run pip --version
       #- name: Run Tox test suite
         #run: poetry run tox -c .toxrc -e "checks,coverage"
       #- name: Upload coverage data to coveralls.io
