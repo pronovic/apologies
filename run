@@ -12,10 +12,8 @@ run_install() {
 
    # Upgrade embedded packages within the virtualenv
    # Safety will alert on these even though they aren't technically dependencies
-   poetry run virtualenv --upgrade-embed-wheels --quiet
-   if [ $? != 0 ]; then
-      exit 1
-   fi
+   # This command sometimes returns $?=1 on Windows, even though it succeeds <sigh>
+   poetry run pip install --quiet --upgrade pip wheel setuptools 2>/dev/null
 
    # Install the pre-commit hooks
    poetry run pre-commit install 
