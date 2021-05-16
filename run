@@ -12,7 +12,7 @@ run_install() {
 
    # Upgrade embedded packages within the virtualenv
    # Safety will alert on these even though they aren't technically dependencies
-   poetry run pip install --quiet --upgrade pip setuptools wheel
+   poetry run virtualenv --upgrade-embed-wheels --quiet
    if [ $? != 0 ]; then
       exit 1
    fi
