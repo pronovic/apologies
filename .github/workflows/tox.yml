@@ -22,10 +22,6 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python }}
-      - name: Upgrade pip
-        run: pip install --upgrade pip
-      - name: Check pip
-        run: pip --version
       - name: Install and configure Poetry
         uses: snok/install-poetry@v1.1.1 # see https://github.com/snok/install-poetry
         with:
