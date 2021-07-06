@@ -29,8 +29,10 @@
       <excludePattern pattern="out" />
       <excludePattern pattern="poetry.lock" />
       <excludePattern pattern="run" />
+      <excludePattern pattern=".tabignore" />
+      <excludePattern pattern="NOTICE" />
     </content>
-    <orderEntry type="jdk" jdkName="Python 3.9 (apologies)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Python 3 (apologies)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="PackageRequirementsSettings">
