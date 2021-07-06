@@ -46,7 +46,8 @@ __pycache__
 .idea/artifacts
 .idea/compiler.xml
 .idea/jarRepositories.xml
-.idea/modules.xml
 .idea/modules
-.idea/misc.xml
-.idea/*.iml
+# These don't need to be excluded because we use .venv for the virtual environment
+#.idea/modules.xml
+#.idea/misc.xml
+#.idea/*.iml

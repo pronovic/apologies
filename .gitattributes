@@ -103,6 +103,9 @@
 # Jupyter notebook
 *.ipynb    text eol=lf
 
+# Pycharm
+*.iml      text eol=lf
+
 # Specific project files to override
 # ============
 
@@ -111,6 +114,7 @@
 # pre-commit hooks.  We don't bother doing that with poetry.lock, since its
 # format is considered an implementation detail of Poetry itself.
 pyproject.toml        text eol=lf
+poetry.toml           text eol=lf
 poetry.lock           text=auto
 docs/requirements.txt text eol=lf
 
