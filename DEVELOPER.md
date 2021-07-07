@@ -97,7 +97,7 @@ $ sudo apt-get install python3 python3-venv python3-pip
 
 Once that's done, make sure Python 3 is the default `python` on your 
 system.  There are a couple of ways to do this, but using `update-alternatives` as 
-discussed on [StackOverflow](https://unix.stackexchange.com/a/410851) is probably 
+discussed on [StackExchange](https://unix.stackexchange.com/a/410851) is probably 
 the best.
 
 Then, install Poetry in your home directory:
@@ -144,7 +144,7 @@ Usage: run <command>
 - run test -ch: Run the unit tests with coverage and open the HTML report
 - run docs: Build the Spinx documentation for apologies.readthedocs.io
 - run docs -o: Build the Spinx documentation and open in a browser
-- run tox: Run the broader Tox test suite used by the GitHub CI action
+- run tox: Run the Tox test suite used by the GitHub CI action
 - run release: Release a specific version and tag the code
 - run publish: Publish the current code to PyPI and push to GitHub
 - run demo: Run a game with simulated players, displaying output on the terminal
@@ -236,7 +236,9 @@ environment.
 
 ### Project Structure
 
-Go to the PyCharm settings and find the `apologies` project.  Under **Project Structure**, mark both `src` and `tests` as source folders.  In the **Exclude Files** box, enter the following:
+Go to the PyCharm settings and find the `apologies` project.  Under 
+**Project Structure**, mark both `src` and `tests` as source folders.  In 
+the **Exclude Files** box, enter the following:
 
 ```
 LICENSE;NOTICE;PyPI.md;.coverage;.coveragerc;.github;.gitignore;.gitattributes;.htmlcov;.idea;.isort.cfg;.mypy.ini;.mypy_cache;.pre-commit-config.yaml;.pylintrc;.pytest_cache;.readthedocs.yml;.tox;.toxrc;.tabignore;build;dist;docs/_build;out;poetry.lock;poetry.toml;run;
