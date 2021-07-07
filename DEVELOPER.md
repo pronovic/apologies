@@ -2,9 +2,9 @@
 
 ## Supported Platforms
 
-The included demo does not run on Windows, because it needs the UNIX-only
-curses library for screen drawing.  However, the rest of the code does work
-basically the same no matter where you run it.
+This code should work equivalently on MacOS, Linux, and Windows.  However, the
+included demo does not run on Windows, because it needs the UNIX-only curses
+library for screen drawing.  
 
 ## Packaging and Dependencies
 
@@ -151,11 +151,166 @@ Usage: run <command>
 - run sim: Run a simulation to see how well different character input sources behave
 ```
 
+## Running the Demo
+
+While this is primarily a library, it includes a quick'n'dirty console demo
+that plays a game with 2-4 automated players.  This demo works only on
+UNIX-like platforms that support the curses library.  Here's the help output:
+
+```
+$ poetry run demo
+usage: demo [-h] [--players PLAYERS] [--mode {STANDARD,ADULT}]
+            [--source SOURCE] [--delay DELAY]
+
+Run a game with simulated players, displaying output on the terminal.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --players PLAYERS     Number of simulated players in the game
+  --mode {STANDARD,ADULT}
+                        Choose the game mode
+  --source SOURCE       Fully-qualified name of the character source
+  --delay DELAY         Delay between computer-generated moves (fractional
+                        seconds)
+
+By default, the game runs in STANDARD mode with 4 players. A source is a class
+that chooses a player's move.
+```
+
+It's simplest to run a demo with the default arguments:
+
+```
+$ run demo
+```
+
+This runs a really fast game in adult mode with 3 players:
+
+```
+$ run demo --players=3 --mode=ADULT --delay=0.1
+```
+
+> _Note:_ The demo only works inside a UNIX-style terminal window (like an
+> xterm or a MacOS terminal).  Some terminals (like [iTerm2](https://www.iterm2.com/)) may
+> require extra configuration before the terminal can be resized properly
+> (see [StackExchange](https://apple.stackexchange.com/a/47841/249172Z)).
+
+## Release Process
+
+### Documentation
+
+Documentation at [Read the Docs](https://apologies.readthedocs.io/en/stable/)
+is generated via a GitHub hook each time code is pushed to master.  So, there
+is no formal release process for the documentation.
+
+### Code
+
+Code is released to [PyPI](https://pypi.org/project/apologies/).  There is a
+partially-automated process to publish a new release.  
+
+> _Note:_ In order to publish code, you must must have push permissions to the
+> GitHub repo and be a collaborator on the PyPI project.  Before running this
+> process for the first time, you must set up a PyPI API token and configure
+> Poetry to use it.  (See notes below.)
+
+Ensure that you are on the `master` branch.  Releases must always be done from
+`master`.
+
+Ensure that the `Changelog` is up-to-date and reflects all of the changes that
+will be published.  The top line must show your version as unreleased:
+
+```
+Version 0.1.29     unreleased
+```
+
+Run the release step:
+
+```
+$ run release 0.1.29
+```
+
+This updates `pyproject.toml` and the `Changelog` to reflect the released
+version, then commits those changes and tags the code.  Nothing has been pushed
+or published yet, so you can always remove the tag (i.e. `git tag -d v0.1.29`)
+and revert your commit (`git reset HEAD~1`) if you made a mistake.
+
+Finally, publish the release:
+
+```
+$ run publish
+```
+
+This builds the deployment artifacts, publishes the artifacts to PyPI, and
+pushes the repo to GitHub.  The code will be available on PyPI for others to
+use after a little while.
+
+### Configuring the PyPI API Token
+
+In order to publish to PyPI, you must configure Poetry to use a PyPI API token.  Once 
+you have the token, you will configure Poetry to use it.  Poetry relies on
+the Python keyring to store this secret.  On MacOS and Windows, it will use the 
+system keyring, and no other setup is required.  If you are using Debian, the
+process is more complicated.  See the notes below.
+
+First, in your PyPI [account settings](https://pypi.org/manage/account/),
+create an API token with upload permissions for the apologies project.
+Once you have a working keyring, configure Poetry following 
+the [instructions](https://python-poetry.org/docs/repositories/#configuring-credentials):
+
+```
+poetry config pypi-token.pypi <the PyPI token>
+```
+
+Note that this leaves your actual secret in the command-line history, so make sure
+to scrub it once you're done.
+
+### Python Keyring on Debian
+
+On Debian, the process really only works from an X session.  There is a way to 
+manipulate the keyring without being in an X session, and I used to document it 
+here. However, it's so ugly that I don't want to encourage anyone to use it.  If 
+you want to dig in on your own, see the [keyring documentation](https://pypi.org/project/keyring/)
+under the section **Using Keyring on headless Linux systems**.
+
+Some setup is required to initialize the keyring in your Debian system. First, 
+install the `gnome-keyring` package, and then log out:
+
+```
+$ sudo apt-get install gnome-keyring
+$ exit
+```
+
+Log back in and initialize your keyring by setting and then removing a dummy
+value:
+
+```
+$ keyring set testvalue "user"
+Password for 'user' in 'testvalue': 
+Please enter password for encrypted keyring: 
+
+$ keyring get testvalue "user"
+Please enter password for encrypted keyring: 
+password
+
+$ keyring del testvalue "user"
+Deleting password for 'user' in 'testvalue':
+```
+
+At this point, the keyring should be fully functional and it should be ready
+for use with Poetry.  Whenever Poetry needs to read a secret from the keyring,
+you'll get a popup window where you need to enter the keyring password.
+
 ## Integration with PyCharm
 
 Currently, I use [PyCharm Community Edition](https://www.jetbrains.com/pycharm/download) as 
 my day-to-day IDE.  By integrating Black and Pylint, most everything important
 that can be done from a shell environment can also be done right in PyCharm.
+
+PyCharm offers a good developer experience.  However, the underlying configuration
+on disk mixes together project policy (i.e. preferences about which test runner to
+use) with system-specific settings (such as the name and version of the active Python 
+interpreter). This makes it impossible to commit complete PyCharm configuration 
+to the Git repository.  Instead, the repository contains partial configuration, and 
+there are instructions below about how to manually configure the remaining items.
 
 ### Prerequisites
 
@@ -168,12 +323,14 @@ virtualenv for PyCharm to use:
 $ run install && run checks && run test
 ```
 
-### Project Setup
+### Open the Project
 
 Once you have a working shell development environment, **Open** (do not
-**Import**) the `apologies` directory in PyCharm and follow the remaining
+**Import**) the `apologies` directory in PyCharm, then follow the remaining
 instructions below.  By using **Open**, the existing `.idea` directory will be
 retained and all of the existing settings will be used.
+
+### Interpreter
 
 As a security precaution, PyCharm does not trust any virtual environment
 installed within the repository, such as the Poetry `.venv` directory. In the
@@ -182,14 +339,34 @@ on this error and select **Add Interpreter**.  In the resulting dialog, click
 **Ok** to accept the selected environment, which should be the Poetry virtual
 environment.
 
-The project definition configures exclusions for files that are normally not
-managed from the IDE.  To hide these files in PyCharm, go to the gear icon in
-the project panel and uncheck **Show Excluded Files**.
+### Project Structure
+
+Go to the PyCharm settings and find the `apologies` project.  Under **Project Structure**, mark both `src` and `tests` as source folders.  In the **Exclude Files** box, enter the following:
+
+```
+LICENSE;NOTICE;PyPI.md;.coverage;.coveragerc;.github;.gitignore;.gitattributes;.htmlcov;.idea;.isort.cfg;.mypy.ini;.mypy_cache;.pre-commit-config.yaml;.pylintrc;.pytest_cache;.readthedocs.yml;.tox;.toxrc;.tabignore;build;dist;docs/_build;out;poetry.lock;poetry.toml;run;
+```
+
+When you're done, click **Ok**.  Then, go to the gear icon in the project panel 
+and uncheck **Show Excluded Files**.  This will hide the files and directories 
+in the list above.
+
+### Tool Preferences
+
+Unit tests are written using [Pytest](https://docs.pytest.org/en/latest/),
+and API documentation is written
+using [Google Style Python Docstring](https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html).  However, neither of these is the default in PyCharm.  In 
+the PyCharm settings, go to **Tools > Python Integrated Tools**.  Under
+**Testing > Default test runner**, select _pytest_.  Under **Docstrings > Docstring format**, 
+select _Google_.
 
 ### Running Unit Tests
 
 Right click on the `tests` folder in the project explorer and choose **Run
-'pytest in tests'**.  Make sure that all of the tests pass.
+'pytest in tests'**.  Make sure that all of the tests pass.  If you see a slightly
+different option (i.e. for "Unittest" instead of "pytest") then you probably 
+skipped the preferences setup discussed above.  You may need to remove the
+run configuration before PyCharm will find the right test suite.
 
 ### External Tools
 
@@ -352,151 +529,3 @@ can be used instead.
 |Make console active on message in stdout|_Unchecked_|
 |Make console active on message in stderr|_Unchecked_|
 |Output filters|_Empty_|
-
-## Running the Demo
-
-While this is primarily a library, it includes a quick'n'dirty console demo
-that plays a game with 2-4 automated players.  This demo works only on
-UNIX-like platforms that support the curses library.  Here's the help output:
-
-```
-$ poetry run demo
-usage: demo [-h] [--players PLAYERS] [--mode {STANDARD,ADULT}]
-            [--source SOURCE] [--delay DELAY]
-
-Run a game with simulated players, displaying output on the terminal.
-
-optional arguments:
-  -h, --help            show this help message and exit
-  --players PLAYERS     Number of simulated players in the game
-  --mode {STANDARD,ADULT}
-                        Choose the game mode
-  --source SOURCE       Fully-qualified name of the character source
-  --delay DELAY         Delay between computer-generated moves (fractional
-                        seconds)
-
-By default, the game runs in STANDARD mode with 4 players. A source is a class
-that chooses a player's move.
-```
-
-It's simplest to run a demo with the default arguments:
-
-```
-$ run demo
-```
-
-This runs a really fast game in adult mode with 3 players:
-
-```
-$ run demo --players=3 --mode=ADULT --delay=0.1
-```
-
-> _Note:_ The demo only works inside a UNIX-style terminal window (like an
-> xterm or a MacOS terminal).  Some terminals (like [iTerm2](https://www.iterm2.com/)) may
-> require extra configuration before the terminal can be resized properly
-> (see [StackExchange](https://apple.stackexchange.com/a/47841/249172Z)).
-
-## Release Process
-
-### Documentation
-
-Documentation at [Read the Docs](https://apologies.readthedocs.io/en/stable/)
-is generated via a GitHub hook each time code is pushed to master.  So, there
-is no formal release process for the documentation.
-
-### Code
-
-Code is released to [PyPI](https://pypi.org/project/apologies/).  There is a
-partially-automated process to publish a new release.  
-
-> _Note:_ In order to publish code, you must must have push permissions to the
-> GitHub repo and be a collaborator on the PyPI project.  Before running this
-> process for the first time, you must set up a PyPI API token and configure
-> Poetry to use it.  (See notes below.)
-
-Ensure that you are on the `master` branch.  Releases must always be done from
-`master`.
-
-Ensure that the `Changelog` is up-to-date and reflects all of the changes that
-will be published.  The top line must show your version as unreleased:
-
-```
-Version 0.1.29     unreleased
-```
-
-Run the release step:
-
-```
-$ run release 0.1.29
-```
-
-This updates `pyproject.toml` and the `Changelog` to reflect the released
-version, then commits those changes and tags the code.  Nothing has been pushed
-or published yet, so you can always remove the tag (i.e. `git tag -d v0.1.29`)
-and revert your commit (`git reset HEAD~1`) if you made a mistake.
-
-Finally, publish the release:
-
-```
-$ run publish
-```
-
-This builds the deployment artifacts, publishes the artifacts to PyPI, and
-pushes the repo to GitHub.  The code will be available on PyPI for others to
-use after a little while.
-
-### Configuring the PyPI API Token
-
-In order to publish to PyPI, you must configure Poetry to use a PyPI API token.  Once 
-you have the token, you will configure Poetry to use it.  Poetry relies on
-the Python keyring to store this secret.  On MacOS and Windows, it will use the 
-system keyring, and no other setup is required.  If you are using Debian, the
-process is more complicated.  See the notes below.
-
-First, in your PyPI [account settings](https://pypi.org/manage/account/),
-create an API token with upload permissions for the apologies project.
-Once you have a working keyring, configure Poetry following 
-the [instructions](https://python-poetry.org/docs/repositories/#configuring-credentials):
-
-```
-poetry config pypi-token.pypi <the PyPI token>
-```
-
-Note that this leaves your actual secret in the command-line history, so make sure
-to scrub it once you're done.
-
-### Python Keyring on Debian
-
-On Debian, the process really only works from an X session.  There is a way to 
-manipulate the keyring without being in an X session, and I used to document it 
-here. However, it's so ugly that I don't want to encourage anyone to use it.  If 
-you want to dig in on your own, see the [keyring documentation](https://pypi.org/project/keyring/)
-under the section **Using Keyring on headless Linux systems**.
-
-Some setup is required to initialize the keyring in your Debian system. First, 
-install the `gnome-keyring` package, and then log out:
-
-```
-$ sudo apt-get install gnome-keyring
-$ exit
-```
-
-Log back in and initialize your keyring by setting and then removing a dummy
-value:
-
-```
-$ keyring set testvalue "user"
-Password for 'user' in 'testvalue': 
-Please enter password for encrypted keyring: 
-
-$ keyring get testvalue "user"
-Please enter password for encrypted keyring: 
-password
-
-$ keyring del testvalue "user"
-Deleting password for 'user' in 'testvalue':
-```
-
-At this point, the keyring should be fully functional and it should be ready
-for use with Poetry.  Whenever Poetry needs to read a secret from the keyring,
-you'll get a popup window where you need to enter the keyring password.

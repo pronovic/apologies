@@ -103,9 +103,6 @@
 # Jupyter notebook
 *.ipynb    text eol=lf
 
-# Pycharm
-*.iml      text eol=lf
-
 # Specific project files to override
 # ============
 
