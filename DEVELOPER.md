@@ -355,10 +355,10 @@ in the list above.
 
 Unit tests are written using [Pytest](https://docs.pytest.org/en/latest/),
 and API documentation is written
-using [Google Style Python Docstring](https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html).  However, neither of these is the default in PyCharm.  In 
-the PyCharm settings, go to **Tools > Python Integrated Tools**.  Under
-**Testing > Default test runner**, select _pytest_.  Under **Docstrings > Docstring format**, 
-select _Google_.
+using [Google Style Python Docstring](https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html).  However, 
+neither of these is the default in PyCharm.  In the PyCharm settings, go to 
+**Tools > Python Integrated Tools**.  Under **Testing > Default test runner**, 
+select _pytest_.  Under **Docstrings > Docstring format**, select _Google_.
 
 ### Running Unit Tests
 
