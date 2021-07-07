@@ -194,111 +194,6 @@ $ run demo --players=3 --mode=ADULT --delay=0.1
 > require extra configuration before the terminal can be resized properly
 > (see [StackExchange](https://apple.stackexchange.com/a/47841/249172Z)).
 
-## Release Process
-
-### Documentation
-
-Documentation at [Read the Docs](https://apologies.readthedocs.io/en/stable/)
-is generated via a GitHub hook each time code is pushed to master.  So, there
-is no formal release process for the documentation.
-
-### Code
-
-Code is released to [PyPI](https://pypi.org/project/apologies/).  There is a
-partially-automated process to publish a new release.  
-
-> _Note:_ In order to publish code, you must must have push permissions to the
-> GitHub repo and be a collaborator on the PyPI project.  Before running this
-> process for the first time, you must set up a PyPI API token and configure
-> Poetry to use it.  (See notes below.)
-
-Ensure that you are on the `master` branch.  Releases must always be done from
-`master`.
-
-Ensure that the `Changelog` is up-to-date and reflects all of the changes that
-will be published.  The top line must show your version as unreleased:
-
-```
-Version 0.1.29     unreleased
-```
-
-Run the release step:
-
-```
-$ run release 0.1.29
-```
-
-This updates `pyproject.toml` and the `Changelog` to reflect the released
-version, then commits those changes and tags the code.  Nothing has been pushed
-or published yet, so you can always remove the tag (i.e. `git tag -d v0.1.29`)
-and revert your commit (`git reset HEAD~1`) if you made a mistake.
-
-Finally, publish the release:
-
-```
-$ run publish
-```
-
-This builds the deployment artifacts, publishes the artifacts to PyPI, and
-pushes the repo to GitHub.  The code will be available on PyPI for others to
-use after a little while.
-
-### Configuring the PyPI API Token
-
-In order to publish to PyPI, you must configure Poetry to use a PyPI API token.  Once 
-you have the token, you will configure Poetry to use it.  Poetry relies on
-the Python keyring to store this secret.  On MacOS and Windows, it will use the 
-system keyring, and no other setup is required.  If you are using Debian, the
-process is more complicated.  See the notes below.
-
-First, in your PyPI [account settings](https://pypi.org/manage/account/),
-create an API token with upload permissions for the apologies project.
-Once you have a working keyring, configure Poetry following 
-the [instructions](https://python-poetry.org/docs/repositories/#configuring-credentials):
-
-```
-poetry config pypi-token.pypi <the PyPI token>
-```
-
-Note that this leaves your actual secret in the command-line history, so make sure
-to scrub it once you're done.
-
-### Python Keyring on Debian
-
-On Debian, the process really only works from an X session.  There is a way to 
-manipulate the keyring without being in an X session, and I used to document it 
-here. However, it's so ugly that I don't want to encourage anyone to use it.  If 
-you want to dig in on your own, see the [keyring documentation](https://pypi.org/project/keyring/)
-under the section **Using Keyring on headless Linux systems**.
-
-Some setup is required to initialize the keyring in your Debian system. First, 
-install the `gnome-keyring` package, and then log out:
-
-```
-$ sudo apt-get install gnome-keyring
-$ exit
-```
-
-Log back in and initialize your keyring by setting and then removing a dummy
-value:
-
-```
-$ keyring set testvalue "user"
-Password for 'user' in 'testvalue': 
-Please enter password for encrypted keyring: 
-
-$ keyring get testvalue "user"
-Please enter password for encrypted keyring: 
-password
-
-$ keyring del testvalue "user"
-Deleting password for 'user' in 'testvalue':
-```
-
-At this point, the keyring should be fully functional and it should be ready
-for use with Poetry.  Whenever Poetry needs to read a secret from the keyring,
-you'll get a popup window where you need to enter the keyring password.
-
 ## Integration with PyCharm
 
 Currently, I use [PyCharm Community Edition](https://www.jetbrains.com/pycharm/download) as 
@@ -529,3 +424,109 @@ can be used instead.
 |Make console active on message in stdout|_Unchecked_|
 |Make console active on message in stderr|_Unchecked_|
 |Output filters|_Empty_|
+
+## Release Process
+
+### Documentation
+
+Documentation at [Read the Docs](https://apologies.readthedocs.io/en/stable/)
+is generated via a GitHub hook each time code is pushed to master.  So, there
+is no formal release process for the documentation.
+
+### Code
+
+Code is released to [PyPI](https://pypi.org/project/apologies/).  There is a
+partially-automated process to publish a new release.  
+
+> _Note:_ In order to publish code, you must must have push permissions to the
+> GitHub repo and be a collaborator on the PyPI project.  Before running this
+> process for the first time, you must set up a PyPI API token and configure
+> Poetry to use it.  (See notes below.)
+
+Ensure that you are on the `master` branch.  Releases must always be done from
+`master`.
+
+Ensure that the `Changelog` is up-to-date and reflects all of the changes that
+will be published.  The top line must show your version as unreleased:
+
+```
+Version 0.1.29     unreleased
+```
+
+Run the release step:
+
+```
+$ run release 0.1.29
+```
+
+This updates `pyproject.toml` and the `Changelog` to reflect the released
+version, then commits those changes and tags the code.  Nothing has been pushed
+or published yet, so you can always remove the tag (i.e. `git tag -d v0.1.29`)
+and revert your commit (`git reset HEAD~1`) if you made a mistake.
+
+Finally, publish the release:
+
+```
+$ run publish
+```
+
+This builds the deployment artifacts, publishes the artifacts to PyPI, and
+pushes the repo to GitHub.  The code will be available on PyPI for others to
+use after a little while.
+
+### Configuring the PyPI API Token
+
+In order to publish to PyPI, you must configure Poetry to use a PyPI API token.  Once 
+you have the token, you will configure Poetry to use it.  Poetry relies on
+the Python keyring to store this secret.  On MacOS and Windows, it will use the 
+system keyring, and no other setup is required.  If you are using Debian, the
+process is more complicated.  See the notes below.
+
+First, in your PyPI [account settings](https://pypi.org/manage/account/),
+create an API token with upload permissions for the apologies project.
+Once you have a working keyring, configure Poetry following 
+the [instructions](https://python-poetry.org/docs/repositories/#configuring-credentials):
+
+```
+poetry config pypi-token.pypi <the PyPI token>
+```
+
+Note that this leaves your actual secret in the command-line history, so make sure
+to scrub it once you're done.
+
+### Python Keyring on Debian
+
+On Debian, the process really only works from an X session.  There is a way to 
+manipulate the keyring without being in an X session, and I used to document it 
+here. However, it's so ugly that I don't want to encourage anyone to use it.  If 
+you want to dig in on your own, see the [keyring documentation](https://pypi.org/project/keyring/)
+under the section **Using Keyring on headless Linux systems**.
+
+Some setup is required to initialize the keyring in your Debian system. First, 
+install the `gnome-keyring` package, and then log out:
+
+```
+$ sudo apt-get install gnome-keyring
+$ exit
+```
+
+Log back in and initialize your keyring by setting and then removing a dummy
+value:
+
+```
+$ keyring set testvalue "user"
+Password for 'user' in 'testvalue': 
+Please enter password for encrypted keyring: 
+
+$ keyring get testvalue "user"
+Please enter password for encrypted keyring: 
+password
+
+$ keyring del testvalue "user"
+Deleting password for 'user' in 'testvalue':
+```
+
+At this point, the keyring should be fully functional and it should be ready
+for use with Poetry.  Whenever Poetry needs to read a secret from the keyring,
+you'll get a popup window where you need to enter the keyring password.
+
