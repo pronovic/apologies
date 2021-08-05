@@ -35,6 +35,7 @@ class TestNoOpInputSource:
         assert nois.name == "NoOpInputSource"
         assert nois.fullname == "apologies.source.NoOpInputSource"
 
+    # noinspection PyTypeChecker
     def test_choose_move(self):
         with pytest.raises(NotImplementedError):
             NoOpInputSource().choose_move(GameMode.ADULT, MagicMock(), MagicMock(), MagicMock())
@@ -46,6 +47,7 @@ class TestRandomInputSource:
         assert ris.name == "RandomInputSource"
         assert ris.fullname == "apologies.source.RandomInputSource"
 
+    # noinspection PyTypeChecker
     def test_choose_move(self):
         move1 = MagicMock()
         move2 = MagicMock()
@@ -63,6 +65,7 @@ class TestRewardV1InputSource:
         assert ris.fullname == "apologies.source.RewardV1InputSource"
         assert isinstance(ris.calculator, RewardCalculatorV1)
 
+    # noinspection PyTypeChecker
     def test_choose_move(self):
         view = MagicMock()
 

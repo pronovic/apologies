@@ -19,6 +19,7 @@ class TestCharacter:
         assert character.name == "c"
         assert character.source is source
 
+    # noinspection PyTypeChecker
     def test_choose_move_minimal(self):
         source = Mock()
         character = Character("c", source)
@@ -29,6 +30,7 @@ class TestCharacter:
         character.choose_move(mode, view, legal_moves, evaluator)
         source.choose_move.assert_called_once_with(mode, view, legal_moves, evaluator)
 
+    # noinspection PyTypeChecker
     def test_choose_move_all_args(self):
         source = Mock()
         character = Character("c", source)

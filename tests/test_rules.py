@@ -188,7 +188,7 @@ class TestRules:
         expected_moves = [
             Move(card, [Action(ActionType.MOVE_TO_START, pawn1)]),
             Move(card, [Action(ActionType.MOVE_TO_POSITION, pawn2), Action(ActionType.MOVE_TO_START, pawn2)]),
-        ]  # result is a list of all returned moves, with duplicates are removed
+        ]  # result is a list of all returned moves, with duplicates removed
 
         view = MagicMock()
         view.player = MagicMock(color=PlayerColor.RED, hand=hand, pawns=player_pawns)
@@ -229,7 +229,7 @@ class TestRules:
             Move(hand1, [Action(ActionType.MOVE_TO_START, pawn2), Action(ActionType.MOVE_TO_POSITION, pawn2)]),
             Move(hand2, [Action(ActionType.MOVE_TO_POSITION, pawn1, Position())]),
             Move(hand2, [Action(ActionType.MOVE_TO_POSITION, pawn2, Position())]),
-        ]  # result is a list of all returned moves, with duplicates are removed
+        ]  # result is a list of all returned moves, with duplicates removed
 
         view = MagicMock()
         view.player = MagicMock(color=PlayerColor.RED, hand=hand, pawns=player_pawns)
