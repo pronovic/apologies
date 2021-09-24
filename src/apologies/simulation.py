@@ -173,7 +173,7 @@ def run_simulation(iterations: int, output: str, sources: List[CharacterInputSou
         output(str): Path to the output file to write
         sources(List[CharacterInputSource]): The source to use for each player in the game
     """
-    with open(output, "w", newline="") as csvfile:
+    with open(output, "w", newline="", encoding="utf-8") as csvfile:
         csvwriter = csv.writer(csvfile, quoting=csv.QUOTE_ALL)
         _write_header(csvwriter, sources)
 
