@@ -76,6 +76,7 @@ disable=fixme,
         no-else-raise,
         no-self-use,
         duplicate-code,
+        consider-using-f-string,
         unsubscriptable-object # bug in Pylint & Python 3.9 gives "Value 'Optional' is unsubscriptable"
 
 # Enable the message, report, category or checker with the given id(s). You can
