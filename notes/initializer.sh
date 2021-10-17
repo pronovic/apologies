@@ -14,11 +14,6 @@ if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
    exit 0
 fi
 
-if [ "$(git rev-parse --is-inside-work-tree 2>/dev/null)" == "true" ]; then
-   echo "Do not run this from within a Git repository"
-   exit 1
-fi
-
 git --version >/dev/null 2>&1
 if [ $? != 0 ]; then
    echo "No 'git' command found"
@@ -42,6 +37,11 @@ sed --version 2>&1 | grep -q 'GNU sed'
 if [ $? != 0 ]; then
    echo "Requires GNU sed; BSD sed won't work"
    echo "On MacOS, you can install GNU sed with 'brew install gnu-sed'"
+   exit 1
+fi
+
+if [ "$(git rev-parse --is-inside-work-tree 2>/dev/null)" == "true" ]; then
+   echo "Do not run this from within a Git repository"
    exit 1
 fi
 
