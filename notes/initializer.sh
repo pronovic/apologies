@@ -5,7 +5,7 @@
 usage() {
    echo "Usage: initializer.sh"
    echo "Initializes a new Python library based on apologies"
-   echo "You must have Git, Python 3, and Poetry installed first."
+   echo "You must have Git, Python 3, Poetry, and GNU sed installed first."
    echo "Python 3 is assumed to be on your path as simply 'python'."
 }
 
@@ -35,6 +35,13 @@ poetry --version >/dev/null 2>&1
 if [ $? != 0 ]; then
    echo "No 'poetry' command found"
    echo "See: https://python-poetry.org/docs/#installation" 
+   exit 1
+fi
+
+sed --version 2>&1 | grep -q 'GNU sed'
+if [ $? != 0 ]; then
+   echo "Requires GNU sed; BSD sed won't work"
+   echo "On MacOS, you can install GNU sed with 'brew install gnu-sed'"
    exit 1
 fi
 
