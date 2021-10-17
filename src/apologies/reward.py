@@ -29,8 +29,8 @@ source wins more than 98% of the time against 3 random sources.
 from abc import ABC, abstractmethod
 from typing import Tuple
 
-from apologies.game import Player, PlayerView
-from apologies.rules import BoardRules
+from .game import Player, PlayerView
+from .rules import BoardRules
 
 
 class RewardCalculator(ABC):
