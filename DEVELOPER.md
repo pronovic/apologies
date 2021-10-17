@@ -1,5 +1,14 @@
 # Developer Notes
 
+## Copying this Project
+
+You can use this project has a starting point for your own project, if you
+wish.  The script [`notes/initializer.sh`](notes/initializer.sh) copies the
+repository, changing the project name and package name at the same time.  It's
+a very basic translation process, but it's at least a good starting point and
+gives you a working package where the tests run, the quality checks are in
+place, etc.  You'll need to do additional manual cleanup afterwards.
+
 ## Supported Platforms
 
 This code should work equivalently on MacOS, Linux, and Windows.  However, the
