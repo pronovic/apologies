@@ -1,4 +1,4 @@
-Version 0.1.34     unreleased
+Version 0.1.34     14 Nov 2021
 
 	* Adjust dependencies and build process to support Python 3.10.
 	* Run test suite with python-testdox for more verbose output.
