@@ -436,7 +436,7 @@ class History:
 
     @timestamp.default
     def _default_timestamp(self) -> DateTime:
-        return pendulum.now(pendulum.UTC)
+        return pendulum.now(pendulum.UTC)  # type: ignore[attr-defined]
 
     def __str__(self) -> str:
         time = self.timestamp.to_time_string()  # type: ignore
