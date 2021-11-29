@@ -38,13 +38,6 @@ repos:
   - repo: local
     hooks:
       - id: system
-        name: Safety
-        entry: poetry run safety check
-        pass_filenames: false
-        language: system
-  - repo: local
-    hooks:
-      - id: system
         name: MyPy
         entry: poetry run mypy
         pass_filenames: false

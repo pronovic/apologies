@@ -11,7 +11,6 @@ run_install() {
    fi
 
    # Upgrade embedded packages within the virtualenv
-   # Safety will alert on these even though they aren't technically dependencies
    # This command sometimes returns $?=1 on Windows, even though it succeeds <sigh>
    poetry run pip install --quiet --upgrade pip wheel setuptools 2>/dev/null
 
@@ -68,23 +67,6 @@ run_mypy() {
    fi
 
    poetry run mypy
-   if [ $? != 0 ]; then
-      exit 1
-   fi
-
-   echo "done"
-}
-
-# Run the Safety code checker
-run_safety() {
-   echo "Running safety checks..."
-
-   poetry run which safety > /dev/null
-   if [ $? != 0 ]; then
-      run_install
-   fi
-
-   poetry run safety check $*
    if [ $? != 0 ]; then
       exit 1
    fi
@@ -357,9 +339,6 @@ case $1 in
    isort)
       run_isort
       ;;
-   safety)
-      run_safety
-      ;;
    *lint)
       run_pylint
       ;;
@@ -375,8 +354,6 @@ case $1 in
       run_black --check
       echo ""
       run_isort --check-only
-      echo ""
-      run_safety --bare
       echo ""
       run_mypy
       echo ""

@@ -30,7 +30,6 @@ jobs:
       - name: Install dependencies
         run: poetry install -v
       - name: Upgrade embedded tools within virtualenv
-        # Safety will alert on these even though they aren't technically dependencies
         run: poetry run pip install --upgrade pip setuptools wheel
       - name: Run Tox test suite
         run: poetry run tox -c .toxrc -e "checks,coverage"
