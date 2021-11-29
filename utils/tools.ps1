@@ -29,10 +29,5 @@ Switch ($command)
       Write-Output "Running pylint checks..." 
       poetry run pylint -j 0 src/apologies tests
     }
-
-    safety {
-      Write-Output "Running safety checks..." 
-      poetry run safety check
-    }
 }
 
