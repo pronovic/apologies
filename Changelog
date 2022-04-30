@@ -1,4 +1,4 @@
-Version 0.1.35     unreleased
+Version 0.1.35     30 Apr 2022
 
 	* Adjust the pyproject.toml include directive to limit what goes into wheel.
 	* Remove the Safety scanner from the pre-commit hooks and GitHub action.
