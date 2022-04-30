@@ -7,7 +7,13 @@ license = "Apache-2.0"
 readme = "PyPI.md"
 homepage = "https://pypi.org/project/apologies/"
 repository = "https://github.com/pronovic/apologies"
-include = [ "Changelog", "LICENSE", "README.md", "docs", "tests", ]
+include = [
+   { path = 'Changelog', format = 'sdist' },
+   { path = 'LICENSE', format = 'sdist' },
+   { path = 'README.md', format = 'sdist' },
+   { path = 'docs', format = 'sdist' },
+   { path = 'tests', format = 'sdist' },
+]
 packages = [ { include = "apologies", from = "src" } ]
 classifiers=[
    "Programming Language :: Python :: 3",
