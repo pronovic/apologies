@@ -38,7 +38,6 @@ pytest-testdox = "^3.0.1"
 coverage = "^6.3.2"
 tox = "^3.25.0"
 pylint = "~2.12"  # versions after 2.12 get into an infinite loop on Windows
-sphinx = "^4.3"
 toml = "^0.10.2"
 pre-commit = "^2.18.1"
 black = "^22.3.0"
