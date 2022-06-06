@@ -51,7 +51,7 @@ class Action:
 
     actiontype = attr.ib(type=ActionType)
     pawn = attr.ib(type=Pawn)
-    position = attr.ib(default=None, type=Position)
+    position = attr.ib(default=None, type=Optional[Position])
 
 
 @attr.s
@@ -396,7 +396,7 @@ class BoardRules:
                 if action.actiontype == ActionType.MOVE_TO_POSITION:  # look at any move to a position on the board
                     for color in [color for color in PlayerColor if color != action.pawn.color]:  # any color other than the pawn's
                         for (start, end) in SLIDE[color]:  # look at all slides with this color
-                            if action.position.square == start:  # if the pawn landed on the start of the slide
+                            if action.position and action.position.square == start:  # if the pawn landed on the start of the slide
                                 action.position.move_to_square(end)  # move the pawn to the end of the slide
                                 for square in range(start + 1, end + 1):  # and then bump any pawns that were already on the slide
                                     # Note: in this one case, a pawn can bump another pawn of the same color
@@ -485,7 +485,7 @@ class Rules:
             if action.actiontype == ActionType.MOVE_TO_START:
                 pawn.position.move_to_start()
                 log += "%s->start, " % pawn.name
-            elif action.actiontype == ActionType.MOVE_TO_POSITION:
+            elif action.actiontype == ActionType.MOVE_TO_POSITION and action.position:
                 pawn.position.move_to_position(action.position)
                 log += "%s, " % pawn
         log += "]"
@@ -515,7 +515,7 @@ class Rules:
             if pawn:  # if the pawn isn't valid, just ignore it
                 if action.actiontype == ActionType.MOVE_TO_START:
                     pawn.position.move_to_start()
-                elif action.actiontype == ActionType.MOVE_TO_POSITION:
+                elif action.actiontype == ActionType.MOVE_TO_POSITION and action.position:
                     pawn.position.move_to_position(action.position)
         return result
 
