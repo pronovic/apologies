@@ -552,10 +552,10 @@ class TestEngine:
     @staticmethod
     def _create_engine(mode: GameMode = GameMode.STANDARD) -> Engine:
         character1 = Character("character1", Mock())
-        character1.construct_move = MagicMock()  # type: ignore
+        character1.choose_move = MagicMock()  # type: ignore
 
         character2 = Character("character2", Mock())
-        character1.construct_move = MagicMock()  # type: ignore
+        character1.choose_move = MagicMock()  # type: ignore
 
         first = PlayerColor.RED
         engine = Engine(mode, [character1, character2], first=first)
