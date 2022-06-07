@@ -12,8 +12,8 @@ import statistics
 from itertools import combinations_with_replacement
 from typing import Dict, List, Optional, Sequence
 
-import attr
 import pendulum
+from attrs import frozen
 from pendulum import DateTime  # type: ignore
 
 from .engine import Character, Engine
@@ -55,29 +55,29 @@ def _median(data: Sequence[float]) -> Optional[float]:
     return round(statistics.median(data), 2) if data else None
 
 
-@attr.s
+@frozen
 class _Result:
 
     """Result of a single game within a scenario."""
 
-    start = attr.ib(type=DateTime)
-    stop = attr.ib(type=DateTime)
-    character = attr.ib(type=Character)
-    player = attr.ib(type=Player)
+    start: DateTime
+    stop: DateTime
+    character: Character
+    player: Player
 
 
-@attr.s
+@frozen
 class _Statistics:
 
     """Scenario statistics for a source."""
 
-    source = attr.ib(type=Optional[str])
-    median_turns = attr.ib(type=Optional[float])
-    mean_turns = attr.ib(type=Optional[float])
-    median_duration = attr.ib(type=Optional[float])
-    mean_duration = attr.ib(type=Optional[float])
-    wins = attr.ib(type=int)
-    win_percent = attr.ib(type=float)
+    source: Optional[str]
+    median_turns: Optional[float]
+    mean_turns: Optional[float]
+    median_duration: Optional[float]
+    mean_duration: Optional[float]
+    wins: int
+    win_percent: float
 
     @staticmethod
     def for_results(name: Optional[str], results: List[_Result]) -> _Statistics:
@@ -93,17 +93,17 @@ class _Statistics:
         return _Statistics(name, median_turns, mean_turns, median_duration, mean_duration, wins, win_percent)
 
 
-@attr.s
+@frozen
 class _Analysis:
     """Groups together information analyzed for a scenario."""
 
-    scenario = attr.ib(type=str)
-    mode = attr.ib(type=str)
-    iterations = attr.ib(type=int)
-    players = attr.ib(type=int)
-    playernames = attr.ib(type=List[str])
-    overall_stats = attr.ib(type=_Statistics)
-    source_stats = attr.ib(type=Dict[str, _Statistics])
+    scenario: str
+    mode: str
+    iterations: int
+    players: int
+    playernames: List[str]
+    overall_stats: _Statistics
+    source_stats: Dict[str, _Statistics]
 
 
 def _analyze_scenario(

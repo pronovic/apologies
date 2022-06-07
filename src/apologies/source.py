@@ -10,8 +10,6 @@ from abc import ABC, abstractmethod
 from pydoc import locate
 from typing import Callable, List, Tuple
 
-import attr
-
 from .game import GameMode, PlayerView
 from .reward import RewardCalculatorV1
 from .rules import Move
@@ -63,7 +61,6 @@ class CharacterInputSource(ABC):
         """
 
 
-@attr.s
 class NoOpInputSource(CharacterInputSource):
 
     """
@@ -82,7 +79,6 @@ class NoOpInputSource(CharacterInputSource):
         raise NotImplementedError
 
 
-@attr.s
 class RandomInputSource(CharacterInputSource):
 
     """
@@ -97,7 +93,6 @@ class RandomInputSource(CharacterInputSource):
 
 
 # noinspection PyMethodMayBeStatic
-@attr.s
 class RewardInputSource(CharacterInputSource):
 
     """

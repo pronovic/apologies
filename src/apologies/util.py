@@ -4,10 +4,10 @@
 """
 Utility functionality.
 """
-from typing import Any, Generic, List, TypeVar
+from typing import Generic, List, TypeVar
 
-import attr
 import cattr
+from attrs import define, field
 from pendulum.datetime import DateTime
 from pendulum.parser import parse
 
@@ -27,18 +27,21 @@ T = TypeVar("T")  # pylint: disable=invalid-name
 """Generic type"""
 
 
-@attr.s
+@define(slots=False)
 class CircularQueue(Generic[T]):
     """A circular queue that keeps returning the original entries repeatedly, in order."""
 
-    entries = attr.ib(type=List[T])
-    first = attr.ib(type=Any)
-    _working = attr.ib(type=List[T])
+    entries: List[T] = field()
+    first: T = field()
+    _working: List[T] = field()
 
     @first.default
-    def _default_first(self) -> Any:
-        return None if not self.entries else self.entries[0]
+    def _default_first(self) -> T:
+        if not self.entries:
+            raise ValueError("Entries must not be empty")
+        return self.entries[0]
 
+    # noinspection PyUnresolvedReferences
     @_working.default
     def _default_working(self) -> List[T]:
         if self.first not in self.entries:
@@ -49,11 +52,6 @@ class CircularQueue(Generic[T]):
             popped = temp.pop(0)
         temp.insert(0, popped)
         return temp
-
-    @entries.validator
-    def _check_entries(self, _attribute: str, value: int) -> None:
-        if not value:
-            raise ValueError("Entries must not be empty")
 
     def next(self) -> T:
         """Get the next entry from the queue."""

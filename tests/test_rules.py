@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # vim: set ft=python ts=4 sw=4 expandtab:
-# pylint: disable=no-self-use,protected-access,too-many-locals,too-many-statements
+# pylint: disable=no-self-use,protected-access,too-many-locals,too-many-statements,assigning-non-slot
 
 from unittest.mock import MagicMock, call, patch
 
@@ -31,6 +31,13 @@ class TestMove:
         assert move.card is card
         assert move.actions == actions
         assert move.id == "uuid"
+
+    def test_constructor_uuid_unique(self):
+        card = Card(3, CardType.CARD_12)
+        actions = [Action(ActionType.MOVE_TO_START, pawn=Pawn(PlayerColor.BLUE, 1, "whatever"))]
+        move1 = Move(card, actions)
+        move2 = Move(card, actions)
+        assert move1.id != move2.id  # just make sure we get a unique UUID each time in the default case
 
     def test_constructor_explicit(self):
         card = Card(3, CardType.CARD_12)
