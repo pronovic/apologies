@@ -8,7 +8,7 @@ Game engine that coordinates character actions to play a game.
 import random
 from typing import Callable, Dict, List, Optional, Tuple
 
-import attr
+from attrs import define, field
 
 from .game import Card, Game, GameMode, Player, PlayerColor, PlayerView
 from .rules import Move, Rules
@@ -16,7 +16,7 @@ from .source import CharacterInputSource
 from .util import CircularQueue
 
 
-@attr.s
+@define(slots=False)
 class Character:
 
     """
@@ -27,8 +27,8 @@ class Character:
         source(CharacterInputSource): The character input source from which moves are taken
     """
 
-    name = attr.ib(type=str)
-    source = attr.ib(type=CharacterInputSource)
+    name: str
+    source: CharacterInputSource
 
     def choose_move(
         self, mode: GameMode, view: PlayerView, legal_moves: List[Move], evaluator: Callable[[PlayerView, Move], PlayerView]
@@ -48,7 +48,7 @@ class Character:
         return self.source.choose_move(mode, view, legal_moves, evaluator)
 
 
-@attr.s
+@define
 class Engine:
 
     """
@@ -72,18 +72,19 @@ class Engine:
         first(PlayerColor): The first player, chosen randomly by default
     """
 
-    mode = attr.ib(type=GameMode)
-    characters = attr.ib(type=List[Character])
-    first = attr.ib(type=PlayerColor)
-    _game = attr.ib(init=False, type=Game)
-    _queue = attr.ib(init=False, type=CircularQueue[PlayerColor])
-    _rules = attr.ib(init=False, type=Rules)
-    _map = attr.ib(init=False, type=Dict[PlayerColor, Character])
+    mode: GameMode
+    characters: List[Character]
+    first: PlayerColor = field()
+    _game: Game = field(init=False)
+    _queue: CircularQueue[PlayerColor] = field(init=False)
+    _rules: Rules = field(init=False)
+    _map: Dict[PlayerColor, Character] = field(init=False)
 
     @first.default
     def _default_first(self) -> PlayerColor:
         return random.choice(list(PlayerColor)[: len(self.characters)])
 
+    # noinspection PyUnresolvedReferences
     @_game.default
     def _default_game(self) -> Game:
         return Game(playercount=len(self.characters))
@@ -92,10 +93,12 @@ class Engine:
     def _default_queue(self) -> CircularQueue[PlayerColor]:
         return CircularQueue(list(PlayerColor)[: len(self.characters)], first=self.first)
 
+    # noinspection PyUnresolvedReferences
     @_rules.default
     def _default_rules(self) -> Rules:
         return Rules(self.mode)
 
+    # noinspection PyUnresolvedReferences
     @_map.default
     def _default_map(self) -> Dict[PlayerColor, Character]:
         index = 0

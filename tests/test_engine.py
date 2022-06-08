@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # vim: set ft=python ts=4 sw=4 expandtab:
-# pylint: disable=redefined-outer-name,protected-access,broad-except,too-many-public-methods
+# pylint: disable=redefined-outer-name,protected-access,broad-except,too-many-public-methods,assigning-non-slot
 # Unit tests for engine.py
 
 from unittest.mock import MagicMock, Mock, PropertyMock, call, patch
@@ -552,10 +552,10 @@ class TestEngine:
     @staticmethod
     def _create_engine(mode: GameMode = GameMode.STANDARD) -> Engine:
         character1 = Character("character1", Mock())
-        character1.construct_move = MagicMock()  # type: ignore
+        character1.choose_move = MagicMock()  # type: ignore
 
         character2 = Character("character2", Mock())
-        character1.construct_move = MagicMock()  # type: ignore
+        character1.choose_move = MagicMock()  # type: ignore
 
         first = PlayerColor.RED
         engine = Engine(mode, [character1, character2], first=first)

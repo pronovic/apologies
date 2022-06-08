@@ -77,6 +77,10 @@ disable=fixme,
         no-self-use,
         duplicate-code,
         consider-using-f-string,
+        not-an-iterable, # gets confused with lists on attrs classes; MyPy covers this
+        unsupported-membership-test, # gets confused with dicts on attrs classes; MyPy covers this
+        unsupported-assignment-operation, # gets confused with dicts on attrs classes; MyPy covers this
+        no-member, # gets confused with dicts on attrs classes; MyPy covers this
         unsubscriptable-object # bug in Pylint & Python 3.9 gives "Value 'Optional' is unsubscriptable"
 
 # Enable the message, report, category or checker with the given id(s). You can

@@ -4,18 +4,21 @@
 """
 Utility functionality.
 """
-from typing import Any, Generic, List, TypeVar
+from typing import Generic, List, TypeVar
 
-import attr
-import cattr
+import cattrs
+from attrs import define, field
 from pendulum.datetime import DateTime
 from pendulum.parser import parse
 
 
-class CattrConverter(cattr.Converter):
+class CattrConverter(cattrs.GenConverter):
     """
     Cattr converter that knows how to correctly serialize/deserialize DateTime to an ISO 8601 timestamp.
     """
+
+    # Note: we need to use GenConverter and not Converter because we use PEP563 (postponed) annotations
+    # See: https://stackoverflow.com/a/72539298/2907667 and https://github.com/python-attrs/cattrs/issues/41
 
     def __init__(self) -> None:
         super().__init__()
@@ -27,18 +30,21 @@ T = TypeVar("T")  # pylint: disable=invalid-name
 """Generic type"""
 
 
-@attr.s
+@define(slots=False)
 class CircularQueue(Generic[T]):
     """A circular queue that keeps returning the original entries repeatedly, in order."""
 
-    entries = attr.ib(type=List[T])
-    first = attr.ib(type=Any)
-    _working = attr.ib(type=List[T])
+    entries: List[T] = field()
+    first: T = field()
+    _working: List[T] = field()
 
     @first.default
-    def _default_first(self) -> Any:
-        return None if not self.entries else self.entries[0]
+    def _default_first(self) -> T:
+        if not self.entries:
+            raise ValueError("Entries must not be empty")
+        return self.entries[0]
 
+    # noinspection PyUnresolvedReferences
     @_working.default
     def _default_working(self) -> List[T]:
         if self.first not in self.entries:
@@ -49,11 +55,6 @@ class CircularQueue(Generic[T]):
             popped = temp.pop(0)
         temp.insert(0, popped)
         return temp
-
-    @entries.validator
-    def _check_entries(self, _attribute: str, value: int) -> None:
-        if not value:
-            raise ValueError("Entries must not be empty")
 
     def next(self) -> T:
         """Get the next entry from the queue."""

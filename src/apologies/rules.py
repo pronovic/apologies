@@ -9,7 +9,7 @@ import uuid
 from enum import Enum
 from typing import List, Optional
 
-import attr
+from attrs import define, field, frozen
 
 from .game import (
     ADULT_HAND,
@@ -38,7 +38,7 @@ class ActionType(Enum):
     MOVE_TO_POSITION = "Move to position"  # Move a pawn to a specific position on the board
 
 
-@attr.s
+@frozen
 class Action:
     """
     An action that can be taken as part of a move.
@@ -49,12 +49,12 @@ class Action:
         position(Position): Optionally, a position the pawn should move to
     """
 
-    actiontype = attr.ib(type=ActionType)
-    pawn = attr.ib(type=Pawn)
-    position = attr.ib(default=None, type=Position)
+    actiontype: ActionType
+    pawn: Pawn
+    position: Optional[Position] = None
 
 
-@attr.s
+@frozen
 class Move:
 
     """
@@ -73,18 +73,10 @@ class Move:
         id(str): Identifier for this move, which must be unique among all legal moves this move is grouped with
     """
 
-    card = attr.ib(type=Card)
-    actions = attr.ib(type=List[Action])
-    side_effects = attr.ib(type=List[Action])
-    id = attr.ib(type=str)
-
-    @id.default
-    def _default_id(self) -> str:
-        return uuid.uuid4().hex
-
-    @side_effects.default
-    def _default_side_effects(self) -> List[Action]:
-        return []
+    card: Card
+    actions: List[Action]
+    side_effects: List[Action] = field(factory=list)
+    id: str = field(factory=lambda: uuid.uuid4().hex)
 
 
 # noinspection PyMethodMayBeStatic
@@ -396,7 +388,7 @@ class BoardRules:
                 if action.actiontype == ActionType.MOVE_TO_POSITION:  # look at any move to a position on the board
                     for color in [color for color in PlayerColor if color != action.pawn.color]:  # any color other than the pawn's
                         for (start, end) in SLIDE[color]:  # look at all slides with this color
-                            if action.position.square == start:  # if the pawn landed on the start of the slide
+                            if action.position and action.position.square == start:  # if the pawn landed on the start of the slide
                                 action.position.move_to_square(end)  # move the pawn to the end of the slide
                                 for square in range(start + 1, end + 1):  # and then bump any pawns that were already on the slide
                                     # Note: in this one case, a pawn can bump another pawn of the same color
@@ -408,7 +400,7 @@ class BoardRules:
 
 
 # noinspection PyProtectedMember
-@attr.s
+@define(slots=False)
 class Rules:
 
     """
@@ -418,12 +410,8 @@ class Rules:
         mode(GameMode): The game mode
     """
 
-    mode = attr.ib(type=GameMode)
-    _board_rules = attr.ib(init=False, type=BoardRules)
-
-    @_board_rules.default
-    def _default_board_rules(self) -> BoardRules:
-        return BoardRules()
+    mode: GameMode
+    _board_rules: BoardRules = field(init=False, factory=BoardRules)
 
     # noinspection PyMethodMayBeStatic
     def draw_again(self, card: Card) -> bool:
@@ -485,7 +473,7 @@ class Rules:
             if action.actiontype == ActionType.MOVE_TO_START:
                 pawn.position.move_to_start()
                 log += "%s->start, " % pawn.name
-            elif action.actiontype == ActionType.MOVE_TO_POSITION:
+            elif action.actiontype == ActionType.MOVE_TO_POSITION and action.position:
                 pawn.position.move_to_position(action.position)
                 log += "%s, " % pawn
         log += "]"
@@ -515,7 +503,7 @@ class Rules:
             if pawn:  # if the pawn isn't valid, just ignore it
                 if action.actiontype == ActionType.MOVE_TO_START:
                     pawn.position.move_to_start()
-                elif action.actiontype == ActionType.MOVE_TO_POSITION:
+                elif action.actiontype == ActionType.MOVE_TO_POSITION and action.position:
                     pawn.position.move_to_position(action.position)
         return result
 
