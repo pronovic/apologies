@@ -38,8 +38,8 @@ import random
 from enum import Enum
 from typing import Dict, List, Optional
 
-import attr
 import pendulum
+from attrs import define, field, frozen
 from pendulum.datetime import DateTime
 
 from .util import CattrConverter
@@ -132,7 +132,7 @@ DRAW_AGAIN = {
 }
 
 
-@attr.s(frozen=True)
+@frozen
 class Card:
     """
     A card in a deck or in a player's hand.
@@ -142,11 +142,11 @@ class Card:
         cardtype(CardType): The type of the card
     """
 
-    id = attr.ib(type=str)
-    cardtype = attr.ib(type=CardType)
+    id: str
+    cardtype: CardType
 
 
-@attr.s
+@define(slots=False)
 class Deck:
     """
     The deck of cards associated with a game.
@@ -155,9 +155,10 @@ class Deck:
     support serialization and deserialization.
     """
 
-    _draw_pile = attr.ib(type=Dict[str, Card])
-    _discard_pile = attr.ib(type=Dict[str, Card])
+    _draw_pile: Dict[str, Card] = field()
+    _discard_pile: Dict[str, Card] = field(factory=dict)
 
+    # noinspection PyUnresolvedReferences
     @_draw_pile.default
     def _default_draw_pile(self) -> Dict[str, Card]:
         pile = {}
@@ -167,10 +168,6 @@ class Deck:
                 pile["%d" % cardid] = Card("%d" % cardid, card)
                 cardid += 1
         return pile
-
-    @_discard_pile.default
-    def _default_discard_pile(self) -> Dict[str, Card]:
-        return {}
 
     def draw(self) -> Card:
         """Draw a random card from the draw pile."""
@@ -190,7 +187,7 @@ class Deck:
         self._discard_pile[card.id] = card
 
 
-@attr.s
+@define(slots=False)
 class Position:
     """
     The position of a pawn on the board.
@@ -206,10 +203,10 @@ class Position:
         square(int): Zero-based index of the square on the board where this pawn resides
     """
 
-    start = attr.ib(default=True, type=bool)
-    home = attr.ib(default=False, type=bool)
-    safe = attr.ib(default=None, type=Optional[int])
-    square = attr.ib(default=None, type=Optional[int])
+    start: bool = True
+    home: bool = False
+    safe: Optional[int] = None
+    square: Optional[int] = None
 
     def __str__(self) -> str:
         if self.home:
@@ -331,7 +328,7 @@ class Position:
         return self
 
 
-@attr.s
+@define
 class Pawn:
     """
     A pawn on the board, belonging to a player.
@@ -347,11 +344,12 @@ class Pawn:
         position(Position): The position of this pawn on the board
     """
 
-    color = attr.ib(type=PlayerColor)
-    index = attr.ib(type=int)
-    name = attr.ib(type=str)
-    position = attr.ib(type=Position)
+    color: PlayerColor
+    index: int
+    name: str = field()
+    position: Position = field()
 
+    # noinspection PyUnresolvedReferences
     @name.default
     def _default_name(self) -> str:
         return "%s%s" % (self.color.value, self.index)
@@ -364,7 +362,7 @@ class Pawn:
         return "%s->%s" % (self.name, self.position)
 
 
-@attr.s
+@define
 class Player:
     """
     A player, which has a color and a set of pawns.
@@ -379,15 +377,12 @@ class Player:
         turns(int): Number of turns for this player
     """
 
-    color = attr.ib(type=PlayerColor)
-    hand = attr.ib(type=List[Card])
-    pawns = attr.ib(type=List[Pawn])
-    turns = attr.ib(type=int, default=0)
+    color: PlayerColor
+    hand: List[Card] = field(factory=list)
+    pawns: List[Pawn] = field()
+    turns: int = 0
 
-    @hand.default
-    def _default_hand(self) -> List[Card]:
-        return []
-
+    # noinspection PyUnresolvedReferences
     @pawns.default
     def _default_pawns(self) -> List[Pawn]:
         return [Pawn(self.color, index) for index in range(0, PAWNS)]
@@ -417,7 +412,7 @@ class Player:
         return True
 
 
-@attr.s
+@define
 class History:
     """
     Tracks an action taken during the game.
@@ -429,11 +424,12 @@ class History:
         timestamp(DateTime): Timestamp tied to the action (defaults to current time)
     """
 
-    action = attr.ib(type=str)
-    color = attr.ib(default=None, type=Optional[PlayerColor])
-    card = attr.ib(default=None, type=Optional[CardType])
-    timestamp = attr.ib(type=DateTime)
+    action: str
+    color: Optional[PlayerColor] = None
+    card: Optional[CardType] = None
+    timestamp: DateTime = field()
 
+    # noinspection PyUnresolvedReferences
     @timestamp.default
     def _default_timestamp(self) -> DateTime:
         return pendulum.now(pendulum.UTC)  # type: ignore[attr-defined]
@@ -445,7 +441,7 @@ class History:
         return "[%s] %s - %s" % (time, color, action)
 
 
-@attr.s
+@define
 class PlayerView:
     """
     A player-specific view of the game, showing only the information a player would have available on their turn.
@@ -455,8 +451,8 @@ class PlayerView:
         opponents(Dict[PlayerColor, Player]): The player's opponents, with private information stripped
     """
 
-    player = attr.ib(type=Player)
-    opponents = attr.ib(type=Dict[PlayerColor, Player])
+    player: Player
+    opponents: Dict[PlayerColor, Player]
 
     def copy(self) -> PlayerView:
         """Return a fully-independent copy of the player view."""
@@ -478,7 +474,7 @@ class PlayerView:
         return pawns
 
 
-@attr.s
+@define(slots=False)
 class Game:
     """
     The game, consisting of state for a set of players.
@@ -490,29 +486,24 @@ class Game:
         playercount(int): Number of players in the game
         players(Dict[PlayerColor, Player]): All players in the game
         deck(Deck): The deck of cards for the game
+        history(History): Game history
     """
 
-    playercount = attr.ib(type=int)
-    players = attr.ib(type=Dict[PlayerColor, Player])
-    deck = attr.ib(type=Deck)
-    history = attr.ib(type=List[History])
+    playercount: int = field()
+    players: Dict[PlayerColor, Player] = field()
+    deck: Deck = field(factory=Deck)
+    history: List[History] = field(factory=list)
 
+    # noinspection PyUnresolvedReferences
     @playercount.validator
     def _check_playercount(self, _attribute: str, value: int) -> None:
         if value < MIN_PLAYERS or value > MAX_PLAYERS:
             raise ValueError("Invalid number of players")
 
+    # noinspection PyUnresolvedReferences
     @players.default
     def _default_players(self) -> Dict[PlayerColor, Player]:
         return {color: Player(color) for color in list(PlayerColor)[: self.playercount]}
-
-    @deck.default
-    def _default_deck(self) -> Deck:
-        return Deck()
-
-    @history.default
-    def _default_history(self) -> List[History]:
-        return []
 
     @property
     def started(self) -> bool:

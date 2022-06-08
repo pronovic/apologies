@@ -6,16 +6,19 @@ Utility functionality.
 """
 from typing import Generic, List, TypeVar
 
-import cattr
+import cattrs
 from attrs import define, field
 from pendulum.datetime import DateTime
 from pendulum.parser import parse
 
 
-class CattrConverter(cattr.Converter):
+class CattrConverter(cattrs.GenConverter):
     """
     Cattr converter that knows how to correctly serialize/deserialize DateTime to an ISO 8601 timestamp.
     """
+
+    # Note: we need to use GenConverter and not Converter because we use PEP563 (postponed) annotations
+    # See: https://stackoverflow.com/a/72539298/2907667 and https://github.com/python-attrs/cattrs/issues/41
 
     def __init__(self) -> None:
         super().__init__()
