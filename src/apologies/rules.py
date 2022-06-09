@@ -40,6 +40,7 @@ class ActionType(Enum):
 
 @frozen
 class Action:
+    # noinspection PyUnresolvedReferences
     """
     An action that can be taken as part of a move.
 
@@ -56,7 +57,7 @@ class Action:
 
 @frozen
 class Move:
-
+    # noinspection PyUnresolvedReferences
     """
     A player's move on the board, which consists of one or more actions.
 
@@ -402,7 +403,7 @@ class BoardRules:
 # noinspection PyProtectedMember
 @define(slots=False)
 class Rules:
-
+    # noinspection PyUnresolvedReferences
     """
     Implements rules related to game play.
 

@@ -18,7 +18,7 @@ from .util import CircularQueue
 
 @define(slots=False)
 class Character:
-
+    # noinspection PyUnresolvedReferences
     """
     A character that plays a game, which could be a person or could be computer-driven.
 
@@ -50,7 +50,7 @@ class Character:
 
 @define
 class Engine:
-
+    # noinspection PyUnresolvedReferences
     """
     Game engine that coordinates character actions in a game.
 
@@ -80,6 +80,7 @@ class Engine:
     _rules: Rules = field(init=False)
     _map: Dict[PlayerColor, Character] = field(init=False)
 
+    # noinspection PyUnresolvedReferences
     @first.default
     def _default_first(self) -> PlayerColor:
         return random.choice(list(PlayerColor)[: len(self.characters)])

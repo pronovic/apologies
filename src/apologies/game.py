@@ -134,6 +134,7 @@ DRAW_AGAIN = {
 
 @frozen
 class Card:
+    # noinspection PyUnresolvedReferences
     """
     A card in a deck or in a player's hand.
 
@@ -330,6 +331,7 @@ class Position:
 
 @define
 class Pawn:
+    # noinspection PyUnresolvedReferences
     """
     A pawn on the board, belonging to a player.
 
@@ -364,6 +366,7 @@ class Pawn:
 
 @define
 class Player:
+    # noinspection PyUnresolvedReferences
     """
     A player, which has a color and a set of pawns.
 
@@ -414,6 +417,7 @@ class Player:
 
 @define
 class History:
+    # noinspection PyUnresolvedReferences
     """
     Tracks an action taken during the game.
 
@@ -443,6 +447,7 @@ class History:
 
 @define
 class PlayerView:
+    # noinspection PyUnresolvedReferences
     """
     A player-specific view of the game, showing only the information a player would have available on their turn.
 
@@ -476,6 +481,7 @@ class PlayerView:
 
 @define(slots=False)
 class Game:
+    # noinspection PyUnresolvedReferences
     """
     The game, consisting of state for a set of players.
 

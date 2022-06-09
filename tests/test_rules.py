@@ -255,6 +255,7 @@ class TestRules:
             ]
         )
 
+    # noinspection PyUnresolvedReferences
     def test_execute_move(self):
         rules = Rules(GameMode.STANDARD)
         game = Game(4)

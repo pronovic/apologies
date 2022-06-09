@@ -238,6 +238,7 @@ class TestEngine:
         except Exception:
             assert engine._game is copy  # we replace with a copy of original if method raises exception
 
+    # noinspection PyUnresolvedReferences
     def test_play_next_standard_forfeit(self):
         engine = TestEngine._create_engine()
 
@@ -262,6 +263,7 @@ class TestEngine:
         engine._game.track.assert_called_once_with("Turn is forfeit; discarded card 1", player, card)
         engine._game.deck.discard.assert_called_once_with(card)
 
+    # noinspection PyUnresolvedReferences
     def test_play_next_standard_illegal(self):
         engine = TestEngine._create_engine()
 
@@ -290,6 +292,7 @@ class TestEngine:
         engine._game.deck.discard.assert_called_once_with(card)
         engine._rules.draw_again.assert_called_once_with(card)
 
+    # noinspection PyUnresolvedReferences
     def test_play_next_standard_legal(self):
         engine = TestEngine._create_engine()
 
@@ -318,6 +321,7 @@ class TestEngine:
         engine._game.deck.discard.assert_called_once_with(card)
         engine._rules.draw_again.assert_called_once_with(card)
 
+    # noinspection PyUnresolvedReferences
     def test_play_next_standard_draw_again(self):
         engine = TestEngine._create_engine()
 
@@ -351,6 +355,7 @@ class TestEngine:
         engine._game.deck.discard.assert_has_calls([call(card1), call(card2)])
         engine._rules.draw_again.assert_has_calls([call(card1), call(card2)])
 
+    # noinspection PyUnresolvedReferences
     def test_play_next_standard_complete(self):
         with patch("apologies.game.Game.completed", new_callable=PropertyMock) as completed:
             completed.side_effect = [False, True]  # not complete when we start execution, but complete after the 1st move
@@ -382,6 +387,7 @@ class TestEngine:
             engine._game.deck.discard.assert_called_once_with(card)
             engine._rules.draw_again.assert_not_called()
 
+    # noinspection PyUnresolvedReferences
     def test_play_next_adult_forfeit(self):
         engine = TestEngine._create_engine(GameMode.ADULT)
 
@@ -410,6 +416,7 @@ class TestEngine:
         assert movecard not in player.hand
         assert replacementcard in player.hand
 
+    # noinspection PyUnresolvedReferences
     def test_play_next_adult_illegal(self):
         engine = TestEngine._create_engine(GameMode.ADULT)
 
@@ -442,6 +449,7 @@ class TestEngine:
         assert movecard not in player.hand
         assert replacementcard in player.hand
 
+    # noinspection PyUnresolvedReferences
     def test_play_next_adult_legal(self):
         engine = TestEngine._create_engine(GameMode.ADULT)
 
@@ -474,6 +482,7 @@ class TestEngine:
         assert movecard not in player.hand
         assert replacementcard in player.hand
 
+    # noinspection PyUnresolvedReferences
     def test_play_next_adult_draw_again(self):
         engine = TestEngine._create_engine(GameMode.ADULT)
 
@@ -514,6 +523,7 @@ class TestEngine:
         assert replacementcard1 in player.hand
         assert replacementcard2 in player.hand
 
+    # noinspection PyUnresolvedReferences
     def test_play_next_adult_draw_again_complete(self):
         with patch("apologies.game.Game.completed", new_callable=PropertyMock) as completed:
             completed.side_effect = [False, True]  # not complete when we start execution, but complete after the 1st move
