@@ -132,7 +132,7 @@ Once Python 3 is on your `$PATH` as `python`, install Poetry in your home
 directory:
 
 ```
-$ curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
+$ curl -sSL https://install.python-poetry.org | python3 -
 ```
 
 ### Windows
