@@ -50,7 +50,7 @@ Sphinx = "^4.5.0"
 
 [tool.black]
 line-length = 132
-target-version = ['py37', 'py38']
+target-version = ['py37', 'py38', 'py39', 'py310' ]
 include = '(src\/scripts\/.*$|\.pyi?$)'
 exclude = '''
 /(
