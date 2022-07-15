@@ -50,9 +50,42 @@ clean, and type-safe when it's checked in.  The `run install` step described
 below installs the project pre-commit hooks into your repository.  These hooks
 are configured in [`.pre-commit-config.yaml`](.pre-commit-config.yaml).
 
-If necessary, you can temporarily disable a hook using Git's `--no-verify`
-switch.  However, keep in mind that the CI build on GitHub enforces these
-checks, so the build will fail.
+The pre-commit hooks run on all files for every commit.  I prefer this approach
+because it ensures that local checks are doing exactly the same thing as the
+checks in the GitHub Actions build.  This behavior can sometimes be annoying,
+especially if you want to do incremental commits into a PR branch on
+partially-complete code. In that situation, I find that it works best to use
+`run check` to run the checks manually. Then, I do my incremental commits with
+`--no-verify`, to temporarily skip the pre-commit hooks altogether. As long as
+I fix all of the problems in my local branch before pushing to GitHub, I don't
+get a failed PR build in GitHub Actions. I always squash-merge my PRs, so those
+incremental commits that don't meet the code quality standards never end up in
+the master branch.
+
+An alternative approach is for you to adjust the pre-commit hooks so that
+the checks are only run on files staged for commit.  For instance, you can make
+a change like this:
+
+```diff
+diff --git a/.pre-commit-config.yaml b/.pre-commit-config.yaml
+index 97a8672..57be364 100644
+--- a/.pre-commit-config.yaml
++++ b/.pre-commit-config.yaml
+@@ -25,15 +25,15 @@ repos:
+     hooks:
+       - id: system
+         name: Black
+-        entry: poetry run black .
+-        pass_filenames: false
++        entry: poetry run black
++        types: [python]
+         language: system
+   - repo: local
+     hooks:
+```
+
+In this case, you can use `pre-commit run --all-files` to run the hooks
+against your entire project rather than just the files staged for commit.
 
 ## Line Endings
 
