@@ -31,7 +31,7 @@ Previously, I used the Safety scanner as part of my pre-commit hooks and GitHub 
 
 ## Continuous Integration (CI)
 
-We use [GitHub Actions](https://docs.github.com/en/actions/quickstart) for CI.  See [.github/workflows/tox.yml](.github/workflows/tox.yml) for the definition of the workflow, and go to the [Actions tab](https://github.com/pronovic/apologies/actions) to see what actions have been executed.  
+I use [GitHub Actions](https://docs.github.com/en/actions/quickstart) for CI.  See [.github/workflows/tox.yml](.github/workflows/tox.yml) for the definition of the workflow, and go to the [Actions tab](https://github.com/pronovic/apologies/actions) to see what actions have been executed.  
 
 The workflow is kicked off for all PRs, and also when code is merged to master.  It uses a matrix build and runs the same test suite on a combination of platforms (Windows, MacOS, Linux) and Python versions.  The test suite itself is implemented using [tox](https://tox.readthedocs.io/en/latest/index.html) and is defined in [.toxrc](.toxrc).  Basically, the tox test suite re-runs all of the pre-commit hooks and then executes the unit test suite with coverage enabled.  Coverage data is then uploaded to coveralls.io (see discussion below).
 
@@ -45,7 +45,7 @@ For coveralls.io, integration happens via a [GitHub App](https://docs.github.com
 
 ## Pre-Commit Hooks
 
-We rely on pre-commit hooks to ensure that the code is properly-formatted,
+I rely on pre-commit hooks to ensure that the code is properly-formatted,
 clean, and type-safe when it's checked in.  The `run install` step described
 below installs the project pre-commit hooks into your repository.  These hooks
 are configured in [`.pre-commit-config.yaml`](.pre-commit-config.yaml).
