@@ -10,13 +10,6 @@ run_install() {
       exit 1
    fi
 
-# TODO: now that Poetry v1.2.0 is available, rewrite this to use poetry-dynamic-versioning-plugin
-#   # Install the poetry-dynamic-versioning-plugin, used to manage versions based on Git tags
-#   poetry self add --quiet poetry-dynamic-versioning-plugin
-#   if [ $? != 0 ]; then
-#      exit 1
-#   fi
-
    # Create and update the virtualenv, synchronizing it to versions in poetry.lock
    poetry install --quiet --sync
    if [ $? != 0 ]; then
@@ -207,8 +200,6 @@ run_docs() {
 
 # Release a specific version and tag the code
 run_release() {
-
-   # TODO: now that Poetry v1.2.0 is available, rewrite this to use poetry-dynamic-versioning-plugin
 
    if [ $# != 1 ]; then
       echo "run release <version>"

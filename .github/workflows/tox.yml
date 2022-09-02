@@ -30,7 +30,6 @@ jobs:
       - name: Install plugins
         run: |
           poetry self add poetry-plugin-export
-          poetry self add poetry-dynamic-versioning-plugin
       - name: Install dependencies
         run: |
           poetry install --sync
