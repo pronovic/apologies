@@ -40,6 +40,7 @@ jobs:
           # Determine location of Poetry directories to be cached
           bash utils/poetrydirs.sh
       - name: Cache Poetry install
+        if: "${{ runner.os != Windows }}"  # caching this directory does not work on Windows
         uses: actions/cache@v2
         with:
           path: ${{ env.POETRY_INSTALL }}
