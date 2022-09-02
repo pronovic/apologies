@@ -9,6 +9,8 @@ if [ $# -lt 1 ]; then
    exit 1
 fi
 
+poetry lock
+
 for plugin in $@; do
    poetry self show "$plugin"
    if [ $? != 0 ]; then
