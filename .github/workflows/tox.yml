@@ -10,7 +10,6 @@ on:
     - cron: '05 17 15 * *'  # 15th of the month at 5:05pm UTC
 jobs:
   build:
-    runs-on: ubuntu-latest
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
