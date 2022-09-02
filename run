@@ -4,8 +4,20 @@
 # Setup the virtual environment via Poetry and install pre-commit hooks
 run_install() {
 
-   # Create and update the virtualenv
-   poetry install -v
+   # Install the poetry-plugin-export plugin, used to generate requirements.txt
+   poetry self add --quiet poetry-plugin-export
+   if [ $? != 0 ]; then
+      exit 1
+   fi
+
+   # Install the poetry-dynamic-versioning-plugin, used to manage versions based on Git tags
+   poetry self add --quiet poetry-dynamic-versioning-plugin
+   if [ $? != 0 ]; then
+      exit 1
+   fi
+
+   # Create and update the virtualenv, synchronizing it to versions in poetry.lock
+   poetry install --quiet --sync
    if [ $? != 0 ]; then
       exit 1
    fi
@@ -29,7 +41,7 @@ run_activate() {
 
 # Regenerate the docs/requirements.txt file"
 run_requirements() {
-   poetry export --format=requirements.txt --without-hashes --dev --output=docs/requirements.txt
+   poetry export --format=requirements.txt --without-hashes --with dev --output=docs/requirements.txt
    if [ $? != 0 ]; then
       exit 1
    fi
@@ -199,6 +211,9 @@ run_docs() {
 
 # Release a specific version and tag the code
 run_release() {
+
+   # TODO: now that Poetry v1.2.0 is available, rewrite this to use poetry-dynamic-versioning-plugin
+
    if [ $# != 1 ]; then
       echo "run release <version>"
       exit 1
