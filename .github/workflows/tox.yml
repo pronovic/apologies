@@ -61,13 +61,7 @@ jobs:
         shell: bash
         run: |
           # Install Poetry plugins if necessary
-          # Dependency resolution for plugins is slow, so we try to avoid doing it
-          for plugin in poetry-plugin-export; do
-            poetry self show "$plugin"
-            if [ $? != 0 ]; then
-              poetry self add "$plugin"
-            fi
-          done
+          utils/poetryplugins.sh poetry-plugin-export
       - name: Load cached dependencies
         uses: actions/cache@v2
         with:
