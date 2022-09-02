@@ -63,10 +63,14 @@ jobs:
       - name: Check install directories
         shell: bash
         run: |
+          poetry --version
           echo POETRY_CONFIG=$POETRY_CONFIG
-          find $POETRY_CONFIG -type f
+          ls -l $POETRY_CONFIG
           echo POETRY_INSTALL=$POETRY_INSTALL
-          find $POETRY_INSTALL -type f
+          ls -l $POETRY_INSTALL
+          ls -l $POETRY_INSTALL/bin
+          cat $POETRY_INSTALL/VERSION
+          find $POETRY_INSTALL/venv -type f | wc -l
 #      - name: Install Poetry plugins
 #        run: |
 #          # Install Poetry plugins
