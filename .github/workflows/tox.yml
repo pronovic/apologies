@@ -27,15 +27,15 @@ jobs:
         with:
           virtualenvs-create: true
           virtualenvs-in-project: true
+      - name: Install plugins
+        run: |
+          poetry self add poetry-plugin-export
+          poetry self add poetry-dynamic-versioning-plugin
       - name: Load cached dependencies
         uses: actions/cache@v2
         with:
           path: .venv
           key: venv-${{ runner.os }}-${{ matrix.python }}-${{ hashFiles('**/poetry.lock') }}
-      - name: Install plugins
-        run: |
-          poetry self add poetry-plugin-export
-          poetry self add poetry-dynamic-versioning-plugin
       - name: Install dependencies
         run: |
           poetry install --sync
