@@ -13,8 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        # temporarily just run a single os/python pair
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
         python: ["3.10" ]
         #os: [ubuntu-latest, macos-latest, windows-latest]
         #python: ["3.7", "3.8", "3.9", "3.10" ]
@@ -31,6 +30,10 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python }}
+      - name: Platform information
+        run: |
+          python -c "import sys;print('Python %s' % sys.version)"
+          python -c "import platform;print('Platform\n%s' % '\n'.join([ '   %s: %s' % i for i in zip(['system','node','release','version','machine','processor'], platform.uname()) if i[1] ]))"
       - name: Install Poetry
         uses: snok/install-poetry@v1.2.1 # see https://github.com/snok/install-poetry
         with:
