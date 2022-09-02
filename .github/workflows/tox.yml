@@ -62,8 +62,8 @@ jobs:
           ls -l $POETRY_INSTALL/bin
           echo "$(cat $POETRY_INSTALL/VERSION)"
           echo "venv contents: $(find $POETRY_INSTALL/venv -type f | wc -l)"
-          ls -l /c/Users/runneradmin/AppData/Roaming/Python/Scripts/venv/Scripts/poetry.exe
           which poetry
+          ls -l $(which poetry)
           poetry --version
       - name: Install Poetry
         uses: snok/install-poetry@v1.2.1 # see https://github.com/snok/install-poetry
