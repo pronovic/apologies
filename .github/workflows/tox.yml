@@ -38,7 +38,7 @@ jobs:
       - name: Determine Poetry directories
         run: |
           # Determine location of Poetry directories to be cached
-          bash utils/poetrydirs.sh
+          utils/poetrydirs.sh
       - name: Cache Poetry install
         uses: actions/cache@v2
         with:
