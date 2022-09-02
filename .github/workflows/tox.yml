@@ -57,8 +57,8 @@ jobs:
           virtualenvs-in-project: true
       - name: Install Poetry plugins
         run: |
-          # Install Poetry plugins
-          poetry self add poetry-plugin-export
+          # Install Poetry plugins if necessary
+          poetry self show --quiet poetry-plugin-export || poetry self add poetry-plugin-export
       - name: Load cached dependencies
         uses: actions/cache@v2
         with:
