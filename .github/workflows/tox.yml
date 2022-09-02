@@ -13,9 +13,15 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-        python: ["3.7", "3.8", "3.9", "3.10" ]
+        # temporarily just run a single os/python pair
+        os: [ubuntu-latest]
+        python: ["3.10" ]
+        #os: [ubuntu-latest, macos-latest, windows-latest]
+        #python: ["3.7", "3.8", "3.9", "3.10" ]
     env:
+      # Run builds using a specific version of Poetry, to avoid surprises
+      POETRY_VERSION: "1.2.0"
+      # Ensure that Poetry never tries to unlock a keyring, which will either fail or hang
       # See: https://github.com/python-poetry/poetry/issues/2692#issuecomment-1235683370
       PYTHON_KEYRING_BACKEND: "keyring.backends.null.Keyring"
     steps: 
@@ -28,6 +34,7 @@ jobs:
       - name: Install Poetry
         uses: snok/install-poetry@v1.2.1 # see https://github.com/snok/install-poetry
         with:
+          version: ${{ env.POETRY_VERSION }}
           virtualenvs-create: true
           virtualenvs-in-project: true
       - name: Install Poetry plugins
