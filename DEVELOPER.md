@@ -215,7 +215,6 @@ Shortcuts for common developer tasks
 Usage: run <command>
 
 - run install: Setup the virtualenv via Poetry and install pre-commit hooks
-- run activate: Print command needed to activate the Poetry virtualenv
 - run requirements: Regenerate the docs/requirements.txt file
 - run format: Run the code formatters
 - run checks: Run the code checkers
