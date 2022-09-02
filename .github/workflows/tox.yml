@@ -25,8 +25,6 @@ jobs:
       # See: https://github.com/python-poetry/poetry/issues/2692#issuecomment-1235683370
       PYTHON_KEYRING_BACKEND: "keyring.backends.null.Keyring"
     steps: 
-      - name: Check out code
-        uses: actions/checkout@v2
       - name: Setup Python
         uses: actions/setup-python@v2
         with:
@@ -62,6 +60,8 @@ jobs:
         run: |
           # Install Poetry plugins if necessary
           bash utils/poetryplugins.sh poetry-plugin-export
+      - name: Check out code
+        uses: actions/checkout@v2
       - name: Load cached dependencies
         uses: actions/cache@v2
         with:
