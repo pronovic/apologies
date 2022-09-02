@@ -76,13 +76,13 @@ class RewardCalculatorV1(RewardCalculator):
     @staticmethod
     def _distance_incentive(player: Player) -> int:
         # Incentive of 1 point for each square closer to home for each of the player's 4 pawns
-        distance = sum([BoardRules.distance_to_home(pawn) for pawn in player.pawns])
+        distance = sum(BoardRules.distance_to_home(pawn) for pawn in player.pawns)
         return 260 - distance  # 260 = 4*65, max distance for 4 pawns
 
     @staticmethod
     def _safe_incentive(player: Player) -> int:
         # Incentive of 10 points for each pawn in safe or home
-        return sum([10 if pawn.position.home or pawn.position.safe is not None else 0 for pawn in player.pawns])
+        return sum(10 if pawn.position.home or pawn.position.safe is not None else 0 for pawn in player.pawns)
 
     @staticmethod
     def _winner_incentive(player: Player) -> int:

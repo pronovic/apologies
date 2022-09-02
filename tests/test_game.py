@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # vim: set ft=python ts=4 sw=4 expandtab:
-# pylint: disable=no-self-use,protected-access
+# pylint: disable=protected-access
 
 from unittest.mock import MagicMock
 
