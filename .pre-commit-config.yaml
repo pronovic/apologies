@@ -4,7 +4,7 @@ repos:
     hooks:
       - id: system
         name: Requirements
-        entry: poetry export --format=requirements.txt --without-hashes --dev --output=docs/requirements.txt
+        entry: poetry export --format=requirements.txt --without-hashes --with dev --output=docs/requirements.txt
         pass_filenames: false
         language: system
   - repo: local
