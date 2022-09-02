@@ -55,6 +55,7 @@ jobs:
         shell: bash
         run: |
           # Install Poetry plugins if necessary
+          poetry self lock
           poetry self show --quiet poetry-plugin-export || poetry self add poetry-plugin-export
       - name: Check out code
         uses: actions/checkout@v2
