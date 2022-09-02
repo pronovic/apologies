@@ -64,9 +64,9 @@ jobs:
         shell: bash
         run: |
           echo POETRY_CONFIG=$POETRY_CONFIG
-          ls -l $POETRY_CONFIG
+          find $POETRY_CONFIG -type f
           echo POETRY_INSTALL=$POETRY_INSTALL
-          ls -l $POETRY_INSTALL
+          find $POETRY_INSTALL -type f
 #      - name: Install Poetry plugins
 #        run: |
 #          # Install Poetry plugins
