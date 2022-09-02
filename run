@@ -5,8 +5,9 @@
 run_install() {
 
    # Install the poetry-plugin-export plugin, used to generate requirements.txt
-   poetry self add --quiet poetry-plugin-export
+   PYTHON_KEYRING_BACKEND="keyring.backends.null.Keyring" poetry self add --quiet poetry-plugin-export
    if [ $? != 0 ]; then
+      echo "Failed to install Poetry plugin: poetry-plugin-export"
       exit 1
    fi
 
