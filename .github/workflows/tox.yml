@@ -61,7 +61,7 @@ jobs:
         shell: bash
         run: |
           # Install Poetry plugins if necessary
-          utils/poetryplugins.sh poetry-plugin-export
+          bash utils/poetryplugins.sh poetry-plugin-export
       - name: Load cached dependencies
         uses: actions/cache@v2
         with:
