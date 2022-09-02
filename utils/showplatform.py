@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Display information about the current platform
+# Display information about the current platform, for use in GitHub Actions
 
 import platform
 import sys

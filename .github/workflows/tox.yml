@@ -43,12 +43,12 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ${{ env.POETRY_INSTALL }}
-          key: poetry-install-${{ runner.os }}-${{ matrix.python }}-${{ env.POETRY_VERSION }}
+          key: poetryinstall-${{ runner.os }}-${{ matrix.python }}-${{ env.POETRY_VERSION }}
       - name: Cache Poetry config
         uses: actions/cache@v2
         with:
           path: ${{ env.POETRY_CONFIG }}
-          key: poetry-config-${{ runner.os }}-${{ matrix.python }}-${{ env.POETRY_VERSION }}
+          key: poetryconfig-${{ runner.os }}-${{ matrix.python }}-${{ env.POETRY_VERSION }}
       - name: Install Poetry
         uses: snok/install-poetry@v1.2.1 # see https://github.com/snok/install-poetry
         with:
