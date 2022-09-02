@@ -21,9 +21,9 @@ This project uses [Poetry](https://python-poetry.org/) to manage Python packagin
 
 A coding standard is enforced using [Black](https://github.com/psf/black), [isort](https://pypi.org/project/isort/) and [Pylint](https://www.pylint.org/).  Python 3 type hinting is validated using [MyPy](https://pypi.org/project/mypy/).  To reduce boilerplate, classes are defined using [Attrs](https://www.attrs.org/) (see this [rationale](https://glyph.twistedmatrix.com/2016/08/attrs.html)).  
 
-To add dependencies use `poetry add package` (for runtime dependencies) or `poetry add --dev package` (for development environment dependencies).
+To add dependencies use `poetry add package` (for runtime dependencies) or `poetry add --group dev package` (for development environment dependencies).
 
-To update dependencies, use `poetry update`.  This will update all of the dependencies without taking you past any major version changes that are likely to be incompatible.  If you want to update a single package, use `poetry update package`. If you want to update past a major version change, either specify the version like `poetry add package=^2.0.3` or get the latest with `poetry add package@latest`.
+To update dependencies, use `poetry update`.  This will update all of the dependencies without taking you past any major version changes that are likely to be incompatible.  If you want to update a single package, use `poetry update package`. If you want to update past a major version change, either specify the version like `poetry add package=^2.0.3` or get the latest with `poetry add package@latest`.  [PEP 508](https://peps.python.org/pep-0508/) specifications are also supported.
 
 ## Vulnerability Scanning
 
@@ -126,7 +126,16 @@ sure that you have a working Python 3 enviroment and install Poetry itself.
 
 ### Poetry Version
 
-The project is designed to work with Poetry >= 1.2.0.  Although `pyproject.toml` itself is compatible with older versions of Poetry, the development environment (the `run` script, etc.) expects an up-to-date version.  If you already have an older version of Poetry installed on your system, see the [Announcing Poetry 1.2.0](https://python-poetry.org/blog/announcing-poetry-1.2.0/) blog post for upgrade instructions.
+The project is designed to work with Poetry >= 1.2.0.  If you already have an older
+version of Poetry installed on your system, uninstall it before following the setup
+process below:
+
+```
+curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python3 - --uninstall
+```
+
+See the [Announcing Poetry 1.2.0](https://python-poetry.org/blog/announcing-poetry-1.2.0/)
+blog post for more information.
 
 ### MacOS
 
@@ -592,4 +601,4 @@ Deleting password for 'user' in 'testvalue':
 At this point, the keyring should be fully functional and it should be ready
 for use with Poetry.  Whenever Poetry needs to read a secret from the keyring,
 you'll get a popup window where you need to enter the keyring password.
-
+   
