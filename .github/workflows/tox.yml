@@ -29,10 +29,6 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python }}
-      - name: Platform information
-        run: |
-          # Show platform information
-          python utils/showplatform.py
       - name: Determine Poetry home
         shell: bash
         run: |
@@ -59,7 +55,7 @@ jobs:
         shell: bash
         run: |
           # Install Poetry plugins if necessary
-          bash utils/poetryplugins.sh poetry-plugin-export
+          poetry self show --quiet poetry-plugin-export || poetry self add poetry-plugin-export
       - name: Check out code
         uses: actions/checkout@v2
       - name: Load cached dependencies
@@ -75,6 +71,10 @@ jobs:
         run: |
           # Upgrade embedded tools
           poetry run pip install --upgrade pip setuptools wheel
+      - name: Platform information
+        run: |
+          # Show platform information
+          python utils/showplatform.py
       - name: Run Tox test suite
         run: |
           # Run Tox test suite
