@@ -55,16 +55,19 @@ jobs:
       - name: Check cache directories
         shell: bash
         run: |
-          echo "POETRY_CONFIG=$POETRY_CONFIG"
-          echo "ls -l \$POETRY_CONFIG:\n$(ls -l $POETRY_CONFIG)"
-          echo "POETRY_INSTALL=$POETRY_INSTALL"
-          echo "ls -l \$POETRY_INSTALL:\n$(ls -l $POETRY_INSTALL)"
-          echo "ls -l \$POETRY_ISNTALL/bin:\n$(ls -l $POETRY_INSTALL/bin)"
-          echo "cat \$POETRY_INSTALL/VERSION: $(cat $POETRY_INSTALL/VERSION)"
+          echo POETRY_CONFIG=$POETRY_CONFIG
+          ls -l $POETRY_CONFIG
+          echo POETRY_INSTALL=$POETRY_INSTALL
+          ls -l $POETRY_INSTALL
+          ls -l $POETRY_INSTALL/bin
+          echo "$(cat $POETRY_INSTALL/VERSION)"
           echo "venv contents: $(find $POETRY_INSTALL/venv -type f | wc -l)"
-          echo "which poetry: $(which poetry)"
-          echo "ls -l \$(which poetry): $(ls -l $(which poetry))"
-          echo "poetry --version: $(poetry --version)"
+          which poetry
+          ls -l $(which poetry)
+          ls -l /c/Users/runneradmin/AppData/Roaming/Python/Scripts/venv/Scripts/poetry.exe
+          /c/Users/runneradmin/AppData/Roaming/Python/Scripts/venv/Scripts/poetry.exe --version
+          poetry.exe --version
+          poetry --version
       - name: Install Poetry
         uses: snok/install-poetry@v1.2.1 # see https://github.com/snok/install-poetry
         with:
