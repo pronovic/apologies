@@ -39,11 +39,11 @@ jobs:
         shell: bash
         run: |
           # Determine location of Poetry directories to be cached
-          utils/poetry-dirs.sh
+          utils/poetrydirs.sh
       - name: Cache Poetry install
         uses: actions/cache@v2
         with:
-          path: ${{ env.POETRY_HOME }}
+          path: ${{ env.POETRY_INSTALL }}
           key: poetry-install-${{ runner.os }}-${{ matrix.python }}-${{ env.POETRY_VERSION }}
       - name: Cache Poetry config
         uses: actions/cache@v2
