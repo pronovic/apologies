@@ -1,3 +1,4 @@
+# vim: set ft=yaml ts=2 sw=2:
 name: Test Suite
 on:
   push:
@@ -30,7 +31,19 @@ jobs:
           python-version: ${{ matrix.python }}
       - name: Platform information
         run: |
+          # Show platform information
           python utils/showplatform.py
+      - name: Determine Poetry home
+        shell: bash
+        run: |
+          # Determine Poetry home directory for caching
+          if [ "$RUNNER_OS" == "Linux" ]; then
+            echo "POETRY_HOME=/home/runner/.local" >> "$GITHUB_ENV"
+          elif [ "$RUNNER_OS" == "macOS" ]; then
+            echo "POETRY_HOME=/Users/runner/.local" >> "$GITHUB_ENV"
+          elif [ "$RUNNER_OS" == "Windows" ]; then
+            echo "POETRY_HOME=C:/Users/runneradmin/AppData/Roaming/Python/Scripts" >> "$GITHUB_ENV"
+          fi
       - name: Install Poetry
         uses: snok/install-poetry@v1.2.1 # see https://github.com/snok/install-poetry
         with:
@@ -39,6 +52,7 @@ jobs:
           virtualenvs-in-project: true
       - name: Install Poetry plugins
         run: |
+          # Install Poetry plugins
           poetry self add poetry-plugin-export
       - name: Load cached dependencies
         uses: actions/cache@v2
@@ -47,12 +61,15 @@ jobs:
           key: venv-${{ runner.os }}-${{ matrix.python }}-${{ hashFiles('**/poetry.lock') }}
       - name: Install dependencies
         run: |
+          # Install dependencies
           poetry install --sync
       - name: Upgrade embedded tools within virtualenv
         run: |
+          # Upgrade embedded tools
           poetry run pip install --upgrade pip setuptools wheel
       - name: Run Tox test suite
         run: |
+          # Run Tox test suite
           poetry run tox -c .toxrc -e "checks,coverage"
       - name: Upload coverage data to coveralls.io
         env:
@@ -60,6 +77,7 @@ jobs:
           COVERALLS_FLAG_NAME: ${{ runner.os }}-python${{ matrix.python }}
           COVERALLS_PARALLEL: true
         run: | 
+          # Upload coverage data to coveralls.io
           poetry run coveralls --service=github
   coveralls:
     name: Indicate completion to coveralls.io
@@ -71,5 +89,6 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
+        # Indicate completion to coveralls.io
         pip3 install --upgrade coveralls
         coveralls --service=github --finish
