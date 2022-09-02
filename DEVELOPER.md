@@ -156,8 +156,8 @@ to [official installer](https://python-poetry.org/docs/#installing-with-the-offi
 curl -sSL https://install.python-poetry.org | python3 -
 ```
 
-> _Note:_ Make sure you follow the instructions to add `poetry` to your
-> `$PATH`, otherwise you won't be able to run it.
+> _Note:_ The installer prints the location of the installed `poetry` script.
+> Make sure to add this to your `$PATH`, otherwise you won't be able to run it.
 
 ### Debian
 
@@ -189,8 +189,8 @@ Next, install Poetry using the [official installer](https://python-poetry.org/do
 curl -sSL https://install.python-poetry.org | python3 -
 ```
 
-> _Note:_ Make sure you follow the instructions to add `poetry` to your
-> `$PATH`, otherwise you won't be able to run it.
+> _Note:_ The installer prints the location of the installed `poetry` script.
+> Make sure to add this to your `$PATH`, otherwise you won't be able to run it.
 
 ### Windows
 
@@ -204,8 +204,8 @@ Next, install Poetry using the [official installer](https://python-poetry.org/do
 curl -sSL https://install.python-poetry.org | python -
 ```
 
-> _Note:_ Make sure you follow the instructions to add `poetry` to your
-> `$PATH`, otherwise you won't be able to run it.
+> _Note:_ The installer prints the location of the installed `poetry` script.
+> Make sure to add this to your `$PATH`, otherwise you won't be able to run it.
 
 The development environment (the `run` script, etc.) expects a bash shell
 to be available.  On Windows, it works fine with the standard Git Bash.
