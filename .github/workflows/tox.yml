@@ -33,6 +33,11 @@ jobs:
       - name: Install Poetry plugins
         run: |
           poetry self add poetry-plugin-export
+      - name: Load cached dependencies
+        uses: actions/cache@v2
+        with:
+          path: .venv
+          key: venv-${{ runner.os }}-${{ matrix.python }}-${{ hashFiles('**/poetry.lock') }}
       - name: Install dependencies
         run: |
           poetry install --sync
