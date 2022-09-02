@@ -32,7 +32,7 @@ attrs = "^21.4.0"
 cattrs = "^22.1.0"
 pendulum = "^2.1.2"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 pytest = "^7.1.2"
 pytest-testdox = "^3.0.1"
 coverage = "^6.3.2"
