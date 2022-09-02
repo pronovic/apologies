@@ -231,6 +231,17 @@ Usage: run <command>
 - run sim: Run a simulation to see how well different character input sources behave
 ```
 
+## Running the Simulation
+
+This runs a simulation on the standard `RewardV1InputSource`:
+
+```
+run sim apologies.source.RewardV1InputSource
+```
+
+Output is written to `simulation.csv`.  You can specify any source in 
+the [`apologies.source`](src/apologies/source.py) module.
+
 ## Running the Demo
 
 While this is primarily a library, it includes a quick'n'dirty console demo
