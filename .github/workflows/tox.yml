@@ -33,7 +33,7 @@ jobs:
         shell: bash
         run: |
           # Show platform information
-          python -c "import sys;print('Python %s' % sys.version)")
+          python -c "import sys;print('Python %s' % sys.version)"
       - name: Install Poetry
         uses: snok/install-poetry@v1.2.1 # see https://github.com/snok/install-poetry
         with:
