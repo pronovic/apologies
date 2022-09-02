@@ -36,9 +36,10 @@ jobs:
           # Show platform information
           python utils/showplatform.py
       - name: Determine Poetry directories
+        shell: bash
         run: |
           # Determine location of Poetry directories to be cached
-          bash utils/poetrydirs.sh
+          utils/poetrydirs.sh
       - name: Cache Poetry install
         id: poetry-install-cache
         uses: actions/cache@v2
