@@ -25,26 +25,31 @@ jobs:
       # See: https://github.com/python-poetry/poetry/issues/2692#issuecomment-1235683370
       PYTHON_KEYRING_BACKEND: "keyring.backends.null.Keyring"
     steps: 
+      - name: Check out code
+        uses: actions/checkout@v2
       - name: Setup Python
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python }}
-      - name: Determine Poetry home
+      - name: Platform information
+        run: |
+          # Show platform information
+          python utils/showplatform.py
+      - name: Determine Poetry directories
         shell: bash
         run: |
-          # Determine Poetry home directory for caching
-          if [ "$RUNNER_OS" == "Linux" ]; then
-            echo "POETRY_HOME=/home/runner/.local" >> "$GITHUB_ENV"
-          elif [ "$RUNNER_OS" == "macOS" ]; then
-            echo "POETRY_HOME=/Users/runner/.local" >> "$GITHUB_ENV"
-          elif [ "$RUNNER_OS" == "Windows" ]; then
-            echo "POETRY_HOME=C:/Users/runneradmin/AppData/Roaming/Python" >> "$GITHUB_ENV"
-          fi
-      - name: Load cached Poetry
+          # Determine location of Poetry directories to be cached
+          utils/poetry-dirs.sh
+      - name: Cache Poetry install
         uses: actions/cache@v2
         with:
           path: ${{ env.POETRY_HOME }}
-          key: poetry-${{ runner.os }}-${{ matrix.python }}-${{ env.POETRY_VERSION }}
+          key: poetry-install-${{ runner.os }}-${{ matrix.python }}-${{ env.POETRY_VERSION }}
+      - name: Cache Poetry config
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.POETRY_CONFIG }}
+          key: poetry-config-${{ runner.os }}-${{ matrix.python }}-${{ env.POETRY_VERSION }}
       - name: Install Poetry
         uses: snok/install-poetry@v1.2.1 # see https://github.com/snok/install-poetry
         with:
@@ -54,12 +59,9 @@ jobs:
       - name: Install Poetry plugins
         shell: bash
         run: |
-          # Install Poetry plugins if necessary
-          poetry self lock
-          poetry self show --quiet poetry-plugin-export || poetry self add poetry-plugin-export
-      - name: Check out code
-        uses: actions/checkout@v2
-      - name: Load cached dependencies
+          # Install Poetry plugins
+          poetry self add poetry-plugin-export
+      - name: Cache Poetry dependencies
         uses: actions/cache@v2
         with:
           path: .venv
@@ -72,10 +74,6 @@ jobs:
         run: |
           # Upgrade embedded tools
           poetry run pip install --upgrade pip setuptools wheel
-      - name: Platform information
-        run: |
-          # Show platform information
-          python utils/showplatform.py
       - name: Run Tox test suite
         run: |
           # Run Tox test suite
