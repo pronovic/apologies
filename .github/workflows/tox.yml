@@ -42,7 +42,7 @@ jobs:
           elif [ "$RUNNER_OS" == "macOS" ]; then
             echo "POETRY_HOME=/Users/runner/.local" >> "$GITHUB_ENV"
           elif [ "$RUNNER_OS" == "Windows" ]; then
-            echo "POETRY_HOME=C:/Users/runneradmin/AppData/Roaming/Python/Scripts" >> "$GITHUB_ENV"
+            echo "POETRY_HOME=C:/Users/runneradmin/AppData/Roaming/Python" >> "$GITHUB_ENV"
           fi
       - name: Load cached Poetry
         uses: actions/cache@v2
