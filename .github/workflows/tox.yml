@@ -13,10 +13,8 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [windows-latest]
-        python: ["3.10" ]
-        #os: [ubuntu-latest, macos-latest, windows-latest]
-        #python: ["3.7", "3.8", "3.9", "3.10" ]
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python: ["3.7", "3.8", "3.9", "3.10" ]
     runs-on: ${{ matrix.os }}
     env:
       # Run builds using a specific version of Poetry, to avoid surprises
@@ -32,100 +30,55 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
       - name: Platform information
+        shell: bash
         run: |
           # Show platform information
-          python utils/showplatform.py
-      - name: Determine Poetry directories
-        shell: bash
-        run: |
-          # Determine location of Poetry directories to be cached
-          utils/poetrydirs.sh
-      - name: Cache Poetry install
-        id: poetry-install-cache
-        uses: actions/cache@v2
-        with:
-          path: ${{ env.POETRY_INSTALL }}
-          key: XXXXX2-${{ runner.os }}-${{ matrix.python }}-${{ env.POETRY_VERSION }}
-      - name: Cache Poetry config
-        id: poetry-install-config
-        uses: actions/cache@v2
-        with:
-          path: ${{ env.POETRY_CONFIG }}
-          key: YYYYY2-${{ runner.os }}-${{ matrix.python }}-${{ env.POETRY_VERSION }}
-      - name: Check cache directories
-        shell: bash
-        run: |
-          echo POETRY_CONFIG=$POETRY_CONFIG
-          ls -l $POETRY_CONFIG
-          echo POETRY_INSTALL=$POETRY_INSTALL
-          ls -l $POETRY_INSTALL
-          ls -l $POETRY_INSTALL/bin
-          echo "$(cat $POETRY_INSTALL/VERSION)"
-          echo "venv contents: $(find $POETRY_INSTALL/venv -type f | wc -l)"
-          which poetry
-          ls -l $(which poetry)
-          ls -l /c/Users/runneradmin/AppData/Roaming/Python/Scripts/venv/Scripts/poetry.exe
-          /c/Users/runneradmin/AppData/Roaming/Python/Scripts/venv/Scripts/poetry.exe --version
-          poetry.exe --version
-          poetry --version
+          python -c "import sys;print('Python %s' % sys.version)")
       - name: Install Poetry
         uses: snok/install-poetry@v1.2.1 # see https://github.com/snok/install-poetry
         with:
           version: ${{ env.POETRY_VERSION }}
           virtualenvs-create: true
           virtualenvs-in-project: true
-      - name: Check install directories
-        shell: bash
-        run: |
-          echo POETRY_CONFIG=$POETRY_CONFIG
-          ls -l $POETRY_CONFIG
-          echo POETRY_INSTALL=$POETRY_INSTALL
-          ls -l $POETRY_INSTALL
-          ls -l $POETRY_INSTALL/bin
-          cat $POETRY_INSTALL/VERSION
-          find $POETRY_INSTALL/venv -type f | wc -l
-          ls -l /c/Users/runneradmin/AppData/Roaming/Python/Scripts/venv/Scripts/poetry.exe
-          which poetry
-          poetry --version
       - name: Install Poetry plugins
         run: |
           # Install Poetry plugins
           poetry self add poetry-plugin-export
-#      - name: Cache Poetry dependencies
-#        uses: actions/cache@v2
-#        with:
-#          path: .venv
-#          key: venv-${{ runner.os }}-${{ matrix.python }}-${{ hashFiles('**/poetry.lock') }}
-#      - name: Install dependencies
-#        run: |
-#          # Install dependencies
-#          poetry install --sync
-#      - name: Upgrade embedded tools within virtualenv
-#        run: |
-#          # Upgrade embedded tools
-#          poetry run pip install --upgrade pip setuptools wheel
-#      - name: Run Tox test suite
-#        run: |
-#          # Run Tox test suite
-#          poetry run tox -c .toxrc -e "checks,coverage"
-#      - name: Upload coverage data to coveralls.io
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#          COVERALLS_FLAG_NAME: ${{ runner.os }}-python${{ matrix.python }}
-#          COVERALLS_PARALLEL: true
-#        run: | 
-#          # Upload coverage data to coveralls.io
-#          poetry run coveralls --service=github
-#  coveralls:
-#    name: Indicate completion to coveralls.io
-#    needs: build
-#    runs-on: ubuntu-latest
-#    container: python:3-slim
-#    steps:
-#    - name: Finished
-#      env:
-#        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#      run: |
-#        # Indicate completion to coveralls.io
-#        pip3 install --upgrade coveralls
-#        coveralls --service=github --finish
+      - name: Cache Poetry dependencies
+        uses: actions/cache@v2
+        with:
+          path: .venv
+          key: venv-${{ runner.os }}-${{ matrix.python }}-${{ hashFiles('**/poetry.lock') }}
+      - name: Install dependencies
+        run: |
+          # Install dependencies
+          poetry install --sync
+      - name: Upgrade embedded tools within virtualenv
+        run: |
+          # Upgrade embedded tools
+          poetry run pip install --upgrade pip setuptools wheel
+      - name: Run Tox test suite
+        run: |
+          # Run Tox test suite
+          poetry run tox -c .toxrc -e "checks,coverage"
+      - name: Upload coverage data to coveralls.io
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COVERALLS_FLAG_NAME: ${{ runner.os }}-python${{ matrix.python }}
+          COVERALLS_PARALLEL: true
+        run: | 
+          # Upload coverage data to coveralls.io
+          poetry run coveralls --service=github
+  coveralls:
+    name: Indicate completion to coveralls.io
+    needs: build
+    runs-on: ubuntu-latest
+    container: python:3-slim
+    steps:
+    - name: Finished
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        # Indicate completion to coveralls.io
+        pip3 install --upgrade coveralls
+        coveralls --service=github --finish
