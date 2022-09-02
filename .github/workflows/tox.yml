@@ -60,8 +60,8 @@ jobs:
           echo POETRY_INSTALL=$POETRY_INSTALL
           ls -l $POETRY_INSTALL
           ls -l $POETRY_INSTALL/bin
-          cat $POETRY_INSTALL/VERSION
-          find $POETRY_INSTALL/venv -type f | wc -l
+          echo "$(cat $POETRY_INSTALL/VERSION)"
+          echo "venv contents: $(find $POETRY_INSTALL/venv -type f | wc -l)"
           ls -l /c/Users/runneradmin/AppData/Roaming/Python/Scripts/venv/Scripts/poetry.exe
           which poetry
           poetry --version
