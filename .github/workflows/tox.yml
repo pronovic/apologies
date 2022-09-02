@@ -44,6 +44,11 @@ jobs:
           elif [ "$RUNNER_OS" == "Windows" ]; then
             echo "POETRY_HOME=C:/Users/runneradmin/AppData/Roaming/Python/Scripts" >> "$GITHUB_ENV"
           fi
+      - name: Load cached Poetry
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.POETRY_HOME }}
+          key: poetry-${{ env.POETRY_VERSION }}
       - name: Install Poetry
         uses: snok/install-poetry@v1.2.1 # see https://github.com/snok/install-poetry
         with:
