@@ -51,19 +51,19 @@ jobs:
         with:
           path: ${{ env.POETRY_CONFIG }}
           key: YYYYY2-${{ runner.os }}-${{ matrix.python }}-${{ env.POETRY_VERSION }}
-#      - name: Check cache directories
-#        shell: bash
-#        run: |
-#          echo POETRY_CONFIG=$POETRY_CONFIG
-#          ls -l $POETRY_CONFIG
-#          echo POETRY_INSTALL=$POETRY_INSTALL
-#          ls -l $POETRY_INSTALL
-#          ls -l $POETRY_INSTALL/bin
-#          cat $POETRY_INSTALL/VERSION
-#          find $POETRY_INSTALL/venv -type f | wc -l
-#          ls -l /c/Users/runneradmin/AppData/Roaming/Python/Scripts/venv/Scripts/poetry.exe
-#          which poetry
-#          poetry --version
+      - name: Check cache directories
+        shell: bash
+        run: |
+          echo POETRY_CONFIG=$POETRY_CONFIG
+          ls -l $POETRY_CONFIG
+          echo POETRY_INSTALL=$POETRY_INSTALL
+          ls -l $POETRY_INSTALL
+          ls -l $POETRY_INSTALL/bin
+          cat $POETRY_INSTALL/VERSION
+          find $POETRY_INSTALL/venv -type f | wc -l
+          ls -l /c/Users/runneradmin/AppData/Roaming/Python/Scripts/venv/Scripts/poetry.exe
+          which poetry
+          poetry --version
       - name: Install Poetry
         uses: snok/install-poetry@v1.2.1 # see https://github.com/snok/install-poetry
         with:
