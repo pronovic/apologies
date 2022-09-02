@@ -7,6 +7,7 @@
 # platform.
 
 if [ "$GITHUB_ACTIONS" == "true" ]; then
+
    if [ "$RUNNER_OS" == "Linux" ]; then
       echo "POETRY_INSTALL=/home/runner/.local" >> "$GITHUB_ENV"
       echo "POETRY_CONFIG=/home/runner/.config/pypoetry" >> "$GITHUB_ENV"
@@ -17,5 +18,8 @@ if [ "$GITHUB_ACTIONS" == "true" ]; then
       echo "POETRY_INSTALL=C:\\Users\\runneradmin\\AppData\\Roaming\\Python\\Scripts" >> "$GITHUB_ENV"
       echo "POETRY_CONFIG=C:\\Users\\runneradmin\\AppData\\Roaming\\pypoetry" >> "$GITHUB_ENV"
    fi 
+
+   echo "$POETRY_INSTALL/bin" >> "$GITHUB_PATH"
+
 fi
 

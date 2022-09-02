@@ -46,6 +46,7 @@ jobs:
           path: ${{ env.POETRY_INSTALL }}
           key: XXXXX-${{ runner.os }}-${{ matrix.python }}-${{ env.POETRY_VERSION }}
       - name: Cache Poetry config
+        id: poetry-install-config
         uses: actions/cache@v2
         with:
           path: ${{ env.POETRY_CONFIG }}
