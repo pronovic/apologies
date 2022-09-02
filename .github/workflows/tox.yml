@@ -40,6 +40,7 @@ jobs:
           # Determine location of Poetry directories to be cached
           bash utils/poetrydirs.sh
       - name: Cache Poetry install
+        id: poetry-install-cache
         uses: actions/cache@v2
         with:
           path: ${{ env.POETRY_INSTALL }}
@@ -49,6 +50,18 @@ jobs:
         with:
           path: ${{ env.POETRY_CONFIG }}
           key: YYYYY-${{ runner.os }}-${{ matrix.python }}-${{ env.POETRY_VERSION }}
+      - name: Check cache directories
+        shell: bash
+        run: |
+          echo POETRY_CONFIG=$POETRY_CONFIG
+          ls -l $POETRY_CONFIG
+          echo POETRY_INSTALL=$POETRY_INSTALL
+          ls -l $POETRY_INSTALL
+          ls -l $POETRY_INSTALL/bin
+          cat $POETRY_INSTALL/VERSION
+          find $POETRY_INSTALL/venv -type f | wc -l
+          which poetry
+          poetry --version
       - name: Install Poetry
         uses: snok/install-poetry@v1.2.1 # see https://github.com/snok/install-poetry
         with:
@@ -58,8 +71,6 @@ jobs:
       - name: Check install directories
         shell: bash
         run: |
-          which poetry
-          poetry --version
           echo POETRY_CONFIG=$POETRY_CONFIG
           ls -l $POETRY_CONFIG
           echo POETRY_INSTALL=$POETRY_INSTALL
@@ -67,6 +78,8 @@ jobs:
           ls -l $POETRY_INSTALL/bin
           cat $POETRY_INSTALL/VERSION
           find $POETRY_INSTALL/venv -type f | wc -l
+          which poetry
+          poetry --version
       - name: Install Poetry plugins
         run: |
           # Install Poetry plugins
