@@ -29,11 +29,6 @@ run_install() {
 
 }
 
-# Activate the current Poetry virtual environment
-run_activate() {
-   echo "source "$(dirname $(poetry run which python) 2>/dev/null)/activate""
-}
-
 # Regenerate the docs/requirements.txt file"
 run_requirements() {
    poetry export --format=requirements.txt --without-hashes --with dev --output=docs/requirements.txt
@@ -335,9 +330,6 @@ case $1 in
    install|setup)
       run_install
       ;;
-   activate)
-      run_activate
-      ;;
    requirements)
       run_requirements
       ;;
@@ -403,7 +395,6 @@ case $1 in
       echo "Usage: run <command>"  
       echo ""
       echo "- run install: Setup the virtualenv via Poetry and install pre-commit hooks"
-      echo "- run activate: Print command needed to activate the Poetry virtualenv"
       echo "- run requirements: Regenerate the docs/requirements.txt file"
       echo "- run format: Run the code formatters"
       echo "- run checks: Run the code checkers"
