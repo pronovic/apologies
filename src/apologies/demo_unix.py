@@ -164,7 +164,7 @@ def _force_minimum_size() -> None:
     # I'm apparently using a slightly larger font now than when I originally wrote
     # this code, and these days my terminal can't successfully resize past 155x59 on
     # my Macbook.  The original rendering needed at least 155x70.  To deal with this,
-    # I addde the TerminalSizeError error handling block (above) to explictly detect
+    # I added the TerminalSizeError error handling block (above) to explictly detect
     # that it isn't possible to render the board, and I also adjusted the rendering
     # to work in a slightly smaller terminal.
     #
