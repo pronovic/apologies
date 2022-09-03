@@ -38,12 +38,15 @@ def demo(argv: List[str], unused_stdout: IO[str], unused_stderr: IO[str]) -> Non
     parser.add_argument("--players", type=int, default=_DEMO_DEFAULT_PLAYERS, help="Number of simulated players in the game")
     parser.add_argument("--mode", type=str, default=_DEMO_DEFAULT_MODE, choices=_DEMO_MODE_CHOICES, help="Choose the game mode")
     parser.add_argument("--source", type=str, default=_DEMO_DEFAULT_SOURCE, help="Fully-qualified name of the character source")
+    parser.add_argument("--exit", action="store_true", help="Exit immediately when the game completes")
     parser.add_argument(
         "--delay", type=float, default=_DEMO_DEFAULT_DELAY_SEC, help="Delay between computer-generated moves (fractional seconds)"
     )
 
     args = parser.parse_args(args=argv[2:])
-    run_demo(players=args.players, mode=GameMode[args.mode], source=source(args.source), delay_sec=args.delay)
+    run_demo(
+        players=args.players, mode=GameMode[args.mode], source=source(args.source), delay_sec=args.delay, exit_immediately=args.exit
+    )
 
 
 def simulation(argv: List[str], unused_stdout: IO[str], unused_stderr: IO[str]) -> None:
