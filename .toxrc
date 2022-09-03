@@ -34,8 +34,8 @@ commands =
 passenv = *
 allowlist_externals = 
    poetry
-   utils/rundemo.sh
+   bash
 commands =
    poetry --version
    poetry version
-   utils/rundemo.sh
+   bash utils/rundemo.sh
