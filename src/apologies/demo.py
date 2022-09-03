@@ -16,7 +16,7 @@ else:
     from .demo_unix import run_demo as implementation  # pylint: disable=unused-import
 
 
-def run_demo(players: int, mode: GameMode, source: CharacterInputSource, delay_sec: float) -> None:
+def run_demo(players: int, mode: GameMode, source: CharacterInputSource, delay_sec: float, exit_immediately: bool) -> None:
     """
     Run the quick'n'dirty demo in a terminal window.
 
@@ -25,5 +25,6 @@ def run_demo(players: int, mode: GameMode, source: CharacterInputSource, delay_s
         mode(GameMode): The game mode
         source(CharacterInputSource): The source to use for choosing player moves
         delay_sec(float): The delay between turns when executing the game
+        exit_immediately(bool): Exit immediately when the game completes
     """
-    implementation(players, mode, source, delay_sec)
+    implementation(players, mode, source, delay_sec, exit_immediately)

@@ -288,10 +288,11 @@ This runs a really fast game in adult mode with 3 players:
 run demo --players=3 --mode=ADULT --delay=0.1
 ```
 
-> _Note:_ The demo only works inside a UNIX-style terminal window (like an
-> xterm or a MacOS terminal).  Some terminals (like [iTerm2](https://www.iterm2.com/)) may
-> require extra configuration before the terminal can be resized properly
-> (see [StackExchange](https://apple.stackexchange.com/a/47841/249172Z)).
+The demo only works inside a UNIX-style terminal window, like an xterm or a 
+MacOS terminal.  You might be able to get it to work in an SSH session, depending 
+on your terminal emulator.  As of 2022, it sort of renders in PuTTY, but does 
+not work at all in a Windows Terminal.  Your terminal window must be at least 
+155x58 in size.  If your terminal window is too small, the demo will refuse to run.
 
 ## Integration with PyCharm
 
