@@ -1,4 +1,4 @@
-Version 0.1.37     unreleased
+Version 0.1.37     03 Sep 2022
 
 	* Upgrade to Poetry v1.2.0 and make related build process changes.
 	* Upgrade to Pylint v2.15.0 and make related changes to configuration
