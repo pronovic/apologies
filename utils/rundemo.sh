@@ -1,19 +1,26 @@
 #!/bin/bash
-# Run the demo in a controlled manner if an X session is available
+# Run the demo in a controlled manner if an appropriate terminal is available
 
-COMMAND="poetry run python src/scripts/demo --players=3 --mode=ADULT --delay=0.02 --exit"
-
-if [ -z "$DISPLAY" ]; then
-   echo "No display set; can't run demo"
-   exit 0
-fi
+DEMO="poetry run python src/scripts/demo --players=3 --mode=ADULT --delay=0.02 --exit"
 
 which xterm
-if [ $? != 0 ]; then
-   echo "No xterm available; can't run demo"
+if [ $? == 0 ]; then
+   if [ -z "$DISPLAY" ]; then
+      echo "Demo will be tested in an xterm"
+      set -e -x
+      xterm -title "apologies demo" -geometry 155x70+0+0 -j -fs 10 -e "$DEMO"
+      exit 0
+   fi
+fi
+
+which osascript
+if [ $? == 0 ]; then
+   echo "Demo will be tested in a MacOS terminal"
+   set -e -x
+   osascript -e "tell app \"Terminal\" to do script \"cd $(pwd) && $DEMO && exit\""
    exit 0
 fi
 
-set -e -x
-xterm -title "apologies demo" -geometry 155x70+0+0 -j -fs 10 -e "$COMMAND"
+echo "No terminal available; demo will not be tested"
+exit 0
 
