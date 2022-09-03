@@ -64,7 +64,7 @@ jobs:
         shell: bash
         run: |
           # Run Tox test suite
-          poetry run tox -c .toxrc -e "checks,coverage"
+          poetry run tox -c .toxrc -e "checks,coverage,demo"
       - name: Upload coverage data to coveralls.io
         shell: bash
         env:
