@@ -5,7 +5,7 @@ DEMO="poetry run python src/scripts/demo --players=3 --mode=ADULT --delay=0.02 -
 
 which xterm
 if [ $? == 0 ]; then
-   if [ -z "$DISPLAY" ]; then
+   if [ ! -z "$DISPLAY" ]; then
       echo "Demo will be tested in an xterm"
       set -e -x
       xterm -title "apologies demo" -geometry 155x70+0+0 -j -fs 10 -e "$DEMO"
