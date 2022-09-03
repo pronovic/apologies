@@ -150,13 +150,20 @@ def _main(stdscr, source: CharacterInputSource, engine: Engine, delay_sec: float
 def _force_minimum_size() -> None:
     """Force an xterm to resize via a control sequence."""
 
-    # I've tested that this works in the standard Apple terminal and a Debian xterm.
+    # As of 2020, this worked in both the standard Apple terminal and Debian xterm.
+    #
+    # In 2022, it no longer works in Debian.  Even in the Apple terminal, it only
+    # works if the terminal font and monitor actually allow the requested size, and
+    # there's no indication whether it worked or not.
+    #
+    # I'm apparently using a slightly larger font now than when I originally wrote
+    # this code, and these days my terminal can't successfully resize past 155x59 on
+    # my Macbook.  The original rendering needed at least 155x70.  To deal with this,
+    # I addde the TerminalSizeError error handling block (above) to explictly detect
+    # that it isn't possible to render the board, and I also adjusted the rendering
+    # to work in a slightly smaller terminal.
+    #
     # See: https://apple.stackexchange.com/a/47841/249172
-
-    # Unfortunately, it only works if the terminal font and monitor actually allow the requested size,
-    # and there's no indication whether it worked or not.  I'm apparently using a slightly larger font
-    # now than when I originally wrote this code, and these days my terminal can't successfully resize
-    # past 155x59, when the original rendering needed at least 155x70.
 
     print("\u001b[8;%d;%dt" % (_MIN_ROWS, _MIN_COLS))
     sleep(0.5)  # wait for the window to finish resizing; if we try to render before it's done, the window gets hosed up
