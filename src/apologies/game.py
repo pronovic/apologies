@@ -132,7 +132,7 @@ DRAW_AGAIN = {
 }
 
 
-@frozen
+@frozen(order=True)
 class Card:
     # noinspection PyUnresolvedReferences
     """
