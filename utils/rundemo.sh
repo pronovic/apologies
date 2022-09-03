@@ -13,11 +13,10 @@ if [ $? == 0 ]; then
    fi
 fi
 
-which osascript
-if [ $? == 0 ]; then
+if [[ "$OSTYPE" == "darwin"* ]]; then 
    echo "Demo will be tested in a MacOS terminal"
    set -e -x
-   osascript -e "tell app \"Terminal\" to do script \"cd $(pwd) && $DEMO && exit\""
+   $DEMO
    exit 0
 fi
 
