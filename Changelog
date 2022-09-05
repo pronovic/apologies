@@ -4,6 +4,7 @@ Version 0.1.37     03 Sep 2022
 	* Upgrade to Pylint v2.15.0 and make related changes to configuration
 	* Fix Pylint's configured class-attribute-naming-style to be snake_case.
 	* Adjust Black configuration to target Python 3.7, 3.8, 3.9, and 3.10.
+	* Add dependency caching to GitHub Actions workflow.
 	* Fix the GitHub Actions matrix build to properly target Windows and MacOS.
 	* Make improvements to the curses-based demo and test it in the tox suite.
 	* Address annoying PyUnresolvedReferences warnings in PyCharm.
