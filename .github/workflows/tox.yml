@@ -29,13 +29,14 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python }}
-      - name: Platform information
+      - name: Python platform information
         shell: bash
         run: |
-          # Show platform information
+          # Python platform information
           python -c "import sys;print('Python %s' % sys.version)"
+          echo "PYTHON_VERSION=$(python --version | sed 's/^Python //')" >> "$GITHUB_ENV"
       - name: Install Poetry
-        uses: snok/install-poetry@v1.2.1 # see https://github.com/snok/install-poetry
+        uses: snok/install-poetry@v1.3.1 # see https://github.com/snok/install-poetry
         with:
           version: ${{ env.POETRY_VERSION }}
           virtualenvs-create: true
@@ -49,7 +50,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: .venv
-          key: venv-${{ runner.os }}-${{ matrix.python }}-${{ hashFiles('**/poetry.lock') }}
+          key: venv-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ hashFiles('**/poetry.lock') }}
       - name: Install dependencies
         shell: bash
         run: |
