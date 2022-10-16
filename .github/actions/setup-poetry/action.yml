@@ -8,6 +8,10 @@ inputs:
     description: "Comma-separated list of Poetry plugins to install"
     required: false
     default: ""
+  cache-venv:
+    description: "Whether to cache the project .venv virtual environment"
+    required: false
+    default: "false"
   max-workers:
     description: "Maximum number of Poetry workers, if default of cores*4 is too large"
     required: false
@@ -75,3 +79,10 @@ runs:
       run: |
         # Install requested Poetry plugins, if any
         "$GITHUB_ACTION_PATH/scripts/install-plugins.sh"
+   - name: Cache Virtual Environment
+     if: "${{ inputs.cache-venv == 'true' }}"
+     uses: actions/cache@v3
+     with:
+       path: .venv
+       key: venv-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ hashFiles('**/poetry.lock') }}
+
