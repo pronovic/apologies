@@ -13,7 +13,7 @@ inputs:
     required: false
     default: "false"
   cache-poetry:
-    description: "Whether to cache the installed Poetry runtime directories"
+    description: "Whether to cache the Poetry runtime and cache directories"
     required: false
     default: "false"
   max-workers:
@@ -39,7 +39,6 @@ runs:
         echo "POETRY_CONFIG_DIR=$GITHUB_WORKSPACE/.poetry/config" >> "$GITHUB_ENV"
         echo "POETRY_HOME=$GITHUB_WORKSPACE/.poetry/runtime" >> "$GITHUB_ENV"
         echo "POETRY_CACHE=$GITHUB_WORKSPACE/.poetry/cache" >> "$GITHUB_ENV"
-        echo "POETRY_VENV=$GITHUB_WORKSPACE/.venv" >> "$GITHUB_ENV"
     - name: Configure Git to ignore Poetry-related directories
       shell: bash
       run: |
@@ -50,20 +49,18 @@ runs:
         echo "*" > "$POETRY_HOME/.gitignore"
         mkdir -p "$POETRY_CACHE"
         echo "*" > "$POETRY_CACHE/.gitignore"
-        mkdir -p "$POETRY_VENV"
-        echo "*" > "$POETRY_VENV/.gitignore"
     - name: Cache $POETRY_HOME
       if: "${{ inputs.cache-poetry == 'true' }}"
       uses: actions/cache@v3
       with:
-        path: "${{ env.POETRY_RUNTIME }}"
-        key: "poetry-home-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ env.POETRY_VERSION }}-0"
+        path: ".poetry/runtime"
+        key: "poetry-home-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ env.POETRY_VERSION }}-000"
     - name: Cache $POETRY_CACHE
       if: "${{ inputs.cache-poetry == 'true' }}"
       uses: actions/cache@v3
       with:
-        path: "${{ env.POETRY_CACHE }}"
-        key: "poetry-cache-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ env.POETRY_VERSION }}-${{ hashFiles('**/poetry.lock') }}-0"
+        path: ".poetry/cache"
+        key: "poetry-cache-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ env.POETRY_VERSION }}-${{ hashFiles('**/poetry.lock') }}-000"
     - name: Install Poetry
       shell: bash
       run: |
@@ -105,6 +102,6 @@ runs:
       if: "${{ inputs.cache-venv == 'true' }}"
       uses: actions/cache@v3
       with:
-        path: "${{ env.POETRY_VENV }}"
-        key: "venv-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ hashFiles('poetry.lock') }}-0"
+        path: ".venv"
+        key: "venv-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ hashFiles('poetry.lock') }}-000"
 
