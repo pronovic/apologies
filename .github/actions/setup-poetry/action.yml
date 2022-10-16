@@ -1,5 +1,5 @@
-name: Install Poetry
-description: Install the Poetry build tool
+name: Setup Poetry
+description: Install and set up the Poetry build tool
 inputs:
   version:
     description: "Version of Poetry to install (>= 1.2.0)"
@@ -8,6 +8,10 @@ inputs:
     description: "Comma-separated list of Poetry plugins to install"
     required: false
     default: ""
+  cache-dependencies:
+    description: "Whether to cache installed project dependencies"
+    required: false
+    default: "false"
   max-workers:
     description: "Maximum number of Poetry workers, if default of cores*4 is too large"
     required: false
@@ -75,3 +79,10 @@ runs:
       run: |
         # Install requested Poetry plugins, if any
         "$GITHUB_ACTION_PATH/scripts/install-plugins.sh"
+   - name: Cached Dependencies
+     if: "${{ always() && inputs.cache-dependencies }}"
+     uses: actions/cache@v3
+     with:
+       path: .venv
+       key: venv-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ hashFiles('**/poetry.lock') }}
+
