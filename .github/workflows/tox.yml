@@ -34,11 +34,11 @@ jobs:
           plugins: "poetry-plugin-export@==1.1.2"
           cache-venv: "false"
           cache-poetry: "true"
-#      - name: Install dependencies
-#        shell: bash
-#        run: |
-#          # Install dependencies
-#          poetry install --sync --no-interaction
+      - name: Install dependencies
+        shell: bash
+        run: |
+          # Install dependencies
+          poetry install --sync --no-interaction
 #      - name: Run Tox test suite
 #        shell: bash
 #        run: |

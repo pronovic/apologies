@@ -110,5 +110,5 @@ runs:
       with:
         # It's important to base this key on the full Python installed version (i.e. 3.9.2) and not just a matrix version (i.e. 3.9)
         path: ".venv"
-        key: "venv-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ hashFiles('**/poetry.lock') }}-${{ inputs.cache-suffix }}"
+        key: "poetry-venv-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ hashFiles('**/poetry.lock') }}-${{ inputs.cache-suffix }}"
 
