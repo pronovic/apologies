@@ -54,13 +54,13 @@ runs:
       uses: actions/cache@v3
       with:
         path: ".poetry/runtime"  # use relative path, otherwise Windows has problems
-        key: "poetry-home-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ env.POETRY_VERSION }}-a"
+        key: "poetry-home-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ env.POETRY_VERSION }}-b"
     - name: Cache $POETRY_CACHE
       if: "${{ inputs.cache-poetry == 'true' }}"
       uses: actions/cache@v3
       with:
         path: ".poetry/cache"    # use relative path, otherwise Windows has problems
-        key: "poetry-cache-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ env.POETRY_VERSION }}-${{ hashFiles('**/poetry.lock') }}-a"
+        key: "poetry-cache-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ env.POETRY_VERSION }}-${{ hashFiles('**/poetry.lock') }}-b"
     - name: Install Poetry
       shell: bash
       run: |
@@ -68,6 +68,9 @@ runs:
         "$GITHUB_ACTION_PATH/scripts/install-poetry.sh"
         ls -la .poetry/runtime/bin
         ls -la .poetry/runtime/venv/Scripts
+        .poetry/runtime/venv/Scripts/poetry.exe --version
+        .poetry/runtime/bin/poetry.exe --version
+        poetry.exe --version
     - name: Add Poetry to the system $PATH
       shell: bash
       run: |
@@ -78,9 +81,6 @@ runs:
       run: |
         # Display Poetry location and version
         which poetry
-        .poetry/runtime/bin/poetry.exe --version
-        .poetry/runtime/venv/Scripts/poetry.exe --version
-        poetry.exe --version
         poetry --version
     - name: Configure Poetry
       shell: bash
