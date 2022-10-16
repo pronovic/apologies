@@ -6,20 +6,19 @@ inputs:
     required: true
 runs:
   using: composite
-  env:
-    POETRY_HOME: "${{ env.GITHUB_WORKSPACE }}/.poetry/runtime"
-    POETRY_CACHE: "{{ env.GITHUB_WORKSPACE }}/.poetry/cache"
-    POETRY_VERSION: "${{ inputs.version }}"
   steps:
     - name: Install Poetry
       shell: bash
+      env:
+        POETRY_HOME: "${{ env.GITHUB_WORKSPACE }}/.poetry/runtime"
+        POETRY_VERSION: "${{ inputs.version }}"
       run: |
         "$GITHUB_ACTION_PATH/scripts/install-poetry.sh"
     - name: Add Poetry to the system $PATH
       shell: bash
       run: |
         # Add Poetry to the system $PATH
-        echo "$POETRY_HOME/bin" >> "$GITHUB_PATH"
+        echo "$GITHUB_WORKSPACE/.poetry/runtime/bin" >> "$GITHUB_PATH"
     - name: Disable the Python keyring
       shell: bash
       run: |
@@ -31,7 +30,7 @@ runs:
       shell: bash
       run: |
         # Configure Poetry to use a local cache and virtual environment
-        poetry config cache-dir "$POETRY_CACHE" --local
+        poetry config cache-dir "$GITHUB_WORKSPACE/.poetry/cache" --local
         poetry config virtualenvs.create true --local
         poetry config virtualenvs.in-project true --local
          
