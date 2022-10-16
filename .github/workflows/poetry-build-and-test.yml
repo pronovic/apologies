@@ -1,0 +1,100 @@
+# vim: set ft=yaml ts=2 sw=2:
+name: Build and Test
+on:
+  workflow_call:
+    inputs:
+      matrix-os-version:
+        description: "JSON string array, a list of operating systems for the matrix build"
+        required: true
+        type: string
+      matrix-python-version:
+        description: "JSON string array, a list of Python versions for the matrix build"
+        required: true
+        type: string
+      poetry-version:
+        description: "Version of Poetry to use for the build (>=1.2.0)"
+        required: false
+        type: string
+      poetry-plugins:
+        description: "Comma-separated list of Poetry plugins to install"
+        required: false
+        type: string
+        default: ""
+      poetry-cache-venv:
+        description: "Whether to cache the Poetry virtualenv"
+        required: false
+        type: boolean
+        default: true
+      poetry-cache-install:
+        description: "Whether to cache the Poetry install"
+        required: false
+        type: boolean
+        default: true
+      test-suite-command:
+        description: "Shell command used to execute the test suite"
+        required: false
+        type: string
+        default: "poetry run tox -c .toxrc -e 'checks,coverage'"
+      timeout-minutes:
+        description: "Job timeout in minutes"
+        required: false
+        type: number
+        default: 30
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: "${{ fromJson(inputs.matrix-os-version) }}"
+        python: "${{ fromJson(inputs.matrix-python-version) }}"
+    defaults:
+      run:
+        shell: bash
+    runs-on: "${{ matrix.os }}"
+    timeout-minutes: "${{ inputs.timeout-minutes }}"
+    steps: 
+      - name: Check out code
+        uses: actions/checkout@v3
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "${{ matrix.python }}"
+      - name: Setup Poetry
+        uses: pronovic/setup-poetry@v1
+        with:
+          version: "${{ inputs.poetry-version }}"
+          plugins: "${{ inputs.poetry-plugins }}"
+          cache-venv: "${{ inputs.poetry-cache-venv }}"
+          cache-poetry: "${{ inputs.poetry-cache-install }}"
+      - name: Install dependencies
+        shell: bash
+        run: |
+          # Install dependencies
+          poetry install --sync --no-interaction
+      - name: Run Tox test suite
+        shell: bash
+        run: |
+          # Run the test suite
+          ${{ inputs.test-suite-command }}
+      - name: Upload coverage data to coveralls.io
+        shell: bash
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          COVERALLS_FLAG_NAME: "${{ runner.os }}-python${{ matrix.python }}"
+          COVERALLS_PARALLEL: true
+        run: | 
+          # Upload coverage data to coveralls.io
+          poetry run coveralls --service=github
+  coveralls:
+    name: Indicate completion to coveralls.io
+    needs: build
+    runs-on: ubuntu-latest
+    container: python:3-slim
+    steps:
+    - name: Finished
+      shell: bash
+      env:
+        GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      run: |
+        # Indicate completion to coveralls.io
+        pip3 install --upgrade coveralls
+        coveralls --service=github --finish
