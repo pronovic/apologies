@@ -4,6 +4,10 @@ inputs:
   version:
     description: "Version of Poetry to install (>= 1.2.0)"
     required: true
+  plugins:
+    description: "Comma-separated list of Poetry plugins to install"
+    required: false
+    default: ""
 runs:
   using: composite
   steps:
@@ -61,3 +65,10 @@ runs:
         # This prevents Poetry from using the Python keyring, which sometimes fails or hangs on Linux
         # See: https://github.com/python-poetry/poetry/issues/2692#issuecomment-1235683370
         echo "PYTHON_KEYRING_BACKEND=keyring.backends.null.Keyring" >> "$GITHUB_ENV"
+    - name: Install Poetry plugins
+      shell: bash
+      env:
+        POETRY_PLUGINS: "${{ inputs.plugins }}"
+      run: |
+        # Install requested Poetry plugins, if any
+        "$GITHUB_ACTION_PATH/scripts/install-plugins.sh"
