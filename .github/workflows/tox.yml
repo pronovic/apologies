@@ -37,11 +37,7 @@ jobs:
         uses: ./.github/actions/install-poetry
         with:
           version: "1.2.0" # install a specific version of Poetry, to avoid surprises
-      - name: Install Poetry plugins
-        shell: bash
-        run: |
-          # Install Poetry plugins
-          poetry self add poetry-plugin-export
+          plugins: "poetry-plugin-export"
       - name: Load Cached Dependencies
         uses: actions/cache@v3
         with:
