@@ -78,6 +78,9 @@ runs:
       run: |
         # Display Poetry location and version
         which poetry
+        .poetry/runtime/bin/poetry.exe --version
+        .poetry/runtime/venv/Scripts/poetry.exe --version
+        poetry.exe --version
         poetry --version
     - name: Configure Poetry
       shell: bash
