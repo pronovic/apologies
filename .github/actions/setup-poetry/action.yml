@@ -16,6 +16,10 @@ inputs:
     description: "Whether to cache the Poetry runtime and cache directories"
     required: false
     default: "false"
+  cache-suffix:
+    description: "Suffix to use for cache key, which can be used to reset the cache"
+    required: false
+    default: "000"
   max-workers:
     description: "Maximum number of Poetry workers, if default of cores*4 is too large"
     required: false
@@ -53,14 +57,16 @@ runs:
       if: "${{ inputs.cache-poetry == 'true' }}"
       uses: actions/cache@v3
       with:
+        # It's important to base this key on the full Python installed version (i.e. 3.9.2) and not just a matrix version (i.e. 3.9)
         path: ".poetry/runtime"
-        key: "poetry-home-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ env.POETRY_VERSION }}-000"
+        key: "poetry-home-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ env.POETRY_VERSION }}-${{ inputs.cache-suffix }}"
     - name: Cache $POETRY_CACHE
       if: "${{ inputs.cache-poetry == 'true' }}"
       uses: actions/cache@v3
       with:
+        # It's important to base this key on the full Python installed version (i.e. 3.9.2) and not just a matrix version (i.e. 3.9)
         path: ".poetry/cache"
-        key: "poetry-cache-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ env.POETRY_VERSION }}-${{ hashFiles('**/poetry.lock') }}-000"
+        key: "poetry-cache-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ env.POETRY_VERSION }}-${{ hashFiles('**/poetry.lock') }}-${{ inputs.cache-suffix }}"
     - name: Install Poetry
       shell: bash
       run: |
@@ -102,6 +108,7 @@ runs:
       if: "${{ inputs.cache-venv == 'true' }}"
       uses: actions/cache@v3
       with:
+        # It's important to base this key on the full Python installed version (i.e. 3.9.2) and not just a matrix version (i.e. 3.9)
         path: ".venv"
-        key: "venv-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ hashFiles('poetry.lock') }}-000"
+        key: "venv-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ hashFiles('**/poetry.lock') }}-${{ inputs.cache-suffix }}"
 
