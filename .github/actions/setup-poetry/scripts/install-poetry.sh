@@ -1,6 +1,5 @@
 #!/bin/bash
-# Install the Poetry build tool
-# The caller must set both $POETRY_VERSION and $POETRY_HOME
+# Install the Poetry build tool, working around platform differences
 
 set -e
 
@@ -13,7 +12,7 @@ curl -sSL https://install.python-poetry.org | python -
 
 # On Windows, something gets screwed up with this soft link when restoring from cache.
 # Recreating it seems to resolve the problem, although it's not clear why.
-cd $POETRY_HOME/bin
+cd "$POETRY_HOME/bin"
 if [ -f poetry.exe ]; then
   rm -f poetry.exe
   ln -s ../venv/Scripts/poetry.exe
