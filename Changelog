@@ -1,3 +1,7 @@
+Version 0.1.38     unreleased
+
+	* Rework the GitHub Actions build process to pull out shared code.
+
 Version 0.1.37     03 Sep 2022
 
 	* Upgrade to Poetry v1.2.0 and make related build process changes.
