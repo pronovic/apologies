@@ -57,26 +57,26 @@ jobs:
         run: |
           # Run Tox test suite
           poetry run tox -c .toxrc -e "checks,coverage"
-      - name: Upload coverage data to coveralls.io
-        shell: bash
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          COVERALLS_FLAG_NAME: ${{ runner.os }}-python${{ matrix.python }}
-          COVERALLS_PARALLEL: true
-        run: | 
-          # Upload coverage data to coveralls.io
-          poetry run coveralls --service=github
-  coveralls:
-    name: Indicate completion to coveralls.io
-    needs: build
-    runs-on: ubuntu-latest
-    container: python:3-slim
-    steps:
-    - name: Finished
-      shell: bash
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        # Indicate completion to coveralls.io
-        pip3 install --upgrade coveralls
-        coveralls --service=github --finish
+#      - name: Upload coverage data to coveralls.io
+#        shell: bash
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#          COVERALLS_FLAG_NAME: ${{ runner.os }}-python${{ matrix.python }}
+#          COVERALLS_PARALLEL: true
+#        run: | 
+#          # Upload coverage data to coveralls.io
+#          poetry run coveralls --service=github
+#  coveralls:
+#    name: Indicate completion to coveralls.io
+#    needs: build
+#    runs-on: ubuntu-latest
+#    container: python:3-slim
+#    steps:
+#    - name: Finished
+#      shell: bash
+#      env:
+#        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#      run: |
+#        # Indicate completion to coveralls.io
+#        pip3 install --upgrade coveralls
+#        coveralls --service=github --finish

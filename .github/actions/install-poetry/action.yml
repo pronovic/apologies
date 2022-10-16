@@ -7,17 +7,25 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Set Poetry environment variables
+    - name: Establish Python version
       shell: bash
       run: |
-        # Set Poetry environment variables
+        # Establish Python version
+        which python
+        python --version
+        python -c "import sys;print('Python %s' % sys.version)"
+        echo "PYTHON_VERSION=$(python --version | sed 's/^Python //')" >> "$GITHUB_ENV"
+    - name: Configure Poetry runtime locations
+      shell: bash
+      run: |
+        # Configure Poetry runtime locations
         echo "POETRY_VERSION=${{ inputs.version }}" >> "$GITHUB_ENV"
         echo "POETRY_HOME=$GITHUB_WORKSPACE/.poetry/runtime" >> "$GITHUB_ENV"
         echo "POETRY_CACHE=$GITHUB_WORKSPACE/.poetry/cache" >> "$GITHUB_ENV"
-    - name: Configure Git to ignore Poetry install
+    - name: Configure Git to ignore Poetry runtime locations
       shell: bash
       run: |
-        # Configure Git to ignore the Poetry install
+        # Configure Git to ignore Poetry runtime locations
         mkdir -p "$POETRY_HOME" 
         echo "*" > "$POETRY_HOME/.gitignore"
         mkdir -p "$POETRY_CACHE" 
@@ -32,10 +40,10 @@ runs:
       run: |
         # Add Poetry to the system $PATH
         echo "$GITHUB_WORKSPACE/.poetry/runtime/bin" >> "$GITHUB_PATH"
-    - name: Dump Poetry location and version
+    - name: Display Poetry location and version
       shell: bash
       run: |
-        # Dump Poetry location and version
+        # Display Poetry location and version
         which poetry
         poetry --version
     - name: Configure Poetry
