@@ -36,9 +36,9 @@ runs:
       run: |
         # Configure Poetry runtime directories
         echo "POETRY_VERSION=${{ inputs.version }}" >> "$GITHUB_ENV"
-        echo "POETRY_CONFIG_DIR=$GITHUB_WORKSPACE/.poetry/config" >> "$GITHUB_ENV"
-        echo "POETRY_HOME=$GITHUB_WORKSPACE/.poetry/runtime" >> "$GITHUB_ENV"
-        echo "POETRY_CACHE=$GITHUB_WORKSPACE/.poetry/cache" >> "$GITHUB_ENV"
+        echo 'POETRY_CONFIG_DIR=$GITHUB_WORKSPACE/.poetry/config | sed "s/\\/\//g"' >> "$GITHUB_ENV"
+        echo 'POETRY_HOME=$GITHUB_WORKSPACE/.poetry/runtime | sed "s/\\/\//g"' >> "$GITHUB_ENV"
+        echo 'POETRY_CACHE=$GITHUB_WORKSPACE/.poetry/cache | sed "s/\\/\//g"' >> "$GITHUB_ENV"
     - name: Configure Git to ignore Poetry runtime locations
       shell: bash
       run: |
