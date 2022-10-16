@@ -8,6 +8,10 @@ inputs:
     description: "Comma-separated list of Poetry plugins to install"
     required: false
     default: ""
+  max-workers:
+    description: "Maximum number of Poetry workers, if default of cores*4 is too large"
+    required: false
+    default: ""
 runs:
   using: composite
   steps:
@@ -52,12 +56,11 @@ runs:
         poetry --version
     - name: Configure Poetry
       shell: bash
+      env:
+        MAX_WORKERS: "${{ inputs.max-workers }}"
       run: |
-        # Configure Poetry to use a local cache and virtual environment
-        poetry config cache-dir "$POETRY_CACHE" --local
-        poetry config virtualenvs.create true --local
-        poetry config virtualenvs.in-project true --local
-        poetry config --list
+        # Configure Poetry
+        "$GITHUB_ACTION_PATH/scripts/configure-poetry.sh"
     - name: Disable the Python keyring
       shell: bash
       run: |
