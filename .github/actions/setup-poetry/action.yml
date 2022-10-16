@@ -80,7 +80,7 @@ runs:
         # Install requested Poetry plugins, if any
         "$GITHUB_ACTION_PATH/scripts/install-plugins.sh"
     - name: Cache Virtual Environment
-      if: "${{ inputs.cache-venv }}"
+      if: "${{ inputs.cache-venv == 'true' }}"
       uses: actions/cache@v3
       with:
         # Note: use the actual Python version (like 3.9.2) and not a less precise matrix verison (like 3.9) to avoid breakage
