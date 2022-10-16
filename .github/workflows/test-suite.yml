@@ -13,7 +13,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   build-and-test:
-    uses: pronovic/apologies/.github/workflows/poetry-build-and-test.yml@ken/shared-workflow
+    uses: pronovic/gha-shared-workflows/.github/workflows/poetry-build-and-test.yml@master
     secrets: inherit
     with:
       matrix-os-version: "[ 'ubuntu-latest', 'macos-latest', 'windows-latest' ]"
