@@ -11,9 +11,9 @@ runs:
       shell: bash
       run: |
         # Set Poetry environment variables
-        echo "${{ inputs.version }}" >> "$POETRY_VERSION"
-        echo "$GITHUB_WORKSPACE/.poetry/runtime" >> "$POETRY_HOME"
-        echo "$GITHUB_WORKSPACE/.poetry/cache" >> "$POETRY_CACHE"
+        echo "POETRY_VERSION=${{ inputs.version }}" >> "$GITHUB_ENV"
+        echo "POETRY_HOME=$GITHUB_WORKSPACE/.poetry/runtime" >> "$GITHUB_ENV"
+        echo "POETRY_CACHE=$GITHUB_WORKSPACE/.poetry/cache" >> "$GITHUB_ENV"
     - name: Install Poetry
       shell: bash
       run: |
