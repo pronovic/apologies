@@ -79,10 +79,10 @@ runs:
       run: |
         # Install requested Poetry plugins, if any
         "$GITHUB_ACTION_PATH/scripts/install-plugins.sh"
-   - name: Cache Virtual Environment
-     if: "${{ inputs.cache-venv == 'true' }}"
-     uses: actions/cache@v3
-     with:
-       path: .venv
-       key: venv-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ hashFiles('**/poetry.lock') }}
+    - name: Cache Virtual Environment
+      if: "${{ inputs.cache-venv == 'true' }}"
+      uses: actions/cache@v3
+      with:
+        path: .venv
+        key: venv-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ hashFiles('**/poetry.lock') }}
 
