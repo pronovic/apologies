@@ -76,6 +76,7 @@ runs:
       run: |
         # Display Poetry location and version
         which poetry
+        cat /d/a/apologies/apologies/.poetry/runtime/bin/poetry
         poetry --version
     - name: Configure Poetry
       shell: bash
