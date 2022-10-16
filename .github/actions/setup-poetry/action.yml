@@ -60,7 +60,7 @@ runs:
       uses: actions/cache@v3
       with:
         path: ".poetry/cache"    # use relative path, otherwise Windows has problems
-        key: "poetry-cache-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ env.POETRY_VERSION }}--${{ hashFiles('**/poetry.lock') }}"
+        key: "poetry-cache-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ env.POETRY_VERSION }}-${{ hashFiles('**/poetry.lock') }}"
     - name: Install Poetry
       shell: bash
       run: |
