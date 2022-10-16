@@ -54,7 +54,7 @@ runs:
       uses: actions/cache@v3
       with:
         path: ".poetry/runtime"  # use relative path, otherwise Windows has problems
-        key: "poetry-home-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ env.POETRY_VERSION }}"
+        key: "poetry-home-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ env.POETRY_VERSION }}-a"
     - name: Cache $POETRY_CACHE
       if: "${{ inputs.cache-poetry == 'true' }}"
       uses: actions/cache@v3
@@ -66,7 +66,8 @@ runs:
       run: |
         # Install Poetry >=1.2.0 using the official installer
         "$GITHUB_ACTION_PATH/scripts/install-poetry.sh"
-        ls -la .poetry/runtime/bin  # something doesn't get restored properly by the cache action
+        ls -la .poetry/runtime/bin
+        ls -la .poetry/runtime/venv/Scripts
     - name: Add Poetry to the system $PATH
       shell: bash
       run: |
