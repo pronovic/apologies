@@ -68,9 +68,6 @@ runs:
         "$GITHUB_ACTION_PATH/scripts/install-poetry.sh"
         ls -la .poetry/runtime/bin
         ls -la .poetry/runtime/venv/Scripts
-        .poetry/runtime/venv/Scripts/poetry.exe --version
-        .poetry/runtime/bin/poetry.exe --version
-        poetry.exe --version
     - name: Add Poetry to the system $PATH
       shell: bash
       run: |
