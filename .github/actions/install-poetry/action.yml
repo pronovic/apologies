@@ -19,10 +19,10 @@ runs:
         python --version
         python -c "import sys;print('Python %s' % sys.version)"
         echo "PYTHON_VERSION=$(python --version | sed 's/^Python //')" >> "$GITHUB_ENV"
-    - name: Configure Poetry runtime locations
+    - name: Configure Poetry runtime directories
       shell: bash
       run: |
-        # Configure Poetry runtime locations
+        # Configure Poetry runtime directories
         echo "POETRY_VERSION=${{ inputs.version }}" >> "$GITHUB_ENV"
         echo "POETRY_HOME=$GITHUB_WORKSPACE/.poetry/runtime" >> "$GITHUB_ENV"
         echo "POETRY_CACHE=$GITHUB_WORKSPACE/.poetry/cache" >> "$GITHUB_ENV"
