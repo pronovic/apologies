@@ -56,6 +56,13 @@ runs:
         # Note: use the actual Python version (like 3.9.2) and not a less precise matrix version (like 3.9) to avoid breakage
         path: "${{ env.POETRY_HOME }}"
         key: poetry-home-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ env.POETRY_VERSION }}
+    - name: Cache $POETRY_CACHE
+      if: "${{ inputs.cache-poetry == 'true' }}"
+      uses: actions/cache@v3
+      with:
+        # Note: use the actual Python version (like 3.9.2) and not a less precise matrix version (like 3.9) to avoid breakage
+        path: "${{ env.POETRY_CACHE }}"
+        key: poetry-cache-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ env.POETRY_VERSION }}-${{ hashFiles('**/poetry.lock') }}
     - name: Install Poetry
       shell: bash
       run: |
