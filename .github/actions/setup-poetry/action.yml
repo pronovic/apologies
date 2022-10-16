@@ -12,8 +12,8 @@ inputs:
     description: "Whether to cache the project .venv virtual environment"
     required: false
     default: "false"
-  cache-poetry-home:
-    description: "Whether to cache the resulting $POETRY_HOME directory"
+  cache-poetry:
+    description: "Whether to cache the installed Poetry runtime directories"
     required: false
     default: "false"
   max-workers:
@@ -36,18 +36,21 @@ runs:
       run: |
         # Configure Poetry runtime directories
         echo "POETRY_VERSION=${{ inputs.version }}" >> "$GITHUB_ENV"
+        echo "POETRY_CONFIG_DIR=$GITHUB_WORKSPACE/.poetry/config" >> "$GITHUB_ENV"
         echo "POETRY_HOME=$GITHUB_WORKSPACE/.poetry/runtime" >> "$GITHUB_ENV"
         echo "POETRY_CACHE=$GITHUB_WORKSPACE/.poetry/cache" >> "$GITHUB_ENV"
     - name: Configure Git to ignore Poetry runtime locations
       shell: bash
       run: |
-        # Configure Git to ignore Poetry runtime locations
-        mkdir -p "$POETRY_HOME" 
+        # Configure Git to ignore Poetry runtime directories
+        mkdir -p "$POETRY_CONFIG_DIR"
+        echo "*" > "$POETRY_CONFIG_DIR/.gitignore"
+        mkdir -p "$POETRY_HOME"
         echo "*" > "$POETRY_HOME/.gitignore"
-        mkdir -p "$POETRY_CACHE" 
+        mkdir -p "$POETRY_CACHE"
         echo "*" > "$POETRY_CACHE/.gitignore"
     - name: Cache $POETRY_HOME
-      if: "${{ inputs.cache-poetry-home == 'true' }}"
+      if: "${{ inputs.cache-poetry == 'true' }}"
       uses: actions/cache@v3
       with:
         # Note: use the actual Python version (like 3.9.2) and not a less precise matrix version (like 3.9) to avoid breakage
@@ -96,5 +99,5 @@ runs:
       with:
         # Note: use the actual Python version (like 3.9.2) and not a less precise matrix version (like 3.9) to avoid breakage
         path: .venv
-        key: venv-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ hashFiles('**/poetry.lock') }}
+        key: venv-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ hashFiles('poetry.lock') }}
 

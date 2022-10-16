@@ -34,7 +34,7 @@ jobs:
           version: "1.2.0"
           plugins: "poetry-plugin-export@==1.1.2"
           cache-venv: "true"
-          cache-poetry-home: "false"
+          cache-poetry: "false"
 #      - name: Install dependencies
 #        shell: bash
 #        run: |
