@@ -14,6 +14,14 @@ runs:
         echo "POETRY_VERSION=${{ inputs.version }}" >> "$GITHUB_ENV"
         echo "POETRY_HOME=$GITHUB_WORKSPACE/.poetry/runtime" >> "$GITHUB_ENV"
         echo "POETRY_CACHE=$GITHUB_WORKSPACE/.poetry/cache" >> "$GITHUB_ENV"
+    - name: Configure Git to ignore Poetry install
+      shell: bash
+      run: |
+        # Configure Git to ignore the Poetry install
+        mkdir -p "$POETRY_HOME" 
+        echo "*" > "$POETRY_HOME/.gitignore"
+        mkdir -p "$POETRY_CACHE" 
+        echo "*" > "$POETRY_CACHE/.gitignore"
     - name: Install Poetry
       shell: bash
       run: |
@@ -24,12 +32,6 @@ runs:
       run: |
         # Add Poetry to the system $PATH
         echo "$GITHUB_WORKSPACE/.poetry/runtime/bin" >> "$GITHUB_PATH"
-    - name: Configure Git to ignore Poetry install
-      shell: bash
-      run: |
-        # Configure Git to ignore the Poetry install
-        echo "*" > "$POETRY_HOME/.gitignore"
-        echo "*" > "$POETRY_CACHE/.gitignore"
     - name: Dump Poetry location and version
       shell: bash
       run: |
@@ -40,7 +42,7 @@ runs:
       shell: bash
       run: |
         # Configure Poetry to use a local cache and virtual environment
-        poetry config cache-dir "$GITHUB_WORKSPACE/.poetry/cache" --local
+        poetry config cache-dir "$POETRY_CACHE" --local
         poetry config virtualenvs.create true --local
         poetry config virtualenvs.in-project true --local
         poetry config --list
