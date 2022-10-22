@@ -27,35 +27,44 @@ disable_keyring
 # Execute one of the developer tasks
 case $1 in
    install|setup)
-      run_command install
+      shift 1
+      run_command install $*
       ;;
    requirements)
-      run_command requirements
+      shift 1
+      run_command requirements $*
       ;;
    black)
-      run_command black
+      shift 1
+      run_command black $*
       ;;
    isort)
-      run_command isort
+      shift 1
+      run_command isort $*
       ;;
    *lint)
-      run_command pylint
+      shift 1
+      run_command pylint $*
       ;;
    mypy)
-      run_command mypy
+      shift 1
+      run_command mypy $*
       ;;
    format)
-      run_command format
+      shift 1
+      run_command format $*
       ;;
    check*)
-      run_command check
+      shift 1
+      run_command check $*
       ;;
    pytest|test*)
       shift 1
       run_command pytest $*
       ;;
    tox)
-      run_command tox
+      shift 1
+      run_command tox $*
       ;;
    doc*)
       shift 1
@@ -66,16 +75,20 @@ case $1 in
       run_command release $*
       ;;
    publish)
-      run_command publish
+      shift 1
+      run_command publish $*
       ;;
    demo)
+      shift 1
       run_command demo $*
       ;;
    sim*)
+      shift 1
       run_command sim $*
       ;;
    render)
-      run_command render 
+      shift 1
+      run_command render $*
       ;;
    *)
       echo ""
