@@ -3,7 +3,7 @@ repos:
   - repo: local
     hooks:
       - id: system
-        name: Requirements
+        name: Requirements File
         entry: ./run requirements
         pass_filenames: false
         language: system
