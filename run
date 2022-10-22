@@ -45,18 +45,10 @@ case $1 in
       run_command mypy
       ;;
    format)
-      run_command black
-      echo ""
-      run_command isort
+      run_command format
       ;;
    check*)
-      run_command black --check
-      echo ""
-      run_command isort --check-only
-      echo ""
-      run_command mypy
-      echo ""
-      run_command pylint
+      run_command check
       ;;
    pytest|test*)
       shift 1
@@ -74,9 +66,7 @@ case $1 in
       run_command release $*
       ;;
    publish)
-      enable_keyring
       run_command publish
-      disable_keyring
       ;;
    demo)
       run_command demo $*

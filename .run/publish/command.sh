@@ -3,6 +3,8 @@
 # For instance: poetry config pypi-token.pypi token --local
 # See: https://python-poetry.org/docs/repositories/#configuring-credentials
 run_publish() {
+   enable_keyring
+
    poetry build
    if [ $? != 0 ]; then
       echo "*** Build step failed."
@@ -16,4 +18,6 @@ run_publish() {
    fi
 
    git push --follow-tags
+
+   disable_keyring
 }
