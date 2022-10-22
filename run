@@ -3,6 +3,19 @@
 
 SCRIPT_DIR=$(unset CDPATH && cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
+run_task() {
+   TASK="$1"
+   shift 1
+   source "$SCRIPT_DIR/.run/tasks/$TASK/task.sh"
+   run_$TASK $*
+}
+
+help_task() {
+   TASK="$1"
+   source "$SCRIPT_DIR/.run/tasks/$TASK/help.sh"
+   help_$TASK $*
+}
+
 run_command() {
    COMMAND="$1"
    shift 1
@@ -37,20 +50,7 @@ else
    echo ""
    echo "Usage: run <command>"  
    echo ""
-   echo "- run install: Setup the virtualenv via Poetry and install pre-commit hooks"
-   echo "- run requirements: Regenerate the docs/requirements.txt file"
-   echo "- run format: Run the code formatters"
-   echo "- run checks: Run the code checkers"
-   echo "- run test: Run the unit tests"
-   echo "- run test -c: Run the unit tests with coverage"
-   echo "- run test -ch: Run the unit tests with coverage and open the HTML report"
-   echo "- run docs: Build the Spinx documentation for apologies.readthedocs.io"
-   echo "- run docs -o: Build the Spinx documentation and open in a browser"
-   echo "- run tox: Run the Tox test suite used by the GitHub CI action"
-   echo "- run release: Release a specific version and tag the code"
-   echo "- run publish: Publish the current code to PyPI and push to GitHub"
-   echo "- run demo: Run a game with simulated players, displaying output on the terminal"
-   echo "- run sim: Run a simulation to see how well different character input sources behave"
+   cd "$SCRIPT_DIR/.run/tasks" && for task in *; do help_task $task; done
    echo ""
    exit 1
 fi
