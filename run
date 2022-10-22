@@ -1,56 +1,6 @@
 #!/bin/bash
 # Shortcuts for common developer tasks
-
 SCRIPT_DIR=$(unset CDPATH && cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-
-run_task() {
-   TASK="$1"
-   shift 1
-   source "$SCRIPT_DIR/.run/tasks/$TASK/task.sh"
-   run_$TASK $*
-}
-
-help_task() {
-   TASK="$1"
-   source "$SCRIPT_DIR/.run/tasks/$TASK/help.sh"
-   help_$TASK $*
-}
-
-run_command() {
-   COMMAND="$1"
-   shift 1
-   source "$SCRIPT_DIR/.run/$COMMAND/command.sh"
-   run_$COMMAND $*
-}
-
-disable_keyring() {
-   # Prevent Poetry v1.2.0 from using the Python keyring, which sometimes fails or hangs on Linux
-   # See: https://github.com/python-poetry/poetry/issues/2692#issuecomment-1235683370
-   export PYTHON_KEYRING_BACKEND="keyring.backends.null.Keyring"
-}
-
-enable_keyring() {
-   # We need to unset this for cases where the keyring is required, like publishing
-   unset PYTHON_KEYRING_BACKEND
-}
-
-# Always disable the keyring by default
-disable_keyring
-
-# Execute one of the developer tasks
-COMMAND="$1"
-if [ ! -z "$COMMAND" ] && [ -d "$SCRIPT_DIR/.run/$COMMAND" ]; then
-   shift 1
-   run_command "$COMMAND" $*
-else
-   echo ""
-   echo "------------------------------------"
-   echo "Shortcuts for common developer tasks"
-   echo "------------------------------------"
-   echo ""
-   echo "Usage: run <command>"  
-   echo ""
-   cd "$SCRIPT_DIR/.run/tasks" && for task in *; do help_task $task; done
-   echo ""
-   exit 1
-fi
+source "$SCRIPT_DIR/.run/util.sh"
+run_setup
+handle_arguments $*
