@@ -1,6 +1,32 @@
 #!/bin/bash
+# vim: set ft=bash ts=3 sw=3:
 # Shortcuts for common developer tasks
-SCRIPT_DIR=$(unset CDPATH && cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-source "$SCRIPT_DIR/.run/util.sh"
-run_setup
-handle_arguments $*
+
+unset CDPATH
+
+REPO_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
+DOTRUN_DIR="$REPO_DIR/.run"
+
+source "$DOTRUN_DIR/util.sh"
+run_command disablekeyring
+
+if task_exists "$1"; then
+   run_task $*
+   if [ $? != 0 ]; then
+      exit 1
+   fi
+else
+   echo ""
+   echo "------------------------------------"
+   echo "Shortcuts for common developer tasks"
+   echo "------------------------------------"
+   echo ""
+   echo "Usage: run <task>"
+   echo ""
+   for task in $(all_tasks); do
+      task_help "$task"
+   done
+   echo ""
+   exit 2
+fi
+

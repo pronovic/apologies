@@ -4,48 +4,13 @@ repos:
     hooks:
       - id: system
         name: Requirements
-        entry: poetry export --format=requirements.txt --without-hashes --with dev --output=docs/requirements.txt
+        entry: ./run requirements
         pass_filenames: false
         language: system
   - repo: local
     hooks:
       - id: system
-        name: Line Endings
-        entry: poetry run python utils/dos2unix.py docs/requirements.txt
-        pass_filenames: false
-        language: system
-  - repo: local
-    hooks:
-      - id: system
-        name: Tab Characters
-        entry: sh utils/check-tabs.sh
-        pass_filenames: false
-        language: system
-  - repo: local
-    hooks:
-      - id: system
-        name: Black
-        entry: poetry run black .
-        pass_filenames: false
-        language: system
-  - repo: local
-    hooks:
-      - id: system
-        name: isort
-        entry: poetry run isort .
-        pass_filenames: false
-        language: system
-  - repo: local
-    hooks:
-      - id: system
-        name: MyPy
-        entry: poetry run mypy
-        pass_filenames: false
-        language: system
-  - repo: local
-    hooks:
-      - id: system
-        name: Pylint
-        entry: poetry run pylint -j 0 src/apologies tests
+        name: Code Style Checks
+        entry: ./run checks
         pass_filenames: false
         language: system

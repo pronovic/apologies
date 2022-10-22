@@ -43,7 +43,7 @@ def demo(argv: List[str], unused_stdout: IO[str], unused_stderr: IO[str]) -> Non
         "--delay", type=float, default=_DEMO_DEFAULT_DELAY_SEC, help="Delay between computer-generated moves (fractional seconds)"
     )
 
-    args = parser.parse_args(args=argv[2:])
+    args = parser.parse_args(args=argv[1:])
     run_demo(
         players=args.players, mode=GameMode[args.mode], source=source(args.source), delay_sec=args.delay, exit_immediately=args.exit
     )
@@ -65,7 +65,7 @@ def simulation(argv: List[str], unused_stdout: IO[str], unused_stderr: IO[str]) 
 
     parser.add_argument("source", type=str, nargs="+", help="Fully-qualified name of the character sources to test")
 
-    args = parser.parse_args(args=argv[2:])
+    args = parser.parse_args(args=argv[1:])
 
     errors = []
     if args.iter <= 0:
