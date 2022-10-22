@@ -1,4 +1,4 @@
-run_check() {
+run_checks() {
    run_command black --check
    echo ""
    run_command isort --check-only
