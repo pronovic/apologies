@@ -51,7 +51,10 @@ generate_help() {
    echo ""
    echo "Usage: run <task>"
    echo ""
-   cd "$SCRIPT_DIR/.run/tasks" && for task in *; do help_task $task; done
+   cd "$SCRIPT_DIR/.run/tasks" 
+   for task in $(ls -d * | sort); 
+      do help_task $task
+   done
    echo ""
 }
 
