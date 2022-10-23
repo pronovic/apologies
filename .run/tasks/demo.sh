@@ -3,8 +3,7 @@
 # This is a little complicated, because the demo is senstive to terminal size
 # and terminal definition.  On MacOS, I run it directly in the terminal where
 # 'run demo' was invoked.  On Linux, it's safer to pop an xterm, if one is
-# available.  The check for $DISPLAY ensures that we don't try to run this in
-# GitHub Actions, where no display is available.
+# available.
 
 help_demo() {
    echo "- run demo: Run a game with simulated players, displaying output on the terminal"
@@ -32,7 +31,7 @@ task_demo() {
       fi
    fi
 
-   if [[ "$OSTYPE" == "darwin"* ]]; then
+   if [ "$OSTYPE" == "darwin"* ] && [ "$GITHUB_ACTIONS" != "true" ]; then
       echo "Demo will be tested in a MacOS terminal"
 
       $DEMO
