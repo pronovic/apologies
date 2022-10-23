@@ -1,5 +1,5 @@
 # vim: set ft=bash ts=3 sw=3:
-# Update the changelog and tag a specific version fo the code
+# Update the changelog and tag a specific version of the code
 
 command_tagrelease() {
    if [ $# != 1 ]; then
