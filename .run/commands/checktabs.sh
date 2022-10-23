@@ -16,6 +16,6 @@ command_checktabs() {
    echo "✅ No tab characters found"
    echo "done"
 
-   cd -
+   cd - >/dev/null
 }
 

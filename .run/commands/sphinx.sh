@@ -24,6 +24,6 @@ command_sphinx() {
       $(which start || which open) _build/html/index.html 2>/dev/null  
    fi
 
-   cd -
+   cd - >/dev/null
 }
 
