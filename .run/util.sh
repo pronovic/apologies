@@ -10,8 +10,8 @@ run_command() {
    COMMAND="$1"
    shift 1
 
-   if [ -f "$DOTRUN_DIR/commands/$COMMAND/command.sh" ]; then
-      source "$DOTRUN_DIR/commands/$COMMAND/command.sh"
+   if [ -f "$DOTRUN_DIR/commands/$COMMAND.sh" ]; then
+      source "$DOTRUN_DIR/commands/$COMMAND.sh"
       if [ $? != 0 ]; then
          echo "Unable to source command: $COMMAND"
          exit 1

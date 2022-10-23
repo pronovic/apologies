@@ -12,12 +12,12 @@ commands up-to-date with the latest improvements.
 
 ## Creating a new command
 
-A command is defined by a naming convention.  The directory is the name of the
-command.  Within the directory is a bash script called `command.sh`.  That
-scipt must define a bash function `command_<command>`.
+A command is defined by a naming convention.  There is a bash script that
+identifies the name of the command.  Within the bash script, there must be
+a bash function `command_<command>`.
 
 So, for command called "example", you would create a 
-file `.run/commands/example/command.sh` that contains a 
+file `.run/commands/example.sh` that contains a 
 single bash function `command_example`, like this:
 
 ```bash
@@ -26,11 +26,9 @@ command_example() {
 }
 ```
 
-Commands are implemented in directories so you can include other scripts or
-files alongside them if necessary.  You may use `$REPO_DIR` to refer to the
-main repository directory, and `$DOTRUN_DIR` to refer to the `.run` directory
-within the repository.  There is a temporary working directory at
-`$WORKING_DIR`.
+You may use `$REPO_DIR` to refer to the main repository directory, and
+`$DOTRUN_DIR` to refer to the `.run` directory within the repository.  There is
+a temporary working directory at `$WORKING_DIR`.
 
 Normal behavior is for a command to `exit 1` if it encounters a permanent
 error, to simplify error-handling at the task level.  If you are invoking

@@ -25,7 +25,7 @@ You can change the definition of these tasks, but they must exist.
 ## Creating a new task
 
 A task is defined by a naming convention.  There is a bash script that
-identifies the name of the command.  Within the bash script, there must be two
+identifies the name of the task.  Within the bash script, there must be two
 bash functions, `help_<command>` and `task_<command>`.
 
 So, for command called "example", you would create a file
