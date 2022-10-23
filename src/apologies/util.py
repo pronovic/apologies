@@ -22,7 +22,7 @@ class CattrConverter(cattrs.GenConverter):
 
     def __init__(self) -> None:
         super().__init__()
-        self.register_unstructure_hook(DateTime, lambda datetime: datetime.isoformat() if datetime else None)  # type: ignore
+        self.register_unstructure_hook(DateTime, lambda datetime: datetime.isoformat() if datetime else None)
         self.register_structure_hook(DateTime, lambda string, _: parse(string) if string else None)
 
 
