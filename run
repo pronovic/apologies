@@ -2,6 +2,8 @@
 # vim: set ft=bash ts=3 sw=3 expandtab:
 # Shortcuts for common developer tasks
 
+# NOTE: Shared run functionality is maintained at: https://github.com/pronovic/run-script-framework
+
 unset CDPATH
 
 REPO_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd) # see: https://stackoverflow.com/a/246128/2907667
