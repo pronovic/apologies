@@ -10,7 +10,7 @@ command_tagrelease() {
    VERSION=$(echo "$1" | sed 's/^v//') # so you can use "0.1.5 or "v0.1.5"
    EARLIEST_YEAR=$(git log --pretty="%ci" $(git rev-list --max-parents=0 HEAD) | sed 's/-.*$//g')
    LATEST_YEAR=$(git log -1 --pretty="%ci" | sed 's/-.*$//g')
-   DEFAULT_BRANCH=$(git config --get init.defaultBranch)
+   DEFAULT_BRANCH=$(git config --get init.defaultBranch)  # works on git > 2.28.0 from 2020
    CURRENT_BRANCH=$(git branch -a | grep '^\*' | sed 's/^\* //')
    COPYRIGHT="${EARLIEST_YEAR}-${LATEST_YEAR}"
    DATE=$(date +'%d %b %Y')

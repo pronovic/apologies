@@ -7,10 +7,10 @@ implement that behavior within the task itself rather than breaking it up
 between a task and a command.  This helps make it more obvious that your new
 task is repository-specific.
 
-## Basic Tasks
+## Required Tasks
 
-The following basic tasks must always be defined if you want to use the
-standard `run` script:
+The following tasks must always be defined if you want to use the standard
+`run` script:
 
 - install
 - format
@@ -18,9 +18,21 @@ standard `run` script:
 - test
 - suite
 
-These tasks are called out separately in the help output for the `run` script.
-All other tasks are listed in alphabetical order in a separate section below.
-You can change the definition of these tasks, but they must exist.
+These tasks are needed to set up the local development environment, and the
+GitHub Actions build also relies on them.  They are called out separately as
+"basic tasks" in the help output for the `run` script.  All other tasks are
+listed in alphabetical order in a separate section below.  You can change the
+definition of these tasks, but they must exist.
+
+Additionally, there are two "hidden" tasks that are not shown in the help
+output for the `run` script:
+
+- mypy
+- pylint
+
+These tasks exist for easy integration with Pycharm.  If you don't want to use
+one of these tools, just change the task to a no-op (i.e. `echo "MyPy is not
+used in this repo"`).
 
 ## Creating a new task
 
