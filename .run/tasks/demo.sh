@@ -1,4 +1,4 @@
-# vim: set ft=bash sw=3 ts=3:
+# vim: set ft=bash sw=3 ts=3 expandtab:
 
 # This is a little complicated, because the demo is senstive to terminal size
 # and terminal definition.  On MacOS, I run it directly in the terminal where

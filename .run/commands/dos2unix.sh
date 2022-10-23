@@ -1,4 +1,4 @@
-# vim: set ft=bash ts=3 sw=3:
+# vim: set ft=bash ts=3 sw=3 expandtab:
 # Convert a file from DOS line endings to UNIX line endings
 
 # See: https://stackoverflow.com/a/53657266

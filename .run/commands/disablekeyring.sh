@@ -1,4 +1,4 @@
-# vim: set ft=bash ts=3 sw=3:
+# vim: set ft=bash ts=3 sw=3 expandtab:
 # Disable the Python keyring
 
 # This prevents Poetry v1.2.0 from using the Python keyring, which sometimes fails or hangs on Linux.

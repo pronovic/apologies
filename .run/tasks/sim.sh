@@ -1,4 +1,4 @@
-# vim: set ft=bash sw=3 ts=3:
+# vim: set ft=bash sw=3 ts=3 expandtab:
 
 help_sim() {
    echo "- run sim: Run a simulation to see how well different character input sources behave"

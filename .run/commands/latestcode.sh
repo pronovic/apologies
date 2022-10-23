@@ -1,4 +1,4 @@
-# vim: set ft=bash ts=3 sw=3:
+# vim: set ft=bash ts=3 sw=3 expandtab:
 # Make sure that the latest code is installed
 
 command_latestcode() {

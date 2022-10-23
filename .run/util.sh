@@ -1,4 +1,4 @@
-# vim: set ft=bash sw=3 ts=3:
+# vim: set ft=bash sw=3 ts=3 expandtab:
 # General utility functions for use by the run script
 
 # This is the set of basic tasks that must always exist

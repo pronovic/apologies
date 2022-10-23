@@ -1,5 +1,5 @@
 #!/bin/bash
-# vim: set ft=bash:
+# vim: set ft=bash ts=3 sw=3 expandtab:
 # Initialize a new project based on the apologies project
 
 usage() {

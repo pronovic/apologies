@@ -1,4 +1,4 @@
-# vim: set ft=bash ts=3 sw=3:
+# vim: set ft=bash ts=3 sw=3 expandtab:
 # Publish the current tagged code to PyPI and push to GitHub
 
 # Before doing this, you must retrieve and configure a local API token

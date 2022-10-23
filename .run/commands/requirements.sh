@@ -1,4 +1,4 @@
-# vim: set ft=bash ts=3 sw=3:
+# vim: set ft=bash ts=3 sw=3 expandtab:
 # Generate a requirements.txt file in the docs directory, for use by readthedocs.io
 
 command_requirements() {

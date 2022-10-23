@@ -1,4 +1,4 @@
-# vim: set ft=bash sw=3 ts=3:
+# vim: set ft=bash sw=3 ts=3 expandtab:
 
 help_docs() {
    echo "- run docs: Build the Sphinx documentation for readthedocs.io"
