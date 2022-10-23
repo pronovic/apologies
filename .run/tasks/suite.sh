@@ -5,9 +5,10 @@ help_suite() {
 }
 
 task_suite() {
+   run_task install
    run_task checks
-   run_task docs
    run_task test -c
+   run_task docs
    run_task demo --players=3 --mode=ADULT --delay=0.02 --exit
 }
 

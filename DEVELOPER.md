@@ -318,7 +318,7 @@ order.  In particular, if you do not run the install step, there will be no
 virtualenv for PyCharm to use:
 
 ```
-run install && run suite
+run suite
 ```
 
 ### Open the Project
