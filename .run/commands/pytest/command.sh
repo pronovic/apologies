@@ -21,14 +21,14 @@ command_pytest() {
    done
 
    if [ $coverage == "yes" ]; then
-      poetry_run coverage run -m pytest --testdox tests
+      poetry_run coverage run -m pytest --force-testdox --testdox tests
       poetry_run coverage report
       if [ $html == "yes" ]; then
          poetry_run coverage html -d .htmlcov
          $(which start || which open) .htmlcov/index.html 2>/dev/null  # start on Windows, open on MacOS and Debian (post-bullseye)
       fi
    else
-      poetry_run pytest --testdox tests
+      poetry_run pytest --force-testdox --testdox tests
    fi
 }
 
