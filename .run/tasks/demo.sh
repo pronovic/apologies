@@ -26,7 +26,7 @@ EOF
 
          run_command latestcode
 
-         xterm -title "apologies demo" -geometry 155x70+0+0 -j -fs 10 -e "$DEMO"
+         xterm -title "apologies demo" -geometry 155x60+0+0 -j -fs 10 -e "$DEMO"
          if [ $? != 0 ]; then
             exit 1
          fi
