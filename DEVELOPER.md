@@ -404,7 +404,7 @@ source ~/.bash_profile
 |Field|Value|
 |-----|-----|
 |Name|`Format Code`|
-|Description|`Run the Black and isort code formatters`|
+|Description|`Run the code formatters`|
 |Group|`Developer Tools`|
 |Program|`$ProjectFileDir$/run`|
 |Arguments|`format`|
@@ -449,19 +449,21 @@ source ~/.bash_profile
 
 #### Windows
 
-On Windows, PyCharm has problems invoking the `run` script, even via the Git
-Bash interpreter.  I have created a Powershell script `utils/tools.ps1` that
-can be used instead.
+On Windows, PyCharm has problems invoking the `run` script.  The trick is to
+invoke the Bash interpreter and tell it to invoke the `run` script.  The
+examples below assume that you have installed Git Bash in its standard location
+under `C:\Program Files\Git`.  If it is somewhere else on your system, just
+change the path for `bash.exe`.
 
 ##### Format Code
 
 |Field|Value|
 |-----|-----|
 |Name|`Format Code`|
-|Description|`Run the Black and isort code formatters`|
+|Description|`Run the code formatters`|
 |Group|`Developer Tools`|
 |Program|`powershell.exe`|
-|Arguments|`-executionpolicy bypass -File utils\tools.ps1 format`|
+|Arguments|`& 'C:\Program Files\Git\bin\bash.exe' "./run" format | Out-String`|
 |Working directory|`$ProjectFileDir$`|
 |Synchronize files after execution|_Checked_|
 |Open console for tool outout|_Checked_|
@@ -477,7 +479,7 @@ can be used instead.
 |Description|`Run the MyPy code checks`|
 |Group|`Developer Tools`|
 |Program|`powershell.exe`|
-|Arguments|`-executionpolicy bypass -File utils\tools.ps1 mypy`|
+|Arguments|`& 'C:\Program Files\Git\bin\bash.exe' "./run" mypy | Out-String`|
 |Working directory|`$ProjectFileDir$`|
 |Synchronize files after execution|_Unchecked_|
 |Open console for tool outout|_Checked_|
@@ -493,7 +495,7 @@ can be used instead.
 |Description|`Run the Pylint code checks`|
 |Group|`Developer Tools`|
 |Program|`powershell.exe`|
-|Arguments|`-executionpolicy bypass -File utils\tools.ps1 pylint`|
+|Arguments|`& 'C:\Program Files\Git\bin\bash.exe' "./run" pylint | Out-String`|
 |Working directory|`$ProjectFileDir$`|
 |Synchronize files after execution|_Unchecked_|
 |Open console for tool outout|_Checked_|
