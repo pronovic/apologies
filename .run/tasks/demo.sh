@@ -18,7 +18,7 @@ EOF
 
    DEMO="poetry run python $WORKING_DIR/demo.py $*"
 
-   which xterm
+   which xterm 2>&1 >/dev/null
    if [ $? == 0 ]; then
       if [ ! -z "$DISPLAY" ] && [ -z "$GITHUB_ACTIONS" ]; then
          echo ""
