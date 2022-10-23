@@ -5,18 +5,29 @@
 # 'run demo' was invoked.  On Linux, it's safer to pop an xterm, if one is
 # available.  We never run this in GitHub Actions, because there's never any
 # real cursor-addressable terminal available there.
+#
+# The actual invocation of the xterm is a little usual.  The goal with that
+# syntax is to capture the return status of the demo command, as opposed to the
+# return status of the xterm command.  See: https://stackoverflow.com/a/8416753
 
 help_demo() {
    echo "- run demo: Run a game with simulated players, displaying output on the terminal"
 }
 
 task_demo() {
+
    cat << EOF > "$WORKING_DIR/demo.py"
 from apologies.cli import cli
 cli("demo")
 EOF
 
-   DEMO="poetry run python $WORKING_DIR/demo.py $*"
+   cat << EOF > "$WORKING_DIR/demo.sh"
+poetry run python $WORKING_DIR/demo.py $*
+EOF
+
+   SCRIPT="$WORKING_DIR/demo.sh"
+   STATUS="$WORKING_DIR/demo.status"
+   chmod +x "$SCRIPT"
 
    which xterm >/dev/null 2>&1
    if [ $? == 0 ]; then
@@ -26,8 +37,8 @@ EOF
 
          run_command latestcode
 
-         xterm -title "apologies demo" -geometry 155x60+0+0 -j -fs 10 -e "$DEMO"
-         if [ $? != 0 ]; then
+         xterm -title "apologies demo" -geometry 155x60+0+0 -j -fs 10 -e "$SCRIPT; echo \$? > '$STATUS'"
+         if [ "$(cat "$STATUS")" != "0" ]; then
             echo "*** Demo failed"
             exit 1
          fi
