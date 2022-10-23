@@ -6,7 +6,7 @@ command_pylint() {
 
    # On Linux, Pycharm sometimes gets confused unless the path is relative to the workspace
    # This doesn't do anything on Windows (because pylint outputs a Windows-style path), but it doesn't really matter
-   PATH_DIR=$(abspath "$REPO_DIR")
+   PATH_DIR=$(realpath "$REPO_DIR")
    poetry_run pylint -j 0 $(ls -d src/*) tests | sed "s|^$PATH_DIR/||"
 
    echo "done"
