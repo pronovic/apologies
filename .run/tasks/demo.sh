@@ -53,7 +53,7 @@ EOF
 
       run_command latestcode
 
-      $DEMO
+      "$SCRIPT"
       if [ $? != 0 ]; then
          echo "*** Demo failed"
          exit 1
