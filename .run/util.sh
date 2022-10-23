@@ -5,6 +5,12 @@
 BASIC_TASKS="install format checks test suite"
 BASIC_TASKS_REGEX="install|format|checks|test|suite"
 
+# Platform-portable equivalent of realpath
+# See: https://stackoverflow.com/a/60625224/2907667
+abspath() {
+   echo "$(cd $(dirname "$1");pwd)/$(basename "$1")"
+}
+
 # Run a command
 run_command() {
    COMMAND="$1"
