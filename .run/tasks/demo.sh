@@ -5,10 +5,6 @@ help_demo() {
 }
 
 task_demo() {
-   WORKING=$(mktemp -d)
-   trap "rm -rf '$WORKING'" EXIT SIGINT SIGTERM
-   echo 'from apologies.cli import cli; cli("demo")' > "$WORKING/demo.py"
-   run_command latestcode
-   poetry_run python "$WORKING/demo.py" $*
+   run_command pythonscript "from apologies.cli import cli; cli('demo')" "$@"
 }
 

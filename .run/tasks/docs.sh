@@ -6,6 +6,6 @@ help_docs() {
 }
 
 task_docs() {
-   run_command sphinx $*
+   run_command sphinx "$@"
 }
 

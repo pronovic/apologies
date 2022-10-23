@@ -19,11 +19,6 @@ command_requirements() {
    fi
 
    run_command dos2unix docs/requirements.txt
-   if [ $? != 0 ]; then
-      echo ""
-      echo "*** Failed to convert docs/requirements.txt to UNIX line endings"
-      exit 1
-   fi
 
    echo "done"
 }

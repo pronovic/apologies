@@ -3,8 +3,5 @@
 
 command_dos2unix() {
    poetry_run python "$DOTRUN_DIR/commands/dos2unix/dos2unix.py" "$1"
-   if [ $? != 0 ]; then
-      exit 1
-   fi
 }
 

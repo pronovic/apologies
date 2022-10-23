@@ -7,6 +7,6 @@ help_test() {
 }
 
 task_test() {
-   run_command pytest $*
+   run_command pytest "$@"
 }
 

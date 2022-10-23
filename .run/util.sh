@@ -9,11 +9,13 @@ run_command() {
    if [ -f "$DOTRUN_DIR/commands/$COMMAND/command.sh" ]; then
       source "$DOTRUN_DIR/commands/$COMMAND/command.sh"
       if [ $? != 0 ]; then
+         echo "Unable to source command: $COMMAND"
          exit 1
       fi
 
-      command_$COMMAND $*
+      command_$COMMAND "$@"
       if [ $? != 0 ]; then
+         echo "Command failed: $COMMAND"
          exit 1
       fi
    else
@@ -30,13 +32,11 @@ poetry_run() {
    poetry run which "$COMMAND" > /dev/null
    if [ $? != 0 ]; then
       run_command virtualenv
-      if [ $? != 0 ]; then
-         exit 1
-      fi
    fi
 
-   poetry run "$COMMAND" $*
+   poetry run "$COMMAND" "$@"
    if [ $? != 0 ]; then
+      echo "Command failed: poetry run $COMMAND $*"
       exit 1
    fi
 }
@@ -61,11 +61,13 @@ run_task() {
 
    source "$DOTRUN_DIR/tasks/$TASK.sh"
    if [ $? != 0 ]; then
+      echo "Unable to source task: $TASK"
       exit 1
    fi
 
-   task_$TASK $*
+   task_$TASK "$@"
    if [ $? != 0 ]; then
+      echo "Task failed: $TASK"
       exit 1
    fi
 }
@@ -73,15 +75,9 @@ run_task() {
 # Get the help output for a task
 task_help() {
    TASK="$1"
-
    source "$DOTRUN_DIR/tasks/$TASK.sh"
-   if [ $? != 0 ]; then
-      exit 1
-   fi
-
-   help_$TASK $*
-   if [ $? != 0 ]; then
-      exit 1
+   if [ $? == 0 ]; then
+      help_$TASK
    fi
 }
 

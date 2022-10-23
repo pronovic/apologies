@@ -1,13 +1,12 @@
 # Tasks
 
-Tasks are high-level actions that can be executed via the `run` script.  They
-are implemented in terms of commands.
+Tasks are high-level actions that can be executed via the `run` script.
 
 ## Creating a new task
 
-A task is defined by a naming convention.  There is a shell script that
-identifies the name of the command.  Within the shell script, there must be two
-bash fuctions, `help_<command>` and `task_<command>`.
+A task is defined by a naming convention.  There is a bash script that
+identifies the name of the command.  Within the bash script, there must be two
+bash functions, `help_<command>` and `task_<command>`.
 
 So, for command called "example", you would create a file
 file `.run/tasks/example.sh`.  That file must contain the 
@@ -24,7 +23,21 @@ task_example() {
 ```
 
 Tasks are implemented as scripts and not as directories, because in general
-they should be fairly simple.
+they should be fairly simple.  They are implemented mostly in terms of commands
+(using `run_command <command>`), but you can also run installed tools (like
+`poetry_run isort`), the Python interpreter (`poetry_run python`) or even just
+invoke `poetry` directly.
+
+Commands are supposed to `exit 1` when they encounter a permanent error, so you
+don't have to check their result via `$?` when using `run_command`.  Similar
+error handling exists when you use `poetry_run`.  If you invoke `poetry`
+directly, you must do your own error handling.
 
 You may use `$REPO_DIR` to refer to the main repository directory,
 and `$DOTRUN_DIR` to refer to the `.run` directory within the repository.
+
+If you need a custom task for your repository, it's usually simpler to
+implement that behavior within the task itself rather than breaking it up
+between a task and a command.  This helps make it more obvious that your new
+task is repository-specific.
+

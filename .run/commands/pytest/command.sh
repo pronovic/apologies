@@ -22,10 +22,6 @@ command_pytest() {
 
    if [ $coverage == "yes" ]; then
       poetry_run coverage run -m pytest --testdox tests
-      if [ $? != 0 ]; then
-         exit 1
-      fi
-
       poetry_run coverage report
       if [ $html == "yes" ]; then
          poetry_run coverage html -d .htmlcov
@@ -33,9 +29,6 @@ command_pytest() {
       fi
    else
       poetry_run pytest --testdox tests
-      if [ $? != 0 ]; then
-         exit 1
-      fi
    fi
 }
 

@@ -5,6 +5,6 @@ help_release() {
 }
 
 task_release() {
-   run_command tagrelease $*
+   run_command tagrelease "$@"
 }
 

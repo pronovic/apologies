@@ -5,10 +5,6 @@ help_sim() {
 }
 
 task_sim() {
-   WORKING=$(mktemp -d -p . tmp.XXXXXXXXX)
-   trap "rm -rf '$WORKING'" EXIT SIGINT SIGTERM
-   echo 'from apologies.cli import cli; cli("simulation")' > $WORKING/simulation.py
-   run_command latestcode
-   poetry_run python "$WORKING/simulation.py" $*
+   run_command pythonscript 'from apologies.cli import cli; cli("simulation")' "$@"
 }
 

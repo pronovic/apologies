@@ -42,10 +42,6 @@ command_tagrelease() {
    fi
 
    run_command dos2unix pyproject.toml
-   if [ $? != 0 ]; then
-      echo "*** Failed to update line endings"
-      exit 1
-   fi
 
    # annoyingly, BSD sed and GNU sed are not compatible on the syntax for -i
    # I failed miserably in all attempts to put the sed command (with empty string) into a variable
