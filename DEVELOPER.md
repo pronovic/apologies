@@ -1,25 +1,16 @@
 # Developer Notes
 
-## Copying this Project
-
-You can use this project has a starting point for your own project, if you
-wish.  The script [`notes/initializer.sh`](notes/initializer.sh) copies the
-repository, changing the project name and package name at the same time.  It's
-a very basic translation process, but it's at least a good starting point and
-gives you a working package where the tests run, the quality checks are in
-place, etc.  You'll need to do additional manual cleanup afterwards.
-
 ## Supported Platforms
 
 This code should work equivalently on MacOS, Linux, and Windows.  However, the
 included demo does not run on Windows, because it needs the UNIX-only curses
-library for screen drawing.  
+library for screen drawing.
 
 ## Packaging and Dependencies
 
 This project uses [Poetry](https://python-poetry.org/) to manage Python packaging and dependencies.  Most day-to-day tasks (such as running unit tests from the command line) are orchestrated through Poetry.
 
-A coding standard is enforced using [Black](https://github.com/psf/black), [isort](https://pypi.org/project/isort/) and [Pylint](https://www.pylint.org/).  Python 3 type hinting is validated using [MyPy](https://pypi.org/project/mypy/).  To reduce boilerplate, classes are defined using [Attrs](https://www.attrs.org/) (see this [rationale](https://glyph.twistedmatrix.com/2016/08/attrs.html)).  
+A coding standard is enforced using [Black](https://github.com/psf/black), [isort](https://pypi.org/project/isort/) and [Pylint](https://www.pylint.org/).  Python 3 type hinting is validated using [MyPy](https://pypi.org/project/mypy/).  To reduce boilerplate, classes are defined using [Attrs](https://www.attrs.org/) (see this [rationale](https://glyph.twistedmatrix.com/2016/08/attrs.html)).
 
 To add dependencies use `poetry add package` (for runtime dependencies) or `poetry add --group dev package` (for development environment dependencies).
 
@@ -33,15 +24,15 @@ Previously, I used the Safety scanner as part of my pre-commit hooks and GitHub 
 
 I use [GitHub Actions](https://docs.github.com/en/actions/quickstart) for CI.  See [.github/workflows/test-suite.yml](.github/workflows/test-suite.yml) for the definition of the workflow, and go to the [Actions tab](https://github.com/pronovic/apologies/actions) to see what actions have been executed.  The workflow is implemented in terms of the shared `poetry-build-and-test` workflow in the [pronovic/gha-shared-actions](https://github.com/pronovic/gha-shared-workflows) repository.  The workflow was originally developed here, and eventually refactored out when I started sharing the same process across multiple repositories.
 
-The workflow is kicked off for all PRs, and also when code is merged to master.  It uses a matrix build and runs the same test suite on a combination of platforms (Windows, MacOS, Linux) and Python versions.  The test suite itself is implemented using [tox](https://tox.readthedocs.io/en/latest/index.html) and is defined in [.toxrc](.toxrc).  Basically, the tox test suite re-runs all of the pre-commit hooks and then executes the unit test suite with coverage enabled.  Coverage data is then uploaded to coveralls.io (see discussion below).
+The workflow is kicked off for all PRs, and also when code is merged to master.  It uses a matrix build and runs the same test suite on a combination of platforms (Windows, MacOS, Linux) and Python versions.  The test suite in GitHub Actions is implemented by the same `run suite` command that you would use locally. Coverage data is uploaded to coveralls.io (see discussion below).
 
 ## Third-Party Integration
 
-There is third-party integration with [readthedocs.io](https://readthedocs.io/) (to publish documentation) and [coveralls.io](https://coveralls.io/) (to publish code coverage statistics).  
+There is third-party integration with [readthedocs.io](https://readthedocs.io/) (to publish documentation) and [coveralls.io](https://coveralls.io/) (to publish code coverage statistics).
 
 Both of these services make integration very straightforward.  For readthedocs, integration happens via a [GitHub webhook](https://docs.github.com/en/github/extending-github/about-webhooks).  You first create an account at readthedocs.io.  Then, you import your repository, which creates a webhook in GitHub for your repository.  Once the webhook has been created, readthedocs is notified whenever code is pushed to your repository, and a build is kicked off on their infrastructure to generate and publish your documentation.  Configuration is taken from a combination of [.readthedocs.yml](.readthedocs.yml) and preferences that you set for your repository in the readthedocs web interface.  See the readthedocs.io [documentation](https://docs.readthedocs.io/en/stable/guides/platform.html) for more information.
 
-For coveralls.io, integration happens via a [GitHub App](https://docs.github.com/en/developers/apps/about-apps) rather than a webhook.  Like with readthedocs, you first create an account at coveralls.io.  Next, you grant the Coveralls application permissions to your GitHub organization, and select which repositories should be enabled.  Unlike with readthedocs, you need to generate coverage information locally and upload it to coverage.io.  This happens as a part of the CI workflow.  There are several steps in [.github/workflows/tox.yml](.github/workflows/tox.yml), taken more-or-less verbatim from the coveralls.io [documentation](https://coveralls-python.readthedocs.io/en/latest/usage/index.html).
+For coveralls.io, integration happens via a [GitHub App](https://docs.github.com/en/developers/apps/about-apps) rather than a webhook.  Like with readthedocs, you first create an account at coveralls.io.  Next, you grant the Coveralls application permissions to your GitHub organization, and select which repositories should be enabled.  Unlike with readthedocs, you need to generate coverage information locally and upload it to coverage.io.  This happens as a part of the CI workflow.  There are several steps in the [shared workflow](https://github.com/pronovic/gha-shared-workflows/blob/master/.github/workflows/poetry-build-and-test.yml), taken more-or-less verbatim from the coveralls.io [documentation](https://coveralls-python.readthedocs.io/en/latest/usage/index.html).
 
 ## Pre-Commit Hooks
 
@@ -51,37 +42,33 @@ below installs the project pre-commit hooks into your repository.  These hooks
 are configured in [`.pre-commit-config.yaml`](.pre-commit-config.yaml).
 
 The pre-commit hooks run on all files for every commit.  I prefer this approach
-because it ensures that local checks are doing exactly the same thing as the
-checks in the GitHub Actions build.  This behavior can sometimes be annoying,
-especially if you want to do incremental commits into a PR branch on
-partially-complete code. In that situation, I find that it works best to use
-`run check` to run the checks manually. Then, I do my incremental commits with
-`--no-verify`, to temporarily skip the pre-commit hooks altogether. As long as
-I fix all of the problems in my local branch before pushing to GitHub, I don't
-get a failed PR build in GitHub Actions. I always squash-merge my PRs, so those
-incremental commits that don't meet the code quality standards never end up in
-the master branch.
+because it ensures that the pre-commit hooks are running exactly the same
+checks as the GitHub Actions build, via exactly the same `run checks` command.
 
-An alternative approach is for you to adjust the pre-commit hooks so that
-the checks are only run on files staged for commit.  For instance, you can make
-a change like this:
+This behavior can sometimes be annoying, especially if you want to do
+incremental commits into a PR branch on partially-complete code. In that
+situation, I find that it works best to use `run checks` to run the checks
+manually. Then, I do my incremental commits with `--no-verify`, to temporarily
+skip the pre-commit hooks altogether. As long as I fix all of the problems in
+my local branch before pushing to GitHub, I don't get a failed PR build in
+GitHub Actions. I always squash-merge my PRs, so those incremental commits that
+don't meet the code quality standards never end up in the master branch.
 
-```diff
-diff --git a/.pre-commit-config.yaml b/.pre-commit-config.yaml
-index 97a8672..57be364 100644
---- a/.pre-commit-config.yaml
-+++ b/.pre-commit-config.yaml
-@@ -25,15 +25,15 @@ repos:
-     hooks:
-       - id: system
-         name: Black
--        entry: poetry run black .
--        pass_filenames: false
-+        entry: poetry run black
-+        types: [python]
-         language: system
-   - repo: local
-     hooks:
+An alternative approach is for you to adjust the pre-commit hooks so that the
+checks are only run on files staged for commit.  If you want to do this, you
+will need to run the steps invidually rather than using `run checks`, something
+like this:
+
+```yaml
+fail_fast: true
+repos:
+  - repo: local
+    hooks:
+      - id: system
+        name: Black
+        entry: poetry run black
+        types: [python]
+        language: system
 ```
 
 In this case, you can use `pre-commit run --all-files` to run the hooks
@@ -97,7 +84,7 @@ working copy.  If we use native line endings, the format of the published
 package will vary depending on where the publish step was run.  This is
 confusing, and can cause problems for downstream users who expect the PyPI
 package to have a consistent format.  Instead of relying on automatic behavior,
-the `.gitattributes` file forces most files to have UNIX line endings.  
+the `.gitattributes` file forces most files to have UNIX line endings.
 
 This generally works ok, except for the [`docs/requirements.txt`](docs/requirements.txt) file 
 generated by Poetry.  Unfortunately, all of the files that Poetry generates
@@ -105,9 +92,8 @@ have native platform line endings, and you can't override that behavior.  Even
 with sane configuration in `.gitattributes`, you sometimes still get spurious
 differences, where Git says that a file has changed but then `git diff` shows
 an empty result.  The `run` script and the pre-commit hooks both normalize the
-line endings for `requirements.txt` using [`utils/dos2unix.py`](utils/dos2unix.py).  I wish
-there were a standard way to do this in Poetry or in Python, but there isn't as
-of this writing.
+line endings for `requirements.txt`.  I wish there were a standard way to do
+this in Poetry or in Python, but there isn't as of this writing.
 
 ## Python's Init File
 
@@ -122,7 +108,7 @@ things for users as much as I had hoped.
 ## Prerequisites
 
 Nearly all prerequisites are managed by Poetry.  All you need to do is make
-sure that you have a working Python 3 enviroment and install Poetry itself.  
+sure that you have a working Python 3 enviroment and install Poetry itself.
 
 ### Poetry Version
 
@@ -196,7 +182,7 @@ curl -sSL https://install.python-poetry.org | python3 -
 
 First, install Python 3 from your preferred source, either a standard
 installer or a meta-installer like Chocolatey.  Make sure the `python`
-on your `$PATH` is Python 3.  
+on your `$PATH` is Python 3.
 
 Next, install Poetry using the [official installer](https://python-poetry.org/docs/#installing-with-the-official-installer):
 
@@ -221,21 +207,24 @@ $ run --help
 Shortcuts for common developer tasks
 ------------------------------------
 
-Usage: run <command>
+Basic tasks:
 
 - run install: Setup the virtualenv via Poetry and install pre-commit hooks
-- run requirements: Regenerate the docs/requirements.txt file
 - run format: Run the code formatters
 - run checks: Run the code checkers
 - run test: Run the unit tests
 - run test -c: Run the unit tests with coverage
 - run test -ch: Run the unit tests with coverage and open the HTML report
-- run docs: Build the Spinx documentation for apologies.readthedocs.io
-- run docs -o: Build the Spinx documentation and open in a browser
-- run tox: Run the Tox test suite used by the GitHub CI action
-- run release: Release a specific version and tag the code
-- run publish: Publish the current code to PyPI and push to GitHub
+- run suite: Run the complete test suite, as for the GitHub Actions CI build
+
+Additional tasks:
+
 - run demo: Run a game with simulated players, displaying output on the terminal
+- run docs: Build the Sphinx documentation for readthedocs.io
+- run docs -o: Build the Sphinx documentation and open in a browser
+- run publish: Publish the current code to PyPI and push to GitHub
+- run release: Release a specific version and tag the code
+- run requirements: Regenerate the docs/requirements.txt file
 - run sim: Run a simulation to see how well different character input sources behave
 ```
 
@@ -257,7 +246,7 @@ that plays a game with 2-4 automated players.  This demo works only on
 UNIX-like platforms that support the curses library.  Here's the help output:
 
 ```
-$ poetry run demo
+$ run demo
 usage: demo [-h] [--players PLAYERS] [--mode {STANDARD,ADULT}]
             [--source SOURCE] [--delay DELAY]
 
@@ -274,12 +263,6 @@ optional arguments:
 
 By default, the game runs in STANDARD mode with 4 players. A source is a class
 that chooses a player's move.
-```
-
-It's simplest to run a demo with the default arguments:
-
-```
-run demo
 ```
 
 This runs a really fast game in adult mode with 3 players:
@@ -315,7 +298,7 @@ order.  In particular, if you do not run the install step, there will be no
 virtualenv for PyCharm to use:
 
 ```
-run install && run checks && run test
+run install && run suite
 ```
 
 ### Open the Project
@@ -341,7 +324,7 @@ Go to the PyCharm settings and find the `apologies` project.  Under
 the **Exclude Files** box, enter the following:
 
 ```
-LICENSE;NOTICE;PyPI.md;.coverage;.coveragerc;.github;.gitignore;.gitattributes;.htmlcov;.idea;.isort.cfg;.mypy.ini;.mypy_cache;.pre-commit-config.yaml;.pylintrc;.pytest_cache;.readthedocs.yml;.tox;.toxrc;.tabignore;build;dist;docs/_build;out;poetry.lock;poetry.toml;run;
+LICENSE;NOTICE;PyPI.md;.coverage;.coveragerc;.github;.gitignore;.gitattributes;.htmlcov;.idea;.isort.cfg;.mypy.ini;.mypy_cache;.pre-commit-config.yaml;.pylintrc;.pytest_cache;.readthedocs.yml;.tabignore;build;dist;docs/_build;out;poetry.lock;poetry.toml;run;.run;.venv
 ```
 
 When you're done, click **Ok**.  Then, go to the gear icon in the project panel 
@@ -401,7 +384,7 @@ source ~/.bash_profile
 |Field|Value|
 |-----|-----|
 |Name|`Format Code`|
-|Description|`Run the Black and isort code formatters`|
+|Description|`Run the code formatters`|
 |Group|`Developer Tools`|
 |Program|`$ProjectFileDir$/run`|
 |Arguments|`format`|
@@ -446,19 +429,21 @@ source ~/.bash_profile
 
 #### Windows
 
-On Windows, PyCharm has problems invoking the `run` script, even via the Git
-Bash interpreter.  I have created a Powershell script `utils/tools.ps1` that
-can be used instead.
+On Windows, PyCharm has problems invoking the `run` script.  The trick is to
+invoke the Bash interpreter and tell it to invoke the `run` script.  The
+examples below assume that you have installed Git Bash in its standard location
+under `C:\Program Files\Git`.  If it is somewhere else on your system, just
+change the path for `bash.exe`.
 
 ##### Format Code
 
 |Field|Value|
 |-----|-----|
 |Name|`Format Code`|
-|Description|`Run the Black and isort code formatters`|
+|Description|`Run the code formatters`|
 |Group|`Developer Tools`|
 |Program|`powershell.exe`|
-|Arguments|`-executionpolicy bypass -File utils\tools.ps1 format`|
+|Arguments|`& 'C:\Program Files\Git\bin\bash.exe' "./run" format | Out-String`|
 |Working directory|`$ProjectFileDir$`|
 |Synchronize files after execution|_Checked_|
 |Open console for tool outout|_Checked_|
@@ -474,7 +459,7 @@ can be used instead.
 |Description|`Run the MyPy code checks`|
 |Group|`Developer Tools`|
 |Program|`powershell.exe`|
-|Arguments|`-executionpolicy bypass -File utils\tools.ps1 mypy`|
+|Arguments|`& 'C:\Program Files\Git\bin\bash.exe' "./run" mypy | Out-String`|
 |Working directory|`$ProjectFileDir$`|
 |Synchronize files after execution|_Unchecked_|
 |Open console for tool outout|_Checked_|
@@ -490,7 +475,7 @@ can be used instead.
 |Description|`Run the Pylint code checks`|
 |Group|`Developer Tools`|
 |Program|`powershell.exe`|
-|Arguments|`-executionpolicy bypass -File utils\tools.ps1 pylint`|
+|Arguments|`& 'C:\Program Files\Git\bin\bash.exe' "./run" pylint | Out-String`|
 |Working directory|`$ProjectFileDir$`|
 |Synchronize files after execution|_Unchecked_|
 |Open console for tool outout|_Checked_|
@@ -509,7 +494,7 @@ is no formal release process for the documentation.
 ### Code
 
 Code is released to [PyPI](https://pypi.org/project/apologies/).  There is a
-partially-automated process to publish a new release.  
+partially-automated process to publish a new release.
 
 > _Note:_ In order to publish code, you must must have push permissions to the
 > GitHub repo and be a collaborator on the PyPI project.  Before running this
@@ -602,4 +587,3 @@ Deleting password for 'user' in 'testvalue':
 At this point, the keyring should be fully functional and it should be ready
 for use with Poetry.  Whenever Poetry needs to read a secret from the keyring,
 you'll get a popup window where you need to enter the keyring password.
-   

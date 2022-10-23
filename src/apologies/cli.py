@@ -43,7 +43,7 @@ def demo(argv: List[str], unused_stdout: IO[str], unused_stderr: IO[str]) -> Non
         "--delay", type=float, default=_DEMO_DEFAULT_DELAY_SEC, help="Delay between computer-generated moves (fractional seconds)"
     )
 
-    args = parser.parse_args(args=argv[2:])
+    args = parser.parse_args(args=argv[1:])
     run_demo(
         players=args.players, mode=GameMode[args.mode], source=source(args.source), delay_sec=args.delay, exit_immediately=args.exit
     )
@@ -65,7 +65,7 @@ def simulation(argv: List[str], unused_stdout: IO[str], unused_stderr: IO[str]) 
 
     parser.add_argument("source", type=str, nargs="+", help="Fully-qualified name of the character sources to test")
 
-    args = parser.parse_args(args=argv[2:])
+    args = parser.parse_args(args=argv[1:])
 
     errors = []
     if args.iter <= 0:
@@ -86,7 +86,7 @@ def render(unused_argv: List[str], stdout: IO[str], unused_stderr: IO[str]) -> N
     stdout.write("%s" % board)
 
 
-def example(argv: List[str], stdout: IO[str], stderr: IO[str]) -> None:  # pylint: disable: unused-argument
+def example(argv: List[str], stdout: IO[str], stderr: IO[str]) -> None:
     """Execute the example script, which just writes some input to its outputs."""
     stdout.write("Hello, stdout: %s\n" % argv[0])
     stderr.write("Hello, stderr: %s\n" % argv[0])

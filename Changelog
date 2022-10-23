@@ -1,5 +1,6 @@
 Version 0.1.38     unreleased
 
+	* Refactor the run script and pre-commit hooks to reduce duplication.
 	* Rework the GitHub Actions build process to pull out shared code.
 
 Version 0.1.37     03 Sep 2022

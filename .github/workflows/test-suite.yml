@@ -1,4 +1,4 @@
-# vim: set ft=yaml ts=2 sw=2:
+# vim: set ft=yaml ts=2 sw=2 expandtab:
 name: Test Suite
 on:
   push:
@@ -14,7 +14,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   build-and-test:
-    uses: pronovic/gha-shared-workflows/.github/workflows/poetry-build-and-test.yml@v1
+    uses: pronovic/gha-shared-workflows/.github/workflows/poetry-build-and-test.yml@v2
     secrets: inherit
     with:
       matrix-os-version: "[ 'ubuntu-latest', 'macos-latest', 'windows-latest' ]"
