@@ -20,7 +20,10 @@ command_sphinx() {
 
    poetry_run sphinx-build -N -E -a -b html -d _build/doctrees . _build/html 2>&1 | grep -v -F --file=.sphinxignore
    if [ $open == "yes" ]; then
-      $(which start || which open) _build/html/index.html 2>/dev/null  # start on Windows, open on MacOS and Debian (post-bullseye)
+      # Use 'start' on Windows, and 'open' on MacOS and Debian (post-bullseye)
+      $(which start || which open) _build/html/index.html 2>/dev/null  
    fi
+
+   cd -
 }
 

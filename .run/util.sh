@@ -1,6 +1,10 @@
 # vim: set ft=bash sw=3 ts=3:
 # General utility functions for use by the run script
 
+# This is the set of basic tasks that must always exist
+BASIC_TASKS="install format checks test suite"
+BASIC_TASKS_REGEX="install|format|checks|test|suite"
+
 # Run a command
 run_command() {
    COMMAND="$1"
@@ -41,10 +45,15 @@ poetry_run() {
    fi
 }
 
-# Get a list of all tasks
+# Get a list of basic tasks
+basic_tasks() {
+   echo "$BASIC_TASKS"
+}
+
+# Get a list of all tasks, excluding basic tasks
 all_tasks() {
    cd "$DOTRUN_DIR/tasks" 
-   ls *.sh | sed 's/\.sh$//' | sort
+   ls *.sh | sed 's/\.sh$//' | sort | egrep -v "$BASIC_TASKS_REGEX"
 }
 
 # Check whether a task exists

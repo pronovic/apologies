@@ -2,6 +2,26 @@
 
 Tasks are high-level actions that can be executed via the `run` script.
 
+If you need a custom task for your repository, it's usually simpler to
+implement that behavior within the task itself rather than breaking it up
+between a task and a command.  This helps make it more obvious that your new
+task is repository-specific.
+
+## Basic Tasks
+
+The following basic tasks must always be defined if you want to use the
+standard `run` script:
+
+- install
+- format
+- checks
+- test
+- suite
+
+These tasks are called out separately in the help output for the `run` script.
+All other tasks are listed in alphabetical order in a separate section below.
+You can change the definition of these tasks, but they must exist.
+
 ## Creating a new task
 
 A task is defined by a naming convention.  There is a bash script that
@@ -22,11 +42,11 @@ task_example() {
 }
 ```
 
-Tasks are implemented as scripts and not as directories, because in general
-they should be fairly simple.  They are implemented mostly in terms of commands
-(using `run_command <command>`), but you can also run installed tools (like
-`poetry_run isort`), the Python interpreter (`poetry_run python`) or even just
-invoke `poetry` directly.
+Unlike commands, tasks are implemented as scripts and not as directories.  This
+is because, in general, they should be fairly simple.  They are implemented
+mostly in terms of commands (using `run_command <command>`), but you can also
+run installed tools (i.e. `poetry_run isort`), run the Python interpreter
+(using `poetry_run python`), or even just invoke `poetry` directly.
 
 Commands are supposed to `exit 1` when they encounter a permanent error, so you
 don't have to check their result via `$?` when using `run_command`.  Similar
@@ -36,8 +56,6 @@ directly, you must do your own error handling.
 You may use `$REPO_DIR` to refer to the main repository directory,
 and `$DOTRUN_DIR` to refer to the `.run` directory within the repository.
 
-If you need a custom task for your repository, it's usually simpler to
-implement that behavior within the task itself rather than breaking it up
-between a task and a command.  This helps make it more obvious that your new
-task is repository-specific.
-
+If you change directories as part of your task, you _must_ change back
+to the original directory if the task completes successfuly.  This makes
+it possible to safely chain together multiple tasks and commands.

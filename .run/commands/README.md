@@ -36,3 +36,7 @@ error, to simplify error-handling at the task level.  If you are invoking
 commands via `run_command` or tools via `poetry_run`, this happens
 automatically.  If you are invoking `poetry` directly, then you must do your
 own error-handling.
+
+If you change directories as part of your command, you _must_ change back to
+the original directory if the command completes successfuly.  This makes it
+possible to safely chain together multiple tasks and commands.

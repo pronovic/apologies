@@ -12,16 +12,19 @@ run_command disablekeyring
 
 if task_exists "$1"; then
    run_task $*
-   if [ $? != 0 ]; then
-      exit 1
-   fi
 else
    echo ""
    echo "------------------------------------"
    echo "Shortcuts for common developer tasks"
    echo "------------------------------------"
    echo ""
-   echo "Usage: run <task>"
+   echo "Basic tasks:"
+   echo ""
+   for task in $(basic_tasks); do
+      task_help "$task"
+   done
+   echo ""
+   echo "Additional tasks:"
    echo ""
    for task in $(all_tasks); do
       task_help "$task"
