@@ -3,26 +3,30 @@
 # This is a little complicated, because the demo is senstive to terminal size
 # and terminal definition.  On MacOS, I run it directly in the terminal where
 # 'run demo' was invoked.  On Linux, it's safer to pop an xterm, if one is
-# available.
+# available.  We never run this in GitHub Actions, because there's never any
+# real cursor-addressable terminal available there.
 
 help_demo() {
    echo "- run demo: Run a game with simulated players, displaying output on the terminal"
 }
 
 task_demo() {
-   WORKING=$(mktemp -d)
+   cat << EOF > "$WORKING_DIR/demo.py"
+from apologies.cli import cli
+cli("demo")
+EOF
 
-   SCRIPT="from apologies.cli import cli; cli('demo')"
-   echo "$SCRIPT" > "$WORKING/script.py"
-
-   DEMO="poetry run python $WORKING/script.py $*"
+   DEMO="poetry run python $WORKING_DIR/demo.py $*"
 
    which xterm
    if [ $? == 0 ]; then
-      if [ ! -z "$DISPLAY" ]; then
-         echo "Demo will be tested in an xterm"
+      if [ ! -z "$DISPLAY" ] && [ -z "$GITHUB_ACTIONS" ]; then
+         echo ""
+         echo "Demo will be run in a standalone xterm"
 
-         xterm -title "apologies demo" -geometry 155x70+0+0 -j -fs 10 -e "$DEMO; rm -rf '$WORKING'"
+         run_command latestcode
+
+         xterm -title "apologies demo" -geometry 155x70+0+0 -j -fs 10 -e "$DEMO"
          if [ $? != 0 ]; then
             exit 1
          fi
@@ -31,19 +35,21 @@ task_demo() {
       fi
    fi
 
-   if [ "$OSTYPE" == "darwin"* ] && [ "$GITHUB_ACTIONS" != "true" ]; then
-      echo "Demo will be tested in a MacOS terminal"
+   if [[ "$OSTYPE" == "darwin"* ]] && [ -z "$GITHUB_ACTIONS" ]; then
+      echo ""
+      echo "Demo will be run in a MacOS terminal"
+
+      run_command latestcode
 
       $DEMO
       if [ $? != 0 ]; then
-         rm -rf "$WORKING"
          exit 1
       fi
 
-      rm -rf "$WORKING"
       return
    fi
 
-   echo "No terminal available; demo will not be tested"
+   echo ""
+   echo "No usable terminal available; demo cannot be run"
 }
 

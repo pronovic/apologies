@@ -29,7 +29,8 @@ command_example() {
 Commands are implemented in directories so you can include other scripts or
 files alongside them if necessary.  You may use `$REPO_DIR` to refer to the
 main repository directory, and `$DOTRUN_DIR` to refer to the `.run` directory
-within the repository.
+within the repository.  There is a temporary working directory at
+`$WORKING_DIR`.
 
 Normal behavior is for a command to `exit 1` if it encounters a permanent
 error, to simplify error-handling at the task level.  If you are invoking

@@ -5,6 +5,12 @@ help_sim() {
 }
 
 task_sim() {
-   run_command pythonscript 'from apologies.cli import cli; cli("simulation")' "$@"
+   cat << EOF > "$WORKING_DIR/simulation.py"
+from apologies.cli import cli
+cli("simulation")
+EOF
+
+   run_command latestcode
+   poetry_run python "$WORKING_DIR/simulation.py" "$@"
 }
 

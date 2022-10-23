@@ -4,11 +4,9 @@
 
 unset CDPATH
 
-REPO_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
-DOTRUN_DIR="$REPO_DIR/.run"
-
-source "$DOTRUN_DIR/util.sh"
-run_command disablekeyring
+REPO_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd) # see: https://stackoverflow.com/a/246128/2907667
+source "$REPO_DIR/.run/util.sh"
+setup_environment
 
 if task_exists "$1"; then
    run_task $*

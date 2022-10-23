@@ -55,6 +55,7 @@ directly, you must do your own error handling.
 
 You may use `$REPO_DIR` to refer to the main repository directory,
 and `$DOTRUN_DIR` to refer to the `.run` directory within the repository.
+There is a temporary working directory at `$WORKING_DIR`.
 
 If you change directories as part of your task, you _must_ change back
 to the original directory if the task completes successfuly.  This makes

@@ -90,3 +90,10 @@ task_help() {
    fi
 }
 
+# Setup the runtime environment
+setup_environment() {
+   DOTRUN_DIR="$REPO_DIR/.run"
+   WORKING_DIR=$(mktemp -d)
+   trap "rm -rf '$WORKING_DIR'" EXIT SIGINT SIGTERM
+}
+
