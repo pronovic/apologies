@@ -1,5 +1,5 @@
 # vim: set ft=bash ts=3 sw=3 expandtab:
-# Build the Sphinx documentation for apologies.readthedocs.io
+# Build the Sphinx documentation for readthedocs.io
 
 command_sphinx() {
    open="no"
