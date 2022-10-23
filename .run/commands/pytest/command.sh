@@ -20,15 +20,21 @@ command_pytest() {
      esac
    done
 
+   color=""
+   if [ "$GITHUB_ACTIONS" == "true" ] && [ "$RUNNER_OS" == "Windows" ]; then
+      color="--color no"  # color messes up the terminal on Windows in GHA
+   fi
+
    if [ $coverage == "yes" ]; then
-      poetry_run coverage run -m pytest --force-testdox --testdox tests
+      poetry_run coverage run -m pytest --testdox --force-testdox $color tests
       poetry_run coverage report
       if [ $html == "yes" ]; then
+         # Use 'start' on Windows, and 'open' on MacOS and Debian (post-bullseye)
          poetry_run coverage html -d .htmlcov
-         $(which start || which open) .htmlcov/index.html 2>/dev/null  # start on Windows, open on MacOS and Debian (post-bullseye)
+         $(which start || which open) .htmlcov/index.html 2>/dev/null
       fi
    else
-      poetry_run pytest --force-testdox --testdox tests
+      poetry_run pytest --testdox --force-testdox $color tests
    fi
 }
 
