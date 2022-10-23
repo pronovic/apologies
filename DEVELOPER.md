@@ -33,7 +33,7 @@ Previously, I used the Safety scanner as part of my pre-commit hooks and GitHub 
 
 I use [GitHub Actions](https://docs.github.com/en/actions/quickstart) for CI.  See [.github/workflows/test-suite.yml](.github/workflows/test-suite.yml) for the definition of the workflow, and go to the [Actions tab](https://github.com/pronovic/apologies/actions) to see what actions have been executed.  The workflow is implemented in terms of the shared `poetry-build-and-test` workflow in the [pronovic/gha-shared-actions](https://github.com/pronovic/gha-shared-workflows) repository.  The workflow was originally developed here, and eventually refactored out when I started sharing the same process across multiple repositories.
 
-The workflow is kicked off for all PRs, and also when code is merged to master.  It uses a matrix build and runs the same test suite on a combination of platforms (Windows, MacOS, Linux) and Python versions.  The test suite itself is implemented using [tox](https://tox.readthedocs.io/en/latest/index.html) and is defined in [.toxrc](.toxrc).  Basically, the tox test suite re-runs all of the pre-commit hooks and then executes the unit test suite with coverage enabled.  Coverage data is then uploaded to coveralls.io (see discussion below).
+The workflow is kicked off for all PRs, and also when code is merged to master.  It uses a matrix build and runs the same test suite on a combination of platforms (Windows, MacOS, Linux) and Python versions.  The test suite in GitHub actions is implemented by the same `run suite` command that you would use locally. Coverage data is uploaded to coveralls.io (see discussion below).
 
 ## Third-Party Integration
 
@@ -41,7 +41,7 @@ There is third-party integration with [readthedocs.io](https://readthedocs.io/) 
 
 Both of these services make integration very straightforward.  For readthedocs, integration happens via a [GitHub webhook](https://docs.github.com/en/github/extending-github/about-webhooks).  You first create an account at readthedocs.io.  Then, you import your repository, which creates a webhook in GitHub for your repository.  Once the webhook has been created, readthedocs is notified whenever code is pushed to your repository, and a build is kicked off on their infrastructure to generate and publish your documentation.  Configuration is taken from a combination of [.readthedocs.yml](.readthedocs.yml) and preferences that you set for your repository in the readthedocs web interface.  See the readthedocs.io [documentation](https://docs.readthedocs.io/en/stable/guides/platform.html) for more information.
 
-For coveralls.io, integration happens via a [GitHub App](https://docs.github.com/en/developers/apps/about-apps) rather than a webhook.  Like with readthedocs, you first create an account at coveralls.io.  Next, you grant the Coveralls application permissions to your GitHub organization, and select which repositories should be enabled.  Unlike with readthedocs, you need to generate coverage information locally and upload it to coverage.io.  This happens as a part of the CI workflow.  There are several steps in [.github/workflows/tox.yml](.github/workflows/tox.yml), taken more-or-less verbatim from the coveralls.io [documentation](https://coveralls-python.readthedocs.io/en/latest/usage/index.html).
+For coveralls.io, integration happens via a [GitHub App](https://docs.github.com/en/developers/apps/about-apps) rather than a webhook.  Like with readthedocs, you first create an account at coveralls.io.  Next, you grant the Coveralls application permissions to your GitHub organization, and select which repositories should be enabled.  Unlike with readthedocs, you need to generate coverage information locally and upload it to coverage.io.  This happens as a part of the CI workflow.  There are several steps in the [shared workflow](https://github.com/pronovic/gha-shared-workflows/blob/master/.github/workflows/poetry-build-and-test.yml), taken more-or-less verbatim from the coveralls.io [documentation](https://coveralls-python.readthedocs.io/en/latest/usage/index.html).
 
 ## Pre-Commit Hooks
 
@@ -221,21 +221,24 @@ $ run --help
 Shortcuts for common developer tasks
 ------------------------------------
 
-Usage: run <command>
+Basic tasks:
 
 - run install: Setup the virtualenv via Poetry and install pre-commit hooks
-- run requirements: Regenerate the docs/requirements.txt file
 - run format: Run the code formatters
 - run checks: Run the code checkers
 - run test: Run the unit tests
 - run test -c: Run the unit tests with coverage
 - run test -ch: Run the unit tests with coverage and open the HTML report
-- run docs: Build the Spinx documentation for apologies.readthedocs.io
-- run docs -o: Build the Spinx documentation and open in a browser
-- run tox: Run the Tox test suite used by the GitHub CI action
-- run release: Release a specific version and tag the code
-- run publish: Publish the current code to PyPI and push to GitHub
+- run suite: Run the complete test suite, as for the GitHub Actions CI build
+
+Additional tasks:
+
 - run demo: Run a game with simulated players, displaying output on the terminal
+- run docs: Build the Sphinx documentation for readthedocs.io
+- run docs -o: Build the Sphinx documentation and open in a browser
+- run publish: Publish the current code to PyPI and push to GitHub
+- run release: Release a specific version and tag the code
+- run requirements: Regenerate the docs/requirements.txt file
 - run sim: Run a simulation to see how well different character input sources behave
 ```
 
@@ -315,7 +318,7 @@ order.  In particular, if you do not run the install step, there will be no
 virtualenv for PyCharm to use:
 
 ```
-run install && run checks && run test
+run install && run suite
 ```
 
 ### Open the Project
@@ -341,7 +344,7 @@ Go to the PyCharm settings and find the `apologies` project.  Under
 the **Exclude Files** box, enter the following:
 
 ```
-LICENSE;NOTICE;PyPI.md;.coverage;.coveragerc;.github;.gitignore;.gitattributes;.htmlcov;.idea;.isort.cfg;.mypy.ini;.mypy_cache;.pre-commit-config.yaml;.pylintrc;.pytest_cache;.readthedocs.yml;.tox;.toxrc;.tabignore;build;dist;docs/_build;out;poetry.lock;poetry.toml;run;
+LICENSE;NOTICE;PyPI.md;.coverage;.coveragerc;.github;.gitignore;.gitattributes;.htmlcov;.idea;.isort.cfg;.mypy.ini;.mypy_cache;.pre-commit-config.yaml;.pylintrc;.pytest_cache;.readthedocs.yml;.tabignore;build;dist;docs/_build;out;poetry.lock;poetry.toml;run;.run;
 ```
 
 When you're done, click **Ok**.  Then, go to the gear icon in the project panel 
