@@ -38,7 +38,7 @@ used in this repo"`).
 
 A task is defined by a naming convention.  There is a bash script that
 identifies the name of the task.  Within the bash script, there must be two
-bash functions, `help_<command>` and `task_<command>`.
+bash functions, `help_<task>` and `task_<task>`.
 
 So, for command called "example", you would create a file
 file `.run/tasks/example.sh`.  That file must contain the 
@@ -54,11 +54,10 @@ task_example() {
 }
 ```
 
-Unlike commands, tasks are implemented as scripts and not as directories.  This
-is because, in general, they should be fairly simple.  They are implemented
-mostly in terms of commands (using `run_command <command>`), but you can also
-run installed tools (i.e. `poetry_run isort`), run the Python interpreter
-(using `poetry_run python`), or even just invoke `poetry` directly.
+Tasks are implemented mostly in terms of commands (using `run_command
+<command>`), but you can also run installed tools (i.e. `poetry_run isort`),
+run the Python interpreter (using `poetry_run python`), or even just invoke
+`poetry` directly.
 
 Commands are supposed to `exit 1` when they encounter a permanent error, so you
 don't have to check their result via `$?` when using `run_command`.  Similar
