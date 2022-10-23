@@ -6,9 +6,9 @@
 # available.  We never run this in GitHub Actions, because there's never any
 # real cursor-addressable terminal available there.
 #
-# The actual invocation of the xterm is a little usual.  The goal with that
+# The actual invocation of the xterm is a little unusual.  The goal with that
 # syntax is to capture the return status of the demo command, as opposed to the
-# return status of the xterm command.  See: https://stackoverflow.com/a/8416753
+# return status of the xterm itself.  See: https://stackoverflow.com/a/8416753
 
 help_demo() {
    echo "- run demo: Run a game with simulated players, displaying output on the terminal"
