@@ -54,8 +54,11 @@ task_example() {
 }
 ```
 
+If you don't want your task to appear in the help output, then use `echo -n ""`
+as the implementation for `help_<task>` (bash functions must not be empty).
+
 Tasks are implemented mostly in terms of commands (using `run_command
-<command>`), but you can also run installed tools (i.e. `poetry_run isort`),
+<command>`), but you can also run installed tools (using `poetry_run <tool>`),
 run the Python interpreter (using `poetry_run python`), or even just invoke
 `poetry` directly.
 
