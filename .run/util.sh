@@ -5,9 +5,6 @@
 BASIC_TASKS="install format checks test suite"
 BASIC_TASKS_REGEX="install|format|checks|test|suite"
 
-# Source the realpath implementation
-source "$REPO_DIR/.run/realpath.sh"
-
 # Run a command
 run_command() {
    COMMAND="$1"
