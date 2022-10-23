@@ -87,7 +87,6 @@ class BoardRules:
     Rules related to the way the board works.
     """
 
-    # pylint: disable=too-many-return-statements
     def construct_legal_moves(self, color: PlayerColor, card: Card, pawn: Pawn, all_pawns: List[Pawn]) -> List[Move]:
         """
         Return the set of legal moves for a pawn using a card, possibly empty.

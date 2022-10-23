@@ -86,7 +86,7 @@ def render(unused_argv: List[str], stdout: IO[str], unused_stderr: IO[str]) -> N
     stdout.write("%s" % board)
 
 
-def example(argv: List[str], stdout: IO[str], stderr: IO[str]) -> None:  # pylint: disable: unused-argument
+def example(argv: List[str], stdout: IO[str], stderr: IO[str]) -> None:
     """Execute the example script, which just writes some input to its outputs."""
     stdout.write("Hello, stdout: %s\n" % argv[0])
     stderr.write("Hello, stderr: %s\n" % argv[0])

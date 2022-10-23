@@ -26,7 +26,7 @@ class CattrConverter(cattrs.GenConverter):
         self.register_structure_hook(DateTime, lambda string, _: parse(string) if string else None)
 
 
-T = TypeVar("T")  # pylint: disable=invalid-name
+T = TypeVar("T")
 """Generic type"""
 
 
