@@ -4,11 +4,15 @@
 command_pylint() {
    echo "Running pylint checks..."
 
-   # On Linux, Pycharm sometimes gets confused unless the path is relative to the workspace
-   # This doesn't do anything on Windows (because pylint outputs a Windows-style path), but it doesn't really matter
+   poetry run pylint -j 0 $(ls -d src/*) tests > "$WORKING_DIR/pylint.output"
+   RESULT=$?
+
    PATH_DIR=$(realpath "$REPO_DIR")
-   poetry_run pylint -j 0 $(ls -d src/*) tests | sed "s|^$PATH_DIR/||"
+   cat "$WORKING_DIR/pylint.output" | sed "s|^$PATH_DIR/||"  # make paths relative
+
+   if [ $RESULT != 0 ]; then
+      exit 1
+   fi
 
    echo "done"
 }
-
