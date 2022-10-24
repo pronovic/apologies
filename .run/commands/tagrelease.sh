@@ -2,6 +2,8 @@
 # Update the changelog and tag a specific version of the code
 
 command_tagrelease() {
+   local VERSION EARLIEST_YEAR LATEST_YEAR DEFAULT_BRANCH CURRENT_BRANCH COPYRIGHT DATE TAG FILES MESSAGE
+
    if [ $# != 1 ]; then
       echo "<version> required"
       exit 1
@@ -71,7 +73,7 @@ command_tagrelease() {
    fi
 
    echo ""
-   echo "*** Version v$VERSION has been released and commited; you may publish now"
+   echo "*** Version v$VERSION has been released and committed; you may publish now"
    echo ""
 }
 

@@ -4,6 +4,8 @@
 command_checktabs() {
    echo "Checking for tab characters..."
 
+   local result
+
    cd "$REPO_DIR" # we need to be in the root of the repo for 'git ls-files' to do what we need
 
    result=$(grep -l "$(printf '\t')" $(git ls-files | grep -v -x -F --file=".tabignore"))

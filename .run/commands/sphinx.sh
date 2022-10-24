@@ -2,6 +2,8 @@
 # Build the Sphinx documentation for readthedocs.io
 
 command_sphinx() {
+   local OPTIND OPTARG option open
+
    open="no"
 
    while getopts ":o" option; do

@@ -18,18 +18,23 @@ else
    echo "Shortcuts for common developer tasks"
    echo "------------------------------------"
    echo ""
+
    echo "Basic tasks:"
    echo ""
    for task in $(basic_tasks); do
       task_help "$task"
    done
    echo ""
+
    echo "Additional tasks:"
    echo ""
    for task in $(all_tasks); do
       task_help "$task"
    done
    echo ""
+
+   add_addendum
+
    exit 2
 fi
 
