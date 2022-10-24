@@ -7,6 +7,8 @@ BASIC_TASKS_REGEX="install|format|checks|test|suite"
 
 # Run a command
 run_command() {
+   local COMMAND
+
    COMMAND="$1"
    shift 1
 
@@ -30,6 +32,8 @@ run_command() {
 
 # Wrap "poetry run", confirming that the command is installed first
 poetry_run() {
+   local COMMAND
+
    COMMAND="$1"
    shift 1
 
@@ -63,6 +67,8 @@ task_exists() {
 
 # Run a task
 run_task() {
+   local TASK
+
    TASK="$1"
    shift 1
 
@@ -83,6 +89,7 @@ run_task() {
 
 # Get the help output for a task
 task_help() {
+   local TASK
    TASK="$1"
    source "$DOTRUN_DIR/tasks/$TASK.sh"
    if [ $? == 0 ]; then
@@ -95,5 +102,12 @@ setup_environment() {
    DOTRUN_DIR="$REPO_DIR/.run"
    WORKING_DIR=$(mktemp -d)
    trap "rm -rf '$WORKING_DIR'" EXIT SIGINT SIGTERM
+}
+
+# Add addendum information to the end of the help output
+add_addendum() {
+   if [ -f "$REPO_DIR/.run/addendum.sh" ]; then
+      bash "$REPO_DIR/.run/addendum.sh"
+   fi 
 }
 

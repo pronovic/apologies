@@ -2,6 +2,8 @@
 # Run the pytest unit tests, optionally with coverage
 
 command_pytest() {
+   local OPTIND OPTARG option coverage html color
+
    coverage="no"
    html="no"
 
@@ -19,6 +21,8 @@ command_pytest() {
          ;;
      esac
    done
+
+   shift $((OPTIND -1))  # pop off the options consumed by getopts
 
    color=""
    if [ "$GITHUB_ACTIONS" == "true" ] && [ "$RUNNER_OS" == "Windows" ]; then
