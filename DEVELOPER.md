@@ -212,6 +212,7 @@ Basic tasks:
 - run install: Setup the virtualenv via Poetry and install pre-commit hooks
 - run format: Run the code formatters
 - run checks: Run the code checkers
+- run build: Build artifacts in the dist/ directory
 - run test: Run the unit tests
 - run test -c: Run the unit tests with coverage
 - run test -ch: Run the unit tests with coverage and open the HTML report

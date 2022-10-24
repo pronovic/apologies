@@ -17,12 +17,7 @@ command_requirements() {
 
    local replacement
 
-   poetry self add --quiet poetry-plugin-export
-   if [ $? != 0 ]; then
-      echo ""
-      echo "*** Failed to install Poetry plugin: poetry-plugin-export"
-      exit 1
-   fi
+   run_command poetryplugin poetry-plugin-export
 
    poetry export --format=requirements.txt --without-hashes --with dev --output=docs/requirements.txt
    if [ $? != 0 ]; then

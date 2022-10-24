@@ -26,12 +26,14 @@ else
    done
    echo ""
 
-   echo "Additional tasks:"
-   echo ""
-   for task in $(all_tasks); do
-      task_help "$task"
-   done
-   echo ""
+   if [ ! -z "$(additional_tasks)" ]; then
+      echo "Additional tasks:"
+      echo ""
+      for task in $(additional_tasks); do
+         task_help "$task"
+      done
+      echo ""
+   fi
 
    add_addendum
 

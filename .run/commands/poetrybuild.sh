@@ -14,6 +14,8 @@ command_poetrybuild() {
       exit 1
    fi
 
+   ls -l dist/
+
    echo "done"
 }
 
