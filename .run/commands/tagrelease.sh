@@ -14,7 +14,11 @@ command_tagrelease() {
    LATEST_YEAR=$(git log -1 --pretty="%ci" | sed 's/-.*$//g')
    DEFAULT_BRANCH=$(git config --get init.defaultBranch)  # works on git > 2.28.0 from 2020
    CURRENT_BRANCH=$(git branch -a | grep '^\*' | sed 's/^\* //')
-   COPYRIGHT="${EARLIEST_YEAR}-${LATEST_YEAR}"
+   if [ "$EARLIEST_YEAR" == "$LATEST_YEAR" ]; then
+      COPYRIGHT="${EARLIEST_YEAR}"
+   else
+      COPYRIGHT="${EARLIEST_YEAR}-${LATEST_YEAR}"
+   fi
    DATE=$(date +'%d %b %Y')
    TAG="v$VERSION" # follow PEP 440 naming convention
    FILES="NOTICE pyproject.toml Changelog"
