@@ -10,6 +10,7 @@ task_suite() {
    run_task checks
    run_task build
    run_task test -c
+   run_task requirements
    run_task docs
    run_task demo --players=3 --mode=ADULT --delay=0.02 --exit
 }
