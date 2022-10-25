@@ -36,7 +36,7 @@ command_tagrelease() {
       exit 1
    fi
 
-   head -1 Changelog | grep -q "^Version $VERSION\s\s*unreleased"
+   head -1 Changelog | grep -E -q "^Version $VERSION[[:blank:]][[:blank:]]*unreleased"
    if [ $? != 0 ]; then
       echo "*** Unreleased version v$VERSION is not at the head of the Changelog"
       exit 1
@@ -49,8 +49,8 @@ command_tagrelease() {
    fi
 
    run_command dos2unix pyproject.toml
-   run_command sedreplace "s/^Version $VERSION\s\s*unreleased/Version $VERSION     $DATE/g" Changelog
-   run_command sedreplace "s/(^ *Copyright \(c\) *)([0-9,-]+)( *.*$)/\1$COPYRIGHT\3/" NOTICE
+   run_command sedreplace "s|^Version $VERSION[[:blank:]][[:blank:]]*unreleased|Version $VERSION     $DATE|g" Changelog
+   run_command sedreplace "s|(^ *Copyright \(c\) *)([0-9,-]+)( *.*$)|\1$COPYRIGHT\3|" NOTICE
 
    git diff $FILES
 
