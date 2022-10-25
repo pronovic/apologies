@@ -38,7 +38,7 @@ EOF
 
          run_command latestcode
 
-         xterm -title "apologies demo" -geometry 155x60+0+0 -j -fs 10 -e "$SCRIPT; echo \$? > '$STATUS'"
+         xterm -title "apologies demo" -geometry 155x58+0+0 -j -fs 10 -e "$SCRIPT; echo \$? > '$STATUS'"
          if [ "$(cat "$STATUS")" != "0" ]; then
             echo "*** Demo failed"
             exit 1
