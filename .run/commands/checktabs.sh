@@ -8,7 +8,7 @@ command_checktabs() {
 
    cd "$REPO_DIR" # we need to be in the root of the repo for 'git ls-files' to do what we need
 
-   git -C $PATH rev-parse 2>/dev/null # check whether it's a Git repository
+   git -C . rev-parse 2>/dev/null # check whether it's a Git repository
    if [ $? == 0 ]; then
       result=$(grep -l "$(printf '\t')" $(git ls-files | grep -v -x -F --file=".tabignore"))
       if [ $? == 0 ]; then
