@@ -14,7 +14,12 @@
 command_requirements() {
    echo -n "Generating docs/requirements.txt..."
 
-   run_command poetryplugin poetry-plugin-export
+   # As of late October of 2022, the GitHub Actions build is having problems installing
+   # this plugin on Windows.  Since Poetry v1.2.0 includes this plugin automatically, it's
+   # not strictly necessary to install it.  For now, it seems simpler to just ignore it.
+   # We can add it back if/when it becomes necessary.
+
+   # run_command poetryplugin poetry-plugin-export
 
    poetry export --format=requirements.txt --without-hashes --with dev --output=docs/requirements.txt
    if [ $? != 0 ]; then
