@@ -5,6 +5,6 @@ help_requirements() {
 }
 
 task_requirements() {
-   run_command requirements
+   run_command requirements "$@"
 }
 
