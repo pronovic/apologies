@@ -15,3 +15,4 @@ It was written as a learning exercise and technology demonstration effort, and s
 Developer documentation is found in [DEVELOPER.md](DEVELOPER.md).  See that file for notes about how the code is structured, how to set up a development environment, etc.
 
 If you want to use this as a starting point for your own repository, check out the [cookiecutter-pypi](https://github.com/pronovic/cookiecutter-pypi) template repository.
+
