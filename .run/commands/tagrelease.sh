@@ -5,7 +5,7 @@ command_tagrelease() {
    local VERSION EARLIEST_YEAR LATEST_YEAR DEFAULT_BRANCH CURRENT_BRANCH COPYRIGHT DATE TAG FILES MESSAGE
 
    if [ $# != 1 ]; then
-      echo "<version> required"
+      echo "tagrelease <version>"
       exit 1
    fi
 
@@ -14,15 +14,16 @@ command_tagrelease() {
    LATEST_YEAR=$(git log -1 --pretty="%ci" | sed 's/-.*$//g')
    DEFAULT_BRANCH=$(git config --get init.defaultBranch)  # works on git > 2.28.0 from 2020
    CURRENT_BRANCH=$(git branch -a | grep '^\*' | sed 's/^\* //')
+   DATE=$(date +'%d %b %Y')
+   TAG="v$VERSION" # follow PEP 440 naming convention
+   FILES="NOTICE pyproject.toml Changelog"
+   MESSAGE="Release v$VERSION to PyPI"
+
    if [ "$EARLIEST_YEAR" == "$LATEST_YEAR" ]; then
       COPYRIGHT="${EARLIEST_YEAR}"
    else
       COPYRIGHT="${EARLIEST_YEAR}-${LATEST_YEAR}"
    fi
-   DATE=$(date +'%d %b %Y')
-   TAG="v$VERSION" # follow PEP 440 naming convention
-   FILES="NOTICE pyproject.toml Changelog"
-   MESSAGE="Release v$VERSION to PyPI"
 
    if [ "$CURRENT_BRANCH" != "$DEFAULT_BRANCH" ]; then
       echo "*** You are not on $DEFAULT_BRANCH; you cannot release from this branch"
@@ -48,19 +49,8 @@ command_tagrelease() {
    fi
 
    run_command dos2unix pyproject.toml
-
-   # annoyingly, BSD sed and GNU sed are not compatible on the syntax for -i
-   # I failed miserably in all attempts to put the sed command (with empty string) into a variable
-   sed --version 2>&1 | grep -iq "GNU sed"
-   if [ $? = 0 ]; then
-      # GNU sed accepts a bare -i and assumes no backup file
-      sed -i "s/^Version $VERSION\s\s*unreleased/Version $VERSION     $DATE/g" Changelog
-      sed -i -E "s/(^ *Copyright \(c\) *)([0-9,-]+)( *Kenneth.*$)/\1$COPYRIGHT\3/" NOTICE
-   else
-      # BSD sed requires you to set an empty backup file extension
-      sed -i "" "s/^Version $VERSION\s\s*unreleased/Version $VERSION     $DATE/g" Changelog
-      sed -i "" -E "s/(^ *Copyright \(c\) *)([0-9,-]+)( *Kenneth.*$)/\1$COPYRIGHT\3/" NOTICE
-   fi
+   run_command sedreplace "s/^Version $VERSION\s\s*unreleased/Version $VERSION     $DATE/g" Changelog
+   run_command sedreplace "s/(^ *Copyright \(c\) *)([0-9,-]+)( *.*$)/\1$COPYRIGHT\3/" NOTICE
 
    git diff $FILES
 
