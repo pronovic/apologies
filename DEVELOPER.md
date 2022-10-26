@@ -10,7 +10,7 @@ library for screen drawing.
 
 This project uses [Poetry](https://python-poetry.org/) to manage Python packaging and dependencies.  Most day-to-day tasks (such as running unit tests from the command line) are orchestrated through Poetry.
 
-A coding standard is enforced using [Black](https://github.com/psf/black), [isort](https://pypi.org/project/isort/) and [Pylint](https://www.pylint.org/).  Python 3 type hinting is validated using [MyPy](https://pypi.org/project/mypy/).  To reduce boilerplate, classes are defined using [Attrs](https://www.attrs.org/) (see this [rationale](https://glyph.twistedmatrix.com/2016/08/attrs.html)).
+A coding standard is enforced using [Black](https://pypi.org/project/black/), [isort](https://pypi.org/project/isort/) and [Pylint](https://pypi.org/project/pylint/).  Python 3 type hinting is validated using [MyPy](https://pypi.org/project/mypy/).  To reduce boilerplate, classes are defined using [Attrs](https://www.attrs.org/) (see this [rationale](https://glyph.twistedmatrix.com/2016/08/attrs.html)).
 
 To add dependencies use `poetry add package` (for runtime dependencies) or `poetry add --group dev package` (for development environment dependencies).
 
@@ -201,7 +201,7 @@ to be available.  On Windows, it works fine with the standard Git Bash.
 The [`run`](run) script provides shortcuts for common developer tasks:
 
 ```
-$ run --help
+$ ./run --help
 
 ------------------------------------
 Shortcuts for common developer tasks
@@ -234,7 +234,7 @@ Additional tasks:
 This runs a simulation on the standard `RewardV1InputSource`:
 
 ```
-run sim apologies.source.RewardV1InputSource
+./run sim apologies.source.RewardV1InputSource
 ```
 
 Output is written to `simulation.csv`.  You can specify any source in 
@@ -247,7 +247,7 @@ that plays a game with 2-4 automated players.  This demo works only on
 UNIX-like platforms that support the curses library.  Here's the help output:
 
 ```
-$ run demo
+$ ./run demo
 usage: demo [-h] [--players PLAYERS] [--mode {STANDARD,ADULT}]
             [--source SOURCE] [--delay DELAY]
 
@@ -269,7 +269,7 @@ that chooses a player's move.
 This runs a really fast game in adult mode with 3 players:
 
 ```
-run demo --players=3 --mode=ADULT --delay=0.1
+./run demo --players=3 --mode=ADULT --delay=0.1
 ```
 
 The demo only works inside a UNIX-style terminal window, like an xterm or a 
@@ -299,7 +299,7 @@ order.  In particular, if you do not run the install step, there will be no
 virtualenv for PyCharm to use:
 
 ```
-run install && run suite
+./run install && ./run suite
 ```
 
 ### Open the Project
@@ -515,7 +515,7 @@ Version 0.1.29     unreleased
 Run the release step:
 
 ```
-run release 0.1.29
+./run release 0.1.29
 ```
 
 This updates `pyproject.toml` and the `Changelog` to reflect the released
@@ -526,7 +526,7 @@ and revert your commit (`git reset HEAD~1`) if you made a mistake.
 Finally, publish the release:
 
 ```
-run publish
+./run publish
 ```
 
 This builds the deployment artifacts, publishes the artifacts to PyPI, and
