@@ -1,3 +1,7 @@
+Version 0.1.40     unreleased
+
+	* Adjust GHA build to run MacOS and Windows tests only on latest Python.
+
 Version 0.1.39     24 Oct 2022
 
 	* Pull in updates from run-sync-framework.
