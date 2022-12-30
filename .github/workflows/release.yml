@@ -1,0 +1,14 @@
+# vim: set ft=yaml ts=2 sw=2 expandtab:
+name: Release
+on:
+  push:
+    tags:
+      - "v*.*.*"
+jobs:
+  release:
+    uses: pronovic/gha-shared-workflows/.github/workflows/poetry-release.yml@master
+    needs: ["Test Suite"]  # see: https://stackoverflow.com/a/71489231/2907667
+    secrets: inherit
+    with:
+      python-version: "3.8"
+      poetry-version: "1.3.1"
