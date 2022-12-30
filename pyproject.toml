@@ -9,6 +9,7 @@ homepage = "https://pypi.org/project/apologies/"
 repository = "https://github.com/pronovic/apologies"
 include = [
    { path = 'Changelog', format = 'sdist' },
+   { path = 'NOTICE', format = 'sdist' },
    { path = 'LICENSE', format = 'sdist' },
    { path = 'README.md', format = 'sdist' },
    { path = 'docs', format = 'sdist' },
