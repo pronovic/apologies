@@ -1,4 +1,4 @@
-Version 0.1.40     30 Dec 2022
+Version 0.1.40     unreleased
 
 	* Adjust GHA build to run MacOS and Windows tests only on latest Python.
 

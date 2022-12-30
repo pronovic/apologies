@@ -3,11 +3,13 @@ name: Release
 on:
   push:
     tags:
-      - "v*.*.*"
+      - "v*"
 jobs:
+  build-and-test:
+    uses: ./.github/workflows/test-suite.yml
   release:
     uses: pronovic/gha-shared-workflows/.github/workflows/poetry-release.yml@master
-    needs: ["Test Suite"]  # see: https://stackoverflow.com/a/71489231/2907667
+    needs: [build-and-test]
     secrets: inherit
     with:
       python-version: "3.8"
