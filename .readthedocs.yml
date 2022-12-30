@@ -9,6 +9,7 @@ build:
 #      - poetry config virtualenvs.create false
 #      - poetry install --sync
 python:
+  system_packages: true
   install:
     - method: pip
       path: .
