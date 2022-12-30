@@ -1,6 +1,7 @@
 Version 0.1.41     unreleased
 
 	* Bump up to final @v3 version of shared workflows.
+	* Add new hidden 'run dch' command to generate new Changelog entry.
 
 Version 0.1.40     30 Dec 2022
 
