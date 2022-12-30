@@ -1,3 +1,7 @@
+Version 0.1.42     unreleased
+
+	* Convert to latest readthedocs.io standard.
+
 Version 0.1.41     30 Dec 2022
 
 	* Bump up to final @v3 version of shared workflows.
