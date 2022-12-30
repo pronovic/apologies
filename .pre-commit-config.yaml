@@ -3,13 +3,6 @@ repos:
   - repo: local
     hooks:
       - id: system
-        name: Requirements File
-        entry: ./run requirements -c
-        pass_filenames: false
-        language: system
-  - repo: local
-    hooks:
-      - id: system
         name: Code Style Checks
         entry: ./run checks
         pass_filenames: false
