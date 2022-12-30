@@ -1,6 +1,5 @@
 version: 2
 build:
-  os: ubuntu-22.04  # TODO: can I remove this?
   tools:
     python: '3.8'
 python:
