@@ -1,7 +1,7 @@
 version: 2
 build:
   tools:
-    python: "3.7"
+    python: "3.8"
   jobs:
     post_install:
       - pip install poetry==1.3.1
