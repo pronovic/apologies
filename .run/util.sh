@@ -110,9 +110,25 @@ task_help() {
 
 # Setup the runtime environment
 setup_environment() {
+   local EARLIEST_YEAR LATEST_YEAR
+
    DOTRUN_DIR="$REPO_DIR/.run"
+
    WORKING_DIR=$(mktemp -d)
    trap "rm -rf '$WORKING_DIR'" EXIT SIGINT SIGTERM
+
+   DEFAULT_BRANCH=$(git config --get init.defaultBranch)  # works on git > 2.28.0 from 2020
+   CURRENT_BRANCH=$(git branch -a | grep '^\*' | sed 's/^\* //')
+
+   # Use $COPYRIGHT_START to override the earliest year found, in case git doesn't contain all history
+   EARLIEST_YEAR=${COPYRIGHT_START:-$(git log --pretty="%ci" $(git rev-list --max-parents=0 HEAD) | sed 's/-.*$//g')}
+   LATEST_YEAR=$(git log -1 --pretty="%ci" | sed 's/-.*$//g')
+
+   if [ "$EARLIEST_YEAR" == "$LATEST_YEAR" ]; then
+      COPYRIGHT="${EARLIEST_YEAR}"
+   else
+      COPYRIGHT="${EARLIEST_YEAR}-${LATEST_YEAR}"
+   fi
 }
 
 # Add addendum information to the end of the help output
