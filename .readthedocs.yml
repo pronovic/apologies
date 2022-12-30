@@ -9,5 +9,3 @@ python:
     - method: pip
       path: .
       extra_requirements: [ docs ]
-sphinx: # TODO: can I remove this?
-  configuration: docs/conf.py
