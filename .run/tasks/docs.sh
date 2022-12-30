@@ -6,7 +6,6 @@ help_docs() {
 }
 
 task_docs() {
-   run_command requirements -c
    run_command sphinx "$@"
 }
 
