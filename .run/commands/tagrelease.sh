@@ -15,6 +15,16 @@ command_tagrelease() {
    FILES="NOTICE Changelog"
    MESSAGE="Release v$VERSION"
 
+   # Use $COPYRIGHT_START to override the earliest year found, in case git doesn't contain all history
+   EARLIEST_YEAR=${COPYRIGHT_START:-$(git log --pretty="%ci" $(git rev-list --max-parents=0 HEAD) | sed 's/-.*$//g')}
+   LATEST_YEAR=$(git log -1 --pretty="%ci" | sed 's/-.*$//g')
+
+   if [ "$EARLIEST_YEAR" == "$LATEST_YEAR" ]; then
+      COPYRIGHT="${EARLIEST_YEAR}"
+   else
+      COPYRIGHT="${EARLIEST_YEAR}-${LATEST_YEAR}"
+   fi
+
    if [ "$CURRENT_BRANCH" != "$DEFAULT_BRANCH" ]; then
       echo "*** You are not on $DEFAULT_BRANCH; you cannot release from this branch"
       exit 1
