@@ -223,8 +223,7 @@ Additional tasks:
 - run demo: Run a game with simulated players, displaying output on the terminal
 - run docs: Build the Sphinx documentation for readthedocs.io
 - run docs -o: Build the Sphinx documentation and open in a browser
-- run publish: Publish the current code to PyPI and push to GitHub
-- run release: Release a specific version and tag the code
+- run release: Tag and release the code, triggering GHA to publish artifacts
 - run requirements: Regenerate the docs/requirements.txt file
 - run sim: Run a simulation to see how well different character input sources behave
 ```
