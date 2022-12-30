@@ -1,3 +1,7 @@
+Version 0.1.41     30 Dec 2022
+
+	* Dummy release
+
 Version 0.1.40     30 Dec 2022
 
 	* Adjust GHA build to run MacOS and Windows tests only on latest Python.
