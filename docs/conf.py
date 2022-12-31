@@ -38,6 +38,13 @@ SUMMARY = _METADATA["Summary"]
 AUTHOR = _METADATA["Author"]
 VERSION = _METADATA["Version"]
 
+# Dump metadata so it's obvious in the build log
+print("GitHub repo: %s/%s" % (GITHUB_OWNER, GITHUB_REPO))
+print("Project....: %s" % PROJECT)
+print("Summary....: %s" % SUMMARY)
+print("Author.....: %s" % AUTHOR)
+print("Version....: %s" % VERSION)
+
 # -- General configuration ------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
