@@ -40,12 +40,12 @@ python = ">=3.7.2,<4"
 attrs = "^21.4.0"
 cattrs = "^22.1.0"
 pendulum = "^2.1.2"
+importlib-metadata = { version="^5.2.0", optional=true }
 sphinx = { version="^4.5.0", optional=true }
 sphinx-autoapi = { version="^1.8.4", optional=true }
-toml = { version="^0.10.2", optional=true }
 
 [tool.poetry.extras]
-docs = [ "sphinx", "sphinx-autoapi", "toml" ]
+docs = [ "importlib-metadata", "sphinx", "sphinx-autoapi" ]
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.1.2"
