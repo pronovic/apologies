@@ -83,11 +83,11 @@ class _Statistics:
     def for_results(name: Optional[str], results: List[_Result]) -> _Statistics:
         in_scope = [result for result in results if name is None or result.character.source.name == name]
         turns = [result.player.turns for result in in_scope]
-        durations = [result.stop.diff(result.start).microseconds / 1000 for result in in_scope]  # in milliseconds
+        durations_ms = [result.stop.diff(result.start).microseconds / 1000 for result in in_scope]  # type: ignore
         median_turns = _median(turns)
         mean_turns = _mean(turns)
-        median_duration = _median(durations)
-        mean_duration = _mean(durations)
+        median_duration = _median(durations_ms)
+        mean_duration = _mean(durations_ms)
         wins = len(in_scope)
         win_percent = 0.0 if len(results) == 0 else round(100.0 * (wins / len(results)), 1)
         return _Statistics(name, median_turns, mean_turns, median_duration, mean_duration, wins, win_percent)
