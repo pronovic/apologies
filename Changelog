@@ -1,4 +1,4 @@
-Version 0.1.43     unreleased
+Version 0.1.43     26 Feb 2023
 
 	* Upgrade all dependencies to the latest major version.
 	* Drop support for Python 3.7; many dependencies are now doing the same.
