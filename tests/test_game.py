@@ -182,7 +182,7 @@ class TestPosition:
 
     def test_move_to_position_invalid_multiple(self):
         position = Position()
-        for (start, home, safe, square) in [
+        for start, home, safe, square in [
             (True, True, None, None),
             (True, False, 1, None),
             (True, False, None, 1),

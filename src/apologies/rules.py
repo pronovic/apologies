@@ -328,7 +328,7 @@ class BoardRules:
         moves: List[Move] = []
         for other in all_pawns:
             if other != pawn and other.color == color and not other.position.home and not other.position.start:
-                for (left, right) in [(1, 6), (2, 5), (3, 4), (4, 3), (5, 2), (6, 1)]:  # legal ways to split up a move of 7
+                for left, right in [(1, 6), (2, 5), (3, 4), (4, 3), (5, 2), (6, 1)]:  # legal ways to split up a move of 7
                     left_moves = BoardRules._move_simple(color, card, pawn, [p for p in all_pawns if p != other], left)
                     right_moves = BoardRules._move_simple(color, card, other, [p for p in all_pawns if p != other], right)
                     if left_moves and right_moves:
@@ -387,7 +387,7 @@ class BoardRules:
             for action in move.actions:
                 if action.actiontype == ActionType.MOVE_TO_POSITION:  # look at any move to a position on the board
                     for color in [color for color in PlayerColor if color != action.pawn.color]:  # any color other than the pawn's
-                        for (start, end) in SLIDE[color]:  # look at all slides with this color
+                        for start, end in SLIDE[color]:  # look at all slides with this color
                             if action.position and action.position.square == start:  # if the pawn landed on the start of the slide
                                 action.position.move_to_square(end)  # move the pawn to the end of the slide
                                 for square in range(start + 1, end + 1):  # and then bump any pawns that were already on the slide
