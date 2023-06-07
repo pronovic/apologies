@@ -97,9 +97,9 @@ sure that you have a working Python 3 enviroment and install Poetry itself.
 
 ### Poetry Version
 
-The project is designed to work with Poetry >= 1.3.0.  If you already have an older
-version of Poetry installed on your system, uninstall it before following the setup
-process below:
+The project is designed to work with Poetry >= 1.5.1.  If you already have an older
+version of Poetry installed on your system, upgrade it first.  If it's very old, you
+may need to uninstall it instead:
 
 ```
 curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python3 - --uninstall
