@@ -1,6 +1,7 @@
 Version 0.1.44     unreleased
 
 	* Fix checktabs to be safe for file named '-'
+	* Upgrade to Poetry v1.5.1 and update other dependencies.
 
 Version 0.1.43     26 Feb 2023
 
