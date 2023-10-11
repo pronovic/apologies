@@ -22,7 +22,7 @@ jobs:
     secrets: inherit
     with:
       matrix-os-version: "[ 'ubuntu-latest' ]"
-      matrix-python-version: "[ '3.8', '3.9', '3.10', '3.11' ]"  # run Linux tests on all supported Python versions
+      matrix-python-version: "[ '3.9', '3.10', '3.11', '3.12' ]"  # run Linux tests on all supported Python versions
       poetry-version: "1.6.1"
       enable-coveralls: true  # only report to coveralls.io for tests that run on Linux
   macos-build-and-test:
@@ -31,7 +31,7 @@ jobs:
     secrets: inherit
     with:
       matrix-os-version: "[ 'macos-latest' ]"
-      matrix-python-version: "[ '3.11' ]"  # only run MacOS tests on latest Python
+      matrix-python-version: "[ '3.12' ]"  # only run MacOS tests on latest Python
       poetry-version: "1.6.1"
       enable-coveralls: false 
   windows-build-and-test:
@@ -40,7 +40,7 @@ jobs:
     secrets: inherit
     with:
       matrix-os-version: "[ 'windows-latest' ]"
-      matrix-python-version: "[ '3.11' ]"  # only run Windows tests on latest Python
+      matrix-python-version: "[ '3.12' ]"  # only run Windows tests on latest Python
       poetry-version: "1.6.1"
       enable-coveralls: false 
   release:
@@ -50,6 +50,6 @@ jobs:
     needs: [ linux-build-and-test, macos-build-and-test, windows-build-and-test ]
     secrets: inherit
     with:
-      python-version: "3.8"
+      python-version: "3.9"
       poetry-version: "1.6.1"
       publish-pypi: true

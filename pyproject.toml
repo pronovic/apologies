@@ -62,7 +62,7 @@ colorama = "~0, >=0.4.6"
 
 [tool.black]
 line-length = 132
-target-version = ['py38', 'py39', 'py310', 'py311' ]
+target-version = ['py39', 'py310', 'py311', 'py312' ]
 include = '(src\/scripts\/.*$|\.pyi?$)'
 exclude = '''
 /(
