@@ -436,10 +436,10 @@ class History:
     # noinspection PyUnresolvedReferences
     @timestamp.default
     def _default_timestamp(self) -> DateTime:
-        return pendulum.now(pendulum.UTC)  # type: ignore[attr-defined]
+        return pendulum.now(pendulum.UTC)  # type: ignore[attr-defined,unused-ignore]
 
     def __str__(self) -> str:
-        time = self.timestamp.to_time_string()  # type: ignore
+        time = self.timestamp.to_time_string()  # type: ignore[no-untyped-call,unused-ignore]
         color = "General" if not self.color else self.color.value
         action = self.action
         return "[%s] %s - %s" % (time, color, action)

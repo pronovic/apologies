@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # vim: set ft=python ts=4 sw=4 expandtab:
+# pylint: disable=line-too-long:
 
 """
 Run a simulation to see how well different character input sources behave.
@@ -14,7 +15,7 @@ from typing import Dict, List, Optional, Sequence
 
 import pendulum
 from attrs import frozen
-from pendulum import DateTime  # type: ignore
+from pendulum import DateTime  # type: ignore[attr-defined,unused-ignore]
 
 from .engine import Character, Engine
 from .game import MAX_PLAYERS, MIN_PLAYERS, GameMode, Player
@@ -83,7 +84,7 @@ class _Statistics:
     def for_results(name: Optional[str], results: List[_Result]) -> _Statistics:
         in_scope = [result for result in results if name is None or result.character.source.name == name]
         turns = [result.player.turns for result in in_scope]
-        durations_ms = [result.stop.diff(result.start).microseconds / 1000 for result in in_scope]  # type: ignore
+        durations_ms = [result.stop.diff(result.start).microseconds / 1000 for result in in_scope]  # type: ignore[no-untyped-call,unused-ignore]
         median_turns = _median(turns)
         mean_turns = _mean(turns)
         median_duration = _median(durations_ms)
@@ -178,7 +179,7 @@ def run_simulation(iterations: int, output: str, sources: List[CharacterInputSou
         _write_header(csvwriter, sources)
 
         start = pendulum.now()
-        print("Starting simulation at %s, using %d iterations per scenario" % (start.to_datetime_string(), iterations))  # type: ignore
+        print("Starting simulation at %s, using %d iterations per scenario" % (start.to_datetime_string(), iterations))  # type: ignore[no-untyped-call,unused-ignore]
 
         scenario = 0
         results = []
@@ -202,4 +203,4 @@ def run_simulation(iterations: int, output: str, sources: List[CharacterInputSou
 
         stop = pendulum.now()
         print(" " * 100, end="\r", flush=True)
-        print("Simulation completed after %s at %s" % (stop.diff(start).in_words(), stop.to_datetime_string()))  # type: ignore
+        print("Simulation completed after %s at %s" % (stop.diff(start).in_words(), stop.to_datetime_string()))  # type: ignore[no-untyped-call,unused-ignore]

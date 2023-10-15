@@ -7,6 +7,7 @@
 [![Test Suite](https://github.com/pronovic/apologies/workflows/Test%20Suite/badge.svg)](https://github.com/pronovic/apologies/actions?query=workflow%3A%22Test+Suite%22)
 [![docs](https://readthedocs.org/projects/apologies/badge/?version=stable&style=flat)](https://apologies.readthedocs.io/en/stable/)
 [![coverage](https://coveralls.io/repos/github/pronovic/apologies/badge.svg?branch=master)](https://coveralls.io/github/pronovic/apologies?branch=master)
+[![Poetry](https://img.shields.io/endpoint?url=https://python-poetry.org/badge/v0.json)](https://python-poetry.org/)
 
 This is a Python library that implements a game similar to the [Sorry](https://en.wikipedia.org/wiki/Sorry!_(game)) board game.  On UNIX-like platforms, it includes a console demo that plays the game with automated players, intended for use by developers and not by end users.
 
