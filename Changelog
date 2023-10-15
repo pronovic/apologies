@@ -3,6 +3,7 @@ Version 0.1.45     unreleased
 	* Upgrade major dependencies.
 	* Upgrade build process to Poetry v1.6.1.
 	* Add support for Python v3.12 and drop support for v3.8.
+	* Migrate from pendulum to arrow to get support for Python 3.12.
 
 Version 0.1.44     07 Jun 2023
 

@@ -4,9 +4,8 @@
 
 from unittest.mock import MagicMock
 
-import pendulum
+import arrow
 import pytest
-from pendulum.datetime import DateTime
 
 from apologies.game import (
     BOARD_SQUARES,
@@ -353,10 +352,10 @@ class TestHistory:
         assert history.action == "action"
         assert history.color is color
         assert history.card is card
-        assert history.timestamp <= DateTime.utcnow()
+        assert history.timestamp <= arrow.utcnow()
 
     def test_str(self):
-        timestamp = pendulum.parse("2020-03-25T14:02:16")
+        timestamp = arrow.get("2020-03-25T14:02:16")
 
         history = History("This is an action", color=None, timestamp=timestamp)
         assert "%s" % history == "[14:02:16] General - This is an action"
@@ -473,7 +472,7 @@ class TestGame:
         assert game.history[0].action == "action"
         assert game.history[0].color is None
         assert game.history[0].card is None
-        assert game.history[0].timestamp <= DateTime.utcnow()
+        assert game.history[0].timestamp <= arrow.utcnow()
         assert game.players[PlayerColor.RED].turns == 0
         assert game.players[PlayerColor.YELLOW].turns == 0
         assert game.players[PlayerColor.BLUE].turns == 0
@@ -487,7 +486,7 @@ class TestGame:
         assert game.history[0].action == "action"
         assert game.history[0].color is PlayerColor.RED
         assert game.history[0].card == CardType.CARD_12
-        assert game.history[0].timestamp <= DateTime.utcnow()
+        assert game.history[0].timestamp <= arrow.utcnow()
         assert game.players[PlayerColor.RED].turns == 1
         assert game.players[PlayerColor.YELLOW].turns == 0
         assert game.players[PlayerColor.BLUE].turns == 0

@@ -6,15 +6,15 @@ Utility functionality.
 """
 from typing import Generic, List, TypeVar
 
+import arrow
 import cattrs
+from arrow.arrow import Arrow
 from attrs import define, field
-from pendulum.datetime import DateTime
-from pendulum.parser import parse
 
 
 class CattrConverter(cattrs.GenConverter):
     """
-    Cattr converter that knows how to correctly serialize/deserialize DateTime to an ISO 8601 timestamp.
+    Cattr converter that knows how to correctly serialize/deserialize Arrow date/time to an ISO 8601 timestamp.
     """
 
     # Note: we need to use GenConverter and not Converter because we use PEP563 (postponed) annotations
@@ -22,8 +22,8 @@ class CattrConverter(cattrs.GenConverter):
 
     def __init__(self) -> None:
         super().__init__()
-        self.register_unstructure_hook(DateTime, lambda datetime: datetime.isoformat() if datetime else None)
-        self.register_structure_hook(DateTime, lambda string, _: parse(string) if string else None)
+        self.register_unstructure_hook(Arrow, lambda datetime: datetime.isoformat() if datetime else None)
+        self.register_structure_hook(Arrow, lambda string, _: arrow.get(string) if string else None)
 
 
 T = TypeVar("T")

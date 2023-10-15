@@ -12,9 +12,9 @@ import statistics
 from itertools import combinations_with_replacement
 from typing import Dict, List, Optional, Sequence
 
-import pendulum
+import arrow
+from arrow.arrow import Arrow
 from attrs import frozen
-from pendulum import DateTime  # type: ignore
 
 from .engine import Character, Engine
 from .game import MAX_PLAYERS, MIN_PLAYERS, GameMode, Player
@@ -60,8 +60,8 @@ class _Result:
 
     """Result of a single game within a scenario."""
 
-    start: DateTime
-    stop: DateTime
+    start: Arrow
+    stop: Arrow
     character: Character
     player: Player
 
@@ -152,12 +152,12 @@ def _run_scenario(prefix: str, iterations: int, engine: Engine) -> List[_Result]
     for i in range(0, iterations):
         print(" " * 100, end="\r", flush=True)
         print("%siteration %d" % (prefix, i), end="\r", flush=True)
-        start = pendulum.now()
+        start = arrow.now()
         engine.reset()
         engine.start_game()
         while not engine.completed:
             engine.play_next()
-        stop = pendulum.now()
+        stop = arrow.now()
         character, player = engine.winner()  # type: ignore
         results.append(_Result(start, stop, character, player))
     return results
@@ -177,7 +177,7 @@ def run_simulation(iterations: int, output: str, sources: List[CharacterInputSou
         csvwriter = csv.writer(csvfile, quoting=csv.QUOTE_ALL)
         _write_header(csvwriter, sources)
 
-        start = pendulum.now()
+        start = arrow.now()
         print("Starting simulation at %s, using %d iterations per scenario" % (start.to_datetime_string(), iterations))  # type: ignore
 
         scenario = 0
@@ -200,6 +200,6 @@ def run_simulation(iterations: int, output: str, sources: List[CharacterInputSou
                     _write_scenario(csvwriter, analysis)
                     print("%sdone" % prefix, end="\r", flush=True)
 
-        stop = pendulum.now()
+        stop = arrow.now()
         print(" " * 100, end="\r", flush=True)
         print("Simulation completed after %s at %s" % (stop.diff(start).in_words(), stop.to_datetime_string()))  # type: ignore
