@@ -12,9 +12,9 @@ import statistics
 from itertools import combinations_with_replacement
 from typing import Dict, List, Optional, Sequence
 
-import arrow
-from arrow.arrow import Arrow
+import pendulum
 from attrs import frozen
+from pendulum import DateTime  # type: ignore[unused-ignore]
 
 from .engine import Character, Engine
 from .game import MAX_PLAYERS, MIN_PLAYERS, GameMode, Player
@@ -60,8 +60,8 @@ class _Result:
 
     """Result of a single game within a scenario."""
 
-    start: Arrow
-    stop: Arrow
+    start: DateTime
+    stop: DateTime
     character: Character
     player: Player
 
@@ -83,7 +83,7 @@ class _Statistics:
     def for_results(name: Optional[str], results: List[_Result]) -> _Statistics:
         in_scope = [result for result in results if name is None or result.character.source.name == name]
         turns = [result.player.turns for result in in_scope]
-        durations_ms = [result.stop.diff(result.start).microseconds / 1000 for result in in_scope]  # type: ignore
+        durations_ms = [result.stop.diff(result.start).microseconds / 1000 for result in in_scope]  # type: ignore[unused-ignore]
         median_turns = _median(turns)
         mean_turns = _mean(turns)
         median_duration = _median(durations_ms)
@@ -152,12 +152,12 @@ def _run_scenario(prefix: str, iterations: int, engine: Engine) -> List[_Result]
     for i in range(0, iterations):
         print(" " * 100, end="\r", flush=True)
         print("%siteration %d" % (prefix, i), end="\r", flush=True)
-        start = arrow.now()
+        start = pendulum.now()
         engine.reset()
         engine.start_game()
         while not engine.completed:
             engine.play_next()
-        stop = arrow.now()
+        stop = pendulum.now()
         character, player = engine.winner()  # type: ignore
         results.append(_Result(start, stop, character, player))
     return results
@@ -177,8 +177,8 @@ def run_simulation(iterations: int, output: str, sources: List[CharacterInputSou
         csvwriter = csv.writer(csvfile, quoting=csv.QUOTE_ALL)
         _write_header(csvwriter, sources)
 
-        start = arrow.now()
-        print("Starting simulation at %s, using %d iterations per scenario" % (start.to_datetime_string(), iterations))  # type: ignore
+        start = pendulum.now()
+        print("Starting simulation at %s, using %d iterations per scenario" % (start.to_datetime_string(), iterations))  # type: ignore[unused-ignore]
 
         scenario = 0
         results = []
@@ -200,6 +200,6 @@ def run_simulation(iterations: int, output: str, sources: List[CharacterInputSou
                     _write_scenario(csvwriter, analysis)
                     print("%sdone" % prefix, end="\r", flush=True)
 
-        stop = arrow.now()
+        stop = pendulum.now()
         print(" " * 100, end="\r", flush=True)
-        print("Simulation completed after %s at %s" % (stop.diff(start).in_words(), stop.to_datetime_string()))  # type: ignore
+        print("Simulation completed after %s at %s" % (stop.diff(start).in_words(), stop.to_datetime_string()))  # type: ignore[unused-ignore]
