@@ -120,15 +120,8 @@ Once that's done, make sure the `python` on your `$PATH` is Python 3 from
 Homebrew (in `/usr/local`), rather than the standard Python 2 that comes with
 MacOS.
 
-Although Poetry can also be installed from Homebrew, it works better to use
-to [official installer](https://python-poetry.org/docs/#installing-with-the-official-installer):
-
-```
-curl -sSL https://install.python-poetry.org | python3 -
-```
-
-> _Note:_ The installer prints the location of the installed `poetry` script.
-> Make sure to add this to your `$PATH`, otherwise you won't be able to run it.
+Although Poetry can also be installed from Homebrew, it works better to follow
+the [official instructions](https://python-poetry.org/docs/#installation).
 
 ### Debian
 
@@ -154,14 +147,7 @@ the process is a little more complicated.  The approach I used before upgrading
 to _bullseye_ was based on `update-alternatives`, as discussed on
 [StackExchange](https://unix.stackexchange.com/a/410851).
 
-Next, install Poetry using the [official installer](https://python-poetry.org/docs/#installing-with-the-official-installer):
-
-```
-curl -sSL https://install.python-poetry.org | python3 -
-```
-
-> _Note:_ The installer prints the location of the installed `poetry` script.
-> Make sure to add this to your `$PATH`, otherwise you won't be able to run it.
+Next, install Poetry following the [official instructions](https://python-poetry.org/docs/#installation).
 
 ### Windows
 
@@ -169,14 +155,7 @@ First, install Python 3 from your preferred source, either a standard
 installer or a meta-installer like Chocolatey.  Make sure the `python`
 on your `$PATH` is Python 3.
 
-Next, install Poetry using the [official installer](https://python-poetry.org/docs/#installing-with-the-official-installer):
-
-```
-curl -sSL https://install.python-poetry.org | python -
-```
-
-> _Note:_ The installer prints the location of the installed `poetry` script.
-> Make sure to add this to your `$PATH`, otherwise you won't be able to run it.
+Next, install Poetry following the [official instructions](https://python-poetry.org/docs/#installation).
 
 The development environment (the `run` script, etc.) expects a bash shell
 to be available.  On Windows, it works fine with the standard Git Bash.
