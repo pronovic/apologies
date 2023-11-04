@@ -1,3 +1,7 @@
+Version 0.1.46     unreleased
+
+	* Upgrade to Poetry v1.7.0 for official Python 3.12 support.
+
 Version 0.1.45     15 Oct 2023
 
 	* Upgrade major dependencies.

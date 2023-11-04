@@ -97,7 +97,7 @@ sure that you have a working Python 3 enviroment and install Poetry itself.
 
 ### Poetry Version
 
-The project is designed to work with Poetry >= 1.5.1.  If you already have an older
+The project is designed to work with Poetry >= 1.7.0.  If you already have an older
 version of Poetry installed on your system, upgrade it first.  If it's very old, you
 may need to uninstall it instead:
 
