@@ -1,5 +1,6 @@
 Version 0.1.46     unreleased
 
+	* Update urllib3 to address Dependabot warnings.
 	* Upgrade to Poetry v1.7.0 for official Python 3.12 support.
 
 Version 0.1.45     15 Oct 2023
