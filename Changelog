@@ -1,3 +1,7 @@
+Version 0.1.47     unreleased
+
+	* Update jinja2 to address CVE-2024-22195 from Dependabot.
+
 Version 0.1.46     05 Nov 2023
 
 	* Update urllib3 to address Dependabot warnings.
