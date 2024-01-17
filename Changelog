@@ -1,4 +1,4 @@
-Version 0.1.47     unreleased
+Version 0.1.47     17 Jan 2024
 
 	* Update jinja2 to address CVE-2024-22195 from Dependabot.
 
