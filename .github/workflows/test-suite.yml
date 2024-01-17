@@ -10,8 +10,6 @@ on:
   pull_request:
     branches:
       - master
-  schedule:
-    - cron: '05 17 15 * *'  # 15th of the month at 5:05pm UTC
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
