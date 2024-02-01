@@ -375,7 +375,7 @@ class TestPosition:
     def test_calculate_position_start(self):
         for color in PlayerColor:
             with pytest.raises(ValueError):
-                BoardRules()._position(color, Position().move_to_home(), 1)
+                BoardRules()._position(color, Position().move_to_start(), 1)
 
     def test_calculate_position_from_safe(self):
         for color in PlayerColor:
@@ -450,7 +450,7 @@ class TestPosition:
         assert BoardRules()._position(PlayerColor.RED, Position().move_to_square(59), 4) == Position().move_to_safe(0)
 
         with pytest.raises(ValueError):
-            assert BoardRules()._position(PlayerColor.RED, Position().move_to_square(2), 7) == Position().move_to_home()
+            BoardRules()._position(PlayerColor.RED, Position().move_to_square(2), 7)
 
         assert BoardRules()._position(PlayerColor.BLUE, Position().move_to_square(16), 2) == Position().move_to_safe(0)
         assert BoardRules()._position(PlayerColor.BLUE, Position().move_to_square(17), 1) == Position().move_to_safe(0)
@@ -458,7 +458,7 @@ class TestPosition:
         assert BoardRules()._position(PlayerColor.BLUE, Position().move_to_square(17), 2) == Position().move_to_safe(1)
         assert BoardRules()._position(PlayerColor.BLUE, Position().move_to_square(17), 6) == Position().move_to_home()
         with pytest.raises(ValueError):
-            assert BoardRules()._position(PlayerColor.BLUE, Position().move_to_square(17), 7) == Position().move_to_home()
+            BoardRules()._position(PlayerColor.BLUE, Position().move_to_square(17), 7)
 
         assert BoardRules()._position(PlayerColor.YELLOW, Position().move_to_square(31), 2) == Position().move_to_safe(0)
         assert BoardRules()._position(PlayerColor.YELLOW, Position().move_to_square(32), 1) == Position().move_to_safe(0)
@@ -466,7 +466,7 @@ class TestPosition:
         assert BoardRules()._position(PlayerColor.YELLOW, Position().move_to_square(32), 2) == Position().move_to_safe(1)
         assert BoardRules()._position(PlayerColor.YELLOW, Position().move_to_square(32), 6) == Position().move_to_home()
         with pytest.raises(ValueError):
-            assert BoardRules()._position(PlayerColor.YELLOW, Position().move_to_square(32), 7) == Position().move_to_home()
+            BoardRules()._position(PlayerColor.YELLOW, Position().move_to_square(32), 7)
 
         assert BoardRules()._position(PlayerColor.GREEN, Position().move_to_square(46), 2) == Position().move_to_safe(0)
         assert BoardRules()._position(PlayerColor.GREEN, Position().move_to_square(47), 1) == Position().move_to_safe(0)
@@ -474,7 +474,7 @@ class TestPosition:
         assert BoardRules()._position(PlayerColor.GREEN, Position().move_to_square(47), 2) == Position().move_to_safe(1)
         assert BoardRules()._position(PlayerColor.GREEN, Position().move_to_square(47), 6) == Position().move_to_home()
         with pytest.raises(ValueError):
-            assert BoardRules()._position(PlayerColor.GREEN, Position().move_to_square(47), 7) == Position().move_to_home()
+            BoardRules()._position(PlayerColor.GREEN, Position().move_to_square(47), 7)
 
 
 def _setup_game():
