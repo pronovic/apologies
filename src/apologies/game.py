@@ -173,7 +173,7 @@ class Deck:
     def draw(self) -> Card:
         """Draw a random card from the draw pile."""
         if len(self._draw_pile) < 1:
-            # this is equivalent to shuffling the discard pile into the draw pile
+            # this is equivalent to shuffling the discard pile into the draw pile, because we draw randomly from the deck
             for card in list(self._discard_pile.values()):
                 self._discard_pile.pop(card.id)
                 self._draw_pile[card.id] = card

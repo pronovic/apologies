@@ -573,7 +573,7 @@ class TestLegalMoves:
     def test_construct_legal_moves_card_2(self):
         # No legal moves if no pawn in start, on the board, or in safe
         game = _setup_game()
-        card, pawn, view, moves = _legal_moves(RED, game, 0, "1")
+        card, pawn, view, moves = _legal_moves(RED, game, 0, "2")
         assert moves == []
 
         # Move pawn from start with no conflicts
@@ -822,16 +822,14 @@ class TestLegalMoves:
         game.players[RED].pawns[0].position.move_to_square(5)
         game.players[RED].pawns[1].position.move_to_square(15)
         card, pawn, view, moves = _legal_moves(RED, game, 0, "10")
-        assert moves == [Move(card, actions=[_square(pawn, 4)], side_effects=[])]  # can't move because we have a pawn there already
+        assert moves == [Move(card, actions=[_square(pawn, 4)], side_effects=[])]
 
         # Move pawn on board with conflict (same color)
         game = _setup_game()
         game.players[RED].pawns[0].position.move_to_square(5)
         game.players[RED].pawns[1].position.move_to_square(4)
         card, pawn, view, moves = _legal_moves(RED, game, 0, "10")
-        assert moves == [
-            Move(card, actions=[_square(pawn, 15)], side_effects=[])
-        ]  # can't move because we have a pawn there already
+        assert moves == [Move(card, actions=[_square(pawn, 15)], side_effects=[])]
 
         # Move pawn on board with conflict (different color)
         game = _setup_game()
@@ -891,7 +889,7 @@ class TestLegalMoves:
         game.players[GREEN].pawns[0].position.move_to_start()  # can't be swapped, in start area
         game.players[YELLOW].pawns[0].position.move_to_safe(0)  # can't be swapped, in safe area
         game.players[YELLOW].pawns[3].position.move_to_square(52)  # can be swapped, on board
-        game.players[BLUE].pawns[1].position.move_to_square(19)  # can be swapped, on board\
+        game.players[BLUE].pawns[1].position.move_to_square(19)  # can be swapped, on board
         card, pawn, view, moves = _legal_moves(RED, game, 0, "11")
         assert moves == [
             Move(card, actions=_swap(view, pawn, YELLOW, 3), side_effects=[]),
