@@ -74,10 +74,14 @@ class Move:
         id(str): Identifier for this move, which must be unique among all legal moves this move is grouped with
     """
 
+    # Note that id is not included in equality, because we want to check for move equalivance, and
+    # two moves that have different ids (different UUIDs) are still equivalent as long as they have
+    # the same card, actions, and side effects.
+
     card: Card
     actions: List[Action]
     side_effects: List[Action] = field(factory=list)
-    id: str = field(factory=lambda: uuid.uuid4().hex)
+    id: str = field(factory=lambda: uuid.uuid4().hex, eq=False)
 
 
 # noinspection PyMethodMayBeStatic
