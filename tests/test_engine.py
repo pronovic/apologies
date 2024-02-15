@@ -20,18 +20,7 @@ class TestCharacter:
         assert character.source is source
 
     # noinspection PyTypeChecker
-    def test_choose_move_minimal(self):
-        source = Mock()
-        character = Character("c", source)
-        mode = Mock()
-        view = Mock()
-        legal_moves = []
-        evaluator = MagicMock()
-        character.choose_move(mode, view, legal_moves, evaluator)
-        source.choose_move.assert_called_once_with(mode, view, legal_moves, evaluator)
-
-    # noinspection PyTypeChecker
-    def test_choose_move_all_args(self):
+    def test_choose_move(self):
         source = Mock()
         character = Character("c", source)
         mode = Mock()
@@ -565,7 +554,7 @@ class TestEngine:
         character1.choose_move = MagicMock()  # type: ignore
 
         character2 = Character("character2", Mock())
-        character1.choose_move = MagicMock()  # type: ignore
+        character2.choose_move = MagicMock()  # type: ignore
 
         first = PlayerColor.RED
         engine = Engine(mode, [character1, character2], first=first)
