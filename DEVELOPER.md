@@ -485,3 +485,4 @@ the artifacts, publishes to PyPI, and finally creates a release from the tag.
 > _Note:_ This process relies on a PyPI API token with upload permissions for
 > the project.  This token is stored in a GitHub Actions secret called
 > `PYPI_TOKEN`.
+
