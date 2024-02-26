@@ -1,12 +1,12 @@
-Version 0.1.48     unreleased
+Version 0.1.48     26 Feb 2024
 
 	* Minor improvements to unit tests based on code review.
-	* Add support for 'run outdated' and update dependencies.
 	* Upgrade to Poetry v1.8.0 and make related adjustments.
 	* Disable Python keyring via poetry.toml.
 	* Update Poetry install instructions in DEVELOPER.md.
 	* Pull in latest version of run-script-framework.
-	* Update GHA workflows to use Poetry v1.8.0.
+	* Upgrade to gha-shared-workflows@v4 with new Poetry setup.
+	* Add support for 'run outdated' and update dependencies.
 
 Version 0.1.47     17 Jan 2024
 
