@@ -58,7 +58,6 @@ def _median(data: Sequence[float]) -> Optional[float]:
 
 @frozen
 class _Result:
-
     """Result of a single game within a scenario."""
 
     start: DateTime
@@ -69,7 +68,6 @@ class _Result:
 
 @frozen
 class _Statistics:
-
     """Scenario statistics for a source."""
 
     source: Optional[str]

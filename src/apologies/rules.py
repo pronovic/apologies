@@ -86,7 +86,6 @@ class Move:
 
 # noinspection PyMethodMayBeStatic
 class BoardRules:
-
     """
     Rules related to the way the board works.
     """

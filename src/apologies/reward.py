@@ -34,7 +34,6 @@ from .rules import BoardRules
 
 
 class RewardCalculator(ABC):
-
     """Abstract reward calculator interface, to support multiple reward implementations."""
 
     @abstractmethod

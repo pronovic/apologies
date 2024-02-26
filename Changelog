@@ -1,6 +1,7 @@
 Version 0.1.48     unreleased
 
 	* Minor improvements to unit tests based on code review.
+	* Add support for 'run outdated' and update dependencies.
 	* Upgrade to Poetry v1.8.0 and make related adjustments.
 	* Disable Python keyring via poetry.toml.
 	* Update Poetry install instructions in DEVELOPER.md.

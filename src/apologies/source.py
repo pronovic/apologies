@@ -16,7 +16,6 @@ from .rules import Move
 
 
 class CharacterInputSource(ABC):
-
     """
     A generic source of input for a character, which could be a person or could be computer-driven.
     Concrete character input sources must have a valid zero-arguments constructor.
@@ -62,7 +61,6 @@ class CharacterInputSource(ABC):
 
 
 class NoOpInputSource(CharacterInputSource):
-
     """
     A no-op input source, which raises an error if ever used.
 
@@ -80,7 +78,6 @@ class NoOpInputSource(CharacterInputSource):
 
 
 class RandomInputSource(CharacterInputSource):
-
     """
     A source of input for a character which chooses randomly from among legal moves.
     """
@@ -94,7 +91,6 @@ class RandomInputSource(CharacterInputSource):
 
 # noinspection PyMethodMayBeStatic
 class RewardInputSource(CharacterInputSource):
-
     """
     A source of input for a character which chooses its next move based on a reward calculation.
     """
@@ -114,7 +110,6 @@ class RewardInputSource(CharacterInputSource):
 
 # noinspection PyMethodMayBeStatic
 class RewardV1InputSource(RewardInputSource):
-
     """
     A source of input for a character which chooses its next move based on the RewardCalculatorV1.
     """
