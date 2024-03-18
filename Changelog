@@ -1,3 +1,7 @@
+Version 0.1.49     18 Mar 2024
+
+	* Updates to GHA workflows.
+
 Version 0.1.48     26 Feb 2024
 
 	* Minor improvements to unit tests based on code review.
