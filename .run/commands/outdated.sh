@@ -30,7 +30,7 @@ command_outdated() {
 
    MATCHES=$(echo "$OUTDATED" | grep --file=<(echo "$PATTERNS")) 
    if [ $? == 0 ]; then
-      echo "$MATCHES" | awk '{ printf ( "%-25s %-15s -> %-15s\n", $1, $2, $3 ) }'
+      echo "$MATCHES" | sed 's/(!)//' | awk '{ printf ( "%-25s %-15s -> %-15s\n", $1, $2, $3 ) }'
    elif [ $? == 1 ]; then
       echo "No outdated constraints found"
    else
