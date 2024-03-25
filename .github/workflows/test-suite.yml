@@ -16,7 +16,7 @@ concurrency:
 jobs:
   linux-build-and-test:
     name: "Linux"
-    uses: pronovic/gha-shared-workflows/.github/workflows/poetry-build-and-test.yml@v5
+    uses: pronovic/gha-shared-workflows/.github/workflows/poetry-build-and-test.yml@v6
     secrets: inherit
     with:
       matrix-os-version: "[ 'ubuntu-latest' ]"
@@ -24,7 +24,7 @@ jobs:
       enable-coveralls: true  # only report to coveralls.io for tests that run on Linux
   macos-build-and-test:
     name: "MacOS"
-    uses: pronovic/gha-shared-workflows/.github/workflows/poetry-build-and-test.yml@v5
+    uses: pronovic/gha-shared-workflows/.github/workflows/poetry-build-and-test.yml@v6
     secrets: inherit
     with:
       matrix-os-version: "[ 'macos-latest' ]"
@@ -32,7 +32,7 @@ jobs:
       enable-coveralls: false 
   windows-build-and-test:
     name: "Windows"
-    uses: pronovic/gha-shared-workflows/.github/workflows/poetry-build-and-test.yml@v5
+    uses: pronovic/gha-shared-workflows/.github/workflows/poetry-build-and-test.yml@v6
     secrets: inherit
     with:
       matrix-os-version: "[ 'windows-latest' ]"
@@ -41,7 +41,7 @@ jobs:
   release:
     name: "Release"
     if: github.ref_type == 'tag'
-    uses: pronovic/gha-shared-workflows/.github/workflows/poetry-release.yml@v5
+    uses: pronovic/gha-shared-workflows/.github/workflows/poetry-release.yml@v6
     needs: [ linux-build-and-test, macos-build-and-test, windows-build-and-test ]
     secrets: inherit
     with:
