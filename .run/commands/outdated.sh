@@ -15,9 +15,26 @@ command_outdated() {
    echo ""
    echo "Checking for outdated constraints..."
    echo ""
-   poetry show --outdated | grep --file=<(poetry show --tree | grep '^\w' | cut -d' ' -f1 | sed 's/.*/^&\\s/')
+
+   PATTERNS=$(poetry show --tree | grep '^\w' | cut -d' ' -f1 | sed 's/.*/^&\\s/')
    if [ $? != 0 ]; then
-      echo "*** Failed to check for outdated constraints"
+      echo "*** Failed to run 'poetry show --tree'" 
+      exit 1
+   fi
+
+   OUTDATED=$(poetry show --outdated)
+   if [ $? != 0 ]; then
+      echo "*** Failed to run 'poetry show --outdated'" 
+      exit 1
+   fi
+
+   MATCHES=$(echo "$OUTDATED" | grep --file=<(echo "$PATTERNS")) 
+   if [ $? == 0 ]; then
+      echo "$MATCHES" | awk '{ printf ( "%-25s %-15s -> %-15s\n", $1, $2, $3 ) }'
+   elif [ $? == 1 ]; then
+      echo "No outdated constraints found"
+   else
+      echo "*** Failed to grep for outdated constraints"
       exit 1
    fi
 }
