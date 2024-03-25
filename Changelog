@@ -1,6 +1,6 @@
 Version 0.1.50     unreleased
 
-	* Simplify integration with coveralls.io.
+	* Simplify GHA integration with coveralls.io.
 
 Version 0.1.49     18 Mar 2024
 
