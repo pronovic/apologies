@@ -45,5 +45,5 @@ jobs:
     needs: [ linux-build-and-test, macos-build-and-test, windows-build-and-test ]
     secrets: inherit
     with:
-      python-version: "3.9"
+      python-version: "3.9"   # run release with oldest supported Python version
       publish-pypi: true
