@@ -2,6 +2,7 @@ Version 0.1.50     unreleased
 
 	* Simplify GHA integration with coveralls.io.
 	* Pull in latest updates from run-script-framework.
+	* Update transitive dependencies to address Dependabot warnings.
 
 Version 0.1.49     18 Mar 2024
 
