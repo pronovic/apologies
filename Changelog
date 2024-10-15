@@ -1,4 +1,4 @@
-Version 0.1.50     unreleased
+Version 0.1.50     15 Oct 2024
 
 	* Simplify GHA integration with coveralls.io.
 	* Pull in latest updates from run-script-framework.
