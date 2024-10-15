@@ -105,6 +105,7 @@ class _Analysis:
     source_stats: Dict[str, _Statistics]
 
 
+# pylint: disable=too-many-positional-arguments
 def _analyze_scenario(
     scenario: int,
     mode: GameMode,
