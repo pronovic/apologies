@@ -53,6 +53,7 @@ def _draw(stdscr, board, state, history):
     history.refresh()
 
 
+# pylint: disable=too-many-positional-arguments
 def _refresh(source, engine, game, delay_sec, stdscr, board, state, history):
     """Refresh the dynamic portions of the screen."""
     _refresh_screen(source, engine, delay_sec, game, stdscr)
