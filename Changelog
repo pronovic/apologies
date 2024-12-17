@@ -1,10 +1,6 @@
-Version 0.1.52     17 Dec 2024
+Version 0.1.53     17 Dec 2024
 
-	* Migrate to shared workflows v7 for a new publishing mechanism.
-
-Version 0.1.51     17 Dec 2024
-
-	* Make security improvements in GHA worksflows.
+	* Upgrade to gha-shared-workflows@v4 with publish improvements.
 
 Version 0.1.50     15 Oct 2024
 
