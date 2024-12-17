@@ -43,9 +43,6 @@ jobs:
     uses: pronovic/gha-shared-workflows/.github/workflows/poetry-release.yml@v7
     needs: [ linux-build-and-test, macos-build-and-test, windows-build-and-test ]
     secrets: inherit
-    environment:
-      name: "pypi"
-      url: "https://pypi.org/p/apologies"
     permissions:
       id-token: write # needed for PyPI trusted publishing
     with:
