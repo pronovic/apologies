@@ -1,4 +1,4 @@
-Version 0.1.52     unreleased
+Version 0.1.52     17 Dec 2024
 
 	* Migrate to shared workflows v7 for PyPI trusted publishing.
 
