@@ -1,3 +1,7 @@
+Version 0.1.52     unreleased
+
+	* Migrate to shared workflows v7 for PyPI trusted publishing.
+
 Version 0.1.51     17 Dec 2024
 
 	* Make security improvements in GHA worksflows.
