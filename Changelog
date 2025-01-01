@@ -1,3 +1,7 @@
+Version 0.1.55     unreleased
+
+	* Update dependencies to address Dependabot warnings.
+
 Version 0.1.54     17 Dec 2024
 
 	* Upgrade to gha-shared-workflows@v7 with publish improvements.
