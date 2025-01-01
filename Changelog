@@ -1,10 +1,10 @@
-Version 0.1.55     unreleased
+Version 0.1.55     01 Jan 2025
 
 	* Add GitHub security policy in SECURITY.md.
 	* Pull in latest version of run-script-framework.
-	* Change the default branch in GitHub from master to main.
 	* Update dependencies to address Dependabot warnings.
 	* Rename pytest.ini to .pytest.ini for a cleaner repo listing.
+	* Change the default branch in GitHub from master to main.
 
 Version 0.1.54     17 Dec 2024
 
