@@ -1,5 +1,6 @@
 Version 0.1.55     unreleased
 
+	* Add GitHub security policy in SECURITY.md.
 	* Update dependencies to address Dependabot warnings.
 
 Version 0.1.54     17 Dec 2024
