@@ -25,6 +25,8 @@ command_tagrelease() {
       COPYRIGHT="${EARLIEST_YEAR}-${LATEST_YEAR}"
    fi
 
+   DEFAULT_BRANCH=$(default_branch)
+   CURRENT_BRANCH=$(current_branch)
    if [ "$CURRENT_BRANCH" != "$DEFAULT_BRANCH" ]; then
       echo "*** You are not on $DEFAULT_BRANCH; you cannot release from this branch"
       exit 1

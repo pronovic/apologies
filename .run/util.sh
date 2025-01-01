@@ -106,6 +106,20 @@ task_help() {
    fi
 }
 
+# Return the default Git branch
+default_branch() {
+   # There is no canonical way to determine the default Git branch.  This version is
+   # slow, but seems more reliable than most.  At least by pulling it into a function
+   # (vs. a variable) only the commands or tasks that need it will take the hit.
+   # See: https://stackoverflow.com/questions/28666357/how-to-get-default-git-branch
+   LC_ALL=C git remote show $(git remote) | grep 'HEAD branch' | cut -d' ' -f5
+}
+
+# Return the current Git branch
+current_branch() {
+   git branch -a | grep '^\*' | sed 's/^\* //'
+}
+
 # Setup the runtime environment
 setup_environment() {
    local EARLIEST_YEAR LATEST_YEAR
@@ -114,9 +128,6 @@ setup_environment() {
 
    WORKING_DIR=$(mktemp -d)
    trap "rm -rf '$WORKING_DIR'" EXIT SIGINT SIGTERM
-
-   DEFAULT_BRANCH=$(git config --get init.defaultBranch)  # works on git > 2.28.0 from 2020
-   CURRENT_BRANCH=$(git branch -a | grep '^\*' | sed 's/^\* //')
 }
 
 # Add addendum information to the end of the help output
