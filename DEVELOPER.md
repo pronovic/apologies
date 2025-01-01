@@ -24,7 +24,7 @@ Previously, I used the Safety scanner as part of my pre-commit hooks and GitHub 
 
 I use [GitHub Actions](https://docs.github.com/en/actions/quickstart) for CI.  See [.github/workflows/test-suite.yml](.github/workflows/test-suite.yml) for the definition of the workflow, and go to the [Actions tab](https://github.com/pronovic/apologies/actions) to see what actions have been executed.  The workflow is implemented in terms of the shared `poetry-build-and-test` workflow in the [pronovic/gha-shared-actions](https://github.com/pronovic/gha-shared-workflows) repository.  The workflow was originally developed here, and eventually refactored out when I started sharing the same process across multiple repositories.
 
-The workflow is kicked off for all PRs, and also when code is merged to master.  It uses a matrix build and runs the same test suite on a combination of platforms (Windows, MacOS, Linux) and Python versions.  The test suite in GitHub Actions is implemented by the same `run suite` command that you would use locally. Coverage data is uploaded to coveralls.io (see discussion below).
+The workflow is kicked off for all PRs, and also when code is merged to main.  It uses a matrix build and runs the same test suite on a combination of platforms (Windows, MacOS, Linux) and Python versions.  The test suite in GitHub Actions is implemented by the same `run suite` command that you would use locally. Coverage data is uploaded to coveralls.io (see discussion below).
 
 ## Third-Party Integration
 
@@ -32,7 +32,7 @@ There is third-party integration with [readthedocs.io](https://readthedocs.io/) 
 
 Both of these services make integration very straightforward.  For readthedocs, integration happens via a [GitHub webhook](https://docs.github.com/en/github/extending-github/about-webhooks).  You first create an account at readthedocs.io.  Then, you import your repository, which creates a webhook in GitHub for your repository.  Once the webhook has been created, readthedocs is notified whenever code is pushed to your repository, and a build is kicked off on their infrastructure to generate and publish your documentation.  Configuration is taken from a combination of [.readthedocs.yml](.readthedocs.yml) and preferences that you set for your repository in the readthedocs web interface.  See the readthedocs.io [documentation](https://docs.readthedocs.io/en/stable/guides/platform.html) for more information.
 
-For coveralls.io, integration happens via a [GitHub App](https://docs.github.com/en/developers/apps/about-apps) rather than a webhook.  Like with readthedocs, you first create an account at coveralls.io.  Next, you grant the Coveralls application permissions to your GitHub organization, and select which repositories should be enabled.  Unlike with readthedocs, you need to generate coverage information locally and upload it to coverage.io.  This happens as a part of the CI workflow.  There are several steps in the [shared workflow](https://github.com/pronovic/gha-shared-workflows/blob/master/.github/workflows/poetry-build-and-test.yml), taken more-or-less verbatim from the coveralls.io [documentation](https://coveralls-python.readthedocs.io/en/latest/usage/index.html).
+For coveralls.io, integration happens via a [GitHub App](https://docs.github.com/en/developers/apps/about-apps) rather than a webhook.  Like with readthedocs, you first create an account at coveralls.io.  Next, you grant the Coveralls application permissions to your GitHub organization, and select which repositories should be enabled.  Unlike with readthedocs, you need to generate coverage information locally and upload it to coverage.io.  This happens as a part of the CI workflow.  There are several steps in the [shared workflow](https://github.com/pronovic/gha-shared-workflows/blob/main/.github/workflows/poetry-build-and-test.yml), taken more-or-less verbatim from the coveralls.io [documentation](https://coveralls-python.readthedocs.io/en/latest/usage/index.html).
 
 ## Pre-Commit Hooks
 
@@ -52,7 +52,7 @@ manually. Then, I do my incremental commits with `--no-verify`, to temporarily
 skip the pre-commit hooks altogether. As long as I fix all of the problems in
 my local branch before pushing to GitHub, I don't get a failed PR build in
 GitHub Actions. I always squash-merge my PRs, so those incremental commits that
-don't meet the code quality standards never end up in the master branch.
+don't meet the code quality standards never end up in the main branch.
 
 An alternative approach is for you to adjust the pre-commit hooks so that the
 checks are only run on files staged for commit.  If you want to do this, you
@@ -482,8 +482,8 @@ partially-automated process to publish a new release.
 > _Note:_ In order to publish code, you must must have push permissions to the
 > GitHub repo.
 
-Ensure that you are on the `master` branch.  Releases must always be done from
-`master`.
+Ensure that you are on the `main` branch.  Releases must always be done from
+`main`.
 
 Ensure that the `Changelog` is up-to-date and reflects all of the changes that
 will be published.  The top line must show your version as unreleased:
