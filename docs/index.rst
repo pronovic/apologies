@@ -7,7 +7,7 @@ Release v\ |version|
     :target: https://pypi.org/project/apologies/
 
 .. image:: https://img.shields.io/pypi/l/apologies.svg
-    :target: https://github.com/pronovic/apologies/blob/master/LICENSE
+    :target: https://github.com/pronovic/apologies/blob/main/LICENSE
 
 .. image:: https://img.shields.io/pypi/wheel/apologies.svg
     :target: https://pypi.org/project/apologies/
@@ -21,8 +21,8 @@ Release v\ |version|
 .. image:: https://readthedocs.org/projects/apologies/badge/?version=stable&style=flat
     :target: https://apologies.readthedocs.io/en/stable/
 
-.. image:: https://coveralls.io/repos/github/pronovic/apologies/badge.svg?branch=master
-    :target: https://coveralls.io/github/pronovic/apologies?branch=master
+.. image:: https://coveralls.io/repos/github/pronovic/apologies/badge.svg?branch=main
+    :target: https://coveralls.io/github/pronovic/apologies?branch=main
 
 Apologies_ is a Python library that implements a game similar to the Sorry_
 board game.  On UNIX-like platforms, it includes a console demo that plays the
@@ -50,7 +50,7 @@ Documentation
    :maxdepth: 1
 
 Commonly-used classes are imported into 
-`__init__.py <https://github.com/pronovic/apologies/blob/master/src/apologies/__init__.py>`_
+`__init__.py <https://github.com/pronovic/apologies/blob/main/src/apologies/__init__.py>`_
 to flatten the namespace and make the library easier to use.  In general, you
 should follow the examples below and import classes directly from
 ``apologies``, rather than importing from submodules.
@@ -184,7 +184,7 @@ require extra configuration before the terminal can be resized properly
 .. _Character: autoapi/apologies/engine/index.html#apologies.engine.Character
 .. _CharacterInputSource: autoapi/apologies/source/index.html#apologies.source.CharacterInputSource
 .. _Characters: autoapi/apologies/engine/index.html#apologies.engine.Character
-.. _DEVELOPER.md: https://github.com/pronovic/apologies/blob/master/DEVELOPER.md#running-the-demo
+.. _DEVELOPER.md: https://github.com/pronovic/apologies/blob/main/DEVELOPER.md#running-the-demo
 .. _Engine: autoapi/apologies/engine/index.html#apologies.engine.Engine
 .. _Game: autoapi/apologies/game/index.html#apologies.game.Game
 .. _GameMode: autoapi/apologies/game/index.html#apologies.game.GameMode
