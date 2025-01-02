@@ -1,6 +1,7 @@
-Version 0.1.56     unreleased
+Version 0.1.56     02 Jan 2025
 
 	* Pull in latest version of run-script-framework.
+	* Fix some leftover references to the master branch.
 
 Version 0.1.55     01 Jan 2025
 
