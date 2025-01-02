@@ -106,20 +106,6 @@ task_help() {
    fi
 }
 
-# Return the default Git branch
-default_branch() {
-   # There is no canonical way to determine the default Git branch.  This version is
-   # slow, but seems more reliable than most.  At least by pulling it into a function
-   # (vs. a variable) only the commands or tasks that need it will take the hit.
-   # See: https://stackoverflow.com/questions/28666357/how-to-get-default-git-branch
-   LC_ALL=C git remote show $(git remote) | grep 'HEAD branch' | cut -d' ' -f5
-}
-
-# Return the current Git branch
-current_branch() {
-   git branch -a | grep '^\*' | sed 's/^\* //'
-}
-
 # Setup the runtime environment
 setup_environment() {
    local EARLIEST_YEAR LATEST_YEAR
