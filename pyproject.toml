@@ -42,17 +42,17 @@ classifiers=[
    "Topic :: Games/Entertainment :: Board Games",
    "Topic :: Software Development :: Libraries",
 ]
+version = "0.0.0"  # published version is managed using Git tags (see below)
+
+[tool.poetry.requires-plugins]
+poetry-dynamic-versioning = { version = ">=1.5.0,<2.0.0", extras = ["plugin"] }
 
 # Published version is managed using Git tags
 # We get either the tag (like "0.24.1") or a snapshot-type version (like "0.24.1+3.e8319c4")
-version = "0.0.0"  # published version is managed using Git tags (see below)
 [tool.poetry-dynamic-versioning]
 enable = true
 pattern = '^[vV](?P<base>\d+\.\d+\.\d+)'  # this extracts the version from our vX.Y.Z tag format
 format-jinja = "{% if distance == 0 and not dirty %}{{ base }}{% else %}{{ base }}+{{ distance }}.{{ commit }}{% endif %}"
-
-[tool.poetry.requires-plugins]
-poetry-dynamic-versioning = { version = ">=1.5.0,<2.0.0", extras = ["plugin"] }
 
 [tool.poetry.group.dev.dependencies]
 pytest = ">=8.0.2,<9.0.0"
