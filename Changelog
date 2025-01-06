@@ -1,3 +1,7 @@
+Version 0.1.57     unreleased
+
+	* Migrate to Poetry v2 and project-managed Poetry plugins.
+
 Version 0.1.56     02 Jan 2025
 
 	* Pull in latest version of run-script-framework.

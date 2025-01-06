@@ -16,7 +16,7 @@ concurrency:
 jobs:
   linux-build-and-test:
     name: "Linux"
-    uses: pronovic/gha-shared-workflows/.github/workflows/poetry-build-and-test.yml@v7
+    uses: pronovic/gha-shared-workflows/.github/workflows/poetry-build-and-test.yml@v8
     secrets: inherit
     with:
       matrix-os-version: "[ 'ubuntu-latest' ]"
@@ -25,14 +25,14 @@ jobs:
       persist-python-version: "3.10"  # persist artifacts for the oldest supported Python version
   macos-build-and-test:
     name: "MacOS"
-    uses: pronovic/gha-shared-workflows/.github/workflows/poetry-build-and-test.yml@v7
+    uses: pronovic/gha-shared-workflows/.github/workflows/poetry-build-and-test.yml@v8
     secrets: inherit
     with:
       matrix-os-version: "[ 'macos-latest' ]"
       matrix-python-version: "[ '3.13' ]"  # only run MacOS tests on latest Python
   windows-build-and-test:
     name: "Windows"
-    uses: pronovic/gha-shared-workflows/.github/workflows/poetry-build-and-test.yml@v7
+    uses: pronovic/gha-shared-workflows/.github/workflows/poetry-build-and-test.yml@v8
     secrets: inherit
     with:
       matrix-os-version: "[ 'windows-latest' ]"
@@ -40,7 +40,7 @@ jobs:
   release:
     name: "Release"
     if: github.ref_type == 'tag'
-    uses: pronovic/gha-shared-workflows/.github/workflows/poetry-release.yml@v7
+    uses: pronovic/gha-shared-workflows/.github/workflows/poetry-release.yml@v8
     needs: [ linux-build-and-test, macos-build-and-test, windows-build-and-test ]
     secrets: inherit
     with:
