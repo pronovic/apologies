@@ -1,3 +1,7 @@
+[build-system]
+requires = ["poetry-core (>=2.0.0)", "poetry-dynamic-versioning (>=1.5.0,<2.0.0)"]
+build-backend = "poetry_dynamic_versioning.backend"
+
 [project]
 name = "apologies"
 requires-python = ">=3.10,<4"
@@ -89,6 +93,8 @@ profile = "black"
 line_length = 132
 skip_glob = [ "docs", "notes", ".poetry" ]
 
-[build-system]
-requires = ["poetry-core (>=2.0.0)", "poetry-dynamic-versioning (>=1.5.0,<2.0.0)"]
-build-backend = "poetry_dynamic_versioning.backend"
+[tool.pytest.ini_options]
+filterwarnings = [
+    'error',  # turn all Python warnings into test failures, so they're hard to miss
+    'ignore:datetime.datetime.utcfromtimestamp\(\) is deprecated:DeprecationWarning',
+]

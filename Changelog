@@ -1,6 +1,7 @@
 Version 0.1.57     unreleased
 
 	* Migrate to Poetry v2 and project-managed Poetry plugins.
+	* Move pytest configuration into pyproject.toml.
 
 Version 0.1.56     02 Jan 2025
 
