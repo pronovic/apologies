@@ -93,6 +93,17 @@ profile = "black"
 line_length = 132
 skip_glob = [ "docs", "notes", ".poetry" ]
 
+[tool.coverage.paths]
+source = [ "src" ]
+
+[tool.coverage.run]
+branch = true
+source = [ "src/apologies" ]
+
+[tool.coverage.report]
+show_missing = false
+precision = 1
+
 [tool.pytest.ini_options]
 filterwarnings = [
     'error',  # turn all Python warnings into test failures, so they're hard to miss
