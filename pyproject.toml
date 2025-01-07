@@ -109,3 +109,43 @@ filterwarnings = [
     'error',  # turn all Python warnings into test failures, so they're hard to miss
     'ignore:datetime.datetime.utcfromtimestamp\(\) is deprecated:DeprecationWarning',
 ]
+
+[tool.mypy]
+# Settings are mostly equivalent to strict=true as of v0.770
+pretty = true
+show_absolute_path = true
+show_column_numbers = true
+show_error_codes = true
+files = [ "src/apologies", "tests" ]
+check_untyped_defs = true
+disallow_any_generics = true
+disallow_incomplete_defs = true
+disallow_subclassing_any = true
+disallow_untyped_calls = true
+disallow_untyped_decorators = false
+disallow_untyped_defs = true
+no_implicit_optional = true
+no_implicit_reexport = true
+strict_equality = true
+strict_optional = true
+warn_redundant_casts = true
+warn_return_any = true
+warn_no_return = true
+warn_unused_configs = true
+warn_unused_ignores = true
+
+# It's hard to make ncurses code compliant
+[[tool.mypy.overrides]]
+module = [ "apologies.demo", "apologies.demo_unix", "apologies.demo_windows" ]
+ignore_errors = true
+
+# It's hard to make tests compliant using unittest.mock
+[[tool.mypy.overrides]]
+module = "tests.*"
+check_untyped_defs = false
+allow_untyped_defs = true
+
+# There is no type hinting for pytest
+[[tool.mypy.overrides]]
+module = "pytest"
+ignore_missing_imports = true
