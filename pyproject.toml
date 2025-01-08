@@ -134,11 +134,6 @@ warn_no_return = true
 warn_unused_configs = true
 warn_unused_ignores = true
 
-# It's hard to make ncurses code compliant
-[[tool.mypy.overrides]]
-module = [ "apologies.demo", "apologies.demo_unix", "apologies.demo_windows" ]
-ignore_errors = true
-
 # It's hard to make tests compliant using unittest.mock
 [[tool.mypy.overrides]]
 module = "tests.*"
@@ -149,3 +144,8 @@ allow_untyped_defs = true
 [[tool.mypy.overrides]]
 module = "pytest"
 ignore_missing_imports = true
+
+# It's hard to make ncurses code compliant
+[[tool.mypy.overrides]]
+module = [ "apologies.demo", "apologies.demo_unix", "apologies.demo_windows" ]
+ignore_errors = true
