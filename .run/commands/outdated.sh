@@ -6,7 +6,7 @@
 command_outdated() {
    echo "Updating dependencies with current constraints..."
    echo ""
-   poetry update
+   poetry update --sync --with=dev
    if [ $? != 0 ]; then
       echo "*** Failed to update dependencies"
       exit 1
@@ -16,13 +16,13 @@ command_outdated() {
    echo "Checking for outdated constraints..."
    echo ""
 
-   PATTERNS=$(poetry show --tree | grep '^\w' | cut -d' ' -f1 | sed 's/.*/^&\\s/')
+   PATTERNS=$(poetry show --with=dev --tree | grep '^\w' | cut -d' ' -f1 | sed 's/.*/^&\\s/')
    if [ $? != 0 ]; then
       echo "*** Failed to run 'poetry show --tree'" 
       exit 1
    fi
 
-   OUTDATED=$(poetry show --outdated)
+   OUTDATED=$(poetry show --with=dev --outdated)
    if [ $? != 0 ]; then
       echo "*** Failed to run 'poetry show --outdated'" 
       exit 1
