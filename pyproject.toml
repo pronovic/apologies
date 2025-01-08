@@ -72,8 +72,8 @@ colorama = ">=0.4.6,<1.0.0"
 
 [tool.black]
 line-length = 132
-target-version = ['py310', 'py311', 'py312', 'py313' ]
-include = '(src\/scripts\/.*$|\.pyi?$)'
+target-version = [ 'py310', 'py311', 'py312', 'py313' ]
+include = '\.pyi?$'
 exclude = '''
 /(
     \.git
