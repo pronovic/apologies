@@ -5,14 +5,14 @@ build-backend = "poetry_dynamic_versioning.backend"
 [tool.poetry]
 requires-poetry = ">=2.0.0"
 include = [
-   { path = 'Changelog', format = 'sdist' },
-   { path = 'NOTICE', format = 'sdist' },
-   { path = 'LICENSE', format = 'sdist' },
-   { path = 'README.md', format = 'sdist' },
-   { path = 'docs', format = 'sdist' },
-   { path = 'tests', format = 'sdist' },
+   { path='Changelog', format='sdist' },
+   { path='NOTICE', format='sdist' },
+   { path='LICENSE', format='sdist' },
+   { path='README.md', format='sdist' },
+   { path='docs', format='sdist' },
+   { path='tests', format='sdist' },
 ]
-packages = [ { include = "apologies", from = "src" } ]
+packages = [ { include="apologies", from="src" } ]
 classifiers=[
    "Operating System :: OS Independent",
    "Environment :: Console",
@@ -24,7 +24,7 @@ classifiers=[
 version = "0.0.0"  # published version is managed using Git tags (see below)
 
 [tool.poetry.requires-plugins]
-poetry-dynamic-versioning = { version = ">=1.5.0,<2.0.0", extras = ["plugin"] }
+poetry-dynamic-versioning = { version=">=1.5.0,<2.0.0", extras=["plugin"] }
 
 # Published version is managed using Git tags
 # We get either the tag (like "0.24.1") or a snapshot-type version (like "0.24.1+3.e8319c4")
