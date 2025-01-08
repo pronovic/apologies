@@ -13,13 +13,14 @@ import statistics
 from itertools import combinations_with_replacement
 from typing import Dict, List, Optional, Sequence
 
-import pendulum
+from arrow import Arrow
+from arrow import now as arrow_now
 from attrs import frozen
-from pendulum import DateTime  # type: ignore[attr-defined,unused-ignore]
 
 from .engine import Character, Engine
 from .game import MAX_PLAYERS, MIN_PLAYERS, GameMode, Player
 from .source import CharacterInputSource
+from .util import ISO_TIMESTAMP_FORMAT
 
 BASE_HEADERS = [
     "Scenario",
@@ -60,8 +61,8 @@ def _median(data: Sequence[float]) -> Optional[float]:
 class _Result:
     """Result of a single game within a scenario."""
 
-    start: DateTime
-    stop: DateTime
+    start: Arrow
+    stop: Arrow
     character: Character
     player: Player
 
@@ -82,7 +83,7 @@ class _Statistics:
     def for_results(name: Optional[str], results: List[_Result]) -> _Statistics:
         in_scope = [result for result in results if name is None or result.character.source.name == name]
         turns = [result.player.turns for result in in_scope]
-        durations_ms = [result.stop.diff(result.start).microseconds / 1000 for result in in_scope]  # type: ignore[no-untyped-call,unused-ignore]
+        durations_ms = [(result.stop - result.start).microseconds / 1000 for result in in_scope]
         median_turns = _median(turns)
         mean_turns = _mean(turns)
         median_duration = _median(durations_ms)
@@ -152,12 +153,12 @@ def _run_scenario(prefix: str, iterations: int, engine: Engine) -> List[_Result]
     for i in range(0, iterations):
         print(" " * 100, end="\r", flush=True)
         print("%siteration %d" % (prefix, i), end="\r", flush=True)
-        start = pendulum.now()
+        start = arrow_now()
         engine.reset()
         engine.start_game()
         while not engine.completed:
             engine.play_next()
-        stop = pendulum.now()
+        stop = arrow_now()
         character, player = engine.winner()  # type: ignore
         results.append(_Result(start, stop, character, player))
     return results
@@ -177,8 +178,8 @@ def run_simulation(iterations: int, output: str, sources: List[CharacterInputSou
         csvwriter = csv.writer(csvfile, quoting=csv.QUOTE_ALL)
         _write_header(csvwriter, sources)
 
-        start = pendulum.now()
-        print("Starting simulation at %s, using %d iterations per scenario" % (start.to_datetime_string(), iterations))  # type: ignore[no-untyped-call,unused-ignore]
+        start = arrow_now()
+        print("Starting simulation at %s, using %d iterations per scenario" % (start.format(ISO_TIMESTAMP_FORMAT), iterations))
 
         scenario = 0
         results = []
@@ -200,6 +201,8 @@ def run_simulation(iterations: int, output: str, sources: List[CharacterInputSou
                     _write_scenario(csvwriter, analysis)
                     print("%sdone" % prefix, end="\r", flush=True)
 
-        stop = pendulum.now()
+        stop = arrow_now()
         print(" " * 100, end="\r", flush=True)
-        print("Simulation completed after %s at %s" % (stop.diff(start).in_words(), stop.to_datetime_string()))  # type: ignore[no-untyped-call,unused-ignore]
+        duration = stop.humanize(start, only_distance=True)
+        finished = stop.format(ISO_TIMESTAMP_FORMAT)
+        print("Simulation completed after %s at %s" % (duration, finished))

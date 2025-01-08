@@ -38,11 +38,11 @@ import random
 from enum import Enum
 from typing import Dict, List, Optional
 
-import pendulum
+from arrow import Arrow
+from arrow import utcnow as arrow_utcnow
 from attrs import define, field, frozen
-from pendulum.datetime import DateTime
 
-from .util import CattrConverter
+from .util import ISO_TIME_FORMAT, CattrConverter
 
 # Cattr converter that serializes/deserializes DateTime to an ISO 8601 timestamp
 _CONVERTER = CattrConverter()
@@ -425,21 +425,21 @@ class History:
         action(str): String describing the action
         color(Optional[PlayerColor]): Color of the player associated with the action
         card(Optional[CardType]): Card associated with the action
-        timestamp(DateTime): Timestamp tied to the action (defaults to current time)
+        timestamp(Arrow): Timestamp tied to the action (defaults to current time)
     """
 
     action: str
     color: Optional[PlayerColor] = None
     card: Optional[CardType] = None
-    timestamp: DateTime = field()
+    timestamp: Arrow = field()
 
     # noinspection PyUnresolvedReferences
     @timestamp.default
-    def _default_timestamp(self) -> DateTime:
-        return pendulum.now(pendulum.UTC)  # type: ignore[attr-defined,unused-ignore]
+    def _default_timestamp(self) -> Arrow:
+        return arrow_utcnow()
 
     def __str__(self) -> str:
-        time = self.timestamp.to_time_string()  # type: ignore[no-untyped-call,unused-ignore]
+        time = self.timestamp.format(ISO_TIME_FORMAT)
         color = "General" if not self.color else self.color.value
         action = self.action
         return "[%s] %s - %s" % (time, color, action)
