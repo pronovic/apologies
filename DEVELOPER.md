@@ -8,13 +8,9 @@ library for screen drawing.
 
 ## Packaging and Dependencies
 
-This project uses [Poetry](https://python-poetry.org/) to manage Python packaging and dependencies.  Most day-to-day tasks (such as running unit tests from the command line) are orchestrated through Poetry.
+This project uses [Poetry v2](https://python-poetry.org/) to manage Python packaging and dependencies.  Most day-to-day tasks (such as running unit tests from the command line) are orchestrated through Poetry.
 
 A coding standard is enforced using [Black](https://pypi.org/project/black/), [isort](https://pypi.org/project/isort/) and [Pylint](https://pypi.org/project/pylint/).  Python 3 type hinting is validated using [MyPy](https://pypi.org/project/mypy/).  To reduce boilerplate, classes are defined using [Attrs](https://www.attrs.org/) (see this [rationale](https://glyph.twistedmatrix.com/2016/08/attrs.html)).
-
-To add dependencies use `poetry add package` (for runtime dependencies) or `poetry add --group dev package` (for development environment dependencies).
-
-To update dependencies, use `poetry update`.  This will update all of the dependencies without taking you past any major version changes that are likely to be incompatible.  If you want to update a single package, use `poetry update package`. If you want to update past a major version change, either specify the version like `poetry add package=^2.0.3` or get the latest with `poetry add package@latest`.  [PEP 508](https://peps.python.org/pep-0508/) specifications are also supported.
 
 ## Vulnerability Scanning
 
@@ -97,7 +93,7 @@ sure that you have a working Python 3 enviroment and install Poetry itself.
 
 ### Poetry Version
 
-The project is designed to work with Poetry >= 1.8.0.  If you already have an older
+The project is designed to work with Poetry >= 2.0.0.  If you already have an older
 version of Poetry installed on your system, upgrade it first.
 
 ### MacOS
