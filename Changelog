@@ -1,3 +1,7 @@
+Version 0.2.1     unreleased
+
+	* Adjust pyproject.toml comments to fix build pip build at readthedocs.
+
 Version 0.2.0     08 Jan 2025
 
 	* Migrate to Poetry v2 and project-managed Poetry plugins.

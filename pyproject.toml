@@ -21,7 +21,7 @@ classifiers = [
    "Topic :: Games/Entertainment :: Board Games",
    "Topic :: Software Development :: Libraries",
 ]
-version = "0.0.0"  # published version is managed using Git tags (see below)
+version = "0.0.0"
 
 [tool.poetry.requires-plugins]
 poetry-dynamic-versioning = { version=">=1.5.0,<2.0.0", extras=["plugin"] }
