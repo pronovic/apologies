@@ -1,6 +1,6 @@
 Version 0.2.1     08 Jan 2025
 
-	* Adjust pyproject.toml comments to fix build pip build at readthedocs.
+	* Adjust pyproject.toml comments to fix pip build at readthedocs.
 
 Version 0.2.0     08 Jan 2025
 
