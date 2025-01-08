@@ -7,9 +7,13 @@ Utility functionality.
 from typing import Generic, List, TypeVar
 
 import cattrs
+from arrow import Arrow
+from arrow import get as arrow_get
 from attrs import define, field
-from pendulum.datetime import DateTime
-from pendulum.parser import parse
+
+ISO_TIME_FORMAT = "HH:mm:ss"
+ISO_TIMESTAMP_FORMAT = "YYYY-MM-DD[T]HH:mm:ssZZ"
+_SERIALIZATION_FORMAT = "YYYY-MM-DD[T]HH:mm:ss.SSSSSSZZ"
 
 
 class CattrConverter(cattrs.GenConverter):
@@ -22,8 +26,8 @@ class CattrConverter(cattrs.GenConverter):
 
     def __init__(self) -> None:
         super().__init__()
-        self.register_unstructure_hook(DateTime, lambda datetime: datetime.isoformat() if datetime else None)
-        self.register_structure_hook(DateTime, lambda string, _: parse(string) if string else None)
+        self.register_unstructure_hook(Arrow, lambda datetime: datetime.format(_SERIALIZATION_FORMAT) if datetime else None)
+        self.register_structure_hook(Arrow, lambda string, _: arrow_get(string, _SERIALIZATION_FORMAT) if string else None)
 
 
 T = TypeVar("T")
