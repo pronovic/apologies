@@ -3,6 +3,7 @@ Version 0.1.57     unreleased
 	* Migrate to Poetry v2 and project-managed Poetry plugins.
 	* Move configuration into pyproject.toml for pytest, mypy & coverage.
 	* Upgrade to gha-shared-workflows@v7 for Poetry v2 support.
+	* Update all dependencies and outdated constraints.
 
 Version 0.1.56     02 Jan 2025
 
