@@ -1,3 +1,7 @@
+Version 0.2.2     unreleased
+
+	* Add information about the Python runtime to suite output.
+
 Version 0.2.1     08 Jan 2025
 
 	* Adjust pyproject.toml comments to fix pip build at readthedocs.
