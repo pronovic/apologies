@@ -2,6 +2,7 @@ Version 0.2.2     unreleased
 
 	* Add information about the Python runtime to suite output.
 	* Upgrade to poetry-dynamic-versioning v1.5.2 for minor fixes.
+	* Add .python-version in preferred order to support pyenv.
 
 Version 0.2.1     08 Jan 2025
 
