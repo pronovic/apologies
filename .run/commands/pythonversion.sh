@@ -4,12 +4,12 @@
 command_pythonversion() {
    if [ "$1" == "--short" ]; then
       echo "============================================================"
-      echo "Execution environment: $(poetry run python3 --version)"
+      echo "Execution environment: $(poetry run python --version)"
       echo "============================================================"
       echo ""
    else
       echo "============================================================"
-      echo "Execution environment: $(poetry run python3 --version)"
+      echo "Execution environment: $(poetry run python --version)"
       echo "============================================================"
       poetry env info
       echo ""
