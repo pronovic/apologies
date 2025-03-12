@@ -5,6 +5,7 @@ Version 0.2.2     unreleased
 	* Add .python-version in preferred order to support pyenv.
 	* Pull in latest version of run-script-framework.
 	* Add Sphinx configuration path to .readthedocs.yml.
+	* Update the jinja2 transitive dependency to address CVE-2025-27516.
 
 Version 0.2.1     08 Jan 2025
 
