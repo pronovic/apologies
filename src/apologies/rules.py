@@ -387,7 +387,7 @@ class BoardRules:
     @staticmethod
     def _augment_with_slides(all_pawns: list[Pawn], moves: list[Move]) -> None:
         """Augument any legal moves with additional side-effects that occur as a result of slides."""
-        for move in moves:
+        for move in moves:  # noqa: PLR1702
             for action in move.actions:
                 if action.actiontype == ActionType.MOVE_TO_POSITION:  # look at any move to a position on the board
                     for color in [color for color in PlayerColor if color != action.pawn.color]:  # any color other than the pawn's
