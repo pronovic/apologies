@@ -122,14 +122,14 @@ def _analyze_scenario(
     """Analyze a scenario, generating data that can be written to the CSV file."""
     playernames = [source.name for source in combination] + [""] * (MAX_PLAYERS - len(combination))
     overall_stats = _Statistics.for_results(None, results)
-    source_stats = {name: _Statistics.for_results(name, results) for name in sorted(list({source.name for source in sources}))}
+    source_stats = {name: _Statistics.for_results(name, results) for name in sorted({source.name for source in sources})}
     return _Analysis(f"Scenario {scenario}", mode.name, iterations, players, playernames, overall_stats, source_stats)
 
 
 def _write_header(csvwriter, sources: list[CharacterInputSource]) -> None:  # type: ignore
     """Write the header into the CSV file."""
     headers = BASE_HEADERS[:]
-    for name in sorted(list({source.name for source in sources})):
+    for name in sorted({source.name for source in sources}):
         for column in SOURCE_HEADERS:
             headers += [f"{name} - {column}"]
     csvwriter.writerow(headers)
