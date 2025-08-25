@@ -338,7 +338,7 @@ source ~/.bash_profile
 |Field|Value|
 |-----|-----|
 |Name|`Format Code`|
-|Description|`Run the code formatters`|
+|Description|`Run the Ruff code formatter`|
 |Group|`Developer Tools`|
 |Program|`$ProjectFileDir$/run`|
 |Arguments|`format`|
@@ -365,11 +365,11 @@ source ~/.bash_profile
 |Make console active on message in stderr|_Checked_|
 |Output filters|`$FILE_PATH$:$LINE$:$COLUMN$:.*`|
 
-##### Run Ruff Lint Checks
+##### Run Ruff Linter
 
 |Field|Value|
 |-----|-----|
-|Name|`Run Ruff Lint Checks`|
+|Name|`Run Ruff Linter`|
 |Description|`Run the Ruff linter code checks`|
 |Group|`Developer Tools`|
 |Program|`$ProjectFileDir$/run`|
@@ -394,7 +394,7 @@ change the path for `bash.exe`.
 |Field|Value|
 |-----|-----|
 |Name|`Format Code`|
-|Description|`Run the code formatters`|
+|Description|`Run the Ruff code formatter`|
 |Group|`Developer Tools`|
 |Program|`powershell.exe`|
 |Arguments|`& 'C:\Program Files\Git\bin\bash.exe' -l "./run" format | Out-String`|
@@ -421,11 +421,11 @@ change the path for `bash.exe`.
 |Make console active on message in stderr|_Checked_|
 |Output filters|`$FILE_PATH$:$LINE$:$COLUMN$:.*`|
 
-##### Run Pylint Checks
+##### Run Ruff Linter
 
 |Field|Value|
 |-----|-----|
-|Name|`Run Ruff Lint Checks`|
+|Name|`Run Ruff Linter`|
 |Description|`Run the Ruff linter code checks`|
 |Group|`Developer Tools`|
 |Program|`powershell.exe`|
