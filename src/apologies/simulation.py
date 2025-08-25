@@ -119,7 +119,7 @@ def _analyze_scenario(
     playernames = [source.name for source in combination] + [""] * (MAX_PLAYERS - len(combination))
     overall_stats = _Statistics.for_results(None, results)
     source_stats = {name: _Statistics.for_results(name, results) for name in sorted(list({source.name for source in sources}))}
-    return _Analysis("Scenario %d" % scenario, mode.name, iterations, players, playernames, overall_stats, source_stats)
+    return _Analysis(f"Scenario {scenario}", mode.name, iterations, players, playernames, overall_stats, source_stats)
 
 
 def _write_header(csvwriter, sources: list[CharacterInputSource]) -> None:  # type: ignore
@@ -127,7 +127,7 @@ def _write_header(csvwriter, sources: list[CharacterInputSource]) -> None:  # ty
     headers = BASE_HEADERS[:]
     for name in sorted(list({source.name for source in sources})):
         for column in SOURCE_HEADERS:
-            headers += ["%s - %s" % (name, column)]
+            headers += [f"{name} - {column}"]
     csvwriter.writerow(headers)
 
 
@@ -151,7 +151,7 @@ def _run_scenario(prefix: str, iterations: int, engine: Engine) -> list[_Result]
     results = []
     for i in range(iterations):
         print(" " * 100, end="\r", flush=True)
-        print("%siteration %d" % (prefix, i), end="\r", flush=True)
+        print(f"{prefix}iteration {i}", end="\r", flush=True)
         start = arrow_now()
         engine.reset()
         engine.start_game()
@@ -178,7 +178,7 @@ def run_simulation(iterations: int, output: str, sources: list[CharacterInputSou
         _write_header(csvwriter, sources)
 
         start = arrow_now()
-        print("Starting simulation at %s, using %d iterations per scenario" % (start.format(ISO_TIMESTAMP_FORMAT), iterations))
+        print(f"Starting simulation at {start.format(ISO_TIMESTAMP_FORMAT)}, using {iterations} iterations per scenario")
 
         scenario = 0
         results = []
@@ -188,20 +188,20 @@ def run_simulation(iterations: int, output: str, sources: list[CharacterInputSou
                 for combination in combinations_with_replacement(sources, players):
                     case += 1
                     scenario += 1
-                    prefix = "Scenario %d: %s mode with %d players (case %d): " % (scenario, mode.name, players, case)
+                    prefix = f"Scenario {scenario}: {mode.name} mode with {players} players (case {case}): "
                     characters = [Character(name=source.name, source=source) for source in combination]
                     engine = Engine(mode=mode, characters=characters)
                     print(" " * 100, end="\r", flush=True)
-                    print("%sstarting" % prefix, end="\r", flush=True)
+                    print(f"{prefix}starting", end="\r", flush=True)
                     results = _run_scenario(prefix, iterations, engine)
-                    print("%sanalyzing" % prefix, end="\r", flush=True)
+                    print(f"{prefix}analyzing", end="\r", flush=True)
                     analysis = _analyze_scenario(scenario, mode, iterations, players, sources, combination, results)
-                    print("%swriting CSV" % prefix, end="\r", flush=True)
+                    print(f"{prefix}writing CSV", end="\r", flush=True)
                     _write_scenario(csvwriter, analysis)
-                    print("%sdone" % prefix, end="\r", flush=True)
+                    print(f"{prefix}done", end="\r", flush=True)
 
         stop = arrow_now()
         print(" " * 100, end="\r", flush=True)
         duration = stop.humanize(start, only_distance=True)
         finished = stop.format(ISO_TIMESTAMP_FORMAT)
-        print("Simulation completed after %s at %s" % (duration, finished))
+        print(f"Simulation completed after {duration} at {finished}")

@@ -399,7 +399,7 @@ class TestEngine:
         engine._game.create_player_view.assert_called_once_with(PlayerColor.RED)
         engine._rules.construct_legal_moves.assert_called_once_with(view, card=None)
         engine.characters[0].choose_move.assert_called_once_with(engine.mode, view, legal_moves, Rules.evaluate_move)
-        engine._game.track.assert_called_once_with("Turn is forfeit; discarded card %s" % movecard.cardtype.value, player, movecard)
+        engine._game.track.assert_called_once_with(f"Turn is forfeit; discarded card {movecard.cardtype.value}", player, movecard)
         engine._game.deck.discard.assert_called_once_with(movecard)
 
         assert movecard not in player.hand

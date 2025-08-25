@@ -137,8 +137,9 @@ def source(name: str) -> CharacterInputSource:
         ValueError: If the named source does not exist or is not a CharacterInputSource
     """
     if "." not in name:
-        name = "apologies.source.%s" % name
+        name = f"apologies.source.{name}"
     cls = locate(name)
     if not issubclass(cls, CharacterInputSource):  # type: ignore
-        raise ValueError("%s is not a CharacterInputSource" % name)
+        msg = f"{name} is not a CharacterInputSource"
+        raise ValueError(msg)
     return cls()  # type: ignore

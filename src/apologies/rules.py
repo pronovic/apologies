@@ -425,7 +425,7 @@ class Rules:
         """
         if game.started:
             raise ValueError("Game is already started")
-        game.track("Game started with mode: %s" % self.mode)
+        game.track(f"Game started with mode: {self.mode}")
         if self.mode == GameMode.ADULT:
             Rules._setup_adult_mode(game)
 
@@ -464,20 +464,20 @@ class Rules:
             player(Player): Color of the player associated with the move
             move(Move): Move to validate
         """
-        log = "Played card %s: [ " % move.card.cardtype.value
+        log = f"Played card {move.card.cardtype.value}: [ "
         for action in move.actions + move.side_effects:  # execute actions, then side-effects, in order
             # Keep in mind that the pawn on the action is a different object than the pawn in the game
             pawn = game.players[action.pawn.color].pawns[action.pawn.index]
             if action.actiontype == ActionType.MOVE_TO_START:
                 pawn.position.move_to_start()
-                log += "%s->start, " % pawn.name
+                log += f"{pawn.name}->start, "
             elif action.actiontype == ActionType.MOVE_TO_POSITION and action.position:
                 pawn.position.move_to_position(action.position)
-                log += "%s, " % pawn
+                log += f"{pawn}, "
         log += "]"
         game.track(log, player, move.card)
         if game.completed:
-            game.track("Game completed: winner is %s after %d turns" % (game.winner.color.value, game.winner.turns))  # type: ignore
+            game.track(f"Game completed: winner is {game.winner.color.value} after {game.winner.turns} turns")  # type: ignore
 
     @staticmethod
     def evaluate_move(view: PlayerView, move: Move) -> PlayerView:

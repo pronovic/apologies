@@ -164,7 +164,7 @@ class Deck:
         cardid = 0
         for card in CardType:
             for _ in range(DECK_COUNTS[card]):
-                pile["%d" % cardid] = Card("%d" % cardid, card)
+                pile[f"{cardid}"] = Card(f"{cardid}", card)
                 cardid += 1
         return pile
 
@@ -213,8 +213,8 @@ class Position:
         if self.start:
             return "start"
         if self.safe is not None:
-            return "safe %s" % self.safe
-        return "square %s" % self.square
+            return f"safe {self.safe}"
+        return f"square {self.square}"
 
     def copy(self) -> Position:
         """Return a fully-independent copy of the position."""
@@ -351,14 +351,14 @@ class Pawn:
     # noinspection PyUnresolvedReferences
     @name.default
     def _default_name(self) -> str:
-        return "%s%s" % (self.color.value, self.index)
+        return f"{self.color.value}{self.index}"
 
     @position.default
     def _default_position(self) -> Position:
         return Position()
 
     def __str__(self) -> str:
-        return "%s->%s" % (self.name, self.position)
+        return f"{self.name}->{self.position}"
 
 
 @define
@@ -439,7 +439,7 @@ class History:
         time = self.timestamp.format(ISO_TIME_FORMAT)
         color = "General" if not self.color else self.color.value
         action = self.action
-        return "[%s] %s - %s" % (time, color, action)
+        return f"[{time}] {color} - {action}"
 
 
 @define

@@ -30,8 +30,7 @@ def demo(argv: list[str], unused_stdout: IO[str], unused_stderr: IO[str]) -> Non
     """Run a game with simulated players, displaying output on the terminal."""
     parser = argparse.ArgumentParser(
         description="Run a game with simulated players, displaying output on the terminal.",
-        epilog="By default, the game runs in %s mode with %d players. A source is a class that chooses a player's move."
-        % (_DEMO_DEFAULT_MODE, _DEMO_DEFAULT_PLAYERS),
+        epilog=f"By default, the game runs in {_DEMO_DEFAULT_MODE} mode with {_DEMO_DEFAULT_PLAYERS} players. A source is a class that chooses a player's move.",
     )
 
     parser.add_argument("--players", type=int, default=_DEMO_DEFAULT_PLAYERS, help="Number of simulated players in the game")
@@ -52,10 +51,7 @@ def simulation(argv: list[str], unused_stdout: IO[str], unused_stderr: IO[str]) 
     """Run a simulation and display results."""
     parser = argparse.ArgumentParser(
         description="Run a simulation to see how well different character input sources behave.",
-        epilog="Every combination of game mode, number of players, and input source is tested, "
-        "using %d iterations by default.  A spreadsheet is generated containing statistics "
-        "on mean and median turns and duration to win, as well as number of wins for each "
-        "source." % _SIM_DEFAULT_ITERATIONS,
+        epilog=f"Every combination of game mode, number of players, and input source is tested, using {_SIM_DEFAULT_ITERATIONS} iterations by default.  A spreadsheet is generated containing statistics on mean and median turns and duration to win, as well as number of wins for each source.",
     )
 
     parser.add_argument("--iter", type=int, default=_SIM_DEFAULT_ITERATIONS, help="Number of iterations per scenario")
@@ -82,19 +78,19 @@ def render(unused_argv: list[str], stdout: IO[str], unused_stderr: IO[str]) -> N
     """Render an empty board."""
     game = Game(4)
     board = render_board(game)
-    stdout.write("%s" % board)
+    stdout.write(f"{board}")
 
 
 def example(argv: list[str], stdout: IO[str], stderr: IO[str]) -> None:
     """Execute the example script, which just writes some input to its outputs."""
-    stdout.write("Hello, stdout: %s\n" % argv[0])
-    stderr.write("Hello, stderr: %s\n" % argv[0])
+    stdout.write(f"Hello, stdout: {argv[0]}\n")
+    stderr.write(f"Hello, stderr: {argv[0]}\n")
 
 
 def _lookup_method(method: str) -> Any:
     """Look up the method in this module with the passed-in name."""
     module = sys.modules[__name__]
-    return getattr(module, "%s" % method)
+    return getattr(module, f"{method}")
 
 
 def cli(script: str) -> None:

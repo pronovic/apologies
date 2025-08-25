@@ -104,7 +104,7 @@ class TestPosition:
         assert position.home is False
         assert position.safe is None
         assert position.square is None
-        assert "%s" % position == "start"
+        assert f"{position}" == "start"
 
     def test_copy(self):
         position = Position()
@@ -129,7 +129,7 @@ class TestPosition:
         result = position.move_to_position(target)
         assert result is position
         assert position == target
-        assert "%s" % position == "start"
+        assert f"{position}" == "start"
 
     def test_move_to_position_valid_home(self):
         target = Position()
@@ -145,7 +145,7 @@ class TestPosition:
         result = position.move_to_position(target)
         assert result is position
         assert position == target
-        assert "%s" % position == "home"
+        assert f"{position}" == "home"
 
     def test_move_to_position_valid_safe(self):
         target = Position()
@@ -161,7 +161,7 @@ class TestPosition:
         result = position.move_to_position(target)
         assert result is position
         assert position == target
-        assert "%s" % position == "safe 3"
+        assert f"{position}" == "safe 3"
 
     def test_move_to_position_valid_square(self):
         target = Position()
@@ -177,7 +177,7 @@ class TestPosition:
         result = position.move_to_position(target)
         assert result is position
         assert position == target
-        assert "%s" % position == "square 3"
+        assert f"{position}" == "square 3"
 
     def test_move_to_position_invalid_multiple(self):
         position = Position()
@@ -235,7 +235,7 @@ class TestPosition:
         assert position.home is False
         assert position.safe is None
         assert position.square is None
-        assert "%s" % position == "start"
+        assert f"{position}" == "start"
 
     def test_move_to_home(self):
         position = Position()
@@ -249,7 +249,7 @@ class TestPosition:
         assert position.home is True
         assert position.safe is None
         assert position.square is None
-        assert "%s" % position == "home"
+        assert f"{position}" == "home"
 
     def test_move_to_safe_valid(self):
         for square in range(SAFE_SQUARES):
@@ -264,7 +264,7 @@ class TestPosition:
             assert position.home is False
             assert position.safe == square
             assert position.square is None
-            assert "%s" % position == "safe %d" % square
+            assert f"{position}" == f"safe {square}"
 
     def test_move_to_safe_invalid(self):
         for square in [-1000, -2 - 1, 5, 6, 1000]:
@@ -285,7 +285,7 @@ class TestPosition:
             assert position.home is False
             assert position.safe is None
             assert position.square is square
-            assert "%s" % position == "square %d" % square
+            assert f"{position}" == f"square {square}"
 
     def test_move_to_square_invalid(self):
         for square in [-1000, -2 - 1, 60, 61, 1000]:
@@ -301,7 +301,7 @@ class TestPawn:
         assert pawn.index == 0
         assert pawn.name == "Red0"
         assert pawn.position == Position()
-        assert "%s" % pawn == "Red0->start"  # because default position is in start
+        assert f"{pawn}" == "Red0->start"  # because default position is in start
 
     def test_constructor_with_name(self):
         pawn = Pawn(PlayerColor.RED, 0, name="whatever")
@@ -309,7 +309,7 @@ class TestPawn:
         assert pawn.index == 0
         assert pawn.name == "whatever"
         assert pawn.position == Position()
-        assert "%s" % pawn == "whatever->start"  # because default position is in start
+        assert f"{pawn}" == "whatever->start"  # because default position is in start
 
 
 class TestPlayer:
@@ -358,13 +358,13 @@ class TestHistory:
         timestamp = arrow_get("2020-03-25T14:02:16")
 
         history = History("This is an action", color=None, timestamp=timestamp)
-        assert "%s" % history == "[14:02:16] General - This is an action"
+        assert f"{history}" == "[14:02:16] General - This is an action"
 
         history = History("This is an action", color=PlayerColor.BLUE, timestamp=timestamp)
-        assert "%s" % history == "[14:02:16] Blue - This is an action"
+        assert f"{history}" == "[14:02:16] Blue - This is an action"
 
         history = History("This is an action", color=PlayerColor.BLUE, card=CardType.CARD_10, timestamp=timestamp)
-        assert "%s" % history == "[14:02:16] Blue - This is an action"
+        assert f"{history}" == "[14:02:16] Blue - This is an action"
 
 
 class TestPlayerView:
