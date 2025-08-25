@@ -387,6 +387,7 @@ class TestPosition:
         for color in PlayerColor:
             with pytest.raises(ValueError):
                 BoardRules()._position(color, Position().move_to_safe(3), 3)
+            with pytest.raises(ValueError):
                 BoardRules()._position(color, Position().move_to_safe(4), 2)
 
         for color in PlayerColor:

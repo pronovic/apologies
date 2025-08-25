@@ -189,38 +189,38 @@ class TestPosition:
             (False, True, None, 1),
             (False, False, 1, 1),
         ]:
+            target = Position()
+            target.start = start
+            target.home = home
+            target.safe = safe
+            target.square = square
             with pytest.raises(ValueError):
-                target = Position()
-                target.start = start
-                target.home = home
-                target.safe = safe
-                target.square = square
                 position.move_to_position(target)
 
     def test_move_to_position_invalid_none(self):
         position = Position()
+        target = Position()
+        target.start = False
+        target.home = False
+        target.safe = None
+        target.square = None
         with pytest.raises(ValueError):
-            target = Position()
-            target.start = False
-            target.home = False
-            target.safe = None
-            target.square = None
             position.move_to_position(target)
 
     def test_move_to_position_invalid_safe(self):
         position = Position()
         for square in [-1000, -2 - 1, 5, 6, 1000]:
+            target = Position()
+            target.safe = square
             with pytest.raises(ValueError):
-                target = Position()
-                target.safe = square
                 position.move_to_position(target)
 
     def test_move_to_position_invalid_square(self):
         position = Position()
         for square in [-1000, -2 - 1, 60, 61, 1000]:
+            target = Position()
+            target.square = square
             with pytest.raises(ValueError):
-                target = Position()
-                target.square = square
                 position.move_to_position(target)
 
     def test_move_to_start(self):
@@ -268,8 +268,8 @@ class TestPosition:
 
     def test_move_to_safe_invalid(self):
         for square in [-1000, -2 - 1, 5, 6, 1000]:
+            position = Position()
             with pytest.raises(ValueError):
-                position = Position()
                 position.move_to_safe(square)
 
     def test_move_to_square_valid(self):
@@ -289,8 +289,8 @@ class TestPosition:
 
     def test_move_to_square_invalid(self):
         for square in [-1000, -2 - 1, 60, 61, 1000]:
+            position = Position()
             with pytest.raises(ValueError):
-                position = Position()
                 position.move_to_square(square)
 
 
