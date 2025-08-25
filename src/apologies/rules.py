@@ -146,11 +146,11 @@ class BoardRules:
         circle = CIRCLE[pawn.color].square
         turn = TURN[pawn.color].square
         square = pawn.position.square
-        square_to_corner = BOARD_SQUARES - square  # type: ignore
+        square_to_corner = BOARD_SQUARES - square  # type: ignore[operator]
         corner_to_turn = turn
         turn_to_home = SAFE_SQUARES + 1
-        total = square_to_corner + corner_to_turn + turn_to_home  # type: ignore
-        if turn < square < circle:  # type: ignore
+        total = square_to_corner + corner_to_turn + turn_to_home  # type: ignore[operator]
+        if turn < square < circle:  # type: ignore[operator]
             return total
         if total < 65:
             return total
@@ -187,7 +187,10 @@ class BoardRules:
                 return position.copy()
             if squares > 0:
                 if position.square + squares < BOARD_SQUARES:
-                    if position.square <= TURN[color].square and position.square + squares > TURN[color].square:  # type: ignore
+                    if (
+                        position.square <= TURN[color].square  # type: ignore[operator]
+                        and position.square + squares > TURN[color].square  # type: ignore[operator]
+                    ):
                         return BoardRules._position(
                             color,
                             position.copy().move_to_safe(0),
@@ -484,7 +487,7 @@ class Rules:
         log += "]"
         game.track(log, player, move.card)
         if game.completed:
-            game.track(f"Game completed: winner is {game.winner.color.value} after {game.winner.turns} turns")  # type: ignore
+            game.track(f"Game completed: winner is {game.winner.color.value} after {game.winner.turns} turns")
 
     @staticmethod
     def evaluate_move(view: PlayerView, move: Move) -> PlayerView:

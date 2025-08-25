@@ -518,12 +518,12 @@ class Game:
         return any(player.all_pawns_in_home() for player in self.players.values())
 
     @property
-    def winner(self) -> Player | None:
+    def winner(self) -> Player:
         """The winner of the game, if any."""
         for player in self.players.values():
             if player.all_pawns_in_home():
                 return player
-        return None
+        raise ValueError("Game is not completed")
 
     def copy(self) -> Game:
         """Return a fully-independent copy of the game."""

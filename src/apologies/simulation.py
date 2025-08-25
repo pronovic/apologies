@@ -1,5 +1,5 @@
 # vim: set ft=python ts=4 sw=4 expandtab:
-# ruff: noqa: T201, ANN001
+# ruff: noqa: T201
 
 """
 Run a simulation to see how well different character input sources behave.
@@ -21,6 +21,7 @@ from apologies.game import MAX_PLAYERS, MIN_PLAYERS, GameMode, Player
 from apologies.util import ISO_TIMESTAMP_FORMAT
 
 if TYPE_CHECKING:
+    from _csv import _writer
     from collections.abc import Sequence
 
     from apologies.source import CharacterInputSource
@@ -126,7 +127,7 @@ def _analyze_scenario(  # noqa: PLR0917,PLR0913
     return _Analysis(f"Scenario {scenario}", mode.name, iterations, players, playernames, overall_stats, source_stats)
 
 
-def _write_header(csvwriter, sources: list[CharacterInputSource]) -> None:  # type: ignore
+def _write_header(csvwriter: _writer, sources: list[CharacterInputSource]) -> None:
     """Write the header into the CSV file."""
     headers = BASE_HEADERS[:]
     for name in sorted({source.name for source in sources}):
@@ -135,7 +136,7 @@ def _write_header(csvwriter, sources: list[CharacterInputSource]) -> None:  # ty
     csvwriter.writerow(headers)
 
 
-def _write_scenario(csvwriter, analysis: _Analysis) -> None:  # type: ignore
+def _write_scenario(csvwriter: _writer, analysis: _Analysis) -> None:
     """Write analysis results for a scenario into the CSV file."""
     row = [analysis.scenario, analysis.mode, analysis.iterations, analysis.players]
     row += analysis.playernames
@@ -162,7 +163,7 @@ def _run_scenario(prefix: str, iterations: int, engine: Engine) -> list[_Result]
         while not engine.completed:
             engine.play_next()
         stop = arrow_now()
-        character, player = engine.winner()  # type: ignore
+        character, player = engine.winner()
         results.append(_Result(start, stop, character, player))
     return results
 

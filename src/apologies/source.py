@@ -163,7 +163,7 @@ def source(name: str) -> CharacterInputSource:
     if "." not in name:
         name = f"apologies.source.{name}"
     cls = locate(name)
-    if not issubclass(cls, CharacterInputSource):  # type: ignore
+    if not issubclass(cls, CharacterInputSource):  # type: ignore[arg-type]
         msg = f"{name} is not a CharacterInputSource"
         raise TypeError(msg)
-    return cls()  # type: ignore
+    return cls()  # type: ignore[operator,no-any-return]

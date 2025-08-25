@@ -111,7 +111,8 @@ class TestEngine:
             with patch("apologies.game.Game.winner", new_callable=PropertyMock) as winner:
                 winner.return_value = game_winner
                 completed.return_value = False
-                assert engine.winner() is None
+                with pytest.raises(ValueError):
+                    assert engine.winner()  # because game is not completed
                 completed.return_value = True
                 assert engine.winner() == (engine._map[PlayerColor.YELLOW], game_winner)
 
@@ -552,10 +553,10 @@ class TestEngine:
     @staticmethod
     def _create_engine(mode: GameMode = GameMode.STANDARD) -> Engine:
         character1 = Character("character1", Mock())
-        character1.choose_move = MagicMock()  # type: ignore
+        character1.choose_move = MagicMock()  # type: ignore[method-assign]
 
         character2 = Character("character2", Mock())
-        character2.choose_move = MagicMock()  # type: ignore
+        character2.choose_move = MagicMock()  # type: ignore[method-assign]
 
         first = PlayerColor.RED
         engine = Engine(mode, [character1, character2], first=first)
