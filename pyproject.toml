@@ -173,7 +173,6 @@ ignore = [
   "FBT001",
   "FLY002",
   "FURB101",
-  "FURB118",
   "PERF401",
   "PGH003",
   "PLR0911",

@@ -5,6 +5,7 @@
 Character input sources.  A character could be a person or could be computer-driven.
 """
 
+import operator
 import random
 from abc import ABC, abstractmethod
 from collections.abc import Callable
@@ -108,7 +109,7 @@ class RewardInputSource(CharacterInputSource):
     ) -> Move:
         """Choose the next move for a player by evaluating and scoring the available moves."""
         evaluated = [self.calculate(view, move, evaluator) for move in legal_moves]  # calculate a reward for each move
-        evaluated.sort(reverse=True, key=lambda e: e[1])  # sort the highest-scoring move to the top
+        evaluated.sort(reverse=True, key=operator.itemgetter(1))  # sort the highest-scoring move to the top
         return evaluated[0][0]  # return the highest-scoring move
 
 
