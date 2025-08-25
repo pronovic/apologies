@@ -388,7 +388,7 @@ class Player:
     # noinspection PyUnresolvedReferences
     @pawns.default
     def _default_pawns(self) -> List[Pawn]:
-        return [Pawn(self.color, index) for index in range(0, PAWNS)]
+        return [Pawn(self.color, index) for index in range(PAWNS)]
 
     def copy(self) -> Player:
         """Return a fully-independent copy of the player."""

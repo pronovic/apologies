@@ -53,7 +53,7 @@ class TestEngine:
 
     def test_constructor_random(self):
         found = []
-        for _ in range(0, 100):
+        for _ in range(100):
             character1 = Character("one", Mock())
             character2 = Character("two", Mock())
             character3 = Character("three", Mock())

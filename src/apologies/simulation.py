@@ -150,7 +150,7 @@ def _write_scenario(csvwriter, analysis: _Analysis) -> None:  # type: ignore
 def _run_scenario(prefix: str, iterations: int, engine: Engine) -> List[_Result]:
     """Run a particular scenario, playing a game repeatedly for a set number of iterations."""
     results = []
-    for i in range(0, iterations):
+    for i in range(iterations):
         print(" " * 100, end="\r", flush=True)
         print("%siteration %d" % (prefix, i), end="\r", flush=True)
         start = arrow_now()
