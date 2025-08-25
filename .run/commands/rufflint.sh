@@ -19,7 +19,7 @@
 
 command_rufflint() {
    echo "Running Ruff linter..."
-   CLICOLOR_FORCE=1 poetry_run ruff check --no-fix | sed 's/  .*-->.* //'
+   CLICOLOR_FORCE=1 poetry_run ruff check --no-fix | sed 's/ *.*-->.* //'
    echo "done"
 }
 
