@@ -408,10 +408,7 @@ class Player:
 
     def all_pawns_in_home(self) -> bool:
         """Whether all of this user's pawns are in home."""
-        for pawn in self.pawns:
-            if not pawn.position.home:
-                return False
-        return True
+        return all(pawn.position.home for pawn in self.pawns)
 
 
 @define
@@ -518,10 +515,7 @@ class Game:
     @property
     def completed(self) -> bool:
         """Whether the game is completed."""
-        for player in self.players.values():
-            if player.all_pawns_in_home():
-                return True
-        return False
+        return any(player.all_pawns_in_home() for player in self.players.values())
 
     @property
     def winner(self) -> Player | None:
