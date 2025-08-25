@@ -110,7 +110,7 @@ class _Analysis:
 
 
 # pylint: disable=too-many-positional-arguments
-def _analyze_scenario(  # noqa: PLR0917
+def _analyze_scenario(  # noqa: PLR0917,PLR0913
     scenario: int,
     mode: GameMode,
     iterations: int,
