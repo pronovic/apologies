@@ -62,7 +62,7 @@ class RewardCalculatorV1(RewardCalculator):
         player_score = RewardCalculatorV1._player_score(view.player)
         opponent_scores = [RewardCalculatorV1._player_score(player) for player in view.opponents.values()]
         reward = (len(view.opponents) * player_score) - sum(opponent_scores)
-        return 0 if reward < 0 else reward
+        return max(reward, 0)
 
     @staticmethod
     def _player_score(player: Player) -> int:
