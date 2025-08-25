@@ -1,5 +1,5 @@
 # vim: set ft=python ts=4 sw=4 expandtab:
-# ruff: noqa: T201
+# ruff: noqa: T201, ANN001
 
 """
 Run a simulation to see how well different character input sources behave.
