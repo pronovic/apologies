@@ -1,5 +1,6 @@
 # vim: set ft=python ts=4 sw=4 expandtab:
 # pylint: disable=redefined-outer-name
+# ruff: noqa: FURB101
 
 import os
 from unittest.mock import MagicMock
