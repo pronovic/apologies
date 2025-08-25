@@ -11,7 +11,7 @@ from __future__ import annotations  # so we can return a type from one of its ow
 import csv
 import statistics
 from itertools import combinations_with_replacement
-from typing import Dict, List, Optional, Sequence
+from typing import Optional, Sequence
 
 from arrow import Arrow
 from arrow import now as arrow_now
@@ -80,7 +80,7 @@ class _Statistics:
     win_percent: float
 
     @staticmethod
-    def for_results(name: Optional[str], results: List[_Result]) -> _Statistics:
+    def for_results(name: Optional[str], results: list[_Result]) -> _Statistics:
         in_scope = [result for result in results if name is None or result.character.source.name == name]
         turns = [result.player.turns for result in in_scope]
         durations_ms = [(result.stop - result.start).microseconds / 1000 for result in in_scope]
@@ -101,9 +101,9 @@ class _Analysis:
     mode: str
     iterations: int
     players: int
-    playernames: List[str]
+    playernames: list[str]
     overall_stats: _Statistics
-    source_stats: Dict[str, _Statistics]
+    source_stats: dict[str, _Statistics]
 
 
 # pylint: disable=too-many-positional-arguments
@@ -114,7 +114,7 @@ def _analyze_scenario(
     players: int,
     sources: Sequence[CharacterInputSource],
     combination: Sequence[CharacterInputSource],
-    results: List[_Result],
+    results: list[_Result],
 ) -> _Analysis:
     """Analyze a scenario, generating data that can be written to the CSV file."""
     playernames = [source.name for source in combination] + [""] * (MAX_PLAYERS - len(combination))
@@ -123,7 +123,7 @@ def _analyze_scenario(
     return _Analysis("Scenario %d" % scenario, mode.name, iterations, players, playernames, overall_stats, source_stats)
 
 
-def _write_header(csvwriter, sources: List[CharacterInputSource]) -> None:  # type: ignore
+def _write_header(csvwriter, sources: list[CharacterInputSource]) -> None:  # type: ignore
     """Write the header into the CSV file."""
     headers = BASE_HEADERS[:]
     for name in sorted(list({source.name for source in sources})):
@@ -147,7 +147,7 @@ def _write_scenario(csvwriter, analysis: _Analysis) -> None:  # type: ignore
     csvwriter.writerow(row)
 
 
-def _run_scenario(prefix: str, iterations: int, engine: Engine) -> List[_Result]:
+def _run_scenario(prefix: str, iterations: int, engine: Engine) -> list[_Result]:
     """Run a particular scenario, playing a game repeatedly for a set number of iterations."""
     results = []
     for i in range(iterations):
@@ -165,7 +165,7 @@ def _run_scenario(prefix: str, iterations: int, engine: Engine) -> List[_Result]
 
 
 # pylint: disable=too-many-locals,line-too-long
-def run_simulation(iterations: int, output: str, sources: List[CharacterInputSource]) -> None:
+def run_simulation(iterations: int, output: str, sources: list[CharacterInputSource]) -> None:
     """
     Run a simulation.
 

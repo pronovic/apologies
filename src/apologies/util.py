@@ -5,7 +5,7 @@
 Utility functionality.
 """
 
-from typing import Generic, List, TypeVar
+from typing import Generic, TypeVar
 
 import cattrs
 from arrow import Arrow
@@ -39,9 +39,9 @@ T = TypeVar("T")
 class CircularQueue(Generic[T]):
     """A circular queue that keeps returning the original entries repeatedly, in order."""
 
-    entries: List[T] = field()
+    entries: list[T] = field()
     first: T = field()
-    _working: List[T] = field()
+    _working: list[T] = field()
 
     @first.default
     def _default_first(self) -> T:
@@ -51,7 +51,7 @@ class CircularQueue(Generic[T]):
 
     # noinspection PyUnresolvedReferences
     @_working.default
-    def _default_working(self) -> List[T]:
+    def _default_working(self) -> list[T]:
         if self.first not in self.entries:
             raise ValueError("First entry not found")
         temp = self.entries[:]

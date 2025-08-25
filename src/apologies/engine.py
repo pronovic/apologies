@@ -6,7 +6,7 @@ Game engine that coordinates character actions to play a game.
 """
 
 import random
-from typing import Callable, Dict, List, Optional, Tuple
+from typing import Callable, Optional
 
 from attrs import define, field
 
@@ -31,7 +31,7 @@ class Character:
     source: CharacterInputSource
 
     def choose_move(
-        self, mode: GameMode, view: PlayerView, legal_moves: List[Move], evaluator: Callable[[PlayerView, Move], PlayerView]
+        self, mode: GameMode, view: PlayerView, legal_moves: list[Move], evaluator: Callable[[PlayerView, Move], PlayerView]
     ) -> Move:
         """
         Choose the next move for a character via the user input source.
@@ -73,12 +73,12 @@ class Engine:
     """
 
     mode: GameMode
-    characters: List[Character]
+    characters: list[Character]
     first: PlayerColor = field()
     _game: Game = field(init=False)
     _queue: CircularQueue[PlayerColor] = field(init=False)
     _rules: Rules = field(init=False)
-    _map: Dict[PlayerColor, Character] = field(init=False)
+    _map: dict[PlayerColor, Character] = field(init=False)
 
     # noinspection PyUnresolvedReferences
     @first.default
@@ -101,7 +101,7 @@ class Engine:
 
     # noinspection PyUnresolvedReferences
     @_map.default
-    def _default_map(self) -> Dict[PlayerColor, Character]:
+    def _default_map(self) -> dict[PlayerColor, Character]:
         index = 0
         result = {}
         for player in self._game.players.values():
@@ -139,10 +139,10 @@ class Engine:
         return self._game.completed
 
     @property
-    def colors(self) -> Dict[PlayerColor, Character]:
+    def colors(self) -> dict[PlayerColor, Character]:
         return self._map.copy()
 
-    def winner(self) -> Optional[Tuple[Character, Player]]:
+    def winner(self) -> Optional[tuple[Character, Player]]:
         """Return the winner of the game, as a tuple of (Character, Player)"""
         return (self._map[self._game.winner.color], self._game.winner) if self.completed else None  # type: ignore
 
@@ -161,7 +161,7 @@ class Engine:
         self._rules.start_game(self._game)
         return self._game
 
-    def next_turn(self) -> Tuple[PlayerColor, Character]:
+    def next_turn(self) -> tuple[PlayerColor, Character]:
         """
         Get the color and character for the next turn
         This will give you a different player each time you call it.
@@ -203,7 +203,7 @@ class Engine:
         """Discard back to the game's discard pile."""
         self._game.deck.discard(card)
 
-    def construct_legal_moves(self, view: PlayerView, card: Optional[Card] = None) -> Tuple[Optional[Card], List[Move]]:
+    def construct_legal_moves(self, view: PlayerView, card: Optional[Card] = None) -> tuple[Optional[Card], list[Move]]:
         """Construct the legal moves based on a player view, using the passed-in card if provided."""
         card = card if card is not None else None if self.mode == GameMode.ADULT else self.draw()
         return card, self._rules.construct_legal_moves(view, card=card)

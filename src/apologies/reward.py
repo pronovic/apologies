@@ -27,7 +27,6 @@ source wins more than 98% of the time against 3 random sources.
 """
 
 from abc import ABC, abstractmethod
-from typing import Tuple
 
 from .game import Player, PlayerView
 from .rules import BoardRules
@@ -41,7 +40,7 @@ class RewardCalculator(ABC):
         """Calculate the reward associated with a player view."""
 
     @abstractmethod
-    def range(self, players: int) -> Tuple[float, float]:
+    def range(self, players: int) -> tuple[float, float]:
         """Return the range of possible rewards for a game."""
 
 
@@ -52,7 +51,7 @@ class RewardCalculatorV1(RewardCalculator):
         """Calculate the reward associated with an observation."""
         return float(RewardCalculatorV1._reward(view))
 
-    def range(self, players: int) -> Tuple[float, float]:
+    def range(self, players: int) -> tuple[float, float]:
         """Return the range of possible rewards for a game."""
         return 0.0, float((players - 1) * 400)  # reward is up to 400 points per opponent
 

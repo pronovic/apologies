@@ -36,7 +36,7 @@ from __future__ import annotations  # see: https://stackoverflow.com/a/33533514/
 import json
 import random
 from enum import Enum
-from typing import Dict, List, Optional
+from typing import Optional
 
 from arrow import Arrow
 from arrow import utcnow as arrow_utcnow
@@ -156,12 +156,12 @@ class Deck:
     support serialization and deserialization.
     """
 
-    _draw_pile: Dict[str, Card] = field()
-    _discard_pile: Dict[str, Card] = field(factory=dict)
+    _draw_pile: dict[str, Card] = field()
+    _discard_pile: dict[str, Card] = field(factory=dict)
 
     # noinspection PyUnresolvedReferences
     @_draw_pile.default
-    def _default_draw_pile(self) -> Dict[str, Card]:
+    def _default_draw_pile(self) -> dict[str, Card]:
         pile = {}
         cardid = 0
         for card in CardType:
@@ -380,13 +380,13 @@ class Player:
     """
 
     color: PlayerColor
-    hand: List[Card] = field(factory=list)
-    pawns: List[Pawn] = field()
+    hand: list[Card] = field(factory=list)
+    pawns: list[Pawn] = field()
     turns: int = 0
 
     # noinspection PyUnresolvedReferences
     @pawns.default
-    def _default_pawns(self) -> List[Pawn]:
+    def _default_pawns(self) -> list[Pawn]:
         return [Pawn(self.color, index) for index in range(PAWNS)]
 
     def copy(self) -> Player:
@@ -456,7 +456,7 @@ class PlayerView:
     """
 
     player: Player
-    opponents: Dict[PlayerColor, Player]
+    opponents: dict[PlayerColor, Player]
 
     def copy(self) -> PlayerView:
         """Return a fully-independent copy of the player view."""
@@ -469,7 +469,7 @@ class PlayerView:
                 return pawn
         return None
 
-    def all_pawns(self) -> List[Pawn]:
+    def all_pawns(self) -> list[Pawn]:
         """Return a list of all pawns on the board."""
         pawns = []
         pawns.extend(self.player.pawns)
@@ -495,9 +495,9 @@ class Game:
     """
 
     playercount: int = field()
-    players: Dict[PlayerColor, Player] = field()
+    players: dict[PlayerColor, Player] = field()
     deck: Deck = field(factory=Deck)
-    history: List[History] = field(factory=list)
+    history: list[History] = field(factory=list)
 
     # noinspection PyUnresolvedReferences
     @playercount.validator
@@ -507,7 +507,7 @@ class Game:
 
     # noinspection PyUnresolvedReferences
     @players.default
-    def _default_players(self) -> Dict[PlayerColor, Player]:
+    def _default_players(self) -> dict[PlayerColor, Player]:
         return {color: Player(color) for color in list(PlayerColor)[: self.playercount]}
 
     @property
