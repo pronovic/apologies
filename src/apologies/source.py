@@ -25,7 +25,7 @@ class CharacterInputSource(ABC):
     @property
     def fullname(self) -> str:
         """Get the fully-qualified name of the character input source."""
-        return ".".join([type(self).__module__, type(self).__name__])
+        return f"{type(self).__module__}.{type(self).__name__}"
 
     @property
     def name(self) -> str:
