@@ -3,8 +3,15 @@
 
 command_clean() {
    rm -rf .venv
-   rm -rf dist
+   rm -rf __pycache__
+   rm -rf .pytest_cache
+   rm -rf .htmlcov
+   rm -rf .coverage*
+   rm -rf .tox
+   rm -rf .mypy_cache
    rm -rf docs/_build
+   rm -rf dist
+   rm -rf .poetry
    find . -name "__pycache__" -type d | xargs rm -rf
 }
 
