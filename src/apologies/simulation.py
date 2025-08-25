@@ -1,5 +1,5 @@
 # vim: set ft=python ts=4 sw=4 expandtab:
-# pylint: disable=line-too-long:
+# ruff: noqa: T201
 
 """
 Run a simulation to see how well different character input sources behave.

@@ -1,4 +1,5 @@
 # vim: set ft=python ts=4 sw=4 expandtab:
+# ruff: noqa: T201
 
 """
 Stubs the demo, which does not run on Windows.
