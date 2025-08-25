@@ -16,6 +16,9 @@ __pycache__
 /.mypy_cache
 /.idea/MypyConfig.xml 
 
+# Ruff
+.ruff_cache
+
 # Generated docs and code distribution
 /src/*.egg-info
 /docs/_build
