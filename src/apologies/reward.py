@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # vim: set ft=python ts=4 sw=4 expandtab:
 
 """
@@ -27,7 +26,6 @@ source wins more than 98% of the time against 3 random sources.
 """
 
 from abc import ABC, abstractmethod
-from typing import Tuple
 
 from .game import Player, PlayerView
 from .rules import BoardRules
@@ -41,7 +39,7 @@ class RewardCalculator(ABC):
         """Calculate the reward associated with a player view."""
 
     @abstractmethod
-    def range(self, players: int) -> Tuple[float, float]:
+    def range(self, players: int) -> tuple[float, float]:
         """Return the range of possible rewards for a game."""
 
 
@@ -52,7 +50,7 @@ class RewardCalculatorV1(RewardCalculator):
         """Calculate the reward associated with an observation."""
         return float(RewardCalculatorV1._reward(view))
 
-    def range(self, players: int) -> Tuple[float, float]:
+    def range(self, players: int) -> tuple[float, float]:
         """Return the range of possible rewards for a game."""
         return 0.0, float((players - 1) * 400)  # reward is up to 400 points per opponent
 
@@ -62,7 +60,7 @@ class RewardCalculatorV1(RewardCalculator):
         player_score = RewardCalculatorV1._player_score(view.player)
         opponent_scores = [RewardCalculatorV1._player_score(player) for player in view.opponents.values()]
         reward = (len(view.opponents) * player_score) - sum(opponent_scores)
-        return 0 if reward < 0 else reward
+        return max(reward, 0)
 
     @staticmethod
     def _player_score(player: Player) -> int:

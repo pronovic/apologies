@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # vim: set ft=python ts=4 sw=4 expandtab:
 
 # We'd prefer to disable these only on Windows, but that isn't an option
@@ -33,8 +32,7 @@ def _render_hand(player):
     """Return a string describing the cards in a player's hand."""
     if not player.hand:
         return "n/a"
-    else:
-        return "%s" % [card.cardtype.value for card in sorted(player.hand)]
+    return "%s" % [card.cardtype.value for card in sorted(player.hand)]
 
 
 def _draw(stdscr, board, state, history):

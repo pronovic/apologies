@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # vim: set ft=python ts=4 sw=4 expandtab:
 
 """
@@ -7,8 +6,8 @@ Character input sources.  A character could be a person or could be computer-dri
 
 import random
 from abc import ABC, abstractmethod
+from collections.abc import Callable
 from pydoc import locate
-from typing import Callable, List, Tuple
 
 from .game import GameMode, PlayerView
 from .reward import RewardCalculatorV1
@@ -33,7 +32,7 @@ class CharacterInputSource(ABC):
 
     @abstractmethod
     def choose_move(
-        self, mode: GameMode, view: PlayerView, legal_moves: List[Move], evaluator: Callable[[PlayerView, Move], PlayerView]
+        self, mode: GameMode, view: PlayerView, legal_moves: list[Move], evaluator: Callable[[PlayerView, Move], PlayerView]
     ) -> Move:
         """
         Choose the next move for a character.
@@ -72,7 +71,7 @@ class NoOpInputSource(CharacterInputSource):
     """
 
     def choose_move(
-        self, _mode: GameMode, _view: PlayerView, _moves: List[Move], _evaluator: Callable[[PlayerView, Move], PlayerView]
+        self, _mode: GameMode, _view: PlayerView, _moves: list[Move], _evaluator: Callable[[PlayerView, Move], PlayerView]
     ) -> Move:
         raise NotImplementedError
 
@@ -83,7 +82,7 @@ class RandomInputSource(CharacterInputSource):
     """
 
     def choose_move(
-        self, mode: GameMode, view: PlayerView, legal_moves: List[Move], unused: Callable[[PlayerView, Move], PlayerView]
+        self, mode: GameMode, view: PlayerView, legal_moves: list[Move], unused: Callable[[PlayerView, Move], PlayerView]
     ) -> Move:
         """Randomly choose the next move for a character."""
         return random.choice(legal_moves)
@@ -96,11 +95,11 @@ class RewardInputSource(CharacterInputSource):
     """
 
     @abstractmethod
-    def calculate(self, view: PlayerView, move: Move, evaluator: Callable[[PlayerView, Move], PlayerView]) -> Tuple[Move, float]:
+    def calculate(self, view: PlayerView, move: Move, evaluator: Callable[[PlayerView, Move], PlayerView]) -> tuple[Move, float]:
         """Calculate the reward associated with a move, returning a tuple of (Move, reward)."""
 
     def choose_move(
-        self, mode: GameMode, view: PlayerView, legal_moves: List[Move], evaluator: Callable[[PlayerView, Move], PlayerView]
+        self, mode: GameMode, view: PlayerView, legal_moves: list[Move], evaluator: Callable[[PlayerView, Move], PlayerView]
     ) -> Move:
         """Choose the next move for a player by evaluating and scoring the available moves."""
         evaluated = [self.calculate(view, move, evaluator) for move in legal_moves]  # calculate a reward for each move
@@ -116,7 +115,7 @@ class RewardV1InputSource(RewardInputSource):
 
     calculator = RewardCalculatorV1()
 
-    def calculate(self, view: PlayerView, move: Move, evaluator: Callable[[PlayerView, Move], PlayerView]) -> Tuple[Move, float]:
+    def calculate(self, view: PlayerView, move: Move, evaluator: Callable[[PlayerView, Move], PlayerView]) -> tuple[Move, float]:
         """Calculate the reward associated with a move, returning a tuple of (Move, reward)."""
         return move, self.calculator.calculate(evaluator(view, move))
 
@@ -137,7 +136,7 @@ def source(name: str) -> CharacterInputSource:
     Raises:
         ValueError: If the named source does not exist or is not a CharacterInputSource
     """
-    if not "." in name:
+    if "." not in name:
         name = "apologies.source.%s" % name
     cls = locate(name)
     if not issubclass(cls, CharacterInputSource):  # type: ignore
