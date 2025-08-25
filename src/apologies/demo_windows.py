@@ -9,7 +9,6 @@ from apologies.game import GameMode
 from apologies.source import CharacterInputSource
 
 
-# pylint: disable=unused-argument
 def run_demo(
     *,
     _players: int,

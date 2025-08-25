@@ -157,7 +157,6 @@ class BoardRules:
         return total - 60
 
     # noinspection PyChainedComparisons
-    # pylint: disable=too-many-branches,too-many-return-statements,line-too-long
     @staticmethod
     def _position(color: PlayerColor, position: Position, squares: int) -> Position:  # noqa: PLR0912,PLR0911
         """

@@ -1,9 +1,6 @@
 # vim: set ft=python ts=4 sw=4 expandtab:
 # ruff: noqa: T201, ANN001
 
-# We'd prefer to disable these only on Windows, but that isn't an option
-# pylint: disable=bad-option-value,no-member,no-name-in-module
-
 """
 Implements a quick'n'dirty game-playing demo using curses.
 """
@@ -119,7 +116,14 @@ def _refresh_history(game, history) -> None:
     history.refresh()
 
 
-def _main(stdscr, *, source: CharacterInputSource, engine: Engine, delay_sec: float, exit_immediately: bool) -> None:
+def _main(
+    stdscr,
+    *,
+    source: CharacterInputSource,
+    engine: Engine,
+    delay_sec: float,
+    exit_immediately: bool,
+) -> None:
     """Main routine for the Python curses application, intended to be wrapped by curses.wrapper()"""
 
     rows, columns = stdscr.getmaxyx()
@@ -195,7 +199,13 @@ def run_demo(
         engine = Engine(mode=mode, characters=characters)
         engine.start_game()
         _force_minimum_size()
-        curses.wrapper(_main, source=source, engine=engine, delay_sec=delay_sec, exit_immediately=exit_immediately)
+        curses.wrapper(
+            _main,
+            source=source,
+            engine=engine,
+            delay_sec=delay_sec,
+            exit_immediately=exit_immediately,
+        )
     except KeyboardInterrupt:  # users get out using CTRL-C
         print("Demo completed")
         sys.exit(0)

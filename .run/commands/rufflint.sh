@@ -2,7 +2,7 @@
 # Run the Ruff linter with no automatic fixes
 
 # The command line below is a bit of a hack.  The goal is to generate output
-# that's compatible with the PyCharm output filter: 
+# that's compatible with the PyCharm output filter:
 #
 #     $FILE_PATH$:$LINE$:$COLUMN.*
 #

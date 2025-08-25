@@ -10,12 +10,19 @@ from apologies.game import GameMode
 from apologies.source import CharacterInputSource
 
 if platform.system() == "Windows":
-    from apologies.demo_windows import run_demo as implementation  # pylint: disable=unused-import
+    from apologies.demo_windows import run_demo as implementation
 else:
-    from apologies.demo_unix import run_demo as implementation  # pylint: disable=unused-import
+    from apologies.demo_unix import run_demo as implementation
 
 
-def run_demo(*, players: int, mode: GameMode, source: CharacterInputSource, delay_sec: float, exit_immediately: bool) -> None:
+def run_demo(
+    *,
+    players: int,
+    mode: GameMode,
+    source: CharacterInputSource,
+    delay_sec: float,
+    exit_immediately: bool,
+) -> None:
     """
     Run the quick'n'dirty demo in a terminal window.
 
@@ -26,4 +33,10 @@ def run_demo(*, players: int, mode: GameMode, source: CharacterInputSource, dela
         delay_sec(float): The delay between turns when executing the game
         exit_immediately(bool): Exit immediately when the game completes
     """
-    implementation(players, mode, source, delay_sec, exit_immediately)
+    implementation(
+        players=players,
+        mode=mode,
+        source=source,
+        delay_sec=delay_sec,
+        exit_immediately=exit_immediately,
+    )
