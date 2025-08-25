@@ -327,7 +327,7 @@ class BoardRules:
                                 side_effects=[Action(ActionType.MOVE_TO_START, conflict)],
                             )
                         )
-            except ValueError as ignored:
+            except ValueError:
                 pass  # if the requested position is not legal, then just ignore it
         return moves
 
