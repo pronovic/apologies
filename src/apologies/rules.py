@@ -6,7 +6,6 @@ Implements rules related to game play.
 
 import uuid
 from enum import Enum
-from typing import Optional
 
 from attrs import define, field, frozen
 
@@ -51,7 +50,7 @@ class Action:
 
     actiontype: ActionType
     pawn: Pawn
-    position: Optional[Position] = None
+    position: Position | None = None
 
 
 @frozen
@@ -267,7 +266,7 @@ class BoardRules:
         return BoardRules._move_apologies(color, card, pawn, all_pawns)
 
     @staticmethod
-    def _find_pawn(all_pawns: list[Pawn], position: Position) -> Optional[Pawn]:
+    def _find_pawn(all_pawns: list[Pawn], position: Position) -> Pawn | None:
         """Return the first pawn at the indicated position, or None."""
         for pawn in all_pawns:
             if pawn.position == position:
@@ -430,7 +429,7 @@ class Rules:
         if self.mode == GameMode.ADULT:
             Rules._setup_adult_mode(game)
 
-    def construct_legal_moves(self, view: PlayerView, card: Optional[Card] = None) -> list[Move]:
+    def construct_legal_moves(self, view: PlayerView, card: Card | None = None) -> list[Move]:
         """
         Return the set of all legal moves for a player and its opponents.
 

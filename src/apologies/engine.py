@@ -6,7 +6,6 @@ Game engine that coordinates character actions to play a game.
 
 import random
 from collections.abc import Callable
-from typing import Optional
 
 from attrs import define, field
 
@@ -142,7 +141,7 @@ class Engine:
     def colors(self) -> dict[PlayerColor, Character]:
         return self._map.copy()
 
-    def winner(self) -> Optional[tuple[Character, Player]]:
+    def winner(self) -> tuple[Character, Player] | None:
         """Return the winner of the game, as a tuple of (Character, Player)"""
         return (self._map[self._game.winner.color], self._game.winner) if self.completed else None  # type: ignore
 
@@ -203,7 +202,7 @@ class Engine:
         """Discard back to the game's discard pile."""
         self._game.deck.discard(card)
 
-    def construct_legal_moves(self, view: PlayerView, card: Optional[Card] = None) -> tuple[Optional[Card], list[Move]]:
+    def construct_legal_moves(self, view: PlayerView, card: Card | None = None) -> tuple[Card | None, list[Move]]:
         """Construct the legal moves based on a player view, using the passed-in card if provided."""
         card = card if card is not None else None if self.mode == GameMode.ADULT else self.draw()
         return card, self._rules.construct_legal_moves(view, card=card)

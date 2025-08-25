@@ -35,7 +35,6 @@ from __future__ import annotations  # see: https://stackoverflow.com/a/33533514/
 import json
 import random
 from enum import Enum
-from typing import Optional
 
 from arrow import Arrow
 from arrow import utcnow as arrow_utcnow
@@ -205,8 +204,8 @@ class Position:
 
     start: bool = True
     home: bool = False
-    safe: Optional[int] = None
-    square: Optional[int] = None
+    safe: int | None = None
+    square: int | None = None
 
     def __str__(self) -> str:
         if self.home:
@@ -398,7 +397,7 @@ class Player:
         del player.hand[:]  # other players should not see this player's hand when making decisions
         return player
 
-    def find_first_pawn_in_start(self) -> Optional[Pawn]:
+    def find_first_pawn_in_start(self) -> Pawn | None:
         """Find the first pawn in the start area, if any."""
         for pawn in self.pawns:
             if pawn.position.start:
@@ -427,8 +426,8 @@ class History:
     """
 
     action: str
-    color: Optional[PlayerColor] = None
-    card: Optional[CardType] = None
+    color: PlayerColor | None = None
+    card: CardType | None = None
     timestamp: Arrow = field()
 
     # noinspection PyUnresolvedReferences
@@ -461,7 +460,7 @@ class PlayerView:
         """Return a fully-independent copy of the player view."""
         return _CONVERTER.structure(_CONVERTER.unstructure(self), PlayerView)
 
-    def get_pawn(self, prototype: Pawn) -> Optional[Pawn]:
+    def get_pawn(self, prototype: Pawn) -> Pawn | None:
         """Return the pawn from this view with the same color and index."""
         for pawn in self.all_pawns():
             if pawn.color == prototype.color and pawn.index == prototype.index:
@@ -523,7 +522,7 @@ class Game:
         return False
 
     @property
-    def winner(self) -> Optional[Player]:
+    def winner(self) -> Player | None:
         """The winner of the game, if any."""
         for player in self.players.values():
             if player.all_pawns_in_home():
@@ -543,7 +542,7 @@ class Game:
         """Deserialize the game state from JSON."""
         return _CONVERTER.structure(json.loads(data), Game)
 
-    def track(self, action: str, player: Optional[Player] = None, card: Optional[Card] = None) -> None:
+    def track(self, action: str, player: Player | None = None, card: Card | None = None) -> None:
         """Tracks an action taken during the game."""
         self.history.append(History(action, player.color if player else None, card.cardtype if card else None))
         if player:

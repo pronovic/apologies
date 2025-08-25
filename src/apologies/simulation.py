@@ -11,7 +11,6 @@ import csv
 import statistics
 from collections.abc import Sequence
 from itertools import combinations_with_replacement
-from typing import Optional
 
 from arrow import Arrow
 from arrow import now as arrow_now
@@ -47,12 +46,12 @@ SOURCE_HEADERS = [
 ]
 
 
-def _mean(data: Sequence[float]) -> Optional[float]:
+def _mean(data: Sequence[float]) -> float | None:
     """Calculate the mean rounded to 2 decimal places or return None if there is not any data."""
     return round(statistics.mean(data), 2) if data else None
 
 
-def _median(data: Sequence[float]) -> Optional[float]:
+def _median(data: Sequence[float]) -> float | None:
     """Calculate the median rounded to 2 decimal places or return None if there is not any data."""
     return round(statistics.median(data), 2) if data else None
 
@@ -71,16 +70,16 @@ class _Result:
 class _Statistics:
     """Scenario statistics for a source."""
 
-    source: Optional[str]
-    median_turns: Optional[float]
-    mean_turns: Optional[float]
-    median_duration: Optional[float]
-    mean_duration: Optional[float]
+    source: str | None
+    median_turns: float | None
+    mean_turns: float | None
+    median_duration: float | None
+    mean_duration: float | None
     wins: int
     win_percent: float
 
     @staticmethod
-    def for_results(name: Optional[str], results: list[_Result]) -> _Statistics:
+    def for_results(name: str | None, results: list[_Result]) -> _Statistics:
         in_scope = [result for result in results if name is None or result.character.source.name == name]
         turns = [result.player.turns for result in in_scope]
         durations_ms = [(result.stop - result.start).microseconds / 1000 for result in in_scope]
