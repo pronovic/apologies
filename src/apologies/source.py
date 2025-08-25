@@ -6,8 +6,8 @@ Character input sources.  A character could be a person or could be computer-dri
 
 import random
 from abc import ABC, abstractmethod
+from collections.abc import Callable
 from pydoc import locate
-from typing import Callable
 
 from .game import GameMode, PlayerView
 from .reward import RewardCalculatorV1

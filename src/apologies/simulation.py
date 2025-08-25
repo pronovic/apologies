@@ -9,8 +9,9 @@ from __future__ import annotations  # so we can return a type from one of its ow
 
 import csv
 import statistics
+from collections.abc import Sequence
 from itertools import combinations_with_replacement
-from typing import Optional, Sequence
+from typing import Optional
 
 from arrow import Arrow
 from arrow import now as arrow_now

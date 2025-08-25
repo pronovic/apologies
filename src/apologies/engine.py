@@ -5,7 +5,8 @@ Game engine that coordinates character actions to play a game.
 """
 
 import random
-from typing import Callable, Optional
+from collections.abc import Callable
+from typing import Optional
 
 from attrs import define, field
 
