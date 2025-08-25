@@ -19,7 +19,14 @@
 
 command_rufflint() {
    echo "Running Ruff linter..."
-   CLICOLOR_FORCE=1 poetry_run ruff check --no-fix | sed 's/ *.*-->.* //'
+
+   # normally we would just run the command, but the $() subshell messes with error handling
+   OUTPUT=$(CLICOLOR_FORCE=1 poetry_run ruff check --no-fix 2>&1)
+   if [ $? != 0 ]; then
+      echo "$OUTPUT" | sed 's/ *.*-->.* //'
+      exit 1
+   fi
+
    echo "done"
 }
 
