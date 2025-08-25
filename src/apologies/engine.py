@@ -182,17 +182,16 @@ class Engine:
         saved = self._game.copy()
         try:
             color, character = self.next_turn()
-
             done = False
             while not done:
                 view = self._game.create_player_view(color)
                 move = self.choose_next_move(character, view)
                 done = self.execute_move(color, move)
-
-            return self._game
         except Exception as e:
             self._game = saved  # put back original so a failed call is idempotent
             raise e
+        else:
+            return self._game
 
     def draw(self) -> Card:
         """Draw a random card from the game's draw pile."""
