@@ -18,11 +18,12 @@ from attrs import frozen
 
 from apologies.engine import Character, Engine
 from apologies.game import MAX_PLAYERS, MIN_PLAYERS, GameMode, Player
-from apologies.source import CharacterInputSource
 from apologies.util import ISO_TIMESTAMP_FORMAT
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
+
+    from apologies.source import CharacterInputSource
 
 BASE_HEADERS = [
     "Scenario",
