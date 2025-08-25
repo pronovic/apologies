@@ -310,9 +310,9 @@ run configuration before PyCharm will find the right test suite.
 Optionally, you might want to set up external tools for some of common
 developer tasks: code reformatting and the PyLint and MyPy checks.  One nice
 advantage of doing this is that you can configure an output filter, which makes
-the Pylint and MyPy errors clickable.  To set up external tools, go to PyCharm
-settings and find **Tools > External Tools**.  Add the tools as described
-below.
+the Ruff linter and MyPy errors clickable.  To set up external tools, go to
+PyCharm settings and find **Tools > External Tools**.  Add the tools as
+described below.
 
 #### Linux or MacOS
 
@@ -365,15 +365,15 @@ source ~/.bash_profile
 |Make console active on message in stderr|_Checked_|
 |Output filters|`$FILE_PATH$:$LINE$:$COLUMN$:.*`|
 
-##### Run Pylint Checks
+##### Run Ruff Lint Checks
 
 |Field|Value|
 |-----|-----|
-|Name|`Run Pylint Checks`|
-|Description|`Run the Pylint code checks`|
+|Name|`Run Ruff Lint Checks`|
+|Description|`Run the Ruff linter code checks`|
 |Group|`Developer Tools`|
 |Program|`$ProjectFileDir$/run`|
-|Arguments|`pylint`|
+|Arguments|`lint`|
 |Working directory|`$ProjectFileDir$`|
 |Synchronize files after execution|_Unchecked_|
 |Open console for tool outout|_Checked_|
@@ -425,11 +425,11 @@ change the path for `bash.exe`.
 
 |Field|Value|
 |-----|-----|
-|Name|`Run Pylint Checks`|
-|Description|`Run the Pylint code checks`|
+|Name|`Run Ruff Lint Checks`|
+|Description|`Run the Ruff linter code checks`|
 |Group|`Developer Tools`|
 |Program|`powershell.exe`|
-|Arguments|`& 'C:\Program Files\Git\bin\bash.exe' -l "./run" pylint | Out-String`|
+|Arguments|`& 'C:\Program Files\Git\bin\bash.exe' -l "./run" lint | Out-String`|
 |Working directory|`$ProjectFileDir$`|
 |Synchronize files after execution|_Unchecked_|
 |Open console for tool outout|_Checked_|
