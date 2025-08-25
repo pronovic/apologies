@@ -34,7 +34,11 @@ class CharacterInputSource(ABC):
 
     @abstractmethod
     def choose_move(
-        self, mode: GameMode, view: PlayerView, legal_moves: list[Move], evaluator: Callable[[PlayerView, Move], PlayerView]
+        self,
+        mode: GameMode,
+        view: PlayerView,
+        legal_moves: list[Move],
+        evaluator: Callable[[PlayerView, Move], PlayerView],
     ) -> Move:
         """
         Choose the next move for a character.
@@ -85,10 +89,10 @@ class RandomInputSource(CharacterInputSource):
 
     def choose_move(  # noqa: PLR6301
         self,
-        mode: GameMode,
-        view: PlayerView,
+        _mode: GameMode,
+        _view: PlayerView,
         legal_moves: list[Move],
-        unused: Callable[[PlayerView, Move], PlayerView],
+        _evaluator: Callable[[PlayerView, Move], PlayerView],
     ) -> Move:
         """Randomly choose the next move for a character."""
         return random.choice(legal_moves)
@@ -101,11 +105,20 @@ class RewardInputSource(CharacterInputSource):
     """
 
     @abstractmethod
-    def calculate(self, view: PlayerView, move: Move, evaluator: Callable[[PlayerView, Move], PlayerView]) -> tuple[Move, float]:
+    def calculate(
+        self,
+        view: PlayerView,
+        move: Move,
+        evaluator: Callable[[PlayerView, Move], PlayerView],
+    ) -> tuple[Move, float]:
         """Calculate the reward associated with a move, returning a tuple of (Move, reward)."""
 
     def choose_move(
-        self, mode: GameMode, view: PlayerView, legal_moves: list[Move], evaluator: Callable[[PlayerView, Move], PlayerView]
+        self,
+        _mode: GameMode,
+        view: PlayerView,
+        legal_moves: list[Move],
+        evaluator: Callable[[PlayerView, Move], PlayerView],
     ) -> Move:
         """Choose the next move for a player by evaluating and scoring the available moves."""
         evaluated = [self.calculate(view, move, evaluator) for move in legal_moves]  # calculate a reward for each move
@@ -121,7 +134,12 @@ class RewardV1InputSource(RewardInputSource):
 
     calculator = RewardCalculatorV1()
 
-    def calculate(self, view: PlayerView, move: Move, evaluator: Callable[[PlayerView, Move], PlayerView]) -> tuple[Move, float]:
+    def calculate(
+        self,
+        view: PlayerView,
+        move: Move,
+        evaluator: Callable[[PlayerView, Move], PlayerView],
+    ) -> tuple[Move, float]:
         """Calculate the reward associated with a move, returning a tuple of (Move, reward)."""
         return move, self.calculator.calculate(evaluator(view, move))
 
