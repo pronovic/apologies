@@ -141,5 +141,5 @@ def source(name: str) -> CharacterInputSource:
     cls = locate(name)
     if not issubclass(cls, CharacterInputSource):  # type: ignore
         msg = f"{name} is not a CharacterInputSource"
-        raise ValueError(msg)
+        raise TypeError(msg)
     return cls()  # type: ignore

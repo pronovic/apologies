@@ -17,7 +17,7 @@ class TestFunctions:
             source("apologies.game.Blah")  # not a valid class
 
     def test_source_invalid(self):
-        with pytest.raises(ValueError):
+        with pytest.raises(TypeError):
             source("apologies.engine.Engine")  # valid class, but not a CharacterInputSource
 
     def test_source_valid(self):
