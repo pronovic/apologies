@@ -11,6 +11,7 @@ include = [
    { path='LICENSE', format='sdist' },
    { path='README.md', format='sdist' },
    { path='docs', format='sdist' },
+   { path='src/tests', format='sdist' },
 ]
 classifiers = [
    "Operating System :: OS Independent",
