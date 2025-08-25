@@ -1,4 +1,5 @@
 # vim: set ft=python ts=4 sw=4 expandtab:
+# ruff: noqa: S311
 
 """
 Classes that track game state.

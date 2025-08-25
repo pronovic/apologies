@@ -1,4 +1,5 @@
 # vim: set ft=python ts=4 sw=4 expandtab:
+# ruff: noqa: S311
 
 """
 Game engine that coordinates character actions to play a game.
