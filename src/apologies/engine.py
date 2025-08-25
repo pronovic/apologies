@@ -102,11 +102,9 @@ class Engine:
     # noinspection PyUnresolvedReferences
     @_map.default
     def _default_map(self) -> dict[PlayerColor, Character]:
-        index = 0
         result = {}
-        for player in self._game.players.values():
+        for index, player in enumerate(self._game.players.values(), start=0):
             result[player.color] = self.characters[index]
-            index += 1
         return result
 
     @property

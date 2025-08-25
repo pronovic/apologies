@@ -188,9 +188,7 @@ def run_simulation(iterations: int, output: str, sources: list[CharacterInputSou
         results = []
         for mode in GameMode:
             for players in range(MIN_PLAYERS, MAX_PLAYERS + 1):
-                case = 0
-                for combination in combinations_with_replacement(sources, players):
-                    case += 1
+                for case, combination in enumerate(combinations_with_replacement(sources, players), start=0):
                     scenario += 1
                     prefix = f"Scenario {scenario}: {mode.name} mode with {players} players (case {case}): "
                     characters = [Character(name=source.name, source=source) for source in combination]

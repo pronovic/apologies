@@ -74,10 +74,8 @@ def _refresh_board(game, board) -> None:
     board.clear()
     board.border()
 
-    row = 0
-    for line in render_board(game).splitlines():
+    for row, line in enumerate(render_board(game).splitlines(), start=0):
         board.addstr(row, 1, line)
-        row += 1
 
     board.refresh()
 
