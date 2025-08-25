@@ -5,9 +5,6 @@ help_format() {
 }
 
 task_format() {
-   echo ""
-   run_command black
-   echo ""
-   run_command isort
+   run_command ruffformat
 }
 

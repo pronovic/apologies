@@ -64,34 +64,10 @@ pytest-testdox = ">=3.1.0,<4.0.0"
 coverage = ">=7.4.4,<8.0.0"
 pylint = ">=3.0.1,<4.0.0"
 pre-commit = ">=4.0.1,<5.0.0"
-black = ">=24.2.0,<25.0.0"
 mypy = ">=1.6.0,<2.0.0"
-isort = ">=5.12.0,<6.0.0"
 click = ">=8.1.7,<9.0.0"
 colorama = ">=0.4.6,<1.0.0"
-
-[tool.black]
-line-length = 132
-target-version = [ 'py310', 'py311', 'py312', 'py313' ]
-include = '\.pyi?$'
-exclude = '''
-/(
-    \.git
-  | __pycache__
-  | \.tox
-  | \.venv
-  | \.poetry
-  | build
-  | dist
-  | docs
-  | notes
-)/
-'''
-
-[tool.isort]
-profile = "black"
-line_length = 132
-skip_glob = [ "docs", "notes", ".poetry" ]
+ruff = "^0.12.10"
 
 [tool.coverage.paths]
 source = [ "src" ]
@@ -109,6 +85,18 @@ filterwarnings = [
     'error',  # turn all Python warnings into test failures, so they're hard to miss
     'ignore:datetime.datetime.utcfromtimestamp\(\) is deprecated:DeprecationWarning',
 ]
+
+[tool.ruff]
+src = ["src"]
+extend-exclude = [ "docs", "notes", ".poetry" ]
+line-length = 132
+preview = true
+
+[tool.ruff.format]
+quote-style = "double"
+line-ending = "lf"
+docstring-code-format = true
+docstring-code-line-length = 80
 
 [tool.mypy]
 files = [ "src" ]

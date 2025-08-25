@@ -176,14 +176,22 @@ class BoardRules:
                 if position.safe + squares >= 0:
                     return position.copy().move_to_safe(position.safe + squares)
                 else:  # handle moving back out of the safe area
-                    return BoardRules._position(color, position.copy().move_to_square(TURN[color].square), squares + position.safe + 1)  # type: ignore
+                    return BoardRules._position(
+                        color,
+                        position.copy().move_to_square(TURN[color].square),  # type: ignore[arg-type]
+                        squares + position.safe + 1,
+                    )
         elif position.square is not None:
             if squares == 0:
                 return position.copy()
             elif squares > 0:
                 if position.square + squares < BOARD_SQUARES:
                     if position.square <= TURN[color].square and position.square + squares > TURN[color].square:  # type: ignore
-                        return BoardRules._position(color, position.copy().move_to_safe(0), squares - (TURN[color].square - position.square) - 1)  # type: ignore
+                        return BoardRules._position(
+                            color,
+                            position.copy().move_to_safe(0),
+                            squares - (TURN[color].square - position.square) - 1,  # type: ignore[operator]
+                        )
                     else:
                         return position.copy().move_to_square(position.square + squares)
                 else:  # handle turning the corner

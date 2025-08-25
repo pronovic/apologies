@@ -337,9 +337,10 @@ class TestEngine:
 
         engine._game.create_player_view.assert_has_calls([call(PlayerColor.RED), call(PlayerColor.RED)])
         engine._rules.construct_legal_moves.assert_has_calls([call(view, card=card1), call(view, card=card2)])
-        engine.characters[0].choose_move.assert_has_calls(
-            [call(engine.mode, view, legal_moves1, Rules.evaluate_move), call(engine.mode, view, legal_moves2, Rules.evaluate_move)]
-        )
+        engine.characters[0].choose_move.assert_has_calls([
+            call(engine.mode, view, legal_moves1, Rules.evaluate_move),
+            call(engine.mode, view, legal_moves2, Rules.evaluate_move),
+        ])
         engine._rules.execute_move.assert_has_calls([call(engine._game, player, move1), call(engine._game, player, move2)])
         engine._game.deck.discard.assert_has_calls([call(card1), call(card2)])
         engine._rules.draw_again.assert_has_calls([call(card1), call(card2)])
@@ -500,9 +501,10 @@ class TestEngine:
 
         engine._game.create_player_view.assert_has_calls([call(PlayerColor.RED), call(PlayerColor.RED)])
         engine._rules.construct_legal_moves.assert_has_calls([call(view, card=None), call(view, card=None)])
-        engine.characters[0].choose_move.assert_has_calls(
-            [call(engine.mode, view, legal_moves1, Rules.evaluate_move), call(engine.mode, view, legal_moves2, Rules.evaluate_move)]
-        )
+        engine.characters[0].choose_move.assert_has_calls([
+            call(engine.mode, view, legal_moves1, Rules.evaluate_move),
+            call(engine.mode, view, legal_moves2, Rules.evaluate_move),
+        ])
         engine._rules.execute_move.assert_has_calls([call(engine._game, player, move1), call(engine._game, player, move2)])
         engine._game.deck.discard.assert_has_calls([call(movecard1), call(movecard2)])
         engine._rules.draw_again.assert_has_calls([call(movecard1), call(movecard2)])

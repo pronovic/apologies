@@ -9,6 +9,7 @@ command_clean() {
    rm -rf .coverage*
    rm -rf .tox
    rm -rf .mypy_cache
+   rm -rf .ruff_cache
    rm -rf docs/_build
    rm -rf dist
    rm -rf .poetry

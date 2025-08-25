@@ -23,7 +23,7 @@ game, the possible moves in each turn are fairly limited, due to each player pic
 playing the top card off the deck.  This evens the playing field, because it's quite likely
 that any player will have no good move on their turn.  In a 4-player ADULT mode game, where the
 engine has the opportunity to choose between more possible moves for each turn, a reward-based
-source wins more than 98% of the time against 3 random sources. 
+source wins more than 98% of the time against 3 random sources.
 """
 
 from abc import ABC, abstractmethod

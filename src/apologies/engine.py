@@ -58,7 +58,7 @@ class Engine:
 
         engine.start_game()
         while not engine.completed:
-          state = engine.play_next()
+            state = engine.play_next()
 
     This synchronously plays a turn for each player, one after another, until
     the game is complete.  Other, more fine-grained methods exist if you need
