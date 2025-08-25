@@ -1,26 +1,19 @@
 # vim: set ft=python ts=4 sw=4 expandtab:
 # pylint: disable=redefined-outer-name
-# ruff: noqa: FURB101
 
-import os
+from pathlib import Path
 from unittest.mock import MagicMock
 
 import pytest
 
 from apologies.cli import _lookup_method, cli, example, render
 
-FIXTURE_DIR = os.path.join(os.path.dirname(__file__), "fixtures/test_cli")
+FIXTURE_DIR = Path(__file__).parent / "fixtures/test_cli"
 
 
 @pytest.fixture
 def data():
-    data = {}
-    for f in os.listdir(FIXTURE_DIR):
-        p = os.path.join(FIXTURE_DIR, f)
-        if os.path.isfile(p):
-            with open(p, encoding="utf-8") as r:
-                data[f] = r.read()
-    return data
+    return {f.name: f.read_text() for f in FIXTURE_DIR.iterdir() if f.is_file()}
 
 
 class TestCli:

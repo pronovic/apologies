@@ -10,6 +10,7 @@ from __future__ import annotations  # so we can return a type from one of its ow
 import csv
 import statistics
 from itertools import combinations_with_replacement
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 from arrow import Arrow
@@ -178,7 +179,7 @@ def run_simulation(iterations: int, output: str, sources: list[CharacterInputSou
         output(str): Path to the output file to write
         sources(List[CharacterInputSource]): The source to use for each player in the game
     """
-    with open(output, "w", newline="", encoding="utf-8") as csvfile:
+    with Path(output).open("w", newline="", encoding="utf-8") as csvfile:
         csvwriter = csv.writer(csvfile, quoting=csv.QUOTE_ALL)
         _write_header(csvwriter, sources)
 
