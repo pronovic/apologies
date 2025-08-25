@@ -140,10 +140,8 @@ ignore = [
   "D",          # pydocstyle
   "DJ",         # flake8-django
   "DOC",        # pydoclint
-  "ERA",        # eradicate
   "EXE",        # flake8-executable
   "FIX",        # flake8-fixme
-  "PTH",        # flake8-use-pathlib
   "TD",         # flake8-todo
 
   # Exclusions of specific rules, which we don't think are worth enforcing
@@ -161,52 +159,6 @@ ignore = [
   "SIM102",     # allow nested `if` clauses; ruff suggestions often make the code less legible
   "SIM117",     # allow nested `with` clauses; ruff suggestions often make the code less legible
   "TRY003",     # allow long messages in exceptions; this is often a false-positive that has little benefit
-
-  # Exclusions of specific rules that we want to work toward being compliant with
-  "ANN001",
-  "ANN202",
-  "ANN204",
-  "ARG001",
-  "ARG002",
-  "BLE001",
-  "C414",
-  "C420",
-  "E713",
-  "F841",
-  "FBT001",
-  "FLY002",
-  "FURB101",
-  "FURB118",
-  "FURB136",
-  "PERF401",
-  "PGH003",
-  "PIE808",
-  "PLR0911",
-  "PLR0912",
-  "PLR0913",
-  "PLR0917",
-  "PLR1702",
-  "PLR5501",
-  "PLR6301",
-  "PT012",
-  "RET505",
-  "RET506",
-  "S311",
-  "SIM110",
-  "SIM113",
-  "T201",
-  "TC001",
-  "TC003",
-  "TID252",
-  "TRY004",
-  "TRY201",
-  "TRY300",
-  "UP006",
-  "UP009",
-  "UP031",
-  "UP035",
-  "UP045",
-  "W291",
 ]
 
 [tool.ruff.lint.per-file-ignores]

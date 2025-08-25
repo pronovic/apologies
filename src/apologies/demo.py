@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # vim: set ft=python ts=4 sw=4 expandtab:
 
 """
@@ -7,16 +6,23 @@ Implements a quick'n'dirty game-playing demo using curses.
 
 import platform
 
-from .game import GameMode
-from .source import CharacterInputSource
+from apologies.game import GameMode
+from apologies.source import CharacterInputSource
 
 if platform.system() == "Windows":
-    from .demo_windows import run_demo as implementation
+    from apologies.demo_windows import run_demo as implementation
 else:
-    from .demo_unix import run_demo as implementation
+    from apologies.demo_unix import run_demo as implementation
 
 
-def run_demo(players: int, mode: GameMode, source: CharacterInputSource, delay_sec: float, exit_immediately: bool) -> None:
+def run_demo(
+    *,
+    players: int,
+    mode: GameMode,
+    source: CharacterInputSource,
+    delay_sec: float,
+    exit_immediately: bool,
+) -> None:
     """
     Run the quick'n'dirty demo in a terminal window.
 
@@ -27,4 +33,10 @@ def run_demo(players: int, mode: GameMode, source: CharacterInputSource, delay_s
         delay_sec(float): The delay between turns when executing the game
         exit_immediately(bool): Exit immediately when the game completes
     """
-    implementation(players, mode, source, delay_sec, exit_immediately)
+    implementation(
+        players=players,
+        mode=mode,
+        source=source,
+        delay_sec=delay_sec,
+        exit_immediately=exit_immediately,
+    )

@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
 # vim: set ft=python ts=4 sw=4 expandtab:
+# ruff: noqa: S311
 
 """
 Classes that track game state.
@@ -31,18 +31,15 @@ Attributes:
     SLIDE(Dict[PlayerColor, Tuple(int, int)): The slide start/end squares for each color
 """
 
-from __future__ import annotations  # see: https://stackoverflow.com/a/33533514/2907667
-
 import json
 import random
 from enum import Enum
-from typing import Dict, List, Optional
 
 from arrow import Arrow
 from arrow import utcnow as arrow_utcnow
 from attrs import define, field, frozen
 
-from .util import ISO_TIME_FORMAT, CattrConverter
+from apologies.util import ISO_TIME_FORMAT, CattrConverter
 
 # Cattr converter that serializes/deserializes DateTime to an ISO 8601 timestamp
 _CONVERTER = CattrConverter()
@@ -156,17 +153,17 @@ class Deck:
     support serialization and deserialization.
     """
 
-    _draw_pile: Dict[str, Card] = field()
-    _discard_pile: Dict[str, Card] = field(factory=dict)
+    _draw_pile: dict[str, Card] = field()
+    _discard_pile: dict[str, Card] = field(factory=dict)
 
     # noinspection PyUnresolvedReferences
     @_draw_pile.default
-    def _default_draw_pile(self) -> Dict[str, Card]:
+    def _default_draw_pile(self) -> dict[str, Card]:  # noqa: PLR6301
         pile = {}
         cardid = 0
         for card in CardType:
             for _ in range(DECK_COUNTS[card]):
-                pile["%d" % cardid] = Card("%d" % cardid, card)
+                pile[f"{cardid}"] = Card(f"{cardid}", card)
                 cardid += 1
         return pile
 
@@ -206,24 +203,23 @@ class Position:
 
     start: bool = True
     home: bool = False
-    safe: Optional[int] = None
-    square: Optional[int] = None
+    safe: int | None = None
+    square: int | None = None
 
     def __str__(self) -> str:
         if self.home:
             return "home"
-        elif self.start:
+        if self.start:
             return "start"
-        elif self.safe is not None:
-            return "safe %s" % self.safe
-        else:
-            return "square %s" % self.square
+        if self.safe is not None:
+            return f"safe {self.safe}"
+        return f"square {self.square}"
 
-    def copy(self) -> Position:
+    def copy(self) -> "Position":
         """Return a fully-independent copy of the position."""
         return _CONVERTER.structure(_CONVERTER.unstructure(self), Position)
 
-    def move_to_position(self, position: Position) -> Position:
+    def move_to_position(self, position: "Position") -> "Position":
         """
         Move the pawn to a specific position on the board.
 
@@ -254,7 +250,7 @@ class Position:
             self.move_to_square(position.square)
         return self
 
-    def move_to_start(self) -> Position:
+    def move_to_start(self) -> "Position":
         """
         Move the pawn back to its start area.
 
@@ -270,7 +266,7 @@ class Position:
         self.square = None
         return self
 
-    def move_to_home(self) -> Position:
+    def move_to_home(self) -> "Position":
         """
         Move the pawn to its home area.
 
@@ -286,7 +282,7 @@ class Position:
         self.square = None
         return self
 
-    def move_to_safe(self, square: int) -> Position:
+    def move_to_safe(self, square: int) -> "Position":
         """
         Move the pawn to a square in its safe area.
 
@@ -307,7 +303,7 @@ class Position:
         self.square = None
         return self
 
-    def move_to_square(self, square: int) -> Position:
+    def move_to_square(self, square: int) -> "Position":
         """
         Move the pawn to a square on the board.
 
@@ -354,14 +350,15 @@ class Pawn:
     # noinspection PyUnresolvedReferences
     @name.default
     def _default_name(self) -> str:
-        return "%s%s" % (self.color.value, self.index)
+        return f"{self.color.value}{self.index}"
 
+    # noinspection PyUnresolvedReferences
     @position.default
-    def _default_position(self) -> Position:
+    def _default_position(self) -> Position:  # noqa: PLR6301
         return Position()
 
     def __str__(self) -> str:
-        return "%s->%s" % (self.name, self.position)
+        return f"{self.name}->{self.position}"
 
 
 @define
@@ -381,26 +378,26 @@ class Player:
     """
 
     color: PlayerColor
-    hand: List[Card] = field(factory=list)
-    pawns: List[Pawn] = field()
+    hand: list[Card] = field(factory=list)
+    pawns: list[Pawn] = field()
     turns: int = 0
 
     # noinspection PyUnresolvedReferences
     @pawns.default
-    def _default_pawns(self) -> List[Pawn]:
-        return [Pawn(self.color, index) for index in range(0, PAWNS)]
+    def _default_pawns(self) -> list[Pawn]:
+        return [Pawn(self.color, index) for index in range(PAWNS)]
 
-    def copy(self) -> Player:
+    def copy(self) -> "Player":
         """Return a fully-independent copy of the player."""
         return _CONVERTER.structure(_CONVERTER.unstructure(self), Player)
 
-    def public_data(self) -> Player:
+    def public_data(self) -> "Player":
         """Return a fully-independent copy of the player with only public data visible."""
         player = self.copy()
         del player.hand[:]  # other players should not see this player's hand when making decisions
         return player
 
-    def find_first_pawn_in_start(self) -> Optional[Pawn]:
+    def find_first_pawn_in_start(self) -> Pawn | None:
         """Find the first pawn in the start area, if any."""
         for pawn in self.pawns:
             if pawn.position.start:
@@ -409,10 +406,7 @@ class Player:
 
     def all_pawns_in_home(self) -> bool:
         """Whether all of this user's pawns are in home."""
-        for pawn in self.pawns:
-            if not pawn.position.home:
-                return False
-        return True
+        return all(pawn.position.home for pawn in self.pawns)
 
 
 @define
@@ -429,20 +423,20 @@ class History:
     """
 
     action: str
-    color: Optional[PlayerColor] = None
-    card: Optional[CardType] = None
+    color: PlayerColor | None = None
+    card: CardType | None = None
     timestamp: Arrow = field()
 
-    # noinspection PyUnresolvedReferences
+    # noinspection PyUnresolvedReferences,PyCallingNonCallable
     @timestamp.default
-    def _default_timestamp(self) -> Arrow:
+    def _default_timestamp(self) -> Arrow:  # noqa: PLR6301
         return arrow_utcnow()
 
     def __str__(self) -> str:
         time = self.timestamp.format(ISO_TIME_FORMAT)
         color = "General" if not self.color else self.color.value
         action = self.action
-        return "[%s] %s - %s" % (time, color, action)
+        return f"[{time}] {color} - {action}"
 
 
 @define
@@ -457,20 +451,20 @@ class PlayerView:
     """
 
     player: Player
-    opponents: Dict[PlayerColor, Player]
+    opponents: dict[PlayerColor, Player]
 
-    def copy(self) -> PlayerView:
+    def copy(self) -> "PlayerView":
         """Return a fully-independent copy of the player view."""
         return _CONVERTER.structure(_CONVERTER.unstructure(self), PlayerView)
 
-    def get_pawn(self, prototype: Pawn) -> Optional[Pawn]:
+    def get_pawn(self, prototype: Pawn) -> Pawn | None:
         """Return the pawn from this view with the same color and index."""
         for pawn in self.all_pawns():
             if pawn.color == prototype.color and pawn.index == prototype.index:
                 return pawn
         return None
 
-    def all_pawns(self) -> List[Pawn]:
+    def all_pawns(self) -> list[Pawn]:
         """Return a list of all pawns on the board."""
         pawns = []
         pawns.extend(self.player.pawns)
@@ -496,9 +490,9 @@ class Game:
     """
 
     playercount: int = field()
-    players: Dict[PlayerColor, Player] = field()
+    players: dict[PlayerColor, Player] = field()
     deck: Deck = field(factory=Deck)
-    history: List[History] = field(factory=list)
+    history: list[History] = field(factory=list)
 
     # noinspection PyUnresolvedReferences
     @playercount.validator
@@ -508,7 +502,7 @@ class Game:
 
     # noinspection PyUnresolvedReferences
     @players.default
-    def _default_players(self) -> Dict[PlayerColor, Player]:
+    def _default_players(self) -> dict[PlayerColor, Player]:
         return {color: Player(color) for color in list(PlayerColor)[: self.playercount]}
 
     @property
@@ -519,20 +513,17 @@ class Game:
     @property
     def completed(self) -> bool:
         """Whether the game is completed."""
-        for player in self.players.values():
-            if player.all_pawns_in_home():
-                return True
-        return False
+        return any(player.all_pawns_in_home() for player in self.players.values())
 
     @property
-    def winner(self) -> Optional[Player]:
+    def winner(self) -> Player:
         """The winner of the game, if any."""
         for player in self.players.values():
             if player.all_pawns_in_home():
                 return player
-        return None
+        raise ValueError("Game is not completed")
 
-    def copy(self) -> Game:
+    def copy(self) -> "Game":
         """Return a fully-independent copy of the game."""
         return _CONVERTER.structure(_CONVERTER.unstructure(self), Game)
 
@@ -541,11 +532,11 @@ class Game:
         return json.dumps(_CONVERTER.unstructure(self), indent="  ")
 
     @staticmethod
-    def from_json(data: str) -> Game:
+    def from_json(data: str) -> "Game":
         """Deserialize the game state from JSON."""
         return _CONVERTER.structure(json.loads(data), Game)
 
-    def track(self, action: str, player: Optional[Player] = None, card: Optional[Card] = None) -> None:
+    def track(self, action: str, player: Player | None = None, card: Card | None = None) -> None:
         """Tracks an action taken during the game."""
         self.history.append(History(action, player.color if player else None, card.cardtype if card else None))
         if player:

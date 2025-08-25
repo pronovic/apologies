@@ -1,15 +1,22 @@
-# -*- coding: utf-8 -*-
 # vim: set ft=python ts=4 sw=4 expandtab:
+# ruff: noqa: T201
 
 """
 Stubs the demo, which does not run on Windows.
 """
 
-from .game import GameMode
-from .source import CharacterInputSource
+from apologies.game import GameMode
+from apologies.source import CharacterInputSource
 
 
-def run_demo(players: int, mode: GameMode, source: CharacterInputSource, delay_sec: float, exit_immediately: bool) -> None:
+def run_demo(
+    *,
+    _players: int,
+    _mode: GameMode,
+    _source: CharacterInputSource,
+    _delay_sec: float,
+    _exit_immediately: bool,
+) -> None:
     """
     Stubs the demo, which does not run on Windows.
     """

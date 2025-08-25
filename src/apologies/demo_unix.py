@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
 # vim: set ft=python ts=4 sw=4 expandtab:
+# ruff: noqa: T201, ANN001
 
 """
 Implements a quick'n'dirty game-playing demo using curses.
@@ -11,10 +11,10 @@ from curses import endwin
 from signal import SIGWINCH, signal
 from time import sleep
 
-from .engine import Character, Engine
-from .game import GameMode
-from .render import render_board
-from .source import CharacterInputSource
+from apologies.engine import Character, Engine
+from apologies.game import GameMode
+from apologies.render import render_board
+from apologies.source import CharacterInputSource
 
 # Minimum terminal size needed to support the demo
 _MIN_COLS = 155
@@ -22,19 +22,18 @@ _MIN_ROWS = 58
 
 
 class TerminalSizeError(Exception):
-    def __init__(self, msg):
+    def __init__(self, msg) -> None:
         self.msg = msg
 
 
-def _render_hand(player):
+def _render_hand(player) -> str:
     """Return a string describing the cards in a player's hand."""
     if not player.hand:
         return "n/a"
-    else:
-        return "%s" % [card.cardtype.value for card in sorted(player.hand)]
+    return "%s" % [card.cardtype.value for card in sorted(player.hand)]
 
 
-def _draw(stdscr, board, state, history):
+def _draw(stdscr, board, state, history) -> None:
     """Draw the static portions of the screen."""
     stdscr.clear()
     stdscr.border()
@@ -51,7 +50,7 @@ def _draw(stdscr, board, state, history):
 
 
 # pylint: disable=too-many-positional-arguments
-def _refresh(source, engine, game, delay_sec, stdscr, board, state, history):
+def _refresh(source, engine, game, delay_sec, stdscr, board, state, history) -> None:  # noqa: PLR0917,PLR0913
     """Refresh the dynamic portions of the screen."""
     _refresh_screen(source, engine, delay_sec, game, stdscr)
     _refresh_board(game, board)
@@ -59,7 +58,7 @@ def _refresh(source, engine, game, delay_sec, stdscr, board, state, history):
     _refresh_history(game, history)
 
 
-def _refresh_screen(unused_source, unused_engine, unused_game, unused_delay_sec, stdscr):
+def _refresh_screen(_source, _engine, _game, _delay_sec, stdscr) -> None:
     stdscr.border()
     stdscr.addstr(1, 95, "APOLOGIES DEMO")
     stdscr.addstr(1, 138, "CTRL-C TO EXIT")
@@ -67,71 +66,76 @@ def _refresh_screen(unused_source, unused_engine, unused_game, unused_delay_sec,
     stdscr.refresh()
 
 
-def _refresh_board(game, board):
+def _refresh_board(game, board) -> None:
     """Refresh the game board display section of the screen."""
     board.clear()
     board.border()
 
-    row = 0
-    for line in render_board(game).splitlines():
+    for row, line in enumerate(render_board(game).splitlines(), start=0):
         board.addstr(row, 1, line)
-        row += 1
 
     board.refresh()
 
 
-def _refresh_state(source, engine, delay_sec, game, state):
+def _refresh_state(source, engine, delay_sec, game, state) -> None:
     """Refresh the game state section of the screen."""
     state.clear()
     state.border()
 
     state.addstr(1, 2, "CONFIGURATION")
-    state.addstr(3, 3, "Players..: %d" % engine.players)
-    state.addstr(4, 3, "Mode.....: %s" % engine.mode.value)
-    state.addstr(5, 3, "Source...: %s" % type(source).__name__)
-    state.addstr(6, 3, "Delay....: %s seconds" % delay_sec)
-    state.addstr(7, 3, "State....: %s" % engine.state)
+    state.addstr(3, 3, f"Players..: {engine.players}")
+    state.addstr(4, 3, f"Mode.....: {engine.mode.value}")
+    state.addstr(5, 3, f"Source...: {type(source).__name__}")
+    state.addstr(6, 3, f"Delay....: {delay_sec} seconds")
+    state.addstr(7, 3, f"State....: {engine.state}")
 
     row = 10
     for player in game.players.values():
-        state.addstr(row + 0, 2, "%s PLAYER" % player.color.name)
-        state.addstr(row + 2, 3, "Hand.....: %s" % _render_hand(player))
+        state.addstr(row + 0, 2, f"{player.color.name} PLAYER")
+        state.addstr(row + 2, 3, f"Hand.....: {_render_hand(player)}")
         state.addstr(row + 3, 3, "Pawns....:")
-        state.addstr(row + 4, 6, "%s" % player.pawns[0])
-        state.addstr(row + 5, 6, "%s" % player.pawns[1])
-        state.addstr(row + 6, 6, "%s" % player.pawns[2])
-        state.addstr(row + 7, 6, "%s" % player.pawns[3])
+        state.addstr(row + 4, 6, f"{player.pawns[0]}")
+        state.addstr(row + 5, 6, f"{player.pawns[1]}")
+        state.addstr(row + 6, 6, f"{player.pawns[2]}")
+        state.addstr(row + 7, 6, f"{player.pawns[3]}")
         row += 10
 
     state.refresh()
 
 
-def _refresh_history(game, history):
+def _refresh_history(game, history) -> None:
     """Refresh the game history section of the screen."""
     history.clear()
     history.border()
 
     row = 1
     for entry in game.history[-1:]:
-        history.addstr(row, 2, "%s" % entry)
+        history.addstr(row, 2, f"{entry}")
         row += 1
 
     history.refresh()
 
 
-def _main(stdscr, source: CharacterInputSource, engine: Engine, delay_sec: float, exit_immediately: bool):
+def _main(
+    stdscr,
+    *,
+    source: CharacterInputSource,
+    engine: Engine,
+    delay_sec: float,
+    exit_immediately: bool,
+) -> None:
     """Main routine for the Python curses application, intended to be wrapped by curses.wrapper()"""
 
     rows, columns = stdscr.getmaxyx()
     if columns < _MIN_COLS or rows < _MIN_ROWS:
-        raise TerminalSizeError("Minimum terminal size is %dx%d, but yours is %dx%d" % (_MIN_COLS, _MIN_ROWS, columns, rows))
+        raise TerminalSizeError(f"Minimum terminal size is {_MIN_COLS}x{_MIN_ROWS}, but yours is {columns}x{rows}")
 
     board = curses.newwin(53, 90, 1, 3)
     state = curses.newwin(52, 59, 2, 94)
     history = curses.newwin(3, 150, 54, 3)
 
     # See https://stackoverflow.com/a/57205676/2907667
-    def resize(unused_signum=None, unused_frame=None):
+    def resize(_signum=None, _frame=None) -> None:
         endwin()
         _draw(stdscr, board, state, history)
 
@@ -168,11 +172,18 @@ def _force_minimum_size() -> None:
     #
     # See: https://apple.stackexchange.com/a/47841/249172
 
-    print("\u001b[8;%d;%dt" % (_MIN_ROWS, _MIN_COLS))
+    print(f"\u001b[8;{_MIN_ROWS};{_MIN_COLS}t")
     sleep(0.5)  # wait for the window to finish resizing; if we try to render before it's done, the window gets hosed up
 
 
-def run_demo(players: int, mode: GameMode, source: CharacterInputSource, delay_sec: float, exit_immediately: bool) -> None:
+def run_demo(
+    *,
+    players: int,
+    mode: GameMode,
+    source: CharacterInputSource,
+    delay_sec: float,
+    exit_immediately: bool,
+) -> None:
     """
     Run the quick'n'dirty demo in a terminal window.
 
@@ -181,13 +192,20 @@ def run_demo(players: int, mode: GameMode, source: CharacterInputSource, delay_s
         mode(GameMode): The game mode
         source(CharacterInputSource): The source to use for choosing player moves
         delay_sec(float): The delay between turns when executing the game
+        exit_immediately(bool): If True, exit immediately when the game is complete
     """
     try:
-        characters = [Character(name="Player %d" % player, source=source) for player in range(players)]
+        characters = [Character(name=f"Player {player}", source=source) for player in range(players)]
         engine = Engine(mode=mode, characters=characters)
         engine.start_game()
         _force_minimum_size()
-        curses.wrapper(_main, source, engine, delay_sec, exit_immediately)
+        curses.wrapper(
+            _main,
+            source=source,
+            engine=engine,
+            delay_sec=delay_sec,
+            exit_immediately=exit_immediately,
+        )
     except KeyboardInterrupt:  # users get out using CTRL-C
         print("Demo completed")
         sys.exit(0)

@@ -1,25 +1,28 @@
-# -*- coding: utf-8 -*-
 # vim: set ft=python ts=4 sw=4 expandtab:
+# ruff: noqa: T201
 
 """
 Run a simulation to see how well different character input sources behave.
 """
 
-from __future__ import annotations  # so we can return a type from one of its own methods
-
 import csv
 import statistics
+import typing
+from collections.abc import Sequence
 from itertools import combinations_with_replacement
-from typing import Dict, List, Optional, Sequence
+from pathlib import Path
 
 from arrow import Arrow
 from arrow import now as arrow_now
 from attrs import frozen
 
-from .engine import Character, Engine
-from .game import MAX_PLAYERS, MIN_PLAYERS, GameMode, Player
-from .source import CharacterInputSource
-from .util import ISO_TIMESTAMP_FORMAT
+from apologies.engine import Character, Engine
+from apologies.game import MAX_PLAYERS, MIN_PLAYERS, GameMode, Player
+from apologies.source import CharacterInputSource
+from apologies.util import ISO_TIMESTAMP_FORMAT
+
+if typing.TYPE_CHECKING:
+    from _csv import _writer
 
 BASE_HEADERS = [
     "Scenario",
@@ -46,12 +49,12 @@ SOURCE_HEADERS = [
 ]
 
 
-def _mean(data: Sequence[float]) -> Optional[float]:
+def _mean(data: Sequence[float]) -> float | None:
     """Calculate the mean rounded to 2 decimal places or return None if there is not any data."""
     return round(statistics.mean(data), 2) if data else None
 
 
-def _median(data: Sequence[float]) -> Optional[float]:
+def _median(data: Sequence[float]) -> float | None:
     """Calculate the median rounded to 2 decimal places or return None if there is not any data."""
     return round(statistics.median(data), 2) if data else None
 
@@ -70,16 +73,16 @@ class _Result:
 class _Statistics:
     """Scenario statistics for a source."""
 
-    source: Optional[str]
-    median_turns: Optional[float]
-    mean_turns: Optional[float]
-    median_duration: Optional[float]
-    mean_duration: Optional[float]
+    source: str | None
+    median_turns: float | None
+    mean_turns: float | None
+    median_duration: float | None
+    mean_duration: float | None
     wins: int
     win_percent: float
 
     @staticmethod
-    def for_results(name: Optional[str], results: List[_Result]) -> _Statistics:
+    def for_results(name: str | None, results: list[_Result]) -> "_Statistics":
         in_scope = [result for result in results if name is None or result.character.source.name == name]
         turns = [result.player.turns for result in in_scope]
         durations_ms = [(result.stop - result.start).microseconds / 1000 for result in in_scope]
@@ -100,38 +103,38 @@ class _Analysis:
     mode: str
     iterations: int
     players: int
-    playernames: List[str]
+    playernames: list[str]
     overall_stats: _Statistics
-    source_stats: Dict[str, _Statistics]
+    source_stats: dict[str, _Statistics]
 
 
 # pylint: disable=too-many-positional-arguments
-def _analyze_scenario(
+def _analyze_scenario(  # noqa: PLR0917,PLR0913
     scenario: int,
     mode: GameMode,
     iterations: int,
     players: int,
     sources: Sequence[CharacterInputSource],
     combination: Sequence[CharacterInputSource],
-    results: List[_Result],
+    results: list[_Result],
 ) -> _Analysis:
     """Analyze a scenario, generating data that can be written to the CSV file."""
     playernames = [source.name for source in combination] + [""] * (MAX_PLAYERS - len(combination))
     overall_stats = _Statistics.for_results(None, results)
-    source_stats = {name: _Statistics.for_results(name, results) for name in sorted(list({source.name for source in sources}))}
-    return _Analysis("Scenario %d" % scenario, mode.name, iterations, players, playernames, overall_stats, source_stats)
+    source_stats = {name: _Statistics.for_results(name, results) for name in sorted({source.name for source in sources})}
+    return _Analysis(f"Scenario {scenario}", mode.name, iterations, players, playernames, overall_stats, source_stats)
 
 
-def _write_header(csvwriter, sources: List[CharacterInputSource]) -> None:  # type: ignore
+def _write_header(csvwriter: "_writer", sources: list[CharacterInputSource]) -> None:
     """Write the header into the CSV file."""
     headers = BASE_HEADERS[:]
-    for name in sorted(list({source.name for source in sources})):
+    for name in sorted({source.name for source in sources}):
         for column in SOURCE_HEADERS:
-            headers += ["%s - %s" % (name, column)]
+            headers += [f"{name} - {column}"]
     csvwriter.writerow(headers)
 
 
-def _write_scenario(csvwriter, analysis: _Analysis) -> None:  # type: ignore
+def _write_scenario(csvwriter: "_writer", analysis: _Analysis) -> None:
     """Write analysis results for a scenario into the CSV file."""
     row = [analysis.scenario, analysis.mode, analysis.iterations, analysis.players]
     row += analysis.playernames
@@ -146,25 +149,25 @@ def _write_scenario(csvwriter, analysis: _Analysis) -> None:  # type: ignore
     csvwriter.writerow(row)
 
 
-def _run_scenario(prefix: str, iterations: int, engine: Engine) -> List[_Result]:
+def _run_scenario(prefix: str, iterations: int, engine: Engine) -> list[_Result]:
     """Run a particular scenario, playing a game repeatedly for a set number of iterations."""
     results = []
-    for i in range(0, iterations):
+    for i in range(iterations):
         print(" " * 100, end="\r", flush=True)
-        print("%siteration %d" % (prefix, i), end="\r", flush=True)
+        print(f"{prefix}iteration {i}", end="\r", flush=True)
         start = arrow_now()
         engine.reset()
         engine.start_game()
         while not engine.completed:
             engine.play_next()
         stop = arrow_now()
-        character, player = engine.winner()  # type: ignore
+        character, player = engine.winner()
         results.append(_Result(start, stop, character, player))
     return results
 
 
 # pylint: disable=too-many-locals,line-too-long
-def run_simulation(iterations: int, output: str, sources: List[CharacterInputSource]) -> None:
+def run_simulation(iterations: int, output: str, sources: list[CharacterInputSource]) -> None:
     """
     Run a simulation.
 
@@ -173,35 +176,33 @@ def run_simulation(iterations: int, output: str, sources: List[CharacterInputSou
         output(str): Path to the output file to write
         sources(List[CharacterInputSource]): The source to use for each player in the game
     """
-    with open(output, "w", newline="", encoding="utf-8") as csvfile:
+    with Path(output).open("w", newline="", encoding="utf-8") as csvfile:
         csvwriter = csv.writer(csvfile, quoting=csv.QUOTE_ALL)
         _write_header(csvwriter, sources)
 
         start = arrow_now()
-        print("Starting simulation at %s, using %d iterations per scenario" % (start.format(ISO_TIMESTAMP_FORMAT), iterations))
+        print(f"Starting simulation at {start.format(ISO_TIMESTAMP_FORMAT)}, using {iterations} iterations per scenario")
 
         scenario = 0
         results = []
         for mode in GameMode:
             for players in range(MIN_PLAYERS, MAX_PLAYERS + 1):
-                case = 0
-                for combination in combinations_with_replacement(sources, players):
-                    case += 1
+                for case, combination in enumerate(combinations_with_replacement(sources, players), start=0):
                     scenario += 1
-                    prefix = "Scenario %d: %s mode with %d players (case %d): " % (scenario, mode.name, players, case)
+                    prefix = f"Scenario {scenario}: {mode.name} mode with {players} players (case {case}): "
                     characters = [Character(name=source.name, source=source) for source in combination]
                     engine = Engine(mode=mode, characters=characters)
                     print(" " * 100, end="\r", flush=True)
-                    print("%sstarting" % prefix, end="\r", flush=True)
+                    print(f"{prefix}starting", end="\r", flush=True)
                     results = _run_scenario(prefix, iterations, engine)
-                    print("%sanalyzing" % prefix, end="\r", flush=True)
+                    print(f"{prefix}analyzing", end="\r", flush=True)
                     analysis = _analyze_scenario(scenario, mode, iterations, players, sources, combination, results)
-                    print("%swriting CSV" % prefix, end="\r", flush=True)
+                    print(f"{prefix}writing CSV", end="\r", flush=True)
                     _write_scenario(csvwriter, analysis)
-                    print("%sdone" % prefix, end="\r", flush=True)
+                    print(f"{prefix}done", end="\r", flush=True)
 
         stop = arrow_now()
         print(" " * 100, end="\r", flush=True)
         duration = stop.humanize(start, only_distance=True)
         finished = stop.format(ISO_TIMESTAMP_FORMAT)
-        print("Simulation completed after %s at %s" % (duration, finished))
+        print(f"Simulation completed after {duration} at {finished}")

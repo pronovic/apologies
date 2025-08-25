@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # vim: set ft=python ts=4 sw=4 expandtab:
 # Unit tests for engine.py
 
@@ -52,7 +51,7 @@ class TestEngine:
 
     def test_constructor_random(self):
         found = []
-        for _ in range(0, 100):
+        for _ in range(100):
             character1 = Character("one", Mock())
             character2 = Character("two", Mock())
             character3 = Character("three", Mock())
@@ -111,7 +110,8 @@ class TestEngine:
             with patch("apologies.game.Game.winner", new_callable=PropertyMock) as winner:
                 winner.return_value = game_winner
                 completed.return_value = False
-                assert engine.winner() is None
+                with pytest.raises(ValueError):
+                    assert engine.winner()  # because game is not completed
                 completed.return_value = True
                 assert engine.winner() == (engine._map[PlayerColor.YELLOW], game_winner)
 
@@ -221,10 +221,10 @@ class TestEngine:
         engine._queue.next = MagicMock(side_effect=exception)
         engine._game.copy = MagicMock(return_value=copy)
 
-        try:
+        with pytest.raises(Exception) as e:
             engine.play_next()
-        except Exception:
-            assert engine._game is copy  # we replace with a copy of original if method raises exception
+        assert e.value is exception
+        assert engine._game is copy  # we replace with a copy of original if method raises exception
 
     # noinspection PyUnresolvedReferences
     def test_play_next_standard_forfeit(self):
@@ -399,7 +399,7 @@ class TestEngine:
         engine._game.create_player_view.assert_called_once_with(PlayerColor.RED)
         engine._rules.construct_legal_moves.assert_called_once_with(view, card=None)
         engine.characters[0].choose_move.assert_called_once_with(engine.mode, view, legal_moves, Rules.evaluate_move)
-        engine._game.track.assert_called_once_with("Turn is forfeit; discarded card %s" % movecard.cardtype.value, player, movecard)
+        engine._game.track.assert_called_once_with(f"Turn is forfeit; discarded card {movecard.cardtype.value}", player, movecard)
         engine._game.deck.discard.assert_called_once_with(movecard)
 
         assert movecard not in player.hand
@@ -552,10 +552,10 @@ class TestEngine:
     @staticmethod
     def _create_engine(mode: GameMode = GameMode.STANDARD) -> Engine:
         character1 = Character("character1", Mock())
-        character1.choose_move = MagicMock()  # type: ignore
+        character1.choose_move = MagicMock()  # type: ignore[method-assign]
 
         character2 = Character("character2", Mock())
-        character2.choose_move = MagicMock()  # type: ignore
+        character2.choose_move = MagicMock()  # type: ignore[method-assign]
 
         first = PlayerColor.RED
         engine = Engine(mode, [character1, character2], first=first)

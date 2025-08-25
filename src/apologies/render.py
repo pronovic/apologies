@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # vim: set ft=python ts=4 sw=4 expandtab:
 
 """
@@ -12,7 +11,7 @@ Render a game as a string.
 # Note: indexes into the rendered board output aren't easily predictible,
 # because of the variable length of terminal formatting characters
 
-from .game import Game, PlayerColor
+from apologies.game import Game, PlayerColor
 
 # Index into _BOARD_TEXT where a pawn can be placed into a specific square
 # Squares are numbered from starting from the upper left, in a clockwise direction
@@ -111,7 +110,7 @@ _BOARD_TEXT = """
  46 │ ▲ │                         └───────────┘       └───────────┘  │   │ 0   |   | 29
     └───┘                                                            └───┘     └───┘
     ┌───┐┌───┐┌───┐┌───┐┌───┐┌───┐┌───┐┌───┐┌───┐┌───┐┌───┐┌───┐┌───┐┌───┐┌───┐┌───┐
-    │   │|   || ● || ◼ || ◼ || ◼ || ◀ ||   ||   ||   ||   || ● || ◼ || ◼ || ◀ ||   | 
+    │   │|   || ● || ◼ || ◼ || ◼ || ◀ ||   ||   ||   ||   || ● || ◼ || ◼ || ◀ ||   |
     └───┘└───┘└───┘└───┘└───┘└───┘└───┘└───┘└───┘└───┘└───┘└───┘└───┘└───┘└───┘└───┘
       45   44   43   42   41   40   39   38   37   36   35   34   33   32   31   30
 """

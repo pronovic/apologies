@@ -1,25 +1,18 @@
-# -*- coding: utf-8 -*-
 # vim: set ft=python ts=4 sw=4 expandtab:
 
-import os
+from pathlib import Path
 
 import pytest
 
 from apologies.game import Game, PlayerColor
 from apologies.render import render_board
 
-FIXTURE_DIR = os.path.join(os.path.dirname(__file__), "fixtures/test_render")
+FIXTURE_DIR = Path(__file__).parent / "fixtures/test_render"
 
 
 @pytest.fixture
 def data():
-    data = {}
-    for f in os.listdir(FIXTURE_DIR):
-        p = os.path.join(FIXTURE_DIR, f)
-        if os.path.isfile(p):
-            with open(p, encoding="utf-8") as r:
-                data[f] = r.read()
-    return data
+    return {f.name: f.read_text(encoding="utf-8") for f in FIXTURE_DIR.iterdir() if f.is_file()}
 
 
 # Unit tests for render_board()

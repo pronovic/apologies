@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # vim: set ft=python ts=4 sw=4 expandtab:
 
 from unittest.mock import MagicMock
@@ -40,7 +39,7 @@ class TestDeck:
         assert len(deck._draw_pile.keys()) == DECK_SIZE
         assert len(deck._discard_pile.keys()) == 0
 
-        cardcounts = {cardtype: 0 for cardtype in CardType}
+        cardcounts = dict.fromkeys(CardType, 0)
         for card in deck._draw_pile.values():
             cardcounts[card.cardtype] += 1
         for cardtype in CardType:
@@ -50,9 +49,7 @@ class TestDeck:
         deck = Deck()
 
         # Check that we can draw the entire deck
-        drawn = []
-        for _ in range(DECK_SIZE):
-            drawn.append(deck.draw())
+        drawn = [deck.draw() for _ in range(DECK_SIZE)]
         assert len(deck._draw_pile) == 0
         with pytest.raises(ValueError):
             deck.draw()
@@ -104,7 +101,7 @@ class TestPosition:
         assert position.home is False
         assert position.safe is None
         assert position.square is None
-        assert "%s" % position == "start"
+        assert f"{position}" == "start"
 
     def test_copy(self):
         position = Position()
@@ -129,7 +126,7 @@ class TestPosition:
         result = position.move_to_position(target)
         assert result is position
         assert position == target
-        assert "%s" % position == "start"
+        assert f"{position}" == "start"
 
     def test_move_to_position_valid_home(self):
         target = Position()
@@ -145,7 +142,7 @@ class TestPosition:
         result = position.move_to_position(target)
         assert result is position
         assert position == target
-        assert "%s" % position == "home"
+        assert f"{position}" == "home"
 
     def test_move_to_position_valid_safe(self):
         target = Position()
@@ -161,7 +158,7 @@ class TestPosition:
         result = position.move_to_position(target)
         assert result is position
         assert position == target
-        assert "%s" % position == "safe 3"
+        assert f"{position}" == "safe 3"
 
     def test_move_to_position_valid_square(self):
         target = Position()
@@ -177,7 +174,7 @@ class TestPosition:
         result = position.move_to_position(target)
         assert result is position
         assert position == target
-        assert "%s" % position == "square 3"
+        assert f"{position}" == "square 3"
 
     def test_move_to_position_invalid_multiple(self):
         position = Position()
@@ -189,38 +186,38 @@ class TestPosition:
             (False, True, None, 1),
             (False, False, 1, 1),
         ]:
+            target = Position()
+            target.start = start
+            target.home = home
+            target.safe = safe
+            target.square = square
             with pytest.raises(ValueError):
-                target = Position()
-                target.start = start
-                target.home = home
-                target.safe = safe
-                target.square = square
                 position.move_to_position(target)
 
     def test_move_to_position_invalid_none(self):
         position = Position()
+        target = Position()
+        target.start = False
+        target.home = False
+        target.safe = None
+        target.square = None
         with pytest.raises(ValueError):
-            target = Position()
-            target.start = False
-            target.home = False
-            target.safe = None
-            target.square = None
             position.move_to_position(target)
 
     def test_move_to_position_invalid_safe(self):
         position = Position()
         for square in [-1000, -2 - 1, 5, 6, 1000]:
+            target = Position()
+            target.safe = square
             with pytest.raises(ValueError):
-                target = Position()
-                target.safe = square
                 position.move_to_position(target)
 
     def test_move_to_position_invalid_square(self):
         position = Position()
         for square in [-1000, -2 - 1, 60, 61, 1000]:
+            target = Position()
+            target.square = square
             with pytest.raises(ValueError):
-                target = Position()
-                target.square = square
                 position.move_to_position(target)
 
     def test_move_to_start(self):
@@ -235,7 +232,7 @@ class TestPosition:
         assert position.home is False
         assert position.safe is None
         assert position.square is None
-        assert "%s" % position == "start"
+        assert f"{position}" == "start"
 
     def test_move_to_home(self):
         position = Position()
@@ -249,7 +246,7 @@ class TestPosition:
         assert position.home is True
         assert position.safe is None
         assert position.square is None
-        assert "%s" % position == "home"
+        assert f"{position}" == "home"
 
     def test_move_to_safe_valid(self):
         for square in range(SAFE_SQUARES):
@@ -264,12 +261,12 @@ class TestPosition:
             assert position.home is False
             assert position.safe == square
             assert position.square is None
-            assert "%s" % position == "safe %d" % square
+            assert f"{position}" == f"safe {square}"
 
     def test_move_to_safe_invalid(self):
         for square in [-1000, -2 - 1, 5, 6, 1000]:
+            position = Position()
             with pytest.raises(ValueError):
-                position = Position()
                 position.move_to_safe(square)
 
     def test_move_to_square_valid(self):
@@ -285,12 +282,12 @@ class TestPosition:
             assert position.home is False
             assert position.safe is None
             assert position.square is square
-            assert "%s" % position == "square %d" % square
+            assert f"{position}" == f"square {square}"
 
     def test_move_to_square_invalid(self):
         for square in [-1000, -2 - 1, 60, 61, 1000]:
+            position = Position()
             with pytest.raises(ValueError):
-                position = Position()
                 position.move_to_square(square)
 
 
@@ -301,7 +298,7 @@ class TestPawn:
         assert pawn.index == 0
         assert pawn.name == "Red0"
         assert pawn.position == Position()
-        assert "%s" % pawn == "Red0->start"  # because default position is in start
+        assert f"{pawn}" == "Red0->start"  # because default position is in start
 
     def test_constructor_with_name(self):
         pawn = Pawn(PlayerColor.RED, 0, name="whatever")
@@ -309,7 +306,7 @@ class TestPawn:
         assert pawn.index == 0
         assert pawn.name == "whatever"
         assert pawn.position == Position()
-        assert "%s" % pawn == "whatever->start"  # because default position is in start
+        assert f"{pawn}" == "whatever->start"  # because default position is in start
 
 
 class TestPlayer:
@@ -358,13 +355,13 @@ class TestHistory:
         timestamp = arrow_get("2020-03-25T14:02:16")
 
         history = History("This is an action", color=None, timestamp=timestamp)
-        assert "%s" % history == "[14:02:16] General - This is an action"
+        assert f"{history}" == "[14:02:16] General - This is an action"
 
         history = History("This is an action", color=PlayerColor.BLUE, timestamp=timestamp)
-        assert "%s" % history == "[14:02:16] Blue - This is an action"
+        assert f"{history}" == "[14:02:16] Blue - This is an action"
 
         history = History("This is an action", color=PlayerColor.BLUE, card=CardType.CARD_10, timestamp=timestamp)
-        assert "%s" % history == "[14:02:16] Blue - This is an action"
+        assert f"{history}" == "[14:02:16] Blue - This is an action"
 
 
 class TestPlayerView:

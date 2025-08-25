@@ -1,18 +1,19 @@
-# -*- coding: utf-8 -*-
 # vim: set ft=python ts=4 sw=4 expandtab:
+# ruff: noqa: S311
 
 """
 Character input sources.  A character could be a person or could be computer-driven.
 """
 
+import operator
 import random
 from abc import ABC, abstractmethod
+from collections.abc import Callable
 from pydoc import locate
-from typing import Callable, List, Tuple
 
-from .game import GameMode, PlayerView
-from .reward import RewardCalculatorV1
-from .rules import Move
+from apologies.game import GameMode, PlayerView
+from apologies.reward import RewardCalculatorV1
+from apologies.rules import Move
 
 
 class CharacterInputSource(ABC):
@@ -24,7 +25,7 @@ class CharacterInputSource(ABC):
     @property
     def fullname(self) -> str:
         """Get the fully-qualified name of the character input source."""
-        return ".".join([type(self).__module__, type(self).__name__])
+        return f"{type(self).__module__}.{type(self).__name__}"
 
     @property
     def name(self) -> str:
@@ -33,7 +34,11 @@ class CharacterInputSource(ABC):
 
     @abstractmethod
     def choose_move(
-        self, mode: GameMode, view: PlayerView, legal_moves: List[Move], evaluator: Callable[[PlayerView, Move], PlayerView]
+        self,
+        mode: GameMode,
+        view: PlayerView,
+        legal_moves: list[Move],
+        evaluator: Callable[[PlayerView, Move], PlayerView],
     ) -> Move:
         """
         Choose the next move for a character.
@@ -72,7 +77,7 @@ class NoOpInputSource(CharacterInputSource):
     """
 
     def choose_move(
-        self, _mode: GameMode, _view: PlayerView, _moves: List[Move], _evaluator: Callable[[PlayerView, Move], PlayerView]
+        self, _mode: GameMode, _view: PlayerView, _moves: list[Move], _evaluator: Callable[[PlayerView, Move], PlayerView]
     ) -> Move:
         raise NotImplementedError
 
@@ -82,8 +87,12 @@ class RandomInputSource(CharacterInputSource):
     A source of input for a character which chooses randomly from among legal moves.
     """
 
-    def choose_move(
-        self, mode: GameMode, view: PlayerView, legal_moves: List[Move], unused: Callable[[PlayerView, Move], PlayerView]
+    def choose_move(  # noqa: PLR6301
+        self,
+        _mode: GameMode,
+        _view: PlayerView,
+        legal_moves: list[Move],
+        _evaluator: Callable[[PlayerView, Move], PlayerView],
     ) -> Move:
         """Randomly choose the next move for a character."""
         return random.choice(legal_moves)
@@ -96,15 +105,24 @@ class RewardInputSource(CharacterInputSource):
     """
 
     @abstractmethod
-    def calculate(self, view: PlayerView, move: Move, evaluator: Callable[[PlayerView, Move], PlayerView]) -> Tuple[Move, float]:
+    def calculate(
+        self,
+        view: PlayerView,
+        move: Move,
+        evaluator: Callable[[PlayerView, Move], PlayerView],
+    ) -> tuple[Move, float]:
         """Calculate the reward associated with a move, returning a tuple of (Move, reward)."""
 
     def choose_move(
-        self, mode: GameMode, view: PlayerView, legal_moves: List[Move], evaluator: Callable[[PlayerView, Move], PlayerView]
+        self,
+        _mode: GameMode,
+        view: PlayerView,
+        legal_moves: list[Move],
+        evaluator: Callable[[PlayerView, Move], PlayerView],
     ) -> Move:
         """Choose the next move for a player by evaluating and scoring the available moves."""
         evaluated = [self.calculate(view, move, evaluator) for move in legal_moves]  # calculate a reward for each move
-        evaluated.sort(reverse=True, key=lambda e: e[1])  # sort the highest-scoring move to the top
+        evaluated.sort(reverse=True, key=operator.itemgetter(1))  # sort the highest-scoring move to the top
         return evaluated[0][0]  # return the highest-scoring move
 
 
@@ -116,7 +134,12 @@ class RewardV1InputSource(RewardInputSource):
 
     calculator = RewardCalculatorV1()
 
-    def calculate(self, view: PlayerView, move: Move, evaluator: Callable[[PlayerView, Move], PlayerView]) -> Tuple[Move, float]:
+    def calculate(
+        self,
+        view: PlayerView,
+        move: Move,
+        evaluator: Callable[[PlayerView, Move], PlayerView],
+    ) -> tuple[Move, float]:
         """Calculate the reward associated with a move, returning a tuple of (Move, reward)."""
         return move, self.calculator.calculate(evaluator(view, move))
 
@@ -137,9 +160,10 @@ def source(name: str) -> CharacterInputSource:
     Raises:
         ValueError: If the named source does not exist or is not a CharacterInputSource
     """
-    if not "." in name:
-        name = "apologies.source.%s" % name
+    if "." not in name:
+        name = f"apologies.source.{name}"
     cls = locate(name)
-    if not issubclass(cls, CharacterInputSource):  # type: ignore
-        raise ValueError("%s is not a CharacterInputSource" % name)
-    return cls()  # type: ignore
+    if not issubclass(cls, CharacterInputSource):  # type: ignore[arg-type]
+        msg = f"{name} is not a CharacterInputSource"
+        raise TypeError(msg)
+    return cls()  # type: ignore[operator,no-any-return]

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # vim: set ft=python ts=4 sw=4 expandtab:
 
 from unittest.mock import MagicMock, call, patch
@@ -387,6 +386,7 @@ class TestPosition:
         for color in PlayerColor:
             with pytest.raises(ValueError):
                 BoardRules()._position(color, Position().move_to_safe(3), 3)
+            with pytest.raises(ValueError):
                 BoardRules()._position(color, Position().move_to_safe(4), 2)
 
         for color in PlayerColor:

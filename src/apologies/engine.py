@@ -1,19 +1,19 @@
-# -*- coding: utf-8 -*-
 # vim: set ft=python ts=4 sw=4 expandtab:
+# ruff: noqa: S311
 
 """
 Game engine that coordinates character actions to play a game.
 """
 
 import random
-from typing import Callable, Dict, List, Optional, Tuple
+from collections.abc import Callable
 
 from attrs import define, field
 
-from .game import Card, Game, GameMode, Player, PlayerColor, PlayerView
-from .rules import Move, Rules
-from .source import CharacterInputSource
-from .util import CircularQueue
+from apologies.game import Card, Game, GameMode, Player, PlayerColor, PlayerView
+from apologies.rules import Move, Rules
+from apologies.source import CharacterInputSource
+from apologies.util import CircularQueue
 
 
 @define(slots=False)
@@ -31,7 +31,7 @@ class Character:
     source: CharacterInputSource
 
     def choose_move(
-        self, mode: GameMode, view: PlayerView, legal_moves: List[Move], evaluator: Callable[[PlayerView, Move], PlayerView]
+        self, mode: GameMode, view: PlayerView, legal_moves: list[Move], evaluator: Callable[[PlayerView, Move], PlayerView]
     ) -> Move:
         """
         Choose the next move for a character via the user input source.
@@ -73,12 +73,12 @@ class Engine:
     """
 
     mode: GameMode
-    characters: List[Character]
+    characters: list[Character]
     first: PlayerColor = field()
     _game: Game = field(init=False)
     _queue: CircularQueue[PlayerColor] = field(init=False)
     _rules: Rules = field(init=False)
-    _map: Dict[PlayerColor, Character] = field(init=False)
+    _map: dict[PlayerColor, Character] = field(init=False)
 
     # noinspection PyUnresolvedReferences
     @first.default
@@ -101,12 +101,10 @@ class Engine:
 
     # noinspection PyUnresolvedReferences
     @_map.default
-    def _default_map(self) -> Dict[PlayerColor, Character]:
-        index = 0
+    def _default_map(self) -> dict[PlayerColor, Character]:
         result = {}
-        for player in self._game.players.values():
+        for index, player in enumerate(self._game.players.values(), start=0):
             result[player.color] = self.characters[index]
-            index += 1
         return result
 
     @property
@@ -119,10 +117,9 @@ class Engine:
         """String describing the state of the game."""
         if self.completed:
             return "Game completed"
-        elif self.started:
+        if self.started:
             return "Game in progress"
-        else:
-            return "Game waiting to start"
+        return "Game waiting to start"
 
     @property
     def game(self) -> Game:
@@ -140,12 +137,14 @@ class Engine:
         return self._game.completed
 
     @property
-    def colors(self) -> Dict[PlayerColor, Character]:
+    def colors(self) -> dict[PlayerColor, Character]:
         return self._map.copy()
 
-    def winner(self) -> Optional[Tuple[Character, Player]]:
+    def winner(self) -> tuple[Character, Player]:
         """Return the winner of the game, as a tuple of (Character, Player)"""
-        return (self._map[self._game.winner.color], self._game.winner) if self.completed else None  # type: ignore
+        if not self.completed:
+            raise ValueError("Game is not completed")
+        return self._map[self._game.winner.color], self._game.winner
 
     def reset(self) -> Game:
         """Reset game state."""
@@ -162,7 +161,7 @@ class Engine:
         self._rules.start_game(self._game)
         return self._game
 
-    def next_turn(self) -> Tuple[PlayerColor, Character]:
+    def next_turn(self) -> tuple[PlayerColor, Character]:
         """
         Get the color and character for the next turn
         This will give you a different player each time you call it.
@@ -184,17 +183,16 @@ class Engine:
         saved = self._game.copy()
         try:
             color, character = self.next_turn()
-
             done = False
             while not done:
                 view = self._game.create_player_view(color)
                 move = self.choose_next_move(character, view)
                 done = self.execute_move(color, move)
-
-            return self._game
-        except Exception as e:
+        except Exception:
             self._game = saved  # put back original so a failed call is idempotent
-            raise e
+            raise
+        else:
+            return self._game
 
     def draw(self) -> Card:
         """Draw a random card from the game's draw pile."""
@@ -204,7 +202,7 @@ class Engine:
         """Discard back to the game's discard pile."""
         self._game.deck.discard(card)
 
-    def construct_legal_moves(self, view: PlayerView, card: Optional[Card] = None) -> Tuple[Optional[Card], List[Move]]:
+    def construct_legal_moves(self, view: PlayerView, card: Card | None = None) -> tuple[Card | None, list[Move]]:
         """Construct the legal moves based on a player view, using the passed-in card if provided."""
         card = card if card is not None else None if self.mode == GameMode.ADULT else self.draw()
         return card, self._rules.construct_legal_moves(view, card=card)
@@ -223,19 +221,17 @@ class Engine:
         player = self._game.players[color]
         if self.mode == GameMode.ADULT:
             return self._execute_move_adult(player, move)
-        else:
-            return self._execute_move_standard(player, move)
+        return self._execute_move_standard(player, move)
 
     def _execute_move_standard(self, player: Player, move: Move) -> bool:
         """Play the next turn under the rules for standard mode, returning True if the player's turn is done."""
         if not move.actions:
             self.discard(move.card)
-            self._game.track("Turn is forfeit; discarded card %s" % move.card.cardtype.value, player, move.card)
+            self._game.track(f"Turn is forfeit; discarded card {move.card.cardtype.value}", player, move.card)
             return True  # player's turn is done if they forfeit
-        else:
-            self._rules.execute_move(self._game, player, move)  # tracks history, potentially completes game
-            self.discard(move.card)
-            return self.completed or not self._rules.draw_again(move.card)  # player's turn is done unless they can draw again
+        self._rules.execute_move(self._game, player, move)  # tracks history, potentially completes game
+        self.discard(move.card)
+        return self.completed or not self._rules.draw_again(move.card)  # player's turn is done unless they can draw again
 
     def _execute_move_adult(self, player: Player, move: Move) -> bool:
         """Play the next move under the rules for adult mode, returning True if the player's turn is done."""
@@ -243,11 +239,10 @@ class Engine:
             player.hand.remove(move.card)
             self.discard(move.card)
             player.hand.append(self.draw())
-            self._game.track("Turn is forfeit; discarded card %s" % move.card.cardtype.value, player, move.card)
+            self._game.track(f"Turn is forfeit; discarded card {move.card.cardtype.value}", player, move.card)
             return True  # player's turn is done if they forfeit
-        else:
-            self._rules.execute_move(self._game, player, move)  # tracks history, potentially completes game
-            player.hand.remove(move.card)
-            self.discard(move.card)
-            player.hand.append(self.draw())
-            return self.completed or not self._rules.draw_again(move.card)  # player's turn is done unless they can draw again
+        self._rules.execute_move(self._game, player, move)  # tracks history, potentially completes game
+        player.hand.remove(move.card)
+        self.discard(move.card)
+        player.hand.append(self.draw())
+        return self.completed or not self._rules.draw_again(move.card)  # player's turn is done unless they can draw again
