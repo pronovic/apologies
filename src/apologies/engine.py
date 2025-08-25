@@ -119,10 +119,9 @@ class Engine:
         """String describing the state of the game."""
         if self.completed:
             return "Game completed"
-        elif self.started:
+        if self.started:
             return "Game in progress"
-        else:
-            return "Game waiting to start"
+        return "Game waiting to start"
 
     @property
     def game(self) -> Game:
@@ -223,8 +222,7 @@ class Engine:
         player = self._game.players[color]
         if self.mode == GameMode.ADULT:
             return self._execute_move_adult(player, move)
-        else:
-            return self._execute_move_standard(player, move)
+        return self._execute_move_standard(player, move)
 
     def _execute_move_standard(self, player: Player, move: Move) -> bool:
         """Play the next turn under the rules for standard mode, returning True if the player's turn is done."""
@@ -232,10 +230,9 @@ class Engine:
             self.discard(move.card)
             self._game.track("Turn is forfeit; discarded card %s" % move.card.cardtype.value, player, move.card)
             return True  # player's turn is done if they forfeit
-        else:
-            self._rules.execute_move(self._game, player, move)  # tracks history, potentially completes game
-            self.discard(move.card)
-            return self.completed or not self._rules.draw_again(move.card)  # player's turn is done unless they can draw again
+        self._rules.execute_move(self._game, player, move)  # tracks history, potentially completes game
+        self.discard(move.card)
+        return self.completed or not self._rules.draw_again(move.card)  # player's turn is done unless they can draw again
 
     def _execute_move_adult(self, player: Player, move: Move) -> bool:
         """Play the next move under the rules for adult mode, returning True if the player's turn is done."""
@@ -245,9 +242,8 @@ class Engine:
             player.hand.append(self.draw())
             self._game.track("Turn is forfeit; discarded card %s" % move.card.cardtype.value, player, move.card)
             return True  # player's turn is done if they forfeit
-        else:
-            self._rules.execute_move(self._game, player, move)  # tracks history, potentially completes game
-            player.hand.remove(move.card)
-            self.discard(move.card)
-            player.hand.append(self.draw())
-            return self.completed or not self._rules.draw_again(move.card)  # player's turn is done unless they can draw again
+        self._rules.execute_move(self._game, player, move)  # tracks history, potentially completes game
+        player.hand.remove(move.card)
+        self.discard(move.card)
+        player.hand.append(self.draw())
+        return self.completed or not self._rules.draw_again(move.card)  # player's turn is done unless they can draw again

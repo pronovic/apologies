@@ -212,12 +212,11 @@ class Position:
     def __str__(self) -> str:
         if self.home:
             return "home"
-        elif self.start:
+        if self.start:
             return "start"
-        elif self.safe is not None:
+        if self.safe is not None:
             return "safe %s" % self.safe
-        else:
-            return "square %s" % self.square
+        return "square %s" % self.square
 
     def copy(self) -> Position:
         """Return a fully-independent copy of the position."""
