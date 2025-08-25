@@ -9,8 +9,8 @@ from __future__ import annotations  # so we can return a type from one of its ow
 
 import csv
 import statistics
-from collections.abc import Sequence
 from itertools import combinations_with_replacement
+from typing import TYPE_CHECKING
 
 from arrow import Arrow
 from arrow import now as arrow_now
@@ -20,6 +20,9 @@ from apologies.engine import Character, Engine
 from apologies.game import MAX_PLAYERS, MIN_PLAYERS, GameMode, Player
 from apologies.source import CharacterInputSource
 from apologies.util import ISO_TIMESTAMP_FORMAT
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
 
 BASE_HEADERS = [
     "Scenario",
