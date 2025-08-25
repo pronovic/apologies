@@ -214,7 +214,6 @@ ignore = [
   # Exclusions that apply to unit tests only
   "ANN",        # don't require type annotations in tests
   "FBT",        # allow use of boolean positional arguments
-  "PD002",      # allow use of Pandas `inplace=True`
   "PLC1901",    # allow comparison to empty string
   "PLC2701",    # allow imports of private names
   "PLR",        # don't warn about too many arguments, methods, etc.
