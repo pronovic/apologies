@@ -130,9 +130,10 @@ class TestRules:
         rules._board_rules.construct_legal_moves = MagicMock(side_effect=legal_moves)
         assert rules.construct_legal_moves(view, card=card) == expected_moves
 
-        rules._board_rules.construct_legal_moves.assert_has_calls(
-            [call(PlayerColor.RED, card, pawn1, all_pawns), call(PlayerColor.RED, card, pawn2, all_pawns)]
-        )
+        rules._board_rules.construct_legal_moves.assert_has_calls([
+            call(PlayerColor.RED, card, pawn1, all_pawns),
+            call(PlayerColor.RED, card, pawn2, all_pawns),
+        ])
 
     @patch("apologies.rules.uuid.uuid4", new=_UUID)
     def test_construct_legal_moves_no_moves_no_card(self):
@@ -163,14 +164,12 @@ class TestRules:
         rules._board_rules.construct_legal_moves = MagicMock(side_effect=legal_moves)
         assert rules.construct_legal_moves(view, card=card) == expected_moves
 
-        rules._board_rules.construct_legal_moves.assert_has_calls(
-            [
-                call(PlayerColor.RED, hand1, pawn1, all_pawns),
-                call(PlayerColor.RED, hand1, pawn2, all_pawns),
-                call(PlayerColor.RED, hand2, pawn1, all_pawns),
-                call(PlayerColor.RED, hand2, pawn2, all_pawns),
-            ]
-        )
+        rules._board_rules.construct_legal_moves.assert_has_calls([
+            call(PlayerColor.RED, hand1, pawn1, all_pawns),
+            call(PlayerColor.RED, hand1, pawn2, all_pawns),
+            call(PlayerColor.RED, hand2, pawn1, all_pawns),
+            call(PlayerColor.RED, hand2, pawn2, all_pawns),
+        ])
 
     @patch("apologies.rules.uuid.uuid4", new=_UUID)
     def test_construct_legal_moves_with_moves_with_card(self):
@@ -205,9 +204,10 @@ class TestRules:
         rules._board_rules.construct_legal_moves = MagicMock(side_effect=legal_moves)
         assert rules.construct_legal_moves(view, card=card) == expected_moves
 
-        rules._board_rules.construct_legal_moves.assert_has_calls(
-            [call(PlayerColor.RED, card, pawn1, all_pawns), call(PlayerColor.RED, card, pawn2, all_pawns)]
-        )
+        rules._board_rules.construct_legal_moves.assert_has_calls([
+            call(PlayerColor.RED, card, pawn1, all_pawns),
+            call(PlayerColor.RED, card, pawn2, all_pawns),
+        ])
 
     @patch("apologies.rules.uuid.uuid4", new=_UUID)
     def test_construct_legal_moves_with_moves_no_card(self):
@@ -246,14 +246,12 @@ class TestRules:
         rules._board_rules.construct_legal_moves = MagicMock(side_effect=legal_moves)
         assert rules.construct_legal_moves(view, card=card) == expected_moves
 
-        rules._board_rules.construct_legal_moves.assert_has_calls(
-            [
-                call(PlayerColor.RED, hand1, pawn1, all_pawns),
-                call(PlayerColor.RED, hand1, pawn2, all_pawns),
-                call(PlayerColor.RED, hand2, pawn1, all_pawns),
-                call(PlayerColor.RED, hand2, pawn2, all_pawns),
-            ]
-        )
+        rules._board_rules.construct_legal_moves.assert_has_calls([
+            call(PlayerColor.RED, hand1, pawn1, all_pawns),
+            call(PlayerColor.RED, hand1, pawn2, all_pawns),
+            call(PlayerColor.RED, hand2, pawn1, all_pawns),
+            call(PlayerColor.RED, hand2, pawn2, all_pawns),
+        ])
 
     # noinspection PyUnresolvedReferences
     def test_execute_move(self):

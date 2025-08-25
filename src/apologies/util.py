@@ -4,6 +4,7 @@
 """
 Utility functionality.
 """
+
 from typing import Generic, List, TypeVar
 
 import cattrs
