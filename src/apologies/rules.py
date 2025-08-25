@@ -88,7 +88,13 @@ class BoardRules:
     Rules related to the way the board works.
     """
 
-    def construct_legal_moves(self, color: PlayerColor, card: Card, pawn: Pawn, all_pawns: list[Pawn]) -> list[Move]:
+    def construct_legal_moves(  # noqa: PLR6301
+        self,
+        color: PlayerColor,
+        card: Card,
+        pawn: Pawn,
+        all_pawns: list[Pawn],
+    ) -> list[Move]:
         """
         Return the set of legal moves for a pawn using a card, possibly empty.
 
@@ -412,7 +418,7 @@ class Rules:
     _board_rules: BoardRules = field(init=False, factory=BoardRules)
 
     # noinspection PyMethodMayBeStatic
-    def draw_again(self, card: Card) -> bool:
+    def draw_again(self, card: Card) -> bool:  # noqa: PLR6301
         """Whether the player gets to draw again based on the passed-in card."""
         return DRAW_AGAIN[card.cardtype]
 
@@ -455,7 +461,7 @@ class Rules:
         return moves
 
     # noinspection PyMethodMayBeStatic
-    def execute_move(self, game: Game, player: Player, move: Move) -> None:
+    def execute_move(self, game: Game, player: Player, move: Move) -> None:  # noqa: PLR6301
         """
         Execute a player's move, updating game state.
 

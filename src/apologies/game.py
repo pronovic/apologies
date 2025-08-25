@@ -160,7 +160,7 @@ class Deck:
 
     # noinspection PyUnresolvedReferences
     @_draw_pile.default
-    def _default_draw_pile(self) -> dict[str, Card]:
+    def _default_draw_pile(self) -> dict[str, Card]:  # noqa: PLR6301
         pile = {}
         cardid = 0
         for card in CardType:
@@ -354,8 +354,9 @@ class Pawn:
     def _default_name(self) -> str:
         return f"{self.color.value}{self.index}"
 
+    # noinspection PyUnresolvedReferences
     @position.default
-    def _default_position(self) -> Position:
+    def _default_position(self) -> Position:  # noqa: PLR6301
         return Position()
 
     def __str__(self) -> str:
@@ -431,9 +432,9 @@ class History:
     card: CardType | None = None
     timestamp: Arrow = field()
 
-    # noinspection PyUnresolvedReferences
+    # noinspection PyUnresolvedReferences,PyCallingNonCallable
     @timestamp.default
-    def _default_timestamp(self) -> Arrow:
+    def _default_timestamp(self) -> Arrow:  # noqa: PLR6301
         return arrow_utcnow()
 
     def __str__(self) -> str:

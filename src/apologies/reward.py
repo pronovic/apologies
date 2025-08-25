@@ -46,11 +46,11 @@ class RewardCalculator(ABC):
 class RewardCalculatorV1(RewardCalculator):
     """Version 1 of the reward calculator."""
 
-    def calculate(self, view: PlayerView) -> float:
+    def calculate(self, view: PlayerView) -> float:  # noqa: PLR6301
         """Calculate the reward associated with an observation."""
         return float(RewardCalculatorV1._reward(view))
 
-    def range(self, players: int) -> tuple[float, float]:
+    def range(self, players: int) -> tuple[float, float]:  # noqa: PLR6301
         """Return the range of possible rewards for a game."""
         return 0.0, float((players - 1) * 400)  # reward is up to 400 points per opponent
 

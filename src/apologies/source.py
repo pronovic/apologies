@@ -82,8 +82,12 @@ class RandomInputSource(CharacterInputSource):
     A source of input for a character which chooses randomly from among legal moves.
     """
 
-    def choose_move(
-        self, mode: GameMode, view: PlayerView, legal_moves: list[Move], unused: Callable[[PlayerView, Move], PlayerView]
+    def choose_move(  # noqa: PLR6301
+        self,
+        mode: GameMode,
+        view: PlayerView,
+        legal_moves: list[Move],
+        unused: Callable[[PlayerView, Move], PlayerView],
     ) -> Move:
         """Randomly choose the next move for a character."""
         return random.choice(legal_moves)
