@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # vim: set ft=python ts=4 sw=4 expandtab:
 # pylint: disable=redefined-outer-name,protected-access,broad-except,too-many-public-methods,assigning-non-slot
 # Unit tests for engine.py
