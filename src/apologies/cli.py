@@ -8,11 +8,11 @@ import argparse
 import sys
 from typing import IO, Any
 
-from .demo import run_demo
-from .game import MAX_PLAYERS, Game, GameMode
-from .render import render_board
-from .simulation import run_simulation
-from .source import source
+from apologies.demo import run_demo
+from apologies.game import MAX_PLAYERS, Game, GameMode
+from apologies.render import render_board
+from apologies.simulation import run_simulation
+from apologies.source import source
 
 # Constants used by the demo CLI
 _DEMO_DEFAULT_PLAYERS = MAX_PLAYERS

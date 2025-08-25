@@ -40,7 +40,7 @@ from arrow import Arrow
 from arrow import utcnow as arrow_utcnow
 from attrs import define, field, frozen
 
-from .util import ISO_TIME_FORMAT, CattrConverter
+from apologies.util import ISO_TIME_FORMAT, CattrConverter
 
 # Cattr converter that serializes/deserializes DateTime to an ISO 8601 timestamp
 _CONVERTER = CattrConverter()

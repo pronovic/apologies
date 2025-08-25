@@ -13,10 +13,10 @@ from curses import endwin
 from signal import SIGWINCH, signal
 from time import sleep
 
-from .engine import Character, Engine
-from .game import GameMode
-from .render import render_board
-from .source import CharacterInputSource
+from apologies.engine import Character, Engine
+from apologies.game import GameMode
+from apologies.render import render_board
+from apologies.source import CharacterInputSource
 
 # Minimum terminal size needed to support the demo
 _MIN_COLS = 155

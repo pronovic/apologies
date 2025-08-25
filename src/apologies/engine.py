@@ -9,10 +9,10 @@ from collections.abc import Callable
 
 from attrs import define, field
 
-from .game import Card, Game, GameMode, Player, PlayerColor, PlayerView
-from .rules import Move, Rules
-from .source import CharacterInputSource
-from .util import CircularQueue
+from apologies.game import Card, Game, GameMode, Player, PlayerColor, PlayerView
+from apologies.rules import Move, Rules
+from apologies.source import CharacterInputSource
+from apologies.util import CircularQueue
 
 
 @define(slots=False)

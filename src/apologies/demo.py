@@ -6,13 +6,13 @@ Implements a quick'n'dirty game-playing demo using curses.
 
 import platform
 
-from .game import GameMode
-from .source import CharacterInputSource
+from apologies.game import GameMode
+from apologies.source import CharacterInputSource
 
 if platform.system() == "Windows":
-    from .demo_windows import run_demo as implementation  # pylint: disable=unused-import
+    from apologies.demo_windows import run_demo as implementation  # pylint: disable=unused-import
 else:
-    from .demo_unix import run_demo as implementation  # pylint: disable=unused-import
+    from apologies.demo_unix import run_demo as implementation  # pylint: disable=unused-import
 
 
 def run_demo(players: int, mode: GameMode, source: CharacterInputSource, delay_sec: float, exit_immediately: bool) -> None:

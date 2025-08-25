@@ -9,9 +9,9 @@ from abc import ABC, abstractmethod
 from collections.abc import Callable
 from pydoc import locate
 
-from .game import GameMode, PlayerView
-from .reward import RewardCalculatorV1
-from .rules import Move
+from apologies.game import GameMode, PlayerView
+from apologies.reward import RewardCalculatorV1
+from apologies.rules import Move
 
 
 class CharacterInputSource(ABC):

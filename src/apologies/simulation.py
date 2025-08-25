@@ -16,10 +16,10 @@ from arrow import Arrow
 from arrow import now as arrow_now
 from attrs import frozen
 
-from .engine import Character, Engine
-from .game import MAX_PLAYERS, MIN_PLAYERS, GameMode, Player
-from .source import CharacterInputSource
-from .util import ISO_TIMESTAMP_FORMAT
+from apologies.engine import Character, Engine
+from apologies.game import MAX_PLAYERS, MIN_PLAYERS, GameMode, Player
+from apologies.source import CharacterInputSource
+from apologies.util import ISO_TIMESTAMP_FORMAT
 
 BASE_HEADERS = [
     "Scenario",

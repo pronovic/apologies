@@ -9,7 +9,7 @@ from enum import Enum
 
 from attrs import define, field, frozen
 
-from .game import (
+from apologies.game import (
     ADULT_HAND,
     BOARD_SQUARES,
     CIRCLE,
