@@ -2,7 +2,16 @@
 # Run the pytest unit tests, optionally with coverage
 
 command_pytest() {
-   local OPTIND OPTARG option coverage html color
+   local OPTIND OPTARG option tests coverage html color
+
+   if [ -f "tests/__init__.py" ]; then
+      tests="tests"
+   elif [ -f "src/tests/__init__.py" ]; then
+      tests="src/tests"
+   else
+      echo "No tests found"
+      exit 0
+   fi
 
    coverage="no"
    html="no"
@@ -30,7 +39,7 @@ command_pytest() {
    fi
 
    if [ $coverage == "yes" ]; then
-      poetry_run coverage run -m pytest --testdox --force-testdox $color tests
+      poetry_run coverage run -m pytest --testdox --force-testdox $color $tests
       poetry_run coverage report
       poetry_run coverage lcov -o .coverage.lcov
       if [ $html == "yes" ]; then
@@ -38,7 +47,7 @@ command_pytest() {
          run_command openfile .htmlcov/index.html
       fi
    else
-      poetry_run pytest --testdox --force-testdox $color tests
+      poetry_run pytest --testdox --force-testdox $color $tests
    fi
 }
 

@@ -294,8 +294,8 @@ environment.
 ### Project Structure
 
 Go to the PyCharm settings and find the `apologies` project.  Under 
-**Project Structure**, mark both `src` and `tests` as source folders.  In 
-the **Exclude Files** box, enter the following:
+**Project Structure**, mark `src` as a source folder and `tests` as a test
+folder.  In the **Exclude Files** box, enter the following:
 
 ```
 LICENSE;NOTICE;PyPI.md;build;dist;docs/_build;out;poetry.lock;poetry.toml;run;.coverage;.coverage.lcov;.coveragerc;.gitattributes;.github;.gitignore;.htmlcov;.idea;.mypy_cache;.poetry;.pre-commit-config.yaml;.python-version;.pylintrc;.pytest_cache;.readthedocs.yml;.run;.tabignore;.venv
@@ -319,7 +319,7 @@ select _pytest_.  Under **Docstrings > Docstring format**, select _Google_.
 
 ### Running Unit Tests
 
-Right click on the `tests` folder in the project explorer and choose **Run
+Right click on the `src/tests` folder in the project explorer and choose **Run
 'pytest in tests'**.  Make sure that all of the tests pass.  If you see a slightly
 different option (i.e. for "Unittest" instead of "pytest") then you probably 
 skipped the preferences setup discussed above.  You may need to remove the
