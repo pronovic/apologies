@@ -10,8 +10,8 @@ task_checks() {
    echo ""
    run_command ruffformat --check
    echo ""
-   run_command mypy
+   run_command rufflint
    echo ""
-   run_command pylint
+   run_command mypy
 }
 

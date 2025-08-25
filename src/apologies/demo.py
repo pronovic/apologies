@@ -11,9 +11,9 @@ from .game import GameMode
 from .source import CharacterInputSource
 
 if platform.system() == "Windows":
-    from .demo_windows import run_demo as implementation  # pylint: disable=unused-import
+    from .demo_windows import run_demo as implementation
 else:
-    from .demo_unix import run_demo as implementation  # pylint: disable=unused-import
+    from .demo_unix import run_demo as implementation
 
 
 def run_demo(players: int, mode: GameMode, source: CharacterInputSource, delay_sec: float, exit_immediately: bool) -> None:
