@@ -27,6 +27,7 @@ command_rufflint() {
       exit 1
    fi
 
+   echo "$OUTPUT"
    echo "done"
 }
 
