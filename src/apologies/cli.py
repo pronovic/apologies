@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # vim: set ft=python ts=4 sw=4 expandtab:
 
 """
@@ -6,7 +7,7 @@ Implementations for command-line (CLI) tools.
 
 import argparse
 import sys
-from typing import IO, Any
+from typing import IO, Any, List
 
 from .demo import run_demo
 from .game import MAX_PLAYERS, Game, GameMode
@@ -26,7 +27,7 @@ _SIM_DEFAULT_ITERATIONS = 10
 _SIM_DEFAULT_OUT = "simulation.csv"
 
 
-def demo(argv: list[str], unused_stdout: IO[str], unused_stderr: IO[str]) -> None:
+def demo(argv: List[str], unused_stdout: IO[str], unused_stderr: IO[str]) -> None:
     """Run a game with simulated players, displaying output on the terminal."""
     parser = argparse.ArgumentParser(
         description="Run a game with simulated players, displaying output on the terminal.",
@@ -48,7 +49,7 @@ def demo(argv: list[str], unused_stdout: IO[str], unused_stderr: IO[str]) -> Non
     )
 
 
-def simulation(argv: list[str], unused_stdout: IO[str], unused_stderr: IO[str]) -> None:
+def simulation(argv: List[str], unused_stdout: IO[str], unused_stderr: IO[str]) -> None:
     """Run a simulation and display results."""
     parser = argparse.ArgumentParser(
         description="Run a simulation to see how well different character input sources behave.",
@@ -78,14 +79,14 @@ def simulation(argv: list[str], unused_stdout: IO[str], unused_stderr: IO[str]) 
     run_simulation(iterations=args.iter, output=args.out, sources=[source(s) for s in args.source])
 
 
-def render(unused_argv: list[str], stdout: IO[str], unused_stderr: IO[str]) -> None:
+def render(unused_argv: List[str], stdout: IO[str], unused_stderr: IO[str]) -> None:
     """Render an empty board."""
     game = Game(4)
     board = render_board(game)
     stdout.write("%s" % board)
 
 
-def example(argv: list[str], stdout: IO[str], stderr: IO[str]) -> None:
+def example(argv: List[str], stdout: IO[str], stderr: IO[str]) -> None:
     """Execute the example script, which just writes some input to its outputs."""
     stdout.write("Hello, stdout: %s\n" % argv[0])
     stderr.write("Hello, stderr: %s\n" % argv[0])

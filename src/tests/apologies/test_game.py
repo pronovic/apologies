@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # vim: set ft=python ts=4 sw=4 expandtab:
 # pylint: disable=protected-access
 
@@ -40,7 +41,7 @@ class TestDeck:
         assert len(deck._draw_pile.keys()) == DECK_SIZE
         assert len(deck._discard_pile.keys()) == 0
 
-        cardcounts = dict.fromkeys(CardType, 0)
+        cardcounts = {cardtype: 0 for cardtype in CardType}
         for card in deck._draw_pile.values():
             cardcounts[card.cardtype] += 1
         for cardtype in CardType:

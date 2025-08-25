@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # vim: set ft=python ts=4 sw=4 expandtab:
 # pylint: disable=redefined-outer-name,protected-access,broad-except,too-many-public-methods,assigning-non-slot
 # Unit tests for engine.py
@@ -52,7 +53,7 @@ class TestEngine:
 
     def test_constructor_random(self):
         found = []
-        for _ in range(100):
+        for _ in range(0, 100):
             character1 = Character("one", Mock())
             character2 = Character("two", Mock())
             character3 = Character("three", Mock())

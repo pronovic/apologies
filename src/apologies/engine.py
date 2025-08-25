@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # vim: set ft=python ts=4 sw=4 expandtab:
 
 """
@@ -5,7 +6,7 @@ Game engine that coordinates character actions to play a game.
 """
 
 import random
-from collections.abc import Callable
+from typing import Callable, Dict, List, Optional, Tuple
 
 from attrs import define, field
 
@@ -30,7 +31,7 @@ class Character:
     source: CharacterInputSource
 
     def choose_move(
-        self, mode: GameMode, view: PlayerView, legal_moves: list[Move], evaluator: Callable[[PlayerView, Move], PlayerView]
+        self, mode: GameMode, view: PlayerView, legal_moves: List[Move], evaluator: Callable[[PlayerView, Move], PlayerView]
     ) -> Move:
         """
         Choose the next move for a character via the user input source.
@@ -72,12 +73,12 @@ class Engine:
     """
 
     mode: GameMode
-    characters: list[Character]
+    characters: List[Character]
     first: PlayerColor = field()
     _game: Game = field(init=False)
     _queue: CircularQueue[PlayerColor] = field(init=False)
     _rules: Rules = field(init=False)
-    _map: dict[PlayerColor, Character] = field(init=False)
+    _map: Dict[PlayerColor, Character] = field(init=False)
 
     # noinspection PyUnresolvedReferences
     @first.default
@@ -100,7 +101,7 @@ class Engine:
 
     # noinspection PyUnresolvedReferences
     @_map.default
-    def _default_map(self) -> dict[PlayerColor, Character]:
+    def _default_map(self) -> Dict[PlayerColor, Character]:
         index = 0
         result = {}
         for player in self._game.players.values():
@@ -118,9 +119,10 @@ class Engine:
         """String describing the state of the game."""
         if self.completed:
             return "Game completed"
-        if self.started:
+        elif self.started:
             return "Game in progress"
-        return "Game waiting to start"
+        else:
+            return "Game waiting to start"
 
     @property
     def game(self) -> Game:
@@ -138,10 +140,10 @@ class Engine:
         return self._game.completed
 
     @property
-    def colors(self) -> dict[PlayerColor, Character]:
+    def colors(self) -> Dict[PlayerColor, Character]:
         return self._map.copy()
 
-    def winner(self) -> tuple[Character, Player] | None:
+    def winner(self) -> Optional[Tuple[Character, Player]]:
         """Return the winner of the game, as a tuple of (Character, Player)"""
         return (self._map[self._game.winner.color], self._game.winner) if self.completed else None  # type: ignore
 
@@ -160,7 +162,7 @@ class Engine:
         self._rules.start_game(self._game)
         return self._game
 
-    def next_turn(self) -> tuple[PlayerColor, Character]:
+    def next_turn(self) -> Tuple[PlayerColor, Character]:
         """
         Get the color and character for the next turn
         This will give you a different player each time you call it.
@@ -202,7 +204,7 @@ class Engine:
         """Discard back to the game's discard pile."""
         self._game.deck.discard(card)
 
-    def construct_legal_moves(self, view: PlayerView, card: Card | None = None) -> tuple[Card | None, list[Move]]:
+    def construct_legal_moves(self, view: PlayerView, card: Optional[Card] = None) -> Tuple[Optional[Card], List[Move]]:
         """Construct the legal moves based on a player view, using the passed-in card if provided."""
         card = card if card is not None else None if self.mode == GameMode.ADULT else self.draw()
         return card, self._rules.construct_legal_moves(view, card=card)
@@ -221,7 +223,8 @@ class Engine:
         player = self._game.players[color]
         if self.mode == GameMode.ADULT:
             return self._execute_move_adult(player, move)
-        return self._execute_move_standard(player, move)
+        else:
+            return self._execute_move_standard(player, move)
 
     def _execute_move_standard(self, player: Player, move: Move) -> bool:
         """Play the next turn under the rules for standard mode, returning True if the player's turn is done."""
@@ -229,9 +232,10 @@ class Engine:
             self.discard(move.card)
             self._game.track("Turn is forfeit; discarded card %s" % move.card.cardtype.value, player, move.card)
             return True  # player's turn is done if they forfeit
-        self._rules.execute_move(self._game, player, move)  # tracks history, potentially completes game
-        self.discard(move.card)
-        return self.completed or not self._rules.draw_again(move.card)  # player's turn is done unless they can draw again
+        else:
+            self._rules.execute_move(self._game, player, move)  # tracks history, potentially completes game
+            self.discard(move.card)
+            return self.completed or not self._rules.draw_again(move.card)  # player's turn is done unless they can draw again
 
     def _execute_move_adult(self, player: Player, move: Move) -> bool:
         """Play the next move under the rules for adult mode, returning True if the player's turn is done."""
@@ -241,8 +245,9 @@ class Engine:
             player.hand.append(self.draw())
             self._game.track("Turn is forfeit; discarded card %s" % move.card.cardtype.value, player, move.card)
             return True  # player's turn is done if they forfeit
-        self._rules.execute_move(self._game, player, move)  # tracks history, potentially completes game
-        player.hand.remove(move.card)
-        self.discard(move.card)
-        player.hand.append(self.draw())
-        return self.completed or not self._rules.draw_again(move.card)  # player's turn is done unless they can draw again
+        else:
+            self._rules.execute_move(self._game, player, move)  # tracks history, potentially completes game
+            player.hand.remove(move.card)
+            self.discard(move.card)
+            player.hand.append(self.draw())
+            return self.completed or not self._rules.draw_again(move.card)  # player's turn is done unless they can draw again

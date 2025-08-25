@@ -1,10 +1,11 @@
+# -*- coding: utf-8 -*-
 # vim: set ft=python ts=4 sw=4 expandtab:
 
 """
 Utility functionality.
 """
 
-from typing import Generic, TypeVar
+from typing import Generic, List, TypeVar
 
 import cattrs
 from arrow import Arrow
@@ -38,9 +39,9 @@ T = TypeVar("T")
 class CircularQueue(Generic[T]):
     """A circular queue that keeps returning the original entries repeatedly, in order."""
 
-    entries: list[T] = field()
+    entries: List[T] = field()
     first: T = field()
-    _working: list[T] = field()
+    _working: List[T] = field()
 
     @first.default
     def _default_first(self) -> T:
@@ -50,7 +51,7 @@ class CircularQueue(Generic[T]):
 
     # noinspection PyUnresolvedReferences
     @_working.default
-    def _default_working(self) -> list[T]:
+    def _default_working(self) -> List[T]:
         if self.first not in self.entries:
             raise ValueError("First entry not found")
         temp = self.entries[:]
