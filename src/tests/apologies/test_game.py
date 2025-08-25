@@ -50,9 +50,7 @@ class TestDeck:
         deck = Deck()
 
         # Check that we can draw the entire deck
-        drawn = []
-        for _ in range(DECK_SIZE):
-            drawn.append(deck.draw())
+        drawn = [deck.draw() for _ in range(DECK_SIZE)]
         assert len(deck._draw_pile) == 0
         with pytest.raises(ValueError):
             deck.draw()
