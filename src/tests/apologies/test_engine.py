@@ -221,10 +221,10 @@ class TestEngine:
         engine._queue.next = MagicMock(side_effect=exception)
         engine._game.copy = MagicMock(return_value=copy)
 
-        try:
+        with pytest.raises(Exception) as e:
             engine.play_next()
-        except Exception:
-            assert engine._game is copy  # we replace with a copy of original if method raises exception
+        assert e.value is exception
+        assert engine._game is copy  # we replace with a copy of original if method raises exception
 
     # noinspection PyUnresolvedReferences
     def test_play_next_standard_forfeit(self):
