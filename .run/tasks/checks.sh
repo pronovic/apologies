@@ -12,6 +12,6 @@ task_checks() {
    echo ""
    run_command mypy
    echo ""
-   run_command pylint
+   run_command rufflint
 }
 

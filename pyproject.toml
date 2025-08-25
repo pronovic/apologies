@@ -97,6 +97,118 @@ line-ending = "lf"
 docstring-code-format = true
 docstring-code-line-length = 80
 
+[tool.ruff.lint.flake8-tidy-imports]
+ban-relative-imports = "all"
+
+[tool.ruff.lint.flake8-pytest-style]
+fixture-parentheses = false
+mark-parentheses = false
+parametrize-names-type = "csv"
+parametrize-values-type = "list"
+parametrize-values-row-type = "list"
+
+# Note: requires TID251 to be selected below
+[tool.ruff.lint.flake8-tidy-imports.banned-api]
+"conftest".msg = "use 'tests.conftest' instead"
+"unittest.TestCase".msg = "use pytest, not unittest"
+
+[tool.ruff.lint]
+select = [
+  # Start with all Ruff linter rules, and exclude some specific rules and categories (see below)
+  "ALL"
+]
+
+ignore = [
+  # Ruff-recommended exclusions, not needed because we're using the Ruff formatter
+  "COM812",     # missing-trailing-comma
+  "COM819",     # prohibited-trailing-comma
+  "D206",       # docstring-tab-indentation
+  "D300",       # triple-single-quotes
+  "E111",       # indentation-with-invalid-multiple
+  "E114",       # indentation-with-invalid-multiple-comment
+  "E117",       # over-indented
+  "E501",       # line-too-long
+  "Q000",       # bad-quotes-inline-string
+  "Q001",       # bad-quotes-multiline-string
+  "Q002",       # bad-quotes-docstring
+  "Q003",       # avoidable-escaped-quote
+  "W191",       # tab-indentation
+
+  # Exclusions of entire rule categories, which we don't think are worth enforcing
+  "C90",        # mccabe cyclomatic complexity
+  "CPY",        # flake8-copyright
+  "D",          # pydocstyle
+  "DJ",         # flake8-django
+  "DOC",        # pydoclint
+  "ERA",        # eradicate
+  "EXE",        # flake8-executable
+  "FIX",        # flake8-fixme
+  "PTH",        # flake8-use-pathlib
+  "TD",         # flake8-todo
+
+  # Exclusions of specific rules, which we don't think are worth enforcing
+  "ANN401",     # allow dynamically typed expressions using `typing.Any`
+  "EM101",      # allow raw string messages in exceptions; having to pull out a variable makes code harder to read
+  "EM102",      # allow f-string messages in exceptions; having to pull out a variable makes code harder to read
+  "FURB140",    # don't automatically convert generator expressions to use `itertools.starmap()`
+  "PGH004",     # allow `# noqa` with no error code; sometimes this is needed to prevent unwanted magical auto-fixes
+  "PLR2004",    # allow magic numbers; using a constant doesn't necessarily make a magic number any more legible
+  "PT011",      # allow `pytest.raises` for any exception type; this is often a false-positive that has little benefit
+  "PT018",      # allow `assert` with multiple conditions; ruff suggestions often make the code less legible
+  "PT019",      # allow unused PyTest fixtures; this check has a lot of false positives for `@unittest.mock.patch()`
+  "S101",       # allow use of `assert`; we sometimes use assert as a type hint for MyPy, and do not run with -O
+  "S404",       # allow use of `subprocess`; it's a common way to run shell commands, and this check is overly paranoid
+  "SIM102",     # allow nested `if` clauses; ruff suggestions often make the code less legible
+  "SIM117",     # allow nested `with` clauses; ruff suggestions often make the code less legible
+  "TRY003",     # allow long messages in exceptions; this is often a false-positive that has little benefit
+
+  # Exclusions of specific rules that we want to work toward being compliant with
+  "ANN001",
+  "ANN202",
+  "ANN204",
+  "ARG001",
+  "ARG002",
+  "BLE001",
+  "C414",
+  "FBT001",
+  "FLY002",
+  "FURB101",
+  "FURB118",
+  "PERF401",
+  "PGH003",
+  "PLR0911",
+  "PLR0912",
+  "PLR0913",
+  "PLR0917",
+  "PLR1702",
+  "PLR6301",
+  "PT012",
+  "S311",
+  "SIM110",
+  "SIM113",
+  "T201",
+  "TC001",
+  "TC003",
+  "TID252",
+  "TRY004",
+  "TRY201",
+  "TRY300",
+  "UP031",
+  "W291",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"src/tests/**/*" = [
+  # Exclusions that apply to unit tests only
+  "ANN",        # don't require type annotations in tests
+  "FBT",        # allow use of boolean positional arguments
+  "PD002",      # allow use of Pandas `inplace=True`
+  "PLC1901",    # allow comparison to empty string
+  "PLC2701",    # allow imports of private names
+  "PLR",        # don't warn about too many arguments, methods, etc.
+  "SLF001",     # allow access to private members
+]
+
 [tool.mypy]
 files = [ "src" ]
 pretty = true
