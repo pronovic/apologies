@@ -363,7 +363,7 @@ source ~/.bash_profile
 |Open console for tool outout|_Checked_|
 |Make console active on message in stdout|_Checked_|
 |Make console active on message in stderr|_Checked_|
-|Output filters|`$FILE_PATH$:$LINE$:$COLUMN$:.*`|
+|Output filters|`$FILE_PATH$:$LINE$`|
 
 ##### Run Ruff Linter
 
@@ -379,7 +379,7 @@ source ~/.bash_profile
 |Open console for tool outout|_Checked_|
 |Make console active on message in stdout|_Checked_|
 |Make console active on message in stderr|_Checked_|
-|Output filters|`$FILE_PATH$:$LINE$:$COLUMN.*`|
+|Output filters|`$FILE_PATH$:$LINE$`|
 
 #### Windows
 
@@ -419,7 +419,7 @@ change the path for `bash.exe`.
 |Open console for tool outout|_Checked_|
 |Make console active on message in stdout|_Checked_|
 |Make console active on message in stderr|_Checked_|
-|Output filters|`$FILE_PATH$:$LINE$:$COLUMN$:.*`|
+|Output filters|`$FILE_PATH$:$LINE$`|
 
 ##### Run Ruff Linter
 
@@ -435,7 +435,7 @@ change the path for `bash.exe`.
 |Open console for tool outout|_Checked_|
 |Make console active on message in stdout|_Checked_|
 |Make console active on message in stderr|_Checked_|
-|Output filters|`$FILE_PATH$:$LINE$:$COLUMN.*`|
+|Output filters|`$FILE_PATH$:$LINE$`|
 
 ## Release Process
 
