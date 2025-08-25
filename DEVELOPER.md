@@ -278,7 +278,7 @@ Go to the PyCharm settings and find the `apologies` project.  Under
 folder.  In the **Exclude Files** box, enter the following:
 
 ```
-LICENSE;NOTICE;PyPI.md;build;dist;docs/_build;out;poetry.lock;poetry.toml;run;.coverage;.coverage.lcov;.coveragerc;.gitattributes;.github;.gitignore;.htmlcov;.idea;.mypy_cache;.poetry;.pre-commit-config.yaml;.python-version;.pytest_cache;.readthedocs.yml;.run;.tabignore;.venv
+LICENSE;NOTICE;PyPI.md;build;dist;docs/_build;out;poetry.lock;poetry.toml;run;.coverage;.coverage.lcov;.coveragerc;.gitattributes;.github;.gitignore;.htmlcov;.idea;.mypy_cache;.poetry;.pre-commit-config.yaml;.python-version;.pytest_cache;.readthedocs.yml;.ruff_cache;.run;.tabignore;.venv
 ```
 
 When you're done, click **Ok**.  Then, go to the gear icon in the project panel 
