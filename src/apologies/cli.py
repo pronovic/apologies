@@ -31,15 +31,40 @@ def demo(argv: list[str], _stdout: IO[str], _stderr: IO[str]) -> None:
     """Run a game with simulated players, displaying output on the terminal."""
     parser = argparse.ArgumentParser(
         description="Run a game with simulated players, displaying output on the terminal.",
-        epilog=f"By default, the game runs in {_DEMO_DEFAULT_MODE} mode with {_DEMO_DEFAULT_PLAYERS} players. A source is a class that chooses a player's move.",
+        epilog=f"By default, the game runs in {_DEMO_DEFAULT_MODE} mode with "
+        f"{_DEMO_DEFAULT_PLAYERS} players. A source is a class that "
+        f"chooses a player's move.",
     )
 
-    parser.add_argument("--players", type=int, default=_DEMO_DEFAULT_PLAYERS, help="Number of simulated players in the game")
-    parser.add_argument("--mode", type=str, default=_DEMO_DEFAULT_MODE, choices=_DEMO_MODE_CHOICES, help="Choose the game mode")
-    parser.add_argument("--source", type=str, default=_DEMO_DEFAULT_SOURCE, help="Fully-qualified name of the character source")
-    parser.add_argument("--exit", action="store_true", help="Exit immediately when the game completes")
     parser.add_argument(
-        "--delay", type=float, default=_DEMO_DEFAULT_DELAY_SEC, help="Delay between computer-generated moves (fractional seconds)"
+        "--players",
+        type=int,
+        default=_DEMO_DEFAULT_PLAYERS,
+        help="Number of simulated players in the game",
+    )
+    parser.add_argument(
+        "--mode",
+        type=str,
+        default=_DEMO_DEFAULT_MODE,
+        choices=_DEMO_MODE_CHOICES,
+        help="Choose the game mode",
+    )
+    parser.add_argument(
+        "--source",
+        type=str,
+        default=_DEMO_DEFAULT_SOURCE,
+        help="Fully-qualified name of the character source",
+    )
+    parser.add_argument(
+        "--exit",
+        action="store_true",
+        help="Exit immediately when the game completes",
+    )
+    parser.add_argument(
+        "--delay",
+        type=float,
+        default=_DEMO_DEFAULT_DELAY_SEC,
+        help="Delay between computer-generated moves (fractional seconds)",
     )
 
     args = parser.parse_args(args=argv[1:])
@@ -56,14 +81,32 @@ def simulation(argv: list[str], _stdout: IO[str], _stderr: IO[str]) -> None:
     """Run a simulation and display results."""
     parser = argparse.ArgumentParser(
         description="Run a simulation to see how well different character input sources behave.",
-        epilog=f"Every combination of game mode, number of players, and input source is tested, using {_SIM_DEFAULT_ITERATIONS} iterations by default.  A spreadsheet is generated containing statistics on mean and median turns and duration to win, as well as number of wins for each source.",
+        epilog=f"Every combination of game mode, number of players, and input source is tested, "
+        f"using {_SIM_DEFAULT_ITERATIONS} iterations by default.  A spreadsheet is "
+        f"generated containing statistics on mean and median turns and duration to "
+        f"win, as well as number of wins for each source.",
     )
 
-    parser.add_argument("--iter", type=int, default=_SIM_DEFAULT_ITERATIONS, help="Number of iterations per scenario")
+    parser.add_argument(
+        "--iter",
+        type=int,
+        default=_SIM_DEFAULT_ITERATIONS,
+        help="Number of iterations per scenario",
+    )
 
-    parser.add_argument("--out", type=str, default=_SIM_DEFAULT_OUT, help="Path to the output CSV file")
+    parser.add_argument(
+        "--out",
+        type=str,
+        default=_SIM_DEFAULT_OUT,
+        help="Path to the output CSV file",
+    )
 
-    parser.add_argument("source", type=str, nargs="+", help="Fully-qualified name of the character sources to test")
+    parser.add_argument(
+        "source",
+        type=str,
+        nargs="+",
+        help="Fully-qualified name of the character sources to test",
+    )
 
     args = parser.parse_args(args=argv[1:])
 
