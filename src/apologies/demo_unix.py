@@ -53,7 +53,7 @@ def _draw(stdscr, board, state, history) -> None:
 
 
 # pylint: disable=too-many-positional-arguments
-def _refresh(source, engine, game, delay_sec, stdscr, board, state, history) -> None:
+def _refresh(source, engine, game, delay_sec, stdscr, board, state, history) -> None:  # noqa: PLR0917
     """Refresh the dynamic portions of the screen."""
     _refresh_screen(source, engine, delay_sec, game, stdscr)
     _refresh_board(game, board)
