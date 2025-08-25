@@ -9,7 +9,6 @@ from .game import GameMode
 from .source import CharacterInputSource
 
 
-# pylint: disable=unused-argument
 def run_demo(players: int, mode: GameMode, source: CharacterInputSource, delay_sec: float, exit_immediately: bool) -> None:
     """
     Stubs the demo, which does not run on Windows.
