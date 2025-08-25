@@ -121,7 +121,7 @@ def _refresh_history(game, history):
     history.refresh()
 
 
-def _main(stdscr, source: CharacterInputSource, engine: Engine, delay_sec: float, exit_immediately: bool):
+def _main(stdscr, *, source: CharacterInputSource, engine: Engine, delay_sec: float, exit_immediately: bool):
     """Main routine for the Python curses application, intended to be wrapped by curses.wrapper()"""
 
     rows, columns = stdscr.getmaxyx()
@@ -174,7 +174,14 @@ def _force_minimum_size() -> None:
     sleep(0.5)  # wait for the window to finish resizing; if we try to render before it's done, the window gets hosed up
 
 
-def run_demo(players: int, mode: GameMode, source: CharacterInputSource, delay_sec: float, exit_immediately: bool) -> None:
+def run_demo(
+    *,
+    players: int,
+    mode: GameMode,
+    source: CharacterInputSource,
+    delay_sec: float,
+    exit_immediately: bool,
+) -> None:
     """
     Run the quick'n'dirty demo in a terminal window.
 
@@ -183,13 +190,14 @@ def run_demo(players: int, mode: GameMode, source: CharacterInputSource, delay_s
         mode(GameMode): The game mode
         source(CharacterInputSource): The source to use for choosing player moves
         delay_sec(float): The delay between turns when executing the game
+        exit_immediately(bool): If True, exit immediately when the game is complete
     """
     try:
         characters = [Character(name=f"Player {player}", source=source) for player in range(players)]
         engine = Engine(mode=mode, characters=characters)
         engine.start_game()
         _force_minimum_size()
-        curses.wrapper(_main, source, engine, delay_sec, exit_immediately)
+        curses.wrapper(_main, source=source, engine=engine, delay_sec=delay_sec, exit_immediately=exit_immediately)
     except KeyboardInterrupt:  # users get out using CTRL-C
         print("Demo completed")
         sys.exit(0)

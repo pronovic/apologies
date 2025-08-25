@@ -15,7 +15,7 @@ else:
     from apologies.demo_unix import run_demo as implementation  # pylint: disable=unused-import
 
 
-def run_demo(players: int, mode: GameMode, source: CharacterInputSource, delay_sec: float, exit_immediately: bool) -> None:
+def run_demo(*, players: int, mode: GameMode, source: CharacterInputSource, delay_sec: float, exit_immediately: bool) -> None:
     """
     Run the quick'n'dirty demo in a terminal window.
 

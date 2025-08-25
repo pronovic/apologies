@@ -44,7 +44,11 @@ def demo(argv: list[str], unused_stdout: IO[str], unused_stderr: IO[str]) -> Non
 
     args = parser.parse_args(args=argv[1:])
     run_demo(
-        players=args.players, mode=GameMode[args.mode], source=source(args.source), delay_sec=args.delay, exit_immediately=args.exit
+        players=args.players,
+        mode=GameMode[args.mode],
+        source=source(args.source),
+        delay_sec=args.delay,
+        exit_immediately=args.exit,
     )
 
 
