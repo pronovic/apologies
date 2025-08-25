@@ -278,7 +278,7 @@ Go to the PyCharm settings and find the `apologies` project.  Under
 folder.  In the **Exclude Files** box, enter the following:
 
 ```
-LICENSE;NOTICE;PyPI.md;build;dist;docs/_build;out;poetry.lock;poetry.toml;run;.coverage;.coverage.lcov;.coveragerc;.gitattributes;.github;.gitignore;.htmlcov;.idea;.mypy_cache;.poetry;.pre-commit-config.yaml;.python-version;.pytest_cache;.readthedocs.yml;.run;.tabignore;.venv
+LICENSE;NOTICE;PyPI.md;build;dist;docs/_build;out;poetry.lock;poetry.toml;run;.coverage;.coverage.lcov;.coveragerc;.gitattributes;.github;.gitignore;.htmlcov;.idea;.mypy_cache;.poetry;.pre-commit-config.yaml;.python-version;.pytest_cache;.readthedocs.yml;.ruff_cache;.run;.tabignore;.venv
 ```
 
 When you're done, click **Ok**.  Then, go to the gear icon in the project panel 
@@ -338,7 +338,7 @@ source ~/.bash_profile
 |Field|Value|
 |-----|-----|
 |Name|`Format Code`|
-|Description|`Run the code formatters`|
+|Description|`Run the Ruff code formatter`|
 |Group|`Developer Tools`|
 |Program|`$ProjectFileDir$/run`|
 |Arguments|`format`|
@@ -363,13 +363,13 @@ source ~/.bash_profile
 |Open console for tool outout|_Checked_|
 |Make console active on message in stdout|_Checked_|
 |Make console active on message in stderr|_Checked_|
-|Output filters|`$FILE_PATH$:$LINE$:$COLUMN$:.*`|
+|Output filters|`$FILE_PATH$:$LINE$`|
 
-##### Run Ruff Lint Checks
+##### Run Ruff Linter
 
 |Field|Value|
 |-----|-----|
-|Name|`Run Ruff Lint Checks`|
+|Name|`Run Ruff Linter`|
 |Description|`Run the Ruff linter code checks`|
 |Group|`Developer Tools`|
 |Program|`$ProjectFileDir$/run`|
@@ -379,7 +379,7 @@ source ~/.bash_profile
 |Open console for tool outout|_Checked_|
 |Make console active on message in stdout|_Checked_|
 |Make console active on message in stderr|_Checked_|
-|Output filters|`$FILE_PATH$:$LINE$:$COLUMN.*`|
+|Output filters|`$FILE_PATH$:$LINE$`|
 
 #### Windows
 
@@ -394,7 +394,7 @@ change the path for `bash.exe`.
 |Field|Value|
 |-----|-----|
 |Name|`Format Code`|
-|Description|`Run the code formatters`|
+|Description|`Run the Ruff code formatter`|
 |Group|`Developer Tools`|
 |Program|`powershell.exe`|
 |Arguments|`& 'C:\Program Files\Git\bin\bash.exe' -l "./run" format | Out-String`|
@@ -419,13 +419,13 @@ change the path for `bash.exe`.
 |Open console for tool outout|_Checked_|
 |Make console active on message in stdout|_Checked_|
 |Make console active on message in stderr|_Checked_|
-|Output filters|`$FILE_PATH$:$LINE$:$COLUMN$:.*`|
+|Output filters|`$FILE_PATH$:$LINE$`|
 
-##### Run Pylint Checks
+##### Run Ruff Linter
 
 |Field|Value|
 |-----|-----|
-|Name|`Run Ruff Lint Checks`|
+|Name|`Run Ruff Linter`|
 |Description|`Run the Ruff linter code checks`|
 |Group|`Developer Tools`|
 |Program|`powershell.exe`|
@@ -435,7 +435,7 @@ change the path for `bash.exe`.
 |Open console for tool outout|_Checked_|
 |Make console active on message in stdout|_Checked_|
 |Make console active on message in stderr|_Checked_|
-|Output filters|`$FILE_PATH$:$LINE$:$COLUMN.*`|
+|Output filters|`$FILE_PATH$:$LINE$`|
 
 ## Release Process
 

@@ -2,19 +2,24 @@
 # Run the Ruff linter with no automatic fixes
 
 # The command line below is a bit of a hack.  The goal is to generate output
-# that's compatible with the PyCharm output filter:
+# that's compatible with the PyCharm output filter, which expects this:
 #
-#     $FILE_PATH$:$LINE$:$COLUMN.*
+#     $FILE_PATH$:$LINE$
 #
-# However, that requires stripping out some extra junk.  In theory it seems
-# like the PyCharm output filter (which is supposed to be a regex) should be
-# able to handle this, but I haven't been able to make it work.
+# However, right now ruff generates some extra stuff at the front of the line,
+# ("  --> "), which needs to be stripped so PyCharm will recognize the pattern.
+# In theory it seems like it should be possible to do this entirely within the
+# PyCharm output filter, without needing sed, but I haven't been able to make
+# it work.
+#
+# Note that the extra .* in the regex below is needed to handle the ANSI color
+# escape sequences, which aren't immediately obvious.
 #
 # See: https://github.com/astral-sh/ruff/issues/19983
 
 command_rufflint() {
    echo "Running Ruff linter..."
-   CLICOLOR_FORCE=1 poetry_run ruff check --no-fix | sed 's/ .*-.*-.*>.* //'
+   CLICOLOR_FORCE=1 poetry_run ruff check --no-fix | sed 's/ *.*-->.* //'
    echo "done"
 }
 
