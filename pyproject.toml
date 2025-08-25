@@ -165,7 +165,6 @@ ignore = [
   # Exclusions of specific rules that we want to work toward being compliant with
   "ANN001",
   "ANN202",
-  "ANN204",
   "PERF401",
   "PGH003",
   "PLR0911",

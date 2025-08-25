@@ -25,7 +25,7 @@ _MIN_ROWS = 58
 
 
 class TerminalSizeError(Exception):
-    def __init__(self, msg):
+    def __init__(self, msg) -> None:
         self.msg = msg
 
 
