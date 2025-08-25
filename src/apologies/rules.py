@@ -160,7 +160,7 @@ class BoardRules:
         """
         if position.home or position.start:
             raise ValueError("Pawn in home or start may not move.")
-        elif position.safe is not None:
+        if position.safe is not None:
             if squares == 0:
                 return position.copy()
             if squares > 0:
@@ -169,15 +169,15 @@ class BoardRules:
                 if position.safe + squares == SAFE_SQUARES:
                     return position.copy().move_to_home()
                 raise ValueError("Pawn cannot move past home.")
-            elif position.safe + squares >= 0:
+            if position.safe + squares >= 0:
                 return position.copy().move_to_safe(position.safe + squares)
-            else:  # handle moving back out of the safe area
-                return BoardRules._position(
-                    color,
-                    position.copy().move_to_square(TURN[color].square),  # type: ignore[arg-type]
-                    squares + position.safe + 1,
-                )
-        elif position.square is not None:
+            # handle moving back out of the safe area
+            return BoardRules._position(
+                color,
+                position.copy().move_to_square(TURN[color].square),  # type: ignore[arg-type]
+                squares + position.safe + 1,
+            )
+        if position.square is not None:
             if squares == 0:
                 return position.copy()
             if squares > 0:
@@ -190,15 +190,12 @@ class BoardRules:
                         )
                     return position.copy().move_to_square(position.square + squares)
                 # handle turning the corner
-                return BoardRules._position(
-                    color, position.copy().move_to_square(0), squares - (BOARD_SQUARES - position.square)
-                )
+                return BoardRules._position(color, position.copy().move_to_square(0), squares - (BOARD_SQUARES - position.square))
             if position.square + squares >= 0:
                 return position.copy().move_to_square(position.square + squares)
             # handle turning the corner
             return BoardRules._position(color, position.copy().move_to_square(BOARD_SQUARES - 1), squares + position.square + 1)
-        else:
-            raise ValueError("Position is in an illegal state")
+        raise ValueError("Position is in an illegal state")
 
     @staticmethod
     def _construct_legal_moves_1(color: PlayerColor, card: Card, pawn: Pawn, all_pawns: List[Pawn]) -> List[Move]:
