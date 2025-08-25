@@ -5,13 +5,12 @@
 Run a simulation to see how well different character input sources behave.
 """
 
-from __future__ import annotations  # so we can return a type from one of its own methods
-
 import csv
 import statistics
+import typing
+from collections.abc import Sequence
 from itertools import combinations_with_replacement
 from pathlib import Path
-from typing import TYPE_CHECKING
 
 from arrow import Arrow
 from arrow import now as arrow_now
@@ -19,13 +18,11 @@ from attrs import frozen
 
 from apologies.engine import Character, Engine
 from apologies.game import MAX_PLAYERS, MIN_PLAYERS, GameMode, Player
+from apologies.source import CharacterInputSource
 from apologies.util import ISO_TIMESTAMP_FORMAT
 
-if TYPE_CHECKING:
+if typing.TYPE_CHECKING:
     from _csv import _writer
-    from collections.abc import Sequence
-
-    from apologies.source import CharacterInputSource
 
 BASE_HEADERS = [
     "Scenario",
@@ -85,7 +82,7 @@ class _Statistics:
     win_percent: float
 
     @staticmethod
-    def for_results(name: str | None, results: list[_Result]) -> _Statistics:
+    def for_results(name: str | None, results: list[_Result]) -> "_Statistics":
         in_scope = [result for result in results if name is None or result.character.source.name == name]
         turns = [result.player.turns for result in in_scope]
         durations_ms = [(result.stop - result.start).microseconds / 1000 for result in in_scope]
@@ -128,7 +125,7 @@ def _analyze_scenario(  # noqa: PLR0917,PLR0913
     return _Analysis(f"Scenario {scenario}", mode.name, iterations, players, playernames, overall_stats, source_stats)
 
 
-def _write_header(csvwriter: _writer, sources: list[CharacterInputSource]) -> None:
+def _write_header(csvwriter: "_writer", sources: list[CharacterInputSource]) -> None:
     """Write the header into the CSV file."""
     headers = BASE_HEADERS[:]
     for name in sorted({source.name for source in sources}):
@@ -137,7 +134,7 @@ def _write_header(csvwriter: _writer, sources: list[CharacterInputSource]) -> No
     csvwriter.writerow(headers)
 
 
-def _write_scenario(csvwriter: _writer, analysis: _Analysis) -> None:
+def _write_scenario(csvwriter: "_writer", analysis: _Analysis) -> None:
     """Write analysis results for a scenario into the CSV file."""
     row = [analysis.scenario, analysis.mode, analysis.iterations, analysis.players]
     row += analysis.playernames

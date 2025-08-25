@@ -31,8 +31,6 @@ Attributes:
     SLIDE(Dict[PlayerColor, Tuple(int, int)): The slide start/end squares for each color
 """
 
-from __future__ import annotations  # see: https://stackoverflow.com/a/33533514/2907667
-
 import json
 import random
 from enum import Enum
@@ -217,11 +215,11 @@ class Position:
             return f"safe {self.safe}"
         return f"square {self.square}"
 
-    def copy(self) -> Position:
+    def copy(self) -> "Position":
         """Return a fully-independent copy of the position."""
         return _CONVERTER.structure(_CONVERTER.unstructure(self), Position)
 
-    def move_to_position(self, position: Position) -> Position:
+    def move_to_position(self, position: "Position") -> "Position":
         """
         Move the pawn to a specific position on the board.
 
@@ -252,7 +250,7 @@ class Position:
             self.move_to_square(position.square)
         return self
 
-    def move_to_start(self) -> Position:
+    def move_to_start(self) -> "Position":
         """
         Move the pawn back to its start area.
 
@@ -268,7 +266,7 @@ class Position:
         self.square = None
         return self
 
-    def move_to_home(self) -> Position:
+    def move_to_home(self) -> "Position":
         """
         Move the pawn to its home area.
 
@@ -284,7 +282,7 @@ class Position:
         self.square = None
         return self
 
-    def move_to_safe(self, square: int) -> Position:
+    def move_to_safe(self, square: int) -> "Position":
         """
         Move the pawn to a square in its safe area.
 
@@ -305,7 +303,7 @@ class Position:
         self.square = None
         return self
 
-    def move_to_square(self, square: int) -> Position:
+    def move_to_square(self, square: int) -> "Position":
         """
         Move the pawn to a square on the board.
 
@@ -389,11 +387,11 @@ class Player:
     def _default_pawns(self) -> list[Pawn]:
         return [Pawn(self.color, index) for index in range(PAWNS)]
 
-    def copy(self) -> Player:
+    def copy(self) -> "Player":
         """Return a fully-independent copy of the player."""
         return _CONVERTER.structure(_CONVERTER.unstructure(self), Player)
 
-    def public_data(self) -> Player:
+    def public_data(self) -> "Player":
         """Return a fully-independent copy of the player with only public data visible."""
         player = self.copy()
         del player.hand[:]  # other players should not see this player's hand when making decisions
@@ -455,7 +453,7 @@ class PlayerView:
     player: Player
     opponents: dict[PlayerColor, Player]
 
-    def copy(self) -> PlayerView:
+    def copy(self) -> "PlayerView":
         """Return a fully-independent copy of the player view."""
         return _CONVERTER.structure(_CONVERTER.unstructure(self), PlayerView)
 
@@ -525,7 +523,7 @@ class Game:
                 return player
         raise ValueError("Game is not completed")
 
-    def copy(self) -> Game:
+    def copy(self) -> "Game":
         """Return a fully-independent copy of the game."""
         return _CONVERTER.structure(_CONVERTER.unstructure(self), Game)
 
@@ -534,7 +532,7 @@ class Game:
         return json.dumps(_CONVERTER.unstructure(self), indent="  ")
 
     @staticmethod
-    def from_json(data: str) -> Game:
+    def from_json(data: str) -> "Game":
         """Deserialize the game state from JSON."""
         return _CONVERTER.structure(json.loads(data), Game)
 
