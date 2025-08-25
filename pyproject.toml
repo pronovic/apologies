@@ -165,7 +165,6 @@ ignore = [
   # Exclusions of specific rules that we want to work toward being compliant with
   "PERF401",
   "PGH003",
-  "PLR0911",
 ]
 
 [tool.ruff.lint.per-file-ignores]

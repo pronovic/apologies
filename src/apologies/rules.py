@@ -158,7 +158,7 @@ class BoardRules:
     # noinspection PyChainedComparisons
     # pylint: disable=too-many-branches,too-many-return-statements,line-too-long
     @staticmethod
-    def _position(color: PlayerColor, position: Position, squares: int) -> Position:  # noqa: PLR0912
+    def _position(color: PlayerColor, position: Position, squares: int) -> Position:  # noqa: PLR0912,PLR0911
         """
         Calculate the new position for a forward or backwards move, taking into account safe zone turns but disregarding slides.
         """
