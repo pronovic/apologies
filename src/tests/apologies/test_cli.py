@@ -12,7 +12,7 @@ FIXTURE_DIR = Path(__file__).parent / "fixtures/test_cli"
 
 @pytest.fixture
 def data():
-    return {f.name: f.read_text() for f in FIXTURE_DIR.iterdir() if f.is_file()}
+    return {f.name: f.read_text(encoding="utf-8") for f in FIXTURE_DIR.iterdir() if f.is_file()}
 
 
 class TestCli:
