@@ -29,14 +29,14 @@ class TerminalSizeError(Exception):
         self.msg = msg
 
 
-def _render_hand(player):
+def _render_hand(player) -> str:
     """Return a string describing the cards in a player's hand."""
     if not player.hand:
         return "n/a"
     return "%s" % [card.cardtype.value for card in sorted(player.hand)]
 
 
-def _draw(stdscr, board, state, history):
+def _draw(stdscr, board, state, history) -> None:
     """Draw the static portions of the screen."""
     stdscr.clear()
     stdscr.border()
@@ -53,7 +53,7 @@ def _draw(stdscr, board, state, history):
 
 
 # pylint: disable=too-many-positional-arguments
-def _refresh(source, engine, game, delay_sec, stdscr, board, state, history):
+def _refresh(source, engine, game, delay_sec, stdscr, board, state, history) -> None:
     """Refresh the dynamic portions of the screen."""
     _refresh_screen(source, engine, delay_sec, game, stdscr)
     _refresh_board(game, board)
@@ -61,7 +61,7 @@ def _refresh(source, engine, game, delay_sec, stdscr, board, state, history):
     _refresh_history(game, history)
 
 
-def _refresh_screen(_source, _engine, _game, _delay_sec, stdscr):
+def _refresh_screen(_source, _engine, _game, _delay_sec, stdscr) -> None:
     stdscr.border()
     stdscr.addstr(1, 95, "APOLOGIES DEMO")
     stdscr.addstr(1, 138, "CTRL-C TO EXIT")
@@ -69,7 +69,7 @@ def _refresh_screen(_source, _engine, _game, _delay_sec, stdscr):
     stdscr.refresh()
 
 
-def _refresh_board(game, board):
+def _refresh_board(game, board) -> None:
     """Refresh the game board display section of the screen."""
     board.clear()
     board.border()
@@ -82,7 +82,7 @@ def _refresh_board(game, board):
     board.refresh()
 
 
-def _refresh_state(source, engine, delay_sec, game, state):
+def _refresh_state(source, engine, delay_sec, game, state) -> None:
     """Refresh the game state section of the screen."""
     state.clear()
     state.border()
@@ -108,7 +108,7 @@ def _refresh_state(source, engine, delay_sec, game, state):
     state.refresh()
 
 
-def _refresh_history(game, history):
+def _refresh_history(game, history) -> None:
     """Refresh the game history section of the screen."""
     history.clear()
     history.border()
@@ -121,7 +121,7 @@ def _refresh_history(game, history):
     history.refresh()
 
 
-def _main(stdscr, *, source: CharacterInputSource, engine: Engine, delay_sec: float, exit_immediately: bool):
+def _main(stdscr, *, source: CharacterInputSource, engine: Engine, delay_sec: float, exit_immediately: bool) -> None:
     """Main routine for the Python curses application, intended to be wrapped by curses.wrapper()"""
 
     rows, columns = stdscr.getmaxyx()
@@ -133,7 +133,7 @@ def _main(stdscr, *, source: CharacterInputSource, engine: Engine, delay_sec: fl
     history = curses.newwin(3, 150, 54, 3)
 
     # See https://stackoverflow.com/a/57205676/2907667
-    def resize(_signum=None, _frame=None):
+    def resize(_signum=None, _frame=None) -> None:
         endwin()
         _draw(stdscr, board, state, history)
 
