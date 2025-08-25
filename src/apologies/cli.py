@@ -27,7 +27,7 @@ _SIM_DEFAULT_ITERATIONS = 10
 _SIM_DEFAULT_OUT = "simulation.csv"
 
 
-def demo(argv: list[str], unused_stdout: IO[str], unused_stderr: IO[str]) -> None:
+def demo(argv: list[str], _stdout: IO[str], _stderr: IO[str]) -> None:
     """Run a game with simulated players, displaying output on the terminal."""
     parser = argparse.ArgumentParser(
         description="Run a game with simulated players, displaying output on the terminal.",
@@ -52,7 +52,7 @@ def demo(argv: list[str], unused_stdout: IO[str], unused_stderr: IO[str]) -> Non
     )
 
 
-def simulation(argv: list[str], unused_stdout: IO[str], unused_stderr: IO[str]) -> None:
+def simulation(argv: list[str], _stdout: IO[str], _stderr: IO[str]) -> None:
     """Run a simulation and display results."""
     parser = argparse.ArgumentParser(
         description="Run a simulation to see how well different character input sources behave.",
@@ -79,7 +79,7 @@ def simulation(argv: list[str], unused_stdout: IO[str], unused_stderr: IO[str]) 
     run_simulation(iterations=args.iter, output=args.out, sources=[source(s) for s in args.source])
 
 
-def render(unused_argv: list[str], stdout: IO[str], unused_stderr: IO[str]) -> None:
+def render(_argv: list[str], stdout: IO[str], _stderr: IO[str]) -> None:
     """Render an empty board."""
     game = Game(4)
     board = render_board(game)

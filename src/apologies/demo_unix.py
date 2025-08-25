@@ -61,7 +61,7 @@ def _refresh(source, engine, game, delay_sec, stdscr, board, state, history):
     _refresh_history(game, history)
 
 
-def _refresh_screen(unused_source, unused_engine, unused_game, unused_delay_sec, stdscr):
+def _refresh_screen(_source, _engine, _game, _delay_sec, stdscr):
     stdscr.border()
     stdscr.addstr(1, 95, "APOLOGIES DEMO")
     stdscr.addstr(1, 138, "CTRL-C TO EXIT")
@@ -133,7 +133,7 @@ def _main(stdscr, *, source: CharacterInputSource, engine: Engine, delay_sec: fl
     history = curses.newwin(3, 150, 54, 3)
 
     # See https://stackoverflow.com/a/57205676/2907667
-    def resize(unused_signum=None, unused_frame=None):
+    def resize(_signum=None, _frame=None):
         endwin()
         _draw(stdscr, board, state, history)
 
