@@ -42,8 +42,8 @@ license = "Apache-2.0"
 readme = "PyPI.md"
 dynamic = [ "classifiers", "version" ]
 dependencies = [
-   "attrs (>=24.2.0)",
-   "cattrs (>=24.1.2)",
+   "attrs (>=24.2.0)", # open-ended due to backwards-compatibility guarantee
+   "cattrs (>=24.1.2)", # open-ended due to backwards-compatibility guarantee
    "arrow (>=1.3.0,<2.0.0)",
 ]
 
@@ -59,6 +59,7 @@ docs = [
 ]
 
 [tool.poetry.group.dev.dependencies]
+ruff = ">=0.12.10,<1.0.0"
 pytest = ">=8.0.2,<9.0.0"
 pytest-testdox = ">=3.1.0,<4.0.0"
 coverage = ">=7.4.4,<8.0.0"
@@ -66,7 +67,6 @@ pre-commit = ">=4.0.1,<5.0.0"
 mypy = ">=1.6.0,<2.0.0"
 click = ">=8.1.7,<9.0.0"
 colorama = ">=0.4.6,<1.0.0"
-ruff = "^0.12.10"
 
 [tool.coverage.paths]
 source = [ "src" ]
