@@ -10,7 +10,7 @@ Version 0.2.2     unreleased
 	* Update the MyPy configuration so we're using latest rules.
 	* Replace black, isort, and pylint with the Ruff formatter and linter.
 	* Address Ruff linter warnings and modernize the code to 2025 standards.
-	* Remove importlib_metadata dependency in favor of standard library.
+	* Remove importlib-metadata dependency in favor of standard library.
 	* Update all dependencies and outdated constraints.
 
 Version 0.2.1     08 Jan 2025
