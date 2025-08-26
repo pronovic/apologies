@@ -133,7 +133,7 @@ ignore = [
   "Q003",       # avoidable-escaped-quote
   "W191",       # tab-indentation
 
-  # Exclusions of entire rule categories, which we don't think are worth enforcing
+  # Exclusions of entire rule categories, standardized across all of my repos
   "C90",        # mccabe cyclomatic complexity
   "CPY",        # flake8-copyright
   "D",          # pydocstyle
@@ -143,7 +143,7 @@ ignore = [
   "FIX",        # flake8-fixme
   "TD",         # flake8-todo
 
-  # Exclusions of specific rules, which we don't think are worth enforcing
+  # Exclusions of specific rules, standardized across all of my repos
   "ANN401",     # allow dynamically typed expressions using `typing.Any`
   "EM101",      # allow raw string messages in exceptions; having to pull out a variable makes code harder to read
   "EM102",      # allow f-string messages in exceptions; having to pull out a variable makes code harder to read
@@ -162,7 +162,7 @@ ignore = [
 
 [tool.ruff.lint.per-file-ignores]
 "src/tests/**/*" = [
-  # Exclusions that apply to unit tests only
+  # Exclusions that apply to unit tests only, standardized across all of my repos
   "ANN",        # don't require type annotations in tests
   "FBT",        # allow use of boolean positional arguments
   "PLC1901",    # allow comparison to empty string
