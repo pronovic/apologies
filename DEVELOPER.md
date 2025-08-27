@@ -309,7 +309,7 @@ run configuration before PyCharm will find the right test suite.
 ### External Tools
 
 Optionally, you might want to set up external tools for some of common
-developer tasks: code reformatting and the PyLint and MyPy checks.  One nice
+developer tasks: code reformatting and the Ruff and MyPy checks.  One nice
 advantage of doing this is that you can configure an output filter, which makes
 the Ruff linter and MyPy errors clickable.  To set up external tools, go to
 PyCharm settings and find **Tools > External Tools**.  Add the tools as
