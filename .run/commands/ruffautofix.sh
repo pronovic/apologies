@@ -3,7 +3,7 @@
 
 command_ruffautofix() {
    echo "Applying Ruff automatic fixes..."
-   CLICOLOR_FORCE=1 poetry_run ruff check --fix --fix-only
+   CLICOLOR_FORCE=1 poetry_run ruff check --fix --fix-only "$@"
    echo "done"
 }
 

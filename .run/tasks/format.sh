@@ -6,6 +6,6 @@ help_format() {
 
 task_format() {
    run_command ruffformat
-   run_command ruffautofix
+   run_command ruffautofix "$@"
 }
 
