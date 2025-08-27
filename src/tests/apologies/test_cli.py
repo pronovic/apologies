@@ -7,7 +7,7 @@ import pytest
 
 from apologies.cli import _lookup_method, cli, example, render
 
-FIXTURE_DIR = Path(__file__).parent / "fixtures/test_cli"
+FIXTURE_DIR = Path(__file__).parent / "fixtures" / "test_cli"
 
 
 @pytest.fixture

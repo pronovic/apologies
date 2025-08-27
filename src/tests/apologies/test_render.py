@@ -7,7 +7,7 @@ import pytest
 from apologies.game import Game, PlayerColor
 from apologies.render import render_board
 
-FIXTURE_DIR = Path(__file__).parent / "fixtures/test_render"
+FIXTURE_DIR = Path(__file__).parent / "fixtures" / "test_render"
 
 
 @pytest.fixture
