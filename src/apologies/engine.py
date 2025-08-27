@@ -90,6 +90,7 @@ class Engine:
     def _default_game(self) -> Game:
         return Game(playercount=len(self.characters))
 
+    # noinspection PyUnresolvedReferences
     @_queue.default
     def _default_queue(self) -> CircularQueue[PlayerColor]:
         return CircularQueue(list(PlayerColor)[: len(self.characters)], first=self.first)

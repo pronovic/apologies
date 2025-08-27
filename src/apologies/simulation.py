@@ -22,6 +22,7 @@ from apologies.source import CharacterInputSource
 from apologies.util import ISO_TIMESTAMP_FORMAT
 
 if typing.TYPE_CHECKING:
+    # noinspection PyUnusedImports
     from _csv import _writer
 
 BASE_HEADERS = [
