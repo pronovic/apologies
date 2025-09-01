@@ -172,6 +172,7 @@ Basic tasks:
 - run test -c: Run the unit tests with coverage
 - run test -ch: Run the unit tests with coverage and open the HTML report
 - run suite: Run the complete test suite, as for the GitHub Actions CI build
+- run suite -f: Run a faster version of the test suite, ommitting some steps
 - run clean: Clean the source tree
 
 Additional tasks:
