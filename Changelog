@@ -5,6 +5,7 @@ Version 0.2.2     unreleased
 	* Upgrade to poetry-dynamic-versioning v1.9.1 for minor fixes.
 	* Add .python-version in preferred order to support pyenv.
 	* Add Sphinx configuration path to .readthedocs.yml.
+	* Migrate to new Read the Docs integration via GitHub app.
 	* Version profiles_settings.xml to control PyCharm inspection profile.
 	* Adjust GHA build process to allow builds for stacked PRs.
 	* Add a new `run clean` target to clean up generated data.
