@@ -1,5 +1,5 @@
 [build-system]
-requires = ["poetry-core (>=2.0.0)", "poetry-dynamic-versioning (>=1.9.1,<2.0.0)"]
+requires = ["poetry-core (>=2.0.0)", "poetry-dynamic-versioning (>=1.9.1,<2.0.0)"]  # plugin version also set below
 build-backend = "poetry_dynamic_versioning.backend"
 
 [tool.poetry]
@@ -24,7 +24,7 @@ classifiers = [
 version = "0.0.0"
 
 [tool.poetry.requires-plugins]
-poetry-dynamic-versioning = { version=">=1.5.2,<2.0.0", extras=["plugin"] }
+poetry-dynamic-versioning = { version=">=1.9.1,<2.0.0", extras=["plugin"] }  # plugin version also set above
 
 # Published version is managed using Git tags
 # We get either the tag (like "0.24.1") or a snapshot-type version (like "0.24.1+3.e8319c4")

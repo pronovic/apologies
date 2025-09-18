@@ -1,6 +1,7 @@
 Version 0.3.1     unreleased
 
 	* Exclude generated files in `docs/_build` from the Python sdist.
+	* Fix poetry-dynamic-versioning version in both places in `pyproject.toml`.
 
 Version 0.3.0     17 Sep 2025
 
