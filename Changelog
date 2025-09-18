@@ -1,6 +1,6 @@
 Version 0.3.1     unreleased
 
-	* Exclude generated files in docs/_build from the Python sdist.
+	* Exclude generated files in `docs/_build` from the Python sdist.
 
 Version 0.3.0     17 Sep 2025
 
