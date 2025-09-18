@@ -1,4 +1,4 @@
-Version 0.2.2     unreleased
+Version 0.3.0     17 Sep 2025
 
 	* Add information about the Python runtime to suite output.
 	* Add a new 'suite -f' command to run faster subset of the suite.
