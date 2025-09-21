@@ -13,5 +13,6 @@ task_checks() {
    run_command rufflint
    echo ""
    run_command mypy
+   echo ""
 }
 
