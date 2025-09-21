@@ -123,3 +123,10 @@ add_addendum() {
    fi 
 }
 
+# Whether the current platform is Windows
+is_windows() {
+   case "$OSTYPE" in
+      msys*|cygwin*) true;;
+      *) false;;
+   esac
+}
