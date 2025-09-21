@@ -8,17 +8,13 @@ library for screen drawing.
 
 ## Packaging and Dependencies
 
-This project uses [Poetry v2](https://python-poetry.org/) to manage Python packaging and dependencies.  Most day-to-day tasks (such as running unit tests from the command line) are orchestrated through Poetry.
+This project uses [UV](https://docs.astral.sh/uv/) to manage Python packaging and dependencies.  Most day-to-day tasks (such as running unit tests from the command line) are orchestrated through UV.
 
 A coding standard is enforced using [Ruff](https://docs.astral.sh/ruff/).  Python 3 type hinting is validated using [MyPy](https://pypi.org/project/mypy/).  To reduce boilerplate, classes are defined using [Attrs](https://www.attrs.org/) (see this [rationale](https://glyph.twistedmatrix.com/2016/08/attrs.html)).
 
-## Vulnerability Scanning
-
-Previously, I used the Safety scanner as part of my pre-commit hooks and GitHub Actions, to identify vulnerabilities in Python dependencies.  This functionality was removed in [PR #33](https://github.com/pronovic/apologies/pull/33).  Even though Safety is distributed under the liberal [MIT license](notes/safety/license.png), and the PyPI package page [documents that Safety can be used in this manner](notes/safety/usage.png), the PyUp organization behind Safety now claims that this usage is not allowed.  (See this [bizarre email thread](notes/safety/email.md) &mdash; it has some hallmarks of a phishing email, but appears to be legitimate.)  Despite my repeated attempts to clarify what I was doing wrong, PyUp's representative never offered any specifics.  Given PyUp's unfriendly behavior, I recommend that you avoid using Safety and rely instead on other tools, such as GitHub's own Dependabot service.
-
 ## Continuous Integration (CI)
 
-I use [GitHub Actions](https://docs.github.com/en/actions/quickstart) for CI.  See [.github/workflows/test-suite.yml](.github/workflows/test-suite.yml) for the definition of the workflow, and go to the [Actions tab](https://github.com/pronovic/apologies/actions) to see what actions have been executed.  The workflow is implemented in terms of the shared `poetry-build-and-test` workflow in the [pronovic/gha-shared-actions](https://github.com/pronovic/gha-shared-workflows) repository.  The workflow was originally developed here, and eventually refactored out when I started sharing the same process across multiple repositories.
+I use [GitHub Actions](https://docs.github.com/en/actions/quickstart) for CI.  See [.github/workflows/test-suite.yml](.github/workflows/test-suite.yml) for the definition of the workflow, and go to the [Actions tab](https://github.com/pronovic/apologies/actions) to see what actions have been executed.  The workflow is implemented in terms of the shared `uv-build-and-test` workflow in the [pronovic/gha-shared-actions](https://github.com/pronovic/gha-shared-workflows) repository.
 
 The workflow is kicked off for all PRs, and also when code is merged to main.  It uses a matrix build and runs the same test suite on a combination of platforms (Windows, MacOS, Linux) and Python versions.  The test suite in GitHub Actions is implemented by the same `run suite` command that you would use locally. Coverage data is uploaded to coveralls.io (see discussion below).
 
@@ -26,9 +22,9 @@ The workflow is kicked off for all PRs, and also when code is merged to main.  I
 
 There is third-party integration with [readthedocs.io](https://readthedocs.io/) (to publish documentation) and [coveralls.io](https://coveralls.io/) (to publish code coverage statistics).
 
-Both of these services make integration very straightforward.  For readthedocs, integration happens via a [GitHub webhook](https://docs.github.com/en/github/extending-github/about-webhooks).  You first create an account at readthedocs.io.  Then, you import your repository, which creates a webhook in GitHub for your repository.  Once the webhook has been created, readthedocs is notified whenever code is pushed to your repository, and a build is kicked off on their infrastructure to generate and publish your documentation.  Configuration is taken from a combination of [.readthedocs.yml](.readthedocs.yml) and preferences that you set for your repository in the readthedocs web interface.  See the readthedocs.io [documentation](https://docs.readthedocs.io/en/stable/guides/platform.html) for more information.
+Both of these services make integration very straightforward.  The readthedocs GitHub App is notified whenever code is pushed to your repository, and a build is kicked off on their infrastructure to generate and publish your documentation.  Configuration is taken from a combination of [.readthedocs.yml](.readthedocs.yml) and preferences that you set for your repository in the readthedocs web interface.  See the readthedocs.io [documentation](https://docs.readthedocs.io/en/stable/guides/platform.html) for more information.
 
-For coveralls.io, integration happens via a [GitHub App](https://docs.github.com/en/developers/apps/about-apps) rather than a webhook.  Like with readthedocs, you first create an account at coveralls.io.  Next, you grant the Coveralls application permissions to your GitHub organization, and select which repositories should be enabled.  Unlike with readthedocs, you need to generate coverage information locally and upload it to coverage.io.  This happens as a part of the CI workflow.  There are several steps in the [shared workflow](https://github.com/pronovic/gha-shared-workflows/blob/main/.github/workflows/poetry-build-and-test.yml), taken more-or-less verbatim from the coveralls.io [documentation](https://coveralls-python.readthedocs.io/en/latest/usage/index.html).
+For coveralls.io, integration is similar.  Unlike with readthedocs, you need to generate coverage information locally and upload it to coverage.io.  This happens as a part of the CI workflow.  There are several steps in the [shared workflow](https://github.com/pronovic/gha-shared-workflows/blob/main/.github/workflows/uv-build-and-test.yml), taken more-or-less verbatim from the coveralls.io [documentation](https://coveralls-python.readthedocs.io/en/latest/usage/index.html).
 
 ## Pre-Commit Hooks
 
@@ -68,85 +64,10 @@ things for users as much as I had hoped.
 
 ## Prerequisites
 
-Nearly all prerequisites are managed by Poetry.  All you need to do is make
-sure that you have a working Python 3 enviroment and install Poetry itself.
-
-### Poetry Version
-
-The project is designed to work with Poetry >= 2.0.0.  If you already have an older
-version of Poetry installed on your system, upgrade it first.
-
-### MacOS
-
-On MacOS, it's easiest to use [Homebrew](https://brew.sh/) to install Python and pipx:
-
-```
-brew install python3 pipx
-```
-
-Once that's done, make sure the `python` on your `$PATH` is Python 3 from
-Homebrew (in `/usr/local`), rather than the standard Python 2 that comes with
-older versions of MacOS.
-
-Finally, install Poetry itself and then verify your installation:
-
-```
-pipx install poetry
-```
-
-To upgrade this installation later, use:
-
-```
-pipx upgrade poetry
-```
-
-### Debian
-
-First, install Python 3 and related tools:
-
-```
-sudo apt-get install python3 python-is-python3 pipx
-```
-
-Once that's done, make sure that the `python` interpreter on your `$PATH` is
-Python 3.
-
-Finally, install Poetry itself and then verify your installation:
-
-```
-pipx install poetry
-pipx list
-```
-
-To upgrade this installation later, use:
-
-```
-pipx upgrade poetry
-```
-
-### Windows
-
-First, install Python 3 from your preferred source, either a standard
-installer or a meta-installer like Chocolatey.  Make sure the `python`
-on your `$PATH` is Python 3.
-
-Next, install pipx:
-
-```
-python -m pip install --user pipx
-```
-
-Finally, install Poetry itself and then verify your installation:
-
-```
-pipx install poetry
-```
-
-To upgrade this installation later, use:
-
-```
-pipx upgrade poetry
-```
+All prerequisites are managed by UV.  All you need to do install UV itself,
+following the [instructions](https://docs.astral.sh/uv/getting-started/installation/).
+UV will take care of installing the required Python interpreter and all of the
+dependencies.
 
 > _Note:_ The development environment (the `run` script, etc.) expects a bash
 > shell to be available.  On Windows, it works fine with the standard Git Bash.
@@ -164,7 +85,7 @@ Shortcuts for common developer tasks
 
 Basic tasks:
 
-- run install: Setup the virtualenv via Poetry and install pre-commit hooks
+- run install: Setup the virtualenv via UV and install pre-commit hooks
 - run format: Run the code formatters
 - run checks: Run the code checkers
 - run build: Build artifacts in the dist/ directory
@@ -236,8 +157,9 @@ not work at all in a Windows Terminal.  Your terminal window must be at least
 ## Integration with PyCharm
 
 Currently, I use [PyCharm Community Edition](https://www.jetbrains.com/pycharm/download) as 
-my day-to-day IDE.  By integrating Ruff, most everything important that can be
-done from a shell environment can also be done right in PyCharm.
+my day-to-day IDE.  By integrating the `run` script to execute MyPy and Ruff,
+most everything important that can be done from a shell environment can also be
+done right in PyCharm.
 
 PyCharm offers a good developer experience.  However, the underlying configuration
 on disk mixes together project policy (i.e. preferences about which test runner to
@@ -248,13 +170,11 @@ there are instructions below about how to manually configure the remaining items
 
 ### Prerequisites
 
-Before going any further, make sure sure that you have installed all of the system
-prerequisites discussed above.  Then, make sure your environment is in working
-order.  In particular, if you do not run the install step, there will be no
-virtualenv for PyCharm to use:
+Before going any further, make sure sure that you have installed UV and have a
+working bash shell.  Then, run the suite and confirm that everything is working:
 
 ```
-./run install && ./run suite
+./run suite
 ```
 
 ### Open the Project
@@ -267,10 +187,10 @@ retained and all of the existing settings will be used.
 ### Interpreter
 
 As a security precaution, PyCharm does not trust any virtual environment
-installed within the repository, such as the Poetry `.venv` directory. In the
+installed within the repository, such as the UV `.venv` directory. In the
 status bar on the bottom right, PyCharm will report _No interpreter_.  Click
 on this error and select **Add Interpreter**.  In the resulting dialog, click
-**Ok** to accept the selected environment, which should be the Poetry virtual
+**Ok** to accept the selected environment, which should be the UV virtual
 environment.
 
 ### Project Structure
@@ -280,7 +200,7 @@ Go to the PyCharm settings and find the `apologies` project.  Under
 folder.  In the **Exclude Files** box, enter the following:
 
 ```
-LICENSE;NOTICE;PyPI.md;build;dist;docs/_build;out;poetry.lock;poetry.toml;run;.coverage;.coverage.lcov;.coveragerc;.gitattributes;.github;.gitignore;.htmlcov;.idea;.mypy_cache;.poetry;.pre-commit-config.yaml;.python-version;.pytest_cache;.readthedocs.yml;.ruff_cache;.run;.tabignore;.venv
+LICENSE;NOTICE;PyPI.md;build;dist;docs/_build;out;uv.lock;run;.coverage;.coverage.lcov;.coveragerc;.gitattributes;.github;.gitignore;.htmlcov;.idea;.mypy_cache;.pre-commit-config.yaml;.python-version;.pytest_cache;.readthedocs.yaml;.ruff_cache;.run;.tabignore;.venv
 ```
 
 When you're done, click **Ok**.  Then, go to the gear icon in the project panel 
@@ -293,10 +213,9 @@ In the PyCharm settings, go to **Editor > Inspections** and be sure that the
 **Project Default** profile is selected.
 
 Unit tests are written using [Pytest](https://docs.pytest.org/en/latest/),
-and API documentation is written
-using [Google Style Python Docstring](https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html).  However, 
-neither of these is the default in PyCharm.  In the PyCharm settings, go to 
-**Tools > Python Integrated Tools**.  Under **Testing > Default test runner**, 
+and API documentation is written using [Google Style Python Docstring](https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html).  However, 
+neither of these is the default in PyCharm.  In the PyCharm settings, go to
+**Tools > Python Integrated Tools**.  Under **Testing > Default test runner**,
 select _pytest_.  Under **Docstrings > Docstring format**, select _Google_.
 
 ### Running Unit Tests
@@ -323,7 +242,7 @@ directly.
 
 ##### Shell Environment
 
-For this to work, it's important that tools like `poetry` are on the system
+For this to work, it's important that tools like `uv` are on the system
 path used by PyCharm.  On Linux, depending on how you start PyCharm, your
 normal shell environment may or may not be inherited.  For instance, I had to
 adjust the target of my LXDE desktop shortcut to be the script below, which
