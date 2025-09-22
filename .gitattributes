@@ -112,5 +112,5 @@
 # ============
 
 pyproject.toml text eol=lf
-uv.lock        text eol=lf
+uv.lock        text=auto
 
