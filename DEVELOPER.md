@@ -69,7 +69,7 @@ following the [instructions](https://docs.astral.sh/uv/getting-started/installat
 UV will take care of installing the required Python interpreter and all of the
 dependencies.
 
-> _Note:_ The development environment (the `run` script, etc.) expects a bash
+> **Note:** The development environment (the `run` script, etc.) expects a bash
 > shell to be available.  On Windows, it works fine with the standard Git Bash.
 
 ## Developer Tasks
@@ -373,7 +373,7 @@ documentation.
 Code is released to [PyPI](https://pypi.org/project/apologies/).  There is a
 partially-automated process to publish a new release.
 
-> _Note:_ In order to publish code, you must must have push permissions to the
+> **Note:** In order to publish code, you must must have push permissions to the
 > GitHub repo.
 
 Ensure that you are on the `main` branch.  Releases must always be done from
@@ -397,6 +397,6 @@ and release date, commits those changes, tags the code, and pushes to GitHub.
 The new tag triggers a GitHub Actions build that runs the test suite, generates
 the artifacts, publishes to PyPI, and finally creates a release from the tag.
 
-> _Note:_ This process relies on a PyPI API token with upload permissions for
+> **Note:** This process relies on a PyPI API token with upload permissions for
 > the project.  This token is stored in a GitHub Actions secret called
 > `PYPI_TOKEN`.
