@@ -36,7 +36,7 @@ dependencies = [
 [project.urls]
 Homepage = "https://pypi.org/project/apologies/"
 Repository = "https://github.com/pronovic/apologies"
-Changelog = "https://github.com/pronovic/apologies/blob/main/Changelog"
+Changelog = "https://github.com/pronovic/apologies/releases"
 Documentation = "https://apologies.readthedocs.io/en/stable/"
 Issues = "https://github.com/pronovic/apologies/issues"
 
