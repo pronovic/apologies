@@ -18,14 +18,6 @@ I use [GitHub Actions](https://docs.github.com/en/actions/quickstart) for CI.  S
 
 The workflow is kicked off for all PRs, and also when code is merged to main.  It uses a matrix build and runs the same test suite on a combination of platforms (Windows, MacOS, Linux) and Python versions.  The test suite in GitHub Actions is implemented by the same `run suite` command that you would use locally. Coverage data is uploaded to coveralls.io (see discussion below).
 
-## Third-Party Integration
-
-There is third-party integration with [readthedocs.io](https://readthedocs.io/) (to publish documentation) and [coveralls.io](https://coveralls.io/) (to publish code coverage statistics).
-
-Both of these services make integration very straightforward.  The readthedocs GitHub App is notified whenever code is pushed to your repository, and a build is kicked off on their infrastructure to generate and publish your documentation.  Configuration is taken from a combination of [.readthedocs.yml](.readthedocs.yml) and preferences that you set for your repository in the readthedocs web interface.  See the readthedocs.io [documentation](https://docs.readthedocs.io/en/stable/guides/platform.html) for more information.
-
-For coveralls.io, integration is similar.  Unlike with readthedocs, you need to generate coverage information locally and upload it to coverage.io.  This happens as a part of the CI workflow.  There are several steps in the [shared workflow](https://github.com/pronovic/gha-shared-workflows/blob/main/.github/workflows/uv-build-and-test.yml), taken more-or-less verbatim from the coveralls.io [documentation](https://coveralls-python.readthedocs.io/en/latest/usage/index.html).
-
 ## Pre-Commit Hooks
 
 I rely on pre-commit hooks to ensure that the code is properly-formatted,
