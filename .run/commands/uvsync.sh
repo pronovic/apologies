@@ -2,7 +2,7 @@
 # Run UV's synchronize operation.
 
 command_uvsync() {
-   uv sync --quiet --all-extras --frozen --compile-bytecode "$@"
+   uv sync --quiet --all-extras --all-groups --frozen --compile-bytecode "$@"
    if [ $? != 0 ]; then
       echo "Command failed: uv sync"
       exit 1
