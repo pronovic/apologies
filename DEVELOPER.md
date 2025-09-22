@@ -78,14 +78,16 @@ The [`run`](run) script provides shortcuts for common developer tasks:
 
 ```
 $ ./run --help
-
 ------------------------------------
 Shortcuts for common developer tasks
 ------------------------------------
 
 Basic tasks:
 
-- run install: Setup the virtualenv via UV and install pre-commit hooks
+- run install: Install the Python virtualenv and pre-commit hooks
+- run update: Update all dependencies, or a subset passed as arguments
+- run outdated: Find top-level dependencies with outdated constraints
+- run rebuild: Rebuild all dependencies flagged as no-binary-package
 - run format: Run the code formatters
 - run checks: Run the code checkers
 - run build: Build artifacts in the dist/ directory
@@ -93,7 +95,7 @@ Basic tasks:
 - run test -c: Run the unit tests with coverage
 - run test -ch: Run the unit tests with coverage and open the HTML report
 - run suite: Run the complete test suite, as for the GitHub Actions CI build
-- run suite -f: Run a faster version of the test suite, ommitting some steps
+- run suite -f: Run a faster version of the test suite, omitting some steps
 - run clean: Clean the source tree
 
 Additional tasks:

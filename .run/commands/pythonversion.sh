@@ -2,19 +2,9 @@
 # Display information about the Python version that is in use
 
 command_pythonversion() {
-   if [ "$1" == "--short" ]; then
-      echo "============================================================"
-      echo "Execution environment: $(poetry run python --version)"
-      echo "============================================================"
-      echo ""
-   else
-      echo "============================================================"
-      echo "Execution environment: $(poetry run python --version)"
-      echo "============================================================"
-      poetry env info
-      echo ""
-      echo "============================================================"
-      echo ""
-   fi
+   echo "============================================================"
+   echo "Execution environment: $(run_command uvrun python --version)"
+   echo "============================================================"
+   echo ""
 }
 

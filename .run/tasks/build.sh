@@ -5,6 +5,6 @@ help_build() {
 }
 
 task_build() {
-   run_command poetrybuild
+   run_command uvbuild
 }
 

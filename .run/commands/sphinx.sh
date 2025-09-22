@@ -20,7 +20,7 @@ command_sphinx() {
 
    cd docs
 
-   poetry_run sphinx-build -N -E -a -b html -d _build/doctrees . _build/html 2>&1 | grep -v -F --file=.sphinxignore
+   run_command uvrun sphinx-build -N -E -a -b html -d _build/doctrees . _build/html 2>&1 | grep -v -F --file=.sphinxignore
    if [ $open == "yes" ]; then
       run_command openfile _build/html/index.html
    fi

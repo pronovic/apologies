@@ -10,8 +10,6 @@ task_sim() {
 from apologies.cli import cli
 cli("simulation")
 EOF
-
-   run_command latestcode
-   poetry_run python "$WORKING_DIR/simulation.py" "$@"
+   run_command uvrun python "$WORKING_DIR/simulation.py" "$@"
 }
 

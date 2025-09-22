@@ -23,6 +23,6 @@ with open(path, "wb") as f:
 sys.exit(0)
 EOF
 
-   poetry_run python "$WORKING_DIR/unix2dos.py" "$1"
+   run_command uvrun python "$WORKING_DIR/unix2dos.py" "$1"
 }
 
