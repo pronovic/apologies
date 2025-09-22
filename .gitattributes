@@ -100,22 +100,17 @@
 *.pyd      binary
 *.pyo      binary
 
+# Note: .db, .p, and .pkl files are associated
+# with the python modules ``pickle``, ``dbm.*``,
+# ``shelve``, ``marshal``, ``anydbm``, & ``bsddb``
+# (among others).
+
 # Jupyter notebook
 *.ipynb    text eol=lf
 
 # Specific project files to override
 # ============
 
-# Poetry is inconsistent with the way it generates files, so in some cases we
-# have to force them to the correct line ending in the run script or the
-# pre-commit hooks.  We don't bother doing that with poetry.lock, since its
-# format is considered an implementation detail of Poetry itself.
-pyproject.toml        text eol=lf
-poetry.toml           text eol=lf
-poetry.lock           text=auto
-docs/requirements.txt text eol=lf
+pyproject.toml text eol=lf
+uv.lock        text eol=lf
 
-# Note: .db, .p, and .pkl files are associated
-# with the python modules ``pickle``, ``dbm.*``,
-# ``shelve``, ``marshal``, ``anydbm``, & ``bsddb``
-# (among others).

@@ -90,7 +90,7 @@ filterwarnings = [
 
 [tool.ruff]
 src = ["src"]
-extend-exclude = [ "docs", "notes", ".poetry" ]
+extend-exclude = [ "docs", "notes" ]
 line-length = 132
 preview = true
 
