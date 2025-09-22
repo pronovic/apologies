@@ -3,7 +3,7 @@
 # Due to the way `uv tree` works, we need to temporarily upgrade all packages before calling it.
 
 command_uvoutdated() {
-   echo -n "Checking for outdated constraints in pyproject.toml..."
+   echo -n "Checking for outdated constraints..."
 
    cp uv.lock .uv.lock.saved.$$
    git checkout -q -- uv.lock
@@ -19,6 +19,9 @@ command_uvoutdated() {
       | sed 's/)$//'
    )
 
+   mv .uv.lock.saved.$$ uv.lock
+   run_command uvsync --quiet
+
    if [ -z "$constraints" ]; then
       echo "none found"
    else
@@ -27,8 +30,4 @@ command_uvoutdated() {
       echo "$constraints"
       echo ""
    fi
-
-   mv .uv.lock.saved.$$ uv.lock
-   run_command uvsync --quiet
 }
-

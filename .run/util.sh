@@ -2,8 +2,8 @@
 # General utility functions for use by the run script
 
 # This is the set of basic tasks that must always exist
-BASIC_TASKS="install update outdated rebuild format checks build test suite clean"
-BASIC_TASKS_REGEX="^install$|^update$|^outdated$|^rebuild$|^format$|^checks$|^build$|^test$|^suite$|^clean$"
+BASIC_TASKS="install update outdated format checks build test suite clean"
+BASIC_TASKS_REGEX="^install$|^update$|^outdated$|^format$|^checks$|^build$|^test$|^suite$|^clean$"
 
 # Run a command
 run_command() {
