@@ -90,7 +90,7 @@ precision = 1
 [tool.pytest.ini_options]
 filterwarnings = [
     'error',  # turn all Python warnings into test failures, so they're hard to miss
-    'ignore:datetime.datetime.utcfromtimestamp\(\) is deprecated:DeprecationWarning',
+    "ignore:'_UnionGenericAlias' is deprecated and slated for removal in Python 3.17:DeprecationWarning", # CattrConverter
 ]
 
 [tool.ruff]
