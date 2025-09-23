@@ -23,7 +23,7 @@ cli("demo")
 EOF
 
    cat << EOF > "$WORKING_DIR/demo.sh"
-poetry run python $WORKING_DIR/demo.py $*
+uv run python $WORKING_DIR/demo.py $*
 EOF
 
    SCRIPT="$WORKING_DIR/demo.sh"
@@ -36,7 +36,7 @@ EOF
          echo ""
          echo "Demo will be run in a standalone xterm"
 
-         run_command latestcode
+         run_command uvsync  # explicitly sync, since we're not using `run_command uvrun`
 
          xterm -title "apologies demo" -geometry 155x58+0+0 -j -fs 10 -e "$SCRIPT; echo \$? > '$STATUS'"
          if [ "$(cat "$STATUS")" != "0" ]; then
@@ -52,7 +52,7 @@ EOF
       echo ""
       echo "Demo will be run in a MacOS terminal"
 
-      run_command latestcode
+      run_command uvsync  # explicitly sync, since we're not using `run_command uvrun`
 
       "$SCRIPT"
       if [ $? != 0 ]; then

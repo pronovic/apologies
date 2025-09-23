@@ -1,37 +1,13 @@
 [build-system]
-requires = ["poetry-core (>=2.0.0)", "poetry-dynamic-versioning (>=1.9.1,<2.0.0)"]  # plugin version also set below
-build-backend = "poetry_dynamic_versioning.backend"
+requires = [ "hatchling (>=1.27.0,<2.0.0)", "uv-dynamic-versioning (>=0.11.1,<1.0.0)" ]
+build-backend = "hatchling.build"
 
-[tool.poetry]
-requires-poetry = ">=2.0.0"
-packages = [ { include="apologies", from="src" } ]
-include = [
-   { path='Changelog', format='sdist' },
-   { path='NOTICE', format='sdist' },
-   { path='LICENSE', format='sdist' },
-   { path='README.md', format='sdist' },
-   { path='docs', format='sdist' },
-   { path='src/tests', format='sdist' },
-]
-classifiers = [
-   "Operating System :: OS Independent",
-   "Environment :: Console",
-   "Intended Audience :: Developers",
-   "Natural Language :: English",
-   "Topic :: Games/Entertainment :: Board Games",
-   "Topic :: Software Development :: Libraries",
-]
-version = "0.0.0"
+[tool.hatch.build.targets.wheel]
+packages = [ "src/apologies" ]
 
-[tool.poetry.requires-plugins]
-poetry-dynamic-versioning = { version=">=1.9.1,<2.0.0", extras=["plugin"] }  # plugin version also set above
-
-# Published version is managed using Git tags
-# We get either the tag (like "0.24.1") or a snapshot-type version (like "0.24.1+3.e8319c4")
-[tool.poetry-dynamic-versioning]
-enable = true
-pattern = '^[vV](?P<base>\d+\.\d+\.\d+)'  # this extracts the version from our vX.Y.Z tag format
-format-jinja = "{% if distance == 0 and not dirty %}{{ base }}{% else %}{{ base }}+{{ distance }}.{{ commit }}{% endif %}"
+[tool.hatch.build.targets.sdist]
+only-include = [ "Changelog", "README.md", "docs", "src" ]
+exclude = [ "docs/_build" ]
 
 [project]
 name = "apologies"
@@ -39,8 +15,18 @@ requires-python = ">=3.10,<4"
 description = "Python code to play a game similar to Sorry"
 authors = [ { name="Kenneth J. Pronovici", email="pronovic@ieee.org" } ]
 license = "Apache-2.0"
+license-files = [ "LICENSE", "NOTICE" ]
 readme = "PyPI.md"
-dynamic = [ "classifiers", "version" ]
+dynamic = ["version"]
+classifiers = [
+   "Programming Language :: Python :: 3",
+   "Operating System :: OS Independent",
+   "Environment :: Console",
+   "Intended Audience :: Developers",
+   "Natural Language :: English",
+   "Topic :: Games/Entertainment :: Board Games",
+   "Topic :: Software Development :: Libraries",
+]
 dependencies = [
    "attrs (>=24.2.0)", # open-ended due to backwards-compatibility guarantee
    "cattrs (>=24.1.2)", # open-ended due to backwards-compatibility guarantee
@@ -48,8 +34,11 @@ dependencies = [
 ]
 
 [project.urls]
-homepage = "https://pypi.org/project/apologies/"
-repository = "https://github.com/pronovic/apologies"
+Homepage = "https://pypi.org/project/apologies/"
+Repository = "https://github.com/pronovic/apologies"
+Changelog = "https://github.com/pronovic/apologies/releases"
+Documentation = "https://apologies.readthedocs.io/en/stable/"
+Issues = "https://github.com/pronovic/apologies/issues"
 
 [project.optional-dependencies]
 docs = [
@@ -57,15 +46,31 @@ docs = [
    "sphinx-autoapi (>=3.3.3,<4.0.0)",
 ]
 
-[tool.poetry.group.dev.dependencies]
-ruff = ">=0.12.10,<1.0.0"
-pytest = ">=8.0.2,<9.0.0"
-pytest-testdox = ">=3.1.0,<4.0.0"
-coverage = ">=7.4.4,<8.0.0"
-pre-commit = ">=4.0.1,<5.0.0"
-mypy = ">=1.6.0,<2.0.0"
-click = ">=8.1.7,<9.0.0"
-colorama = ">=0.4.6,<1.0.0"
+[dependency-groups]
+dev = [
+   "ruff (>=0.12.10,<1.0.0)",
+   "pytest (>=8.0.2,<9.0.0)",
+   "pytest-testdox (>=3.1.0,<4.0.0)",
+   "coverage (>=7.4.4,<8.0.0)",
+   "prek (>=0.2.1,<1.0.0)",
+   "mypy (>=1.6.0,<2.0.0)",
+   "click (>=8.1.7,<9.0.0)",
+   "colorama (>=0.4.6,<1.0.0)",
+]
+
+[tool.hatch.version]
+source = "uv-dynamic-versioning"
+
+[tool.uv]
+required-version = ">=0.8.18,<1.0.0"
+cache-keys = [{ file = "pyproject.toml" }, { git = { commit = true, tags = true }}]
+
+# Published version is managed using Git tags
+# We get either the tag (like "0.24.1") or a snapshot-type version (like "0.24.1+3.e8319c4")
+[tool.uv-dynamic-versioning]
+fallback-version = "0.0.0"
+pattern = '^[vV](?P<base>\d+\.\d+\.\d+)'  # this extracts the version from our vX.Y.Z tag format
+format-jinja = "{% if distance == 0 and not dirty %}{{ base }}{% else %}{{ base }}+{{ distance }}.{{ commit }}{% endif %}"
 
 [tool.coverage.paths]
 source = [ "src" ]
@@ -86,7 +91,7 @@ filterwarnings = [
 
 [tool.ruff]
 src = ["src"]
-extend-exclude = [ "docs", "notes", ".poetry" ]
+extend-exclude = [ "docs", "notes" ]
 line-length = 132
 preview = true
 

@@ -5,6 +5,6 @@ help_outdated() {
 }
 
 task_outdated() {
-   run_command outdated
+   run_command uvoutdated
 }
 

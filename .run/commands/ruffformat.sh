@@ -3,7 +3,7 @@
 
 command_ruffformat() {
    echo "Running Ruff formatter..."
-   CLICOLOR_FORCE=1 poetry_run ruff format "$@"
+   CLICOLOR_FORCE=1 run_command uvrun ruff format "$@"
    echo "done"
 }
 

@@ -2,8 +2,8 @@
 # General utility functions for use by the run script
 
 # This is the set of basic tasks that must always exist
-BASIC_TASKS="install outdated format checks build test suite clean"
-BASIC_TASKS_REGEX="^install$|^outdated$|^format$|^checks$|^build$|^test$|^suite$|^clean$"
+BASIC_TASKS="install update outdated format checks build test suite clean"
+BASIC_TASKS_REGEX="^install$|^update$|^outdated$|^format$|^checks$|^build$|^test$|^suite$|^clean$"
 
 # Run a command
 run_command() {
@@ -29,25 +29,6 @@ run_command() {
       exit 1
    fi
 } 
-
-# Wrap "poetry run", confirming that the command is installed first
-poetry_run() {
-   local COMMAND
-
-   COMMAND="$1"
-   shift 1
-
-   poetry run which "$COMMAND" > /dev/null
-   if [ $? != 0 ]; then
-      run_command virtualenv
-   fi
-
-   poetry run "$COMMAND" "$@"
-   if [ $? != 0 ]; then
-      echo "Command failed: poetry run $COMMAND $*"
-      exit 1
-   fi
-}
 
 # Get a list of basic tasks
 basic_tasks() {

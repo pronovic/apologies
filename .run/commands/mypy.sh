@@ -5,7 +5,7 @@
 
 command_mypy() {
    echo "Running mypy checks..."
-   poetry_run mypy --hide-absolute-path "$@"
+   run_command uvrun mypy --hide-absolute-path "$@"
    echo "done"
 }
 

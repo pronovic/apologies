@@ -2,7 +2,7 @@ Version 0.3.1     unreleased
 
 	* Pull in latest version of run-script-framework.
 	* Exclude generated files in `docs/_build` from the Python sdist.
-	* Fix poetry-dynamic-versioning version in both places in `pyproject.toml`.
+	* Migrate from Poetry to UV for the Python build system.
 
 Version 0.3.0     17 Sep 2025
 

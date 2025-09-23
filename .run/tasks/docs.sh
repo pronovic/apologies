@@ -6,7 +6,6 @@ help_docs() {
 }
 
 task_docs() {
-   run_command virtualenv    # work around the fact that Poetry sometimes uninstalls extras
    run_command sphinx "$@"
 }
 

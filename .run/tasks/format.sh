@@ -6,6 +6,8 @@ help_format() {
 
 task_format() {
    run_command ruffformat
+   echo ""
    run_command ruffautofix "$@"
+   echo ""
 }
 
