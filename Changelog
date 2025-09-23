@@ -1,4 +1,4 @@
-Version 0.3.1     unreleased
+Version 0.4.0     22 Sep 2025
 
 	* Pull in latest version of run-script-framework.
 	* Exclude generated files in `docs/_build` from the Python sdist.
