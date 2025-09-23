@@ -2,6 +2,7 @@ Version 0.4.2     unreleased
 
 	* Generate the sdist with a fixed version.
 	* Add support for Python v3.14 and drop support for v3.10.
+	* Document how to change the interpreter version with `$UV_PYTHON`.
 
 Version 0.4.1     22 Sep 2025
 

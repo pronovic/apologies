@@ -99,8 +99,13 @@ setup_environment() {
 
 # Add addendum information to the end of the help output
 add_addendum() {
+   echo "The Python interpreter version is controlled by the .python-version file.  To"
+   echo "test with a different version of Python temporarily, set \$UV_PYTHON in your"
+   echo "shell, and execute 'run install'.  Make sure to unset and reinstall when done."
+   echo ""
    if [ -f "$REPO_DIR/.run/addendum.sh" ]; then
       bash "$REPO_DIR/.run/addendum.sh"
+      echo ""
    fi 
 }
 

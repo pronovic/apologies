@@ -70,6 +70,7 @@ The [`run`](run) script provides shortcuts for common developer tasks:
 
 ```
 $ ./run --help
+
 ------------------------------------
 Shortcuts for common developer tasks
 ------------------------------------
@@ -97,6 +98,10 @@ Additional tasks:
 - run docs -o: Build the Sphinx documentation and open in a browser
 - run release: Tag and release the code, triggering GHA to publish artifacts
 - run sim: Run a simulation to see how well different character input sources behave
+ 
+The Python interpreter version is controlled by the .python-version file.  To
+test with a different version of Python temporarily, set $UV_PYTHON in your
+shell, and execute 'run install'.  Make sure to unset and reinstall when done.
 ```
 
 ## Running the Simulation
