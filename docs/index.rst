@@ -6,7 +6,7 @@ Release v\ |version|
 .. image:: https://img.shields.io/pypi/v/apologies.svg
     :target: https://pypi.org/project/apologies/
 
-.. image:: https://img.shields.io/pypi/l/apologies.svg
+.. image:: https://img.shields.io/github/license/pronovic/apologies
     :target: https://github.com/pronovic/apologies/blob/main/LICENSE
 
 .. image:: https://img.shields.io/pypi/wheel/apologies.svg

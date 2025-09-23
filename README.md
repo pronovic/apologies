@@ -1,7 +1,7 @@
 # Apologies Python Library
 
 [![pypi](https://img.shields.io/pypi/v/apologies.svg)](https://pypi.org/project/apologies/)
-[![license](https://img.shields.io/pypi/l/apologies.svg)](https://github.com/pronovic/apologies/blob/main/LICENSE)
+[![license](https://img.shields.io/github/license/pronovic/apologies)](https://github.com/pronovic/apologies/blob/main/LICENSE)
 [![wheel](https://img.shields.io/pypi/wheel/apologies.svg)](https://pypi.org/project/apologies/)
 [![python](https://img.shields.io/pypi/pyversions/apologies.svg)](https://pypi.org/project/apologies/)
 [![Test Suite](https://github.com/pronovic/apologies/workflows/Test%20Suite/badge.svg)](https://github.com/pronovic/apologies/actions?query=workflow%3A%22Test+Suite%22)
