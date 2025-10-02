@@ -1,3 +1,7 @@
+Version 0.4.3     unreleased
+
+	* Fix Sphinx autoapi to generate docs for source, not tests.
+
 Version 0.4.2     24 Sep 2025
 
 	* Generate the sdist with a fixed version.
