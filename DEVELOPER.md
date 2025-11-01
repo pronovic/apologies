@@ -316,8 +316,8 @@ change the path for `bash.exe`.
 |Name|`Format Code`|
 |Description|`Run the Ruff code formatter`|
 |Group|`Developer Tools`|
-|Program|`powershell.exe`|
-|Arguments|`& 'C:\Program Files\Git\bin\bash.exe' -l './run format' \| Out-String`|
+|Program|`C:\Program Files\Git\bin\bash.exe`|
+|Arguments|`./run format`|
 |Working directory|`$ProjectFileDir$`|
 |Synchronize files after execution|_Checked_|
 |Open console for tool outout|_Checked_|
@@ -332,8 +332,8 @@ change the path for `bash.exe`.
 |Name|`Run MyPy Checks`|
 |Description|`Run the MyPy code checks`|
 |Group|`Developer Tools`|
-|Program|`powershell.exe`|
-|Arguments|`& 'C:\Program Files\Git\bin\bash.exe' -l './run mypy' \| Out-String`|
+|Program|`C:\Program Files\Git\bin\bash.exe`|
+|Arguments|`./run mypy`|
 |Working directory|`$ProjectFileDir$`|
 |Synchronize files after execution|_Unchecked_|
 |Open console for tool outout|_Checked_|
@@ -348,8 +348,8 @@ change the path for `bash.exe`.
 |Name|`Run Ruff Linter`|
 |Description|`Run the Ruff linter code checks`|
 |Group|`Developer Tools`|
-|Program|`powershell.exe`|
-|Arguments|`& 'C:\Program Files\Git\bin\bash.exe' -l './run ruff' \| Out-String`|
+|Program|`C:\Program Files\Git\bin\bash.exe`|
+|Arguments|`./run ruff`|
 |Working directory|`$ProjectFileDir$`|
 |Synchronize files after execution|_Unchecked_|
 |Open console for tool outout|_Checked_|

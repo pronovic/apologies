@@ -1,5 +1,6 @@
 Version 0.4.3     unreleased
 
+	* Fix windows commands for external tools.
 	* Fix Sphinx autoapi to generate docs for source, not tests.
 
 Version 0.4.2     24 Sep 2025
