@@ -1,5 +1,9 @@
 {
-    "python.testing.pytestArgs": ["src/tests"],
+    "python.testing.pytestArgs": [
+        "--testdox",
+        "--force-testdox",
+        "src/tests"
+    ],
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true,
     "[python]": {
