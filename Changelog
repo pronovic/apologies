@@ -1,6 +1,6 @@
 Version 0.4.3     unreleased
 
-	* Fix windows commands for external tools.
+	* Fix windows commands for external tools with PyCharm.
 	* Fix Sphinx autoapi to generate docs for source, not tests.
 	* Add support for Visual Studio Code as an IDE.
 
