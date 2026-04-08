@@ -6,7 +6,6 @@
         "editor.defaultFormatter": "charliermarsh.ruff",
         "editor.tabSize": 4,
         "editor.insertSpaces": true,
-        "editor.renderWhitespace": "all",
         "editor.rulers": [132]
     },
     "mypy-type-checker.importStrategy": "fromEnvironment",
