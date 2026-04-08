@@ -153,12 +153,59 @@ on your terminal emulator.  As of 2022, it sort of renders in PuTTY, but does
 not work at all in a Windows Terminal.  Your terminal window must be at least 
 155x58 in size.  If your terminal window is too small, the demo will refuse to run.
 
-## Integration with PyCharm
+## Integration with Visual Studio Code
 
-Currently, I use [PyCharm Community Edition](https://www.jetbrains.com/pycharm/download) as 
-my day-to-day IDE.  By integrating the `run` script to execute MyPy and Ruff,
-most everything important that can be done from a shell environment can also be
-done right in PyCharm.
+Visual Studio Code does a good job of separating user preferences from
+workspace (or project) preferences, so workspace preferences are checked
+into `.vscode/settings.json`.  The only thing you really need to configure
+is the interpreter.
+
+### Prerequisites
+
+Before going any further, make sure sure that you have installed UV and have a
+working bash shell.  Then, run the suite and confirm that everything is working:
+
+```
+./run suite
+```
+
+### Open the Project
+
+Once you have a working shell development environment, open the `apologies` 
+directory in the IDE (i.e. `code .`).
+
+### Interpreter
+
+Go to the command palette and search for `interpreter`.  Choose  **Python:
+Select Interpreter**, then select the interpreter executable in the workspace.
+This will be `.venv\Scripts\python.exe` on Windows, or `.venv/bin/python` on
+Linux or MacOS.
+
+### Running Unit Tests
+
+Project configuration in `.vscode/settings.json` should configure the tests
+properly.  You can right click on `src/tests` in the explorer and run tests
+from there, or do something similar for individual directories or `.py` files.
+
+### Plugins
+
+Workspace configuration in `.vscode/settings.json` assumes that you have installed
+the following plugins:
+
+- [Python](https://marketplace.visualstudio.com/items?itemName=ms-python.python)
+- [MyPy Type Checker](https://marketplace.visualstudio.com/items?itemName=ms-python.mypy-type-checker)
+- [Ruff](https://marketplace.visualstudio.com/items?itemName=charliermarsh.ruff)
+
+The Ruff and MyPy linters will run automatically on any file that you open,
+while you are editing the file. Language errors and linter warnings all show
+up in the **Problems** view.
+
+Ruff is set up as the default workspace formatter for `[python]` code.  If you
+want, you can configure Ruff to format code and optimize imports on save, or
+you can run those actions manually.  (For instance, on Windows **SHIFT-ALT-F**
+will format code using Ruff, and **SHIFT-ALT-O** will organize imports.)  
+
+## Integration with PyCharm
 
 PyCharm offers a good developer experience.  However, the underlying configuration
 on disk mixes together project policy (i.e. preferences about which test runner to
