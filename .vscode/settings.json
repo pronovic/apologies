@@ -1,0 +1,52 @@
+{
+    "python.testing.pytestArgs": [
+        "--testdox",
+        "--force-testdox",
+        "src/tests"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true,
+    "[python]": {
+        "editor.defaultFormatter": "charliermarsh.ruff",
+        "editor.tabSize": 4,
+        "editor.insertSpaces": true,
+        "editor.rulers": [132]
+    },
+    "mypy-type-checker.importStrategy": "fromEnvironment",
+    "files.exclude": {
+        "LICENSE": true,
+        "NOTICE": true,
+        "PyPI.md": true,
+        "SECURITY.md": true,
+        "build": true,
+        "dist": true,
+        "docs/.gitignore": true,
+        "docs/.sphinxignore": true,
+        "docs/_build": true,
+        "docs/_static": true,
+        "docs/_themes": true,
+        "docs/make.bat": true,
+        "docs/Makefile": true,
+        "out": true,
+        "run": true,
+        "uv.lock": true,
+        ".coverage": true,
+        ".coverage.lcov": true,
+        ".coveragerc": true,
+        ".gitattributes": true,
+        ".github": true,
+        ".gitignore": true,
+        ".htmlcov": true,
+        ".idea": true,
+        ".mypy_cache": true,
+        ".pre-commit-config.yaml": true,
+        ".pytest_cache": true,
+        ".python-version": true,
+        ".readthedocs.yaml": true,
+        ".ruff_cache": true,
+        ".run": true,
+        ".tabignore": true,
+        ".venv": true,
+        "**/__pycache__": true
+    }
+}

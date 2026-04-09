@@ -39,8 +39,7 @@ command_pytest() {
    fi
 
    if [ $coverage == "yes" ]; then
-      run_command uvrun coverage run -m pytest --testdox --force-testdox $color $tests
-      run_command uvrun coverage report
+      run_command uvrun pytest --cov=. --testdox --force-testdox $color $tests
       run_command uvrun coverage lcov -o .coverage.lcov
       if [ $html == "yes" ]; then
          run_command uvrun coverage html -d .htmlcov
