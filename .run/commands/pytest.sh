@@ -35,19 +35,18 @@ command_pytest() {
 
    color=""
    if [ "$GITHUB_ACTIONS" == "true" ] && [ "$RUNNER_OS" == "Windows" ]; then
-      export PYTHONUTF8=1 # otherwise unicode like ✓ gets displayed as \u2713 instead
       color="--color no"  # color messes up the terminal on Windows in GHA
    fi
 
    if [ $coverage == "yes" ]; then
-      run_command uvrun pytest --cov=. --testdox --force-testdox $color $tests
+      PYTHONUTF8=1 run_command uvrun pytest --cov=. --testdox --force-testdox $color $tests
       run_command uvrun coverage lcov -o .coverage.lcov
       if [ $html == "yes" ]; then
          run_command uvrun coverage html -d .htmlcov
          run_command openfile .htmlcov/index.html
       fi
    else
-      run_command uvrun pytest --testdox --force-testdox $color $tests
+      PYTHONUTF8=1 run_command uvrun pytest --testdox --force-testdox $color $tests
    fi
 }
 
