@@ -35,6 +35,7 @@ command_pytest() {
 
    color=""
    if [ "$GITHUB_ACTIONS" == "true" ] && [ "$RUNNER_OS" == "Windows" ]; then
+      export PYTHONUTF8=1 # otherwise unicode like ✓ gets displayed as \u2713 instead
       color="--color no"  # color messes up the terminal on Windows in GHA
    fi
 
