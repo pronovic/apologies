@@ -1,5 +1,6 @@
 Version 0.4.3     unreleased
 
+	* Address Dependabot warnings for pytest, requests, pygments, and urllib3.
 	* Fix windows commands for external tools with PyCharm.
 	* Fix Sphinx autoapi to generate docs for source, not tests.
 	* Add support for Visual Studio Code as an IDE.
