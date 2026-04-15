@@ -7,7 +7,7 @@ Version 0.4.3     unreleased
 	* Add support for Visual Studio Code as an IDE.
 	* Use pytest-cov for test coverage, for more consistency.
 	* Fix pytest-testdox output in GHA Windows runner.
-	* TEMPORARY: migrate to latest actions
+	* TEMPORARY: another change
 
 Version 0.4.2     24 Sep 2025
 
