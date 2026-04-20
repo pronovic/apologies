@@ -1,20 +1,32 @@
 # vim: set ft=bash ts=3 sw=3 expandtab:
 # Install the Python interpreter and virtual environment.
 
-# By default, the Python version is taken from .python-version. At
-# runtime, you can override by exporting $UV_PYTHON in your shell.
+# By default, the Python version is taken from .python-version. At runtime, you
+# can override by exporting $UV_PYTHON in your shell.
 #
-# Switching back and forth between versions can sometimes leave
-# leftover junk, like two different python3.x links pointing at the
-# same interpreter (one of which is wrong). If I detect this, I
-# re-build the virtualenv to fix it.
+# Originally, I always naively used `uv venv --allow-existing`, under the
+# assumption that UV would do the right thing when dealing with an existing
+# venv. Unfortunately, while this works ok on Linux and MacOS, it isn't safe on
+# Windows.  On that platform, VS Code seems to lock the interpreter, and this
+# prevents `uv venv` from overwriting it.  So, the logic below needs to be
+# smart about about only replacing the venv when necessary, to avoid that sort
+# of conflict.
+#
+# Switching back and forth between versions with $UV_PYTHON can sometimes leave
+# leftover junk, like two different python3.x links pointing at the same
+# interpreter (one of which is wrong). If I detect this, I re-build the
+# virtualenv to fix it.
 
 command_uvvenv() {
+   local desired interpreter installed
+
    if [ ! -z "$UV_PYTHON" ]; then
-      echo -n "Installing virtual environment with UV_PYTHON=$UV_PYTHON..."
+      desired="$UV_PYTHON"
    else
-      echo -n "Installing virtual environment..."
+      desired=$(cat .python-version)
    fi
+
+   echo -n "Installing .venv for Python $desired..."
 
    uv python install --quiet
    if [ $? != 0 ]; then
@@ -22,29 +34,44 @@ command_uvvenv() {
       exit 1
    fi
 
-   if [ ! -z "$UV_PYTHON" ]; then
+   if [ ! -d .venv ]; then
       uv venv --quiet --clear
       if [ $? != 0 ]; then
          echo "Command failed: uv venv"
          exit 1
       fi
+      echo "installed fresh"
    else
-      uv venv --quiet --allow-existing
-      if [ $? != 0 ]; then
-         echo "Command failed: uv venv"
-         exit 1
+      if [ -x .venv/Scripts/python.exe ]; then
+         # this is Windows
+         interpreter=".venv/Scripts/python.exe"
+      else
+         # this is Linux, MacOS, or some other UNIX-like operating system
+         interpreter=".venv/bin/python"
       fi
-   fi
 
-   if [ $(/bin/ls .venv/bin/python3.?? 2>/dev/null | wc -l) -gt 1 ]; then
-      uv venv --quiet --clear  # clean up leftover junk from switching versions
-      if [ $? != 0 ]; then
-         echo "Command failed: uv venv"
-         exit 1
+      installed=$($interpreter -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')
+      if [ "$desired" != "$installed" ]; then
+         uv venv --quiet --clear
+         if [ $? != 0 ]; then
+            echo "Command failed: uv venv"
+            echo "One possible cause is that an IDE like VS Code has the interpreter locked" # on Windows, anyway
+            exit 1
+         fi
+         echo "version mismatch, reinstalled"
+      elif [ $(/bin/ls .venv/bin/python3.?? 2>/dev/null | wc -l) -gt 1 ]; then
+         uv venv --quiet --clear
+         if [ $? != 0 ]; then
+            echo "Command failed: uv venv"
+            exit 1
+         fi
+         echo "appeared corrupt, reinstalled"
+      else
+         echo "no changes necessary"  # at least, none that we were able to detect
       fi
    fi
 
    run_command uvsync
-   run_command uvrun python --version
+   echo "Interpreter is $(run_command uvrun python -VV)"
 }
 
