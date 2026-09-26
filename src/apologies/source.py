@@ -1,5 +1,5 @@
 # vim: set ft=python ts=4 sw=4 expandtab:
-# ruff: noqa: S311
+# ruff: file-ignore[suspicious-non-cryptographic-random-usage]
 
 """
 Character input sources.  A character could be a person or could be computer-driven.
@@ -87,7 +87,7 @@ class RandomInputSource(CharacterInputSource):
     A source of input for a character which chooses randomly from among legal moves.
     """
 
-    def choose_move(  # noqa: PLR6301
+    def choose_move(  # ruff: ignore[no-self-use]
         self,
         _mode: GameMode,
         _view: PlayerView,

@@ -1,5 +1,5 @@
 # vim: set ft=python ts=4 sw=4 expandtab:
-# ruff: noqa: S311
+# ruff: file-ignore[suspicious-non-cryptographic-random-usage]
 
 """
 Classes that track game state.
@@ -158,7 +158,7 @@ class Deck:
 
     # noinspection PyUnresolvedReferences
     @_draw_pile.default
-    def _default_draw_pile(self) -> dict[str, Card]:  # noqa: PLR6301
+    def _default_draw_pile(self) -> dict[str, Card]:  # ruff: ignore[no-self-use]
         pile = {}
         cardid = 0
         for card in CardType:
@@ -354,7 +354,7 @@ class Pawn:
 
     # noinspection PyUnresolvedReferences
     @position.default
-    def _default_position(self) -> Position:  # noqa: PLR6301
+    def _default_position(self) -> Position:  # ruff: ignore[no-self-use]
         return Position()
 
     def __str__(self) -> str:
@@ -429,7 +429,7 @@ class History:
 
     # noinspection PyUnresolvedReferences,PyCallingNonCallable
     @timestamp.default
-    def _default_timestamp(self) -> Arrow:  # noqa: PLR6301
+    def _default_timestamp(self) -> Arrow:  # ruff: ignore[no-self-use]
         return arrow_utcnow()
 
     def __str__(self) -> str:

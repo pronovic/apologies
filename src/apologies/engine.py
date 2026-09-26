@@ -1,5 +1,5 @@
 # vim: set ft=python ts=4 sw=4 expandtab:
-# ruff: noqa: S311
+# ruff: file-ignore[suspicious-non-cryptographic-random-usage]
 
 """
 Game engine that coordinates character actions to play a game.

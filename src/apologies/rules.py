@@ -1,5 +1,5 @@
 # vim: set ft=python ts=4 sw=4 expandtab:
-# ruff: noqa: PERF401
+# ruff: file-ignore[manual-list-comprehension]
 
 """
 Implements rules related to game play.
@@ -89,7 +89,7 @@ class BoardRules:
     Rules related to the way the board works.
     """
 
-    def construct_legal_moves(  # noqa: PLR6301
+    def construct_legal_moves(  # ruff: ignore[no-self-use]
         self,
         color: PlayerColor,
         card: Card,
@@ -158,7 +158,7 @@ class BoardRules:
 
     # noinspection PyChainedComparisons
     @staticmethod
-    def _position(color: PlayerColor, position: Position, squares: int) -> Position:  # noqa: PLR0912,PLR0911
+    def _position(color: PlayerColor, position: Position, squares: int) -> Position:  # ruff: ignore[too-many-branches, too-many-return-statements]
         """
         Calculate the new position for a forward or backwards move, taking into account safe zone turns but disregarding slides.
         """
@@ -390,7 +390,7 @@ class BoardRules:
     @staticmethod
     def _augment_with_slides(all_pawns: list[Pawn], moves: list[Move]) -> None:
         """Augument any legal moves with additional side-effects that occur as a result of slides."""
-        for move in moves:  # noqa: PLR1702
+        for move in moves:  # ruff: ignore[too-many-nested-blocks]
             for action in move.actions:
                 if action.actiontype == ActionType.MOVE_TO_POSITION:  # look at any move to a position on the board
                     for color in [color for color in PlayerColor if color != action.pawn.color]:  # any color other than the pawn's
@@ -421,7 +421,7 @@ class Rules:
     _board_rules: BoardRules = field(init=False, factory=BoardRules)
 
     # noinspection PyMethodMayBeStatic
-    def draw_again(self, card: Card) -> bool:  # noqa: PLR6301
+    def draw_again(self, card: Card) -> bool:  # ruff: ignore[no-self-use]
         """Whether the player gets to draw again based on the passed-in card."""
         return DRAW_AGAIN[card.cardtype]
 
@@ -464,7 +464,7 @@ class Rules:
         return moves
 
     # noinspection PyMethodMayBeStatic
-    def execute_move(self, game: Game, player: Player, move: Move) -> None:  # noqa: PLR6301
+    def execute_move(self, game: Game, player: Player, move: Move) -> None:  # ruff: ignore[no-self-use]
         """
         Execute a player's move, updating game state.
 
