@@ -189,6 +189,7 @@ pretty = true
 show_absolute_path = true
 show_column_numbers = true
 show_error_codes = true
+native_parser = true
 # Settings equivalent to strict=true as of v2.3.1
 check_untyped_defs = true
 disallow_any_generics = true
