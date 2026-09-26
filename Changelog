@@ -2,6 +2,7 @@ Version 0.4.3     unreleased
 
 	* Add support for Python v3.15 and drop support for v3.11.
 	* Update dependencies and dependency pins across the board.
+	* Upgrade to MyPy v2, adjust for new strict settings, use native parser.
 	* Upgrade to Pytest v9 for new TOML syntax, strict mode, and Dependabot.
 	* Fix windows commands for external tools with PyCharm.
 	* Fix Sphinx autoapi to generate docs for source, not tests.
