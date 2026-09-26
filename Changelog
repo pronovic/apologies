@@ -1,6 +1,7 @@
 Version 0.4.3     unreleased
 
-	* Address Dependabot warnings for requests, pygments, urllib3, and idna.
+	* Add support for Python v3.15 and drop support for v3.11.
+	* Update dependencies and dependency pins across the board.
 	* Upgrade to Pytest v9 for new TOML syntax, strict mode, and Dependabot.
 	* Fix windows commands for external tools with PyCharm.
 	* Fix Sphinx autoapi to generate docs for source, not tests.
