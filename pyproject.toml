@@ -11,7 +11,7 @@ exclude = [ "docs/_build" ]
 
 [project]
 name = "apologies"
-requires-python = ">=3.11,<4"
+requires-python = ">=3.12,<4"
 description = "Python code to play a game similar to Sorry"
 authors = [ { name="Kenneth J. Pronovici", email="pronovic@ieee.org" } ]
 license = "Apache-2.0"
@@ -20,10 +20,10 @@ readme = "PyPI.md"
 dynamic = ["version"]
 classifiers = [
    "Programming Language :: Python :: 3",
-   "Programming Language :: Python :: 3.11",
    "Programming Language :: Python :: 3.12",
    "Programming Language :: Python :: 3.13",
    "Programming Language :: Python :: 3.14",
+   "Programming Language :: Python :: 3.15",
    "Operating System :: OS Independent",
    "Environment :: Console",
    "Intended Audience :: Developers",
