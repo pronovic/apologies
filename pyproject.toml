@@ -165,7 +165,6 @@ ignore = [
   "PT018",      # allow `assert` with multiple conditions; ruff suggestions often make the code less legible
   "PT019",      # allow unused PyTest fixtures; this check has a lot of false positives for `@unittest.mock.patch()`
   "RUF201",     # Don't rewrite rule codes to rule names in pyproject.toml
-  "RUF105",     # Don't rewrite `noqa` to `ruff: ignore` in code
   "S101",       # allow use of `assert`; we sometimes use assert as a type hint for MyPy, and do not run with -O
   "S404",       # allow use of `subprocess`; it's a common way to run shell commands, and this check is overly paranoid
   "SIM102",     # allow nested `if` clauses; ruff suggestions often make the code less legible

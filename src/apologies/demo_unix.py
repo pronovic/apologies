@@ -1,5 +1,5 @@
 # vim: set ft=python ts=4 sw=4 expandtab:
-# ruff: noqa: T201, ANN001
+# ruff: file-ignore[print, missing-type-function-argument]
 
 """
 Implements a quick'n'dirty game-playing demo using curses.
@@ -50,7 +50,7 @@ def _draw(stdscr, board, state, history) -> None:
 
 
 # pylint: disable=too-many-positional-arguments
-def _refresh(source, engine, game, delay_sec, stdscr, board, state, history) -> None:  # noqa: PLR0917,PLR0913
+def _refresh(source, engine, game, delay_sec, stdscr, board, state, history) -> None:  # ruff: ignore[too-many-positional-arguments, too-many-arguments]
     """Refresh the dynamic portions of the screen."""
     _refresh_screen(source, engine, delay_sec, game, stdscr)
     _refresh_board(game, board)

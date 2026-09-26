@@ -1,5 +1,5 @@
 # vim: set ft=python ts=4 sw=4 expandtab:
-# ruff: noqa: T201
+# ruff: file-ignore[print]
 
 """
 Run a simulation to see how well different character input sources behave.
@@ -110,7 +110,7 @@ class _Analysis:
 
 
 # pylint: disable=too-many-positional-arguments
-def _analyze_scenario(  # noqa: PLR0917,PLR0913
+def _analyze_scenario(  # ruff: ignore[too-many-positional-arguments, too-many-arguments]
     scenario: int,
     mode: GameMode,
     iterations: int,
