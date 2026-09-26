@@ -14,3 +14,8 @@ It was written as a learning exercise and technology demonstration effort, and
 serves as a complete example of how to manage a modern (circa 2025) Python
 project, including style checks, code formatting, integration with IntelliJ, CI
 builds at GitHub, and integration with PyPI and Read the Docs.
+
+**Statement on free-threading:** This code is single-threaded by design.
+Starting with Python 3.14, the matrix build CI workflow in GitHub Actions
+ensures that the test suite passes for both standard and free-threaded
+interpreters.

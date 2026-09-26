@@ -10,6 +10,7 @@ Version 0.4.3     unreleased
 	* Use pytest-cov for test coverage, for more consistency.
 	* Fix pytest-testdox output in GHA Windows runner.
 	* Update Read the Docs config to use generic latest Ubuntu runner.
+	* Run the GHA matrix build on free-threaded 3.14t and 3.15t.
 
 Version 0.4.2     24 Sep 2025
 

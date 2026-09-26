@@ -18,7 +18,7 @@ jobs:
     secrets: inherit
     with:
       matrix-os-version: "[ 'ubuntu-latest' ]"
-      matrix-python-version: "[ '3.12', '3.13', '3.14', 3.15 ]"  # run Linux tests on all supported Python versions
+      matrix-python-version: "[ '3.12', '3.13', '3.14', '3.14t', '3.15', '3.15t' ]"  # run Linux tests on all supported Python versions
       enable-coveralls: true  # only report to coveralls.io for tests that run on Linux
       persist-python-version: "3.12"  # persist artifacts for the oldest supported Python version
   macos-build-and-test:
@@ -27,14 +27,14 @@ jobs:
     secrets: inherit
     with:
       matrix-os-version: "[ 'macos-latest' ]"
-      matrix-python-version: "[ '3.15' ]"  # only run MacOS tests on latest Python
+      matrix-python-version: "[ '3.15', '3.15t' ]"  # only run MacOS tests on latest Python
   windows-build-and-test:
     name: "Windows"
     uses: pronovic/gha-shared-workflows/.github/workflows/uv-build-and-test.yml@v10
     secrets: inherit
     with:
       matrix-os-version: "[ 'windows-latest' ]"
-      matrix-python-version: "[ '3.15' ]"  # only run Windows tests on latest Python
+      matrix-python-version: "[ '3.15', '3.15t' ]"  # only run Windows tests on latest Python
   release:
     name: "Release"
     if: github.ref_type == 'tag'
