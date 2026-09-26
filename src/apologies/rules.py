@@ -307,7 +307,7 @@ class BoardRules:
         # resulting position is not occupied by another pawn of the same color.
         moves: list[Move] = []
         if pawn.position.square is not None or pawn.position.safe is not None:
-            try:
+            try:  # ruff: ignore[too-many-statements-in-try-clause]
                 target = BoardRules._position(color, pawn.position, squares)
                 if target.home or target.start:  # by definition, there can't be a conflict going to home or start
                     moves.append(Move(card, actions=[Action(ActionType.MOVE_TO_POSITION, pawn, target)]))

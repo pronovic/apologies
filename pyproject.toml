@@ -46,20 +46,20 @@ Issues = "https://github.com/pronovic/apologies/issues"
 
 [project.optional-dependencies]
 docs = [
-   "sphinx (>=8.1.3,<9.0.0)",
-   "sphinx-autoapi (>=3.3.3,<4.0.0)",
+   "sphinx (>=9.1.0,<10.0.0)",
+   "sphinx-autoapi (>=3.8.1,<4.0.0)",
 ]
 
 [dependency-groups]
 dev = [
-   "ruff (>=0.12.10,<1.0.0)",
-   "pytest (>=9.0.3,<10.0.0)",
+   "ruff (>=0.16.9,<1.0.0)",
+   "pytest (>=9.1.1,<10.0.0)",
    "pytest-testdox (>=3.1.0,<4.0.0)",
    "pytest-cov (>=7.1.0,<8.0.0)",
-   "prek (>=0.2.1,<1.0.0)",
+   "prek (>=0.5.3,<1.0.0)",
    "mypy (>=1.6.0,<2.0.0)",
-   "click (>=8.1.7,<9.0.0)",
    "colorama (>=0.4.6,<1.0.0)",
+   "click (>=8.5.0,<9.0.0)",
 ]
 
 [tool.hatch.version]
@@ -164,6 +164,8 @@ ignore = [
   "PT011",      # allow `pytest.raises` for any exception type; this is often a false-positive that has little benefit
   "PT018",      # allow `assert` with multiple conditions; ruff suggestions often make the code less legible
   "PT019",      # allow unused PyTest fixtures; this check has a lot of false positives for `@unittest.mock.patch()`
+  "RUF201",     # don't rewrite rule codes in pyproject.toml; codes are more legible when config mixes codes and categories
+  "RUF105",     # don't rewrite `noqa` to `ruff: ignore` in code
   "S101",       # allow use of `assert`; we sometimes use assert as a type hint for MyPy, and do not run with -O
   "S404",       # allow use of `subprocess`; it's a common way to run shell commands, and this check is overly paranoid
   "SIM102",     # allow nested `if` clauses; ruff suggestions often make the code less legible

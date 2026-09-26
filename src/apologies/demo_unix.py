@@ -108,10 +108,8 @@ def _refresh_history(game, history) -> None:
     history.clear()
     history.border()
 
-    row = 1
-    for entry in game.history[-1:]:
-        history.addstr(row, 2, f"{entry}")
-        row += 1
+    for i, entry in enumerate(game.history[-1:]):
+        history.addstr(i + 1, 2, f"{entry}")
 
     history.refresh()
 
