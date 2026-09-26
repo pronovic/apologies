@@ -23,7 +23,7 @@ from apologies.util import ISO_TIMESTAMP_FORMAT
 
 if typing.TYPE_CHECKING:
     # noinspection PyUnusedImports
-    from _csv import _writer
+    from _csv import _writer  # type: ignore[attr-defined]
 
 BASE_HEADERS = [
     "Scenario",
