@@ -182,7 +182,7 @@ class Engine:
             raise ValueError("Game is complete")
 
         saved = self._game.copy()
-        try:
+        try:  # ruff: ignore[too-many-statements-in-try-clause]
             color, character = self.next_turn()
             done = False
             while not done:
