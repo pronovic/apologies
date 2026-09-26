@@ -4,7 +4,7 @@
 Utility functionality.
 """
 
-from typing import Generic, TypeVar
+from typing import TypeVar
 
 import cattrs
 from arrow import Arrow
@@ -35,7 +35,7 @@ T = TypeVar("T")
 
 
 @define(slots=False)
-class CircularQueue(Generic[T]):
+class CircularQueue[T]:
     """A circular queue that keeps returning the original entries repeatedly, in order."""
 
     entries: list[T] = field()
