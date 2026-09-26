@@ -1,4 +1,4 @@
-Version 0.4.3     unreleased
+Version 0.4.3     26 Sep 2026
 
 	* Add support for Python v3.15 and drop support for v3.11.
 	* Update dependencies and dependency pins across the board.
