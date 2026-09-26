@@ -15,3 +15,5 @@ It was written as a learning exercise and technology demonstration effort, and s
 Developer documentation is found in [DEVELOPER.md](DEVELOPER.md).  See that file for notes about how the code is structured, how to set up a development environment, etc.
 
 If you want to use this as a starting point for your own repository, check out the [cookiecutter-pypi](https://github.com/pronovic/cookiecutter-pypi) template repository.
+
+**Statement on free-threading:** This code is single-threaded by design. Starting with Python 3.14, the matrix build CI workflow in GitHub Actions ensures that the test suite passes for both standard and free-threaded interpreters.
