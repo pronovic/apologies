@@ -1,3 +1,7 @@
+Version 0.4.4     unreleased
+
+	* Update certifi to address compromised emSign eMudhra intermediate certs.
+
 Version 0.4.3     26 Sep 2026
 
 	* Add support for Python v3.15 and drop support for v3.11.
