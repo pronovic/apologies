@@ -312,7 +312,8 @@ class BoardRules:
                 if target.home or target.start:  # by definition, there can't be a conflict going to home or start
                     moves.append(Move(card, actions=[Action(ActionType.MOVE_TO_POSITION, pawn, target)]))
                 else:
-                    conflict = BoardRules._find_pawn(all_pawns, target)
+                    candidates = all_pawns if target.safe is None else [p for p in all_pawns if p.color == color]
+                    conflict = BoardRules._find_pawn(candidates, target)
                     if not conflict:
                         moves.append(Move(card, actions=[Action(ActionType.MOVE_TO_POSITION, pawn, target)]))
                     elif conflict and conflict.color != color:
