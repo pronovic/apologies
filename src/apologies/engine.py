@@ -5,6 +5,7 @@
 Game engine that coordinates character actions to play a game.
 """
 
+import copy
 import random
 from collections.abc import Callable
 
@@ -182,6 +183,7 @@ class Engine:
             raise ValueError("Game is complete")
 
         saved = self._game.copy()
+        saved_queue = copy.deepcopy(self._queue)
         try:  # ruff: ignore[too-many-statements-in-try-clause]
             color, character = self.next_turn()
             done = False
@@ -191,6 +193,7 @@ class Engine:
                 done = self.execute_move(color, move)
         except Exception:
             self._game = saved  # put back original so a failed call is idempotent
+            self._queue = saved_queue
             raise
         else:
             return self._game
