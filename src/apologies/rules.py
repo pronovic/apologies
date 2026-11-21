@@ -400,7 +400,7 @@ class BoardRules:
                                 for square in range(start + 1, end + 1):  # and then bump any pawns that were already on the slide
                                     # Note: in this one case, a pawn can bump another pawn of the same color
                                     pawn = BoardRules._find_pawn(all_pawns, Position().move_to_square(square))
-                                    if pawn:
+                                    if pawn and pawn != action.pawn:
                                         bump = Action(ActionType.MOVE_TO_START, pawn)
                                         if bump not in move.actions:
                                             move.side_effects.append(bump)
